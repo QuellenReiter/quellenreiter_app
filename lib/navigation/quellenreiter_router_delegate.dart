@@ -14,21 +14,93 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
   @override
   final GlobalKey<NavigatorState> navigatorKey;
 
+  ///  Object to be able to access the database.
   final db = DatabaseUtils();
+
+  /// The current [Game]. If [Player] is not playing, [_game] is null.
   Game? _game;
+  Game? get game => _game;
+  set game(value) {
+    _game = value;
+    notifyListeners();
+  }
+
+  /// The [Games] that are open currently.
   Games? _openGames;
+  Games? get openGames => _openGames;
+  set openGames(value) {
+    _openGames = value;
+    notifyListeners();
+  }
+
+  /// The [Statements] that the [Player] safed.
   Statements? _safedStatements;
+  Statements? get safedStatements => _safedStatements;
+  set safedStatements(value) {
+    _safedStatements = value;
+    notifyListeners();
+  }
+
+  /// The searchterm when searching for a friend.
   String? _friendsQuery;
+  set friendsQuery(value) {
+    _friendsQuery = value;
+    notifyListeners();
+  }
+
+  /// True if user is logged in.
   bool _isLoggedIn = false;
-  bool _signUp = false;
-  bool _viewFriends = false;
-  bool _viewSettings = false;
-  bool _viewOpenGames = false;
-  bool _viewArchive = false;
-  bool _startGame = false;
-  bool get loggedIn => _isLoggedIn;
-  set loggedIn(value) {
+  bool get isLoggedIn => _isLoggedIn;
+  set isLoggedIn(value) {
     _isLoggedIn = value;
+    notifyListeners();
+  }
+
+  /// True if user wants to sign up.
+  bool _signUp = false;
+  bool get signUp => _signUp;
+  set signUp(value) {
+    _signUp = value;
+    notifyListeners();
+  }
+
+  /// True if user wants to see the friends page.
+  bool _viewFriends = false;
+  bool get viewFriends => _viewFriends;
+  set viewFriends(value) {
+    _viewFriends = value;
+    notifyListeners();
+  }
+
+  /// True if user wants to see the settings page.
+  bool _viewSettings = false;
+  bool get viewSettings => _viewSettings;
+  set viewSettings(value) {
+    _viewSettings = value;
+    notifyListeners();
+  }
+
+  /// True if user wants to see the open Games page.
+  bool _viewOpenGames = false;
+  bool get viewOpenGames => _viewOpenGames;
+  set viewOpenGames(value) {
+    _viewOpenGames = value;
+    notifyListeners();
+  }
+
+  /// True if user wants to see the archive page.
+  bool _viewArchive = false;
+  bool get viewArchive => _viewArchive;
+  set viewArchive(value) {
+    _viewArchive = value;
+    notifyListeners();
+  }
+
+  /// True if user wants to see the startNewGame page.
+  bool _startGame = false;
+  bool get startGame => _startGame;
+  set startGame(value) {
+    _startGame = value;
     notifyListeners();
   }
 
@@ -45,37 +117,43 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
     else if (_game == null) {
       // friends
       if (_viewFriends) {
-        QuellenreiterRoutePath.friends();
+        return QuellenreiterRoutePath.friends();
       }
       // settings
       else if (_viewSettings) {
-        QuellenreiterRoutePath.settings();
+        return QuellenreiterRoutePath.settings();
       }
       // openGames
       else if (_viewOpenGames) {
-        QuellenreiterRoutePath.openGames();
+        return QuellenreiterRoutePath.openGames();
       }
       // archive
       else if (_viewArchive) {
-        QuellenreiterRoutePath.archive();
+        return QuellenreiterRoutePath.archive();
       }
       // start game
       else if (_startGame) {
-        QuellenreiterRoutePath.startGame();
+        return QuellenreiterRoutePath.startGame();
       }
     }
     // game routes
     else if (_game != null) {
-      if (_game.statementIndex == 4) {
+      // If player answered 3 quests: show results and factchecks.
+      if (_game!.statementIndex == 4) {
         // implement such that factcheckts are on same page to scroll down or button!
-        QuellenreiterRoutePath.gameResults();
+        return QuellenreiterRoutePath.gameResults(_game);
       }
-      return QuellenreiterRoutePath.create(_emptyStatement);
+      // Show the start the game screen.
+      else if (_game!.statementIndex == 0) {
+        return QuellenreiterRoutePath.gameReadyToStart(_game);
+      }
+      // [_game.statementIndex] is between 1 and 3.
+      else {
+        return QuellenreiterRoutePath.questScreen(_game);
+      }
     }
-
-    return _statement == null
-        ? QuellenreiterRoutePath.home()
-        : QuellenreiterRoutePath.details(_statement?.objectId);
+    // Else return homescreen.
+    return QuellenreiterRoutePath.home();
   }
 
   /// Function that handles taps on statement cards and sets [_statement].
@@ -110,11 +188,8 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
       // Check if user can be logged in with an existing token.
       _isLoggedIn = await db.checkToken();
     }
-    // If not, show the login page.
-    if (!_isLoggedIn) {
-      //show login page
-      _showLogIn = true;
-    }
+    // If still not, show the login page.
+    _isLoggedIn = false;
 
     notifyListeners();
   }
@@ -124,15 +199,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
   void _loginPageCallback(bool success) async {
     if (success) {
       _isLoggedIn = true;
-      _showLogIn = false;
     }
-    notifyListeners();
-  }
-
-  /// Function that creates an empty statement and is called when the User
-  /// taps the create statement button.
-  void _createStatement() {
-    _emptyStatement = Statement.empty();
     notifyListeners();
   }
 
