@@ -142,6 +142,9 @@ class QuellenreiterRoutePath {
   /// Currently on Home Page?
   bool get isHomePage => viewHome;
 
+  /// Are we in main navigation but not on home?
+  bool get isMainButNotHome => !viewHome && (game == null) && isLoggedIn;
+
   /// Currently on Friends Page?
   bool get isFriendsPage => viewFriends;
 
