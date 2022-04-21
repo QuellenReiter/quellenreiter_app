@@ -1,11 +1,21 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/navigation/quellenreiter_routes.dart';
+import 'package:quellenreiter_app/screens/auth/signup_screen.dart';
+import 'package:quellenreiter_app/screens/game/game_results_screen.dart';
+import 'package:quellenreiter_app/screens/game/quest_screen.dart';
+import 'package:quellenreiter_app/screens/game/ready_to_start_screen.dart';
+import 'package:quellenreiter_app/screens/main/archive_screen.dart';
+import 'package:quellenreiter_app/screens/main/friends_screen.dart';
+import 'package:quellenreiter_app/screens/main/open_games_screen.dart';
+import 'package:quellenreiter_app/screens/main/settings_screen.dart';
+import 'package:quellenreiter_app/screens/main/start_game_screen.dart';
 import '../models/statement.dart';
 import '../provider/database_utils.dart';
-import '../screens/edit_screen.dart';
-import '../screens/home_screen.dart';
-import '../screens/login_screen.dart';
+import '../screens/auth/login_screen.dart';
+import '../screens/main/home_screen.dart';
 
 class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
     with
@@ -207,76 +217,65 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
   Widget build(BuildContext context) {
     return Navigator(
       pages: [
-        MaterialPage(
-          key: const ValueKey('SearchPage'),
-          child: HomeScreen(
-            title: "Search",
-            onSelectStatement: _onSelectStatement,
-            onQueryChanged: _onQueryChanged,
-            onLogin: _onLogin,
-            query: null,
-            statements: _statements,
-            isLoggedIn: loggedIn,
-            createStatement: _createStatement,
-          ),
-        ),
-        // If user wants to login, show login page.
-        if (_showLogIn)
+        // auth pages
+        if (!_isLoggedIn)
+          if (_signUp)
+            MaterialPage(
+              key: const ValueKey('SignupPage'),
+              child: SignupScreen(),
+            )
+          else
+            MaterialPage(
+              key: const ValueKey('LoginPage'),
+              child: LoginScreen(),
+            )
+        // Game pages
+        else if (_game != null)
+          if (_game!.statementIndex == 0)
+            MaterialPage(
+              key: const ValueKey('ReadyToStartPage'),
+              child: ReadyToStartScreen(), // pass game here
+            )
+          else if (_game!.statementIndex == 4)
+            MaterialPage(
+              key: const ValueKey('GameResultPage'),
+              child: GameResultsScreen(), // pass game here
+            )
+          else
+            MaterialPage(
+              key: const ValueKey('QuestPage'),
+              child: QuestScreen(), // pass game here
+            )
+        // Main pages
+        else if (viewFriends)
           MaterialPage(
-            key: const ValueKey('LoginPage'),
-            child: LoginScreen(
-              loginCallback: _loginPageCallback,
-            ),
+            key: const ValueKey('FriendsPage'),
+            child: FriendsScreen(),
           )
-        // If given link is unknown, show the search/home screen.
-        else if (_show404)
+        else if (viewArchive)
           MaterialPage(
-            key: const ValueKey('Unknown Page'),
-            child: HomeScreen(
-              title: "Unbekannter Link",
-              onSelectStatement: _onSelectStatement,
-              onQueryChanged: _onQueryChanged,
-              query: _query,
-              statements: _statements,
-              onLogin: _onLogin,
-              isLoggedIn: loggedIn,
-              createStatement: _createStatement,
-            ),
+            key: const ValueKey('ArchivePage'),
+            child: ArchiveScreen(),
           )
-        // If user is not logged in, but a statement is selected, show the
-        // detail page.
-        else if (_statement != null && !loggedIn)
+        else if (viewSettings)
           MaterialPage(
-            key: const ValueKey('DetailPage'),
-            child: DetailScreen(
-              title: "Detailansicht. Zum bearbeiten einloggen.",
-              onLogin: _onLogin,
-              statement: _statement!,
-              isLoggedIn: _isLoggedIn,
-            ),
+            key: const ValueKey('SettingsPage'),
+            child: SettingsScreen(),
           )
-        // If user is logged in and a statement is selected, show edit page.
-        else if (_statement != null && loggedIn)
+        else if (viewOpenGames)
           MaterialPage(
-            key: const ValueKey('EditPage'),
-            child: EditScreen(
-              title: "Eingeloggt. Bearbeitungsmodus.",
-              onLogin: _onLogin,
-              statement: _statement!,
-              isLoggedIn: _isLoggedIn,
-            ),
+            key: const ValueKey('OpenGamesPage'),
+            child: OpenGamesScreen(),
           )
-        // If user is logged in and an empty statement is selected, show the
-        // edit page.
-        else if (_emptyStatement != null && loggedIn)
+        else if (startGame)
           MaterialPage(
-            key: const ValueKey('CreatePage'),
-            child: EditScreen(
-              title: "Neues Statement erstellen.",
-              onLogin: _onLogin,
-              statement: _emptyStatement!,
-              isLoggedIn: _isLoggedIn,
-            ),
+            key: const ValueKey('StartGamePage'),
+            child: StartGameScreen(),
+          )
+        else
+          MaterialPage(
+            key: const ValueKey('HomePage'),
+            child: HomeScreen(),
           ),
       ],
       // Define what happens on Navigator.pop() or back button.
@@ -284,9 +283,17 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         if (!route.didPop(result)) {
           return false;
         }
-        _statement = null;
-        _emptyStatement = null;
-        _showLogIn = false;
+        if ((game == null) && isLoggedIn) {
+          startGame = false;
+          viewArchive = false;
+          viewFriends = false;
+          viewOpenGames = false;
+          viewSettings = false;
+        }
+        if (game != null) {
+          // decide the game routes here. HERE WE ARE
+        }
+
         notifyListeners();
         return true;
       },
@@ -294,7 +301,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
   }
 
   @override
-  Future<void> setNewRoutePath(FactBrowserRoutePath configuration) async {
+  Future<void> setNewRoutePath(QuellenreiterRoutePath configuration) async {
     var db = DatabaseUtils();
     if (configuration.isUnknown) {
       _statement = null;
