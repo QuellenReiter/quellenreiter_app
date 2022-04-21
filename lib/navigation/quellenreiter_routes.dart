@@ -1,70 +1,175 @@
-import '../models/statement.dart';
+import '../models/game.dart';
 
 /// Class defining all Routes (Pages) in the Fact Browser app.
 class QuellenreiterRoutePath {
-  ///  The objectId of the statement. Only set, if on detail or edit page.
-  final String? statementID;
+  ///  The game currently played. Also containing the questIndex to decide which
+  ///  quest to show.
+  final Game? game;
 
-  /// Set if given Route (Deep Link) is wrong.
-  final bool isUnknown;
+  /// Stores if user navigated to home page.
+  final bool viewHome;
+
+  /// Stores if user navigated to friends page.
+  final bool viewFriends;
+
+  /// Stores if user navigated to settings page.
+  final bool viewSettings;
+
+  /// Stores if user navigated to openGames page.
+  final bool viewOpenGames;
+
+  /// Stores if user navigated to archive page.
+  final bool viewArchive;
+
+  /// Stores if user navigated to startGame page.
+  final bool viewStartGame;
 
   /// Stores wether the user is logged in.
   final bool isLoggedIn;
 
-  /// An empty [Statement] is set when on the create page.
-  final Statement? emptyStatement;
-
-  /// Stores if the Login button was pressed and thus the Login page
-  /// should be displayed.
-  final bool showLogIn;
-
-  QuellenreiterRoutePath.create(this.emptyStatement)
-      : isLoggedIn = true,
-        isUnknown = false,
-        statementID = null,
-        showLogIn = false;
-  QuellenreiterRoutePath.edit(this.statementID)
-      : isUnknown = false,
-        isLoggedIn = true,
-        emptyStatement = null,
-        showLogIn = false;
-  QuellenreiterRoutePath.home()
-      : statementID = null,
-        isUnknown = false,
-        isLoggedIn = false,
-        emptyStatement = null,
-        showLogIn = false;
-  QuellenreiterRoutePath.details(this.statementID)
-      : isUnknown = false,
-        isLoggedIn = false,
-        emptyStatement = null,
-        showLogIn = false;
-  QuellenreiterRoutePath.unknown()
-      : statementID = null,
-        isUnknown = true,
-        isLoggedIn = false,
-        emptyStatement = null,
-        showLogIn = false;
+  /// Stores wether the user wants to sign up.
+  final bool showSignUp;
 
   QuellenreiterRoutePath.login()
-      : statementID = null,
-        isUnknown = false,
+      : game = null,
+        viewHome = false,
+        viewFriends = false,
+        viewSettings = false,
+        viewOpenGames = false,
+        viewArchive = false,
+        viewStartGame = false,
         isLoggedIn = false,
-        emptyStatement = null,
-        showLogIn = true;
+        showSignUp = false;
+
+  QuellenreiterRoutePath.signUp()
+      : game = null,
+        viewHome = false,
+        viewFriends = false,
+        viewSettings = false,
+        viewOpenGames = false,
+        viewArchive = false,
+        viewStartGame = false,
+        isLoggedIn = false,
+        showSignUp = true;
+  QuellenreiterRoutePath.home()
+      : game = null,
+        viewHome = true,
+        viewFriends = false,
+        viewSettings = false,
+        viewOpenGames = false,
+        viewArchive = false,
+        viewStartGame = false,
+        isLoggedIn = true,
+        showSignUp = false;
+  QuellenreiterRoutePath.friends()
+      : game = null,
+        viewHome = false,
+        viewFriends = true,
+        viewSettings = false,
+        viewOpenGames = false,
+        viewArchive = false,
+        viewStartGame = false,
+        isLoggedIn = false,
+        showSignUp = true;
+  QuellenreiterRoutePath.settings()
+      : game = null,
+        viewHome = false,
+        viewFriends = false,
+        viewSettings = true,
+        viewOpenGames = false,
+        viewArchive = false,
+        viewStartGame = false,
+        isLoggedIn = true,
+        showSignUp = false;
+  QuellenreiterRoutePath.openGames()
+      : game = null,
+        viewHome = false,
+        viewFriends = false,
+        viewSettings = false,
+        viewOpenGames = true,
+        viewArchive = false,
+        viewStartGame = false,
+        isLoggedIn = true,
+        showSignUp = false;
+  QuellenreiterRoutePath.archive()
+      : game = null,
+        viewHome = false,
+        viewFriends = false,
+        viewSettings = false,
+        viewOpenGames = false,
+        viewArchive = true,
+        viewStartGame = false,
+        isLoggedIn = true,
+        showSignUp = false;
+  QuellenreiterRoutePath.startGame()
+      : game = null,
+        viewHome = false,
+        viewFriends = false,
+        viewSettings = false,
+        viewOpenGames = false,
+        viewArchive = false,
+        viewStartGame = true,
+        isLoggedIn = true,
+        showSignUp = false;
+  QuellenreiterRoutePath.gameResults(this.game)
+      : viewFriends = false,
+        viewHome = false,
+        viewSettings = false,
+        viewOpenGames = false,
+        viewArchive = false,
+        viewStartGame = false,
+        isLoggedIn = true,
+        showSignUp = false;
+  QuellenreiterRoutePath.gameReadyToStart(this.game)
+      : viewFriends = false,
+        viewHome = false,
+        viewSettings = false,
+        viewOpenGames = false,
+        viewArchive = false,
+        viewStartGame = false,
+        isLoggedIn = true,
+        showSignUp = false;
+  QuellenreiterRoutePath.questScreen(this.game)
+      : viewFriends = false,
+        viewHome = false,
+        viewSettings = false,
+        viewOpenGames = false,
+        viewArchive = false,
+        viewStartGame = false,
+        isLoggedIn = true,
+        showSignUp = false;
 
   /// Currently on Home Page?
-  bool get isHomePage => statementID == null;
+  bool get isHomePage => viewHome;
 
-  /// Currently on Detail Page?
-  bool get isDetailsPage => statementID != null;
+  /// Currently on Friends Page?
+  bool get isFriendsPage => viewFriends;
 
-  /// Currently on Edit Page?
-  bool get isEditPage => statementID != null && isLoggedIn == true;
+  /// Currently on Settings Page?
+  bool get isSettingsPage => viewSettings;
 
-  /// Currently on Create Page?
-  bool get isCreatePage => emptyStatement != null;
+  /// Currently on OpenGames Page?
+  bool get isOpenGames => viewOpenGames;
 
-  /// Currently on Legin Page?
-  bool get isLoginPage => showLogIn == true;
+  /// Currently on Archive Page?
+  bool get isArchivePage => viewArchive;
+
+  /// Currently on startGame Page?
+  bool get isStartGame => viewStartGame;
+
+  /// Currently on gameResults Page?
+  bool get isGameResults => game!.statementIndex == 4;
+
+  /// Currently on gameReadyToStart Page?
+  bool get isGameReadyToStart => game!.statementIndex == 0;
+
+  /// Currently on quest Page?
+  bool get isQuestScreen =>
+      0 < game!.statementIndex && game!.statementIndex < 4;
+
+  /// Currently on Login Page?
+  bool get isLoginPage => isLoggedIn && !showSignUp;
+
+  /// Currently on signUp Page?
+  bool get isSignUpPage => showSignUp;
 }
