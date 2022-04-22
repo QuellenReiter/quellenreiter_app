@@ -1,5 +1,8 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:quellenreiter_app/models/enemy.dart';
+import 'package:quellenreiter_app/models/game.dart';
+import 'package:quellenreiter_app/models/player.dart';
 import '../consonents.dart';
 import '../models/statement.dart';
 import 'queries.dart';
@@ -135,4 +138,19 @@ class DatabaseUtils {
     }
     return Statements.fromMap(queryResult.data);
   }
+
+  /// Fetch the open [Games] of a [Player]..
+  Future<Games?> getOpenGames() async {}
+
+  /// Fetch all safed/liked [Statements] from a [Player].
+  Future<Statements?> getSafedStatements() async {}
+
+  /// Fetch all Friends ([Enemies]) of a [Player].
+  Future<Enemies?> getFriends() async {}
+
+  /// Authenticate a [Player] to get its emoji etc.
+  Future<Player?> authenticate() async {}
+
+  /// Search all Users to get new [Enemies].
+  Future<Enemies?> searchFriends(String? friendsQuery) async {}
 }

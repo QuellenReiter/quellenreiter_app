@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/navigation/quellenreiter_routes.dart';
@@ -53,11 +51,20 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
     notifyListeners();
   }
 
-  /// The [Enemies] (Friends) someone has.
+  /// The [Enemies] (Friends) someone has. Also [Enemies] that requested a
+  /// friendship and your open requests will be in here.
   Enemies? _enemies;
   Enemies? get enemies => _enemies;
   set enemies(value) {
     _enemies = value;
+    notifyListeners();
+  }
+
+  /// The [Enemies] (Friends) search result, if [Player] is searching.
+  Enemies? _friendsSearchResult;
+  Enemies? get friendsSearchResult => _friendsSearchResult;
+  set friendsSearchResult(value) {
+    _friendsSearchResult = value;
     notifyListeners();
   }
 
@@ -71,6 +78,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
 
   /// The searchterm when searching for a friend.
   String? _friendsQuery;
+  String? get friendsQuery => _friendsQuery;
   set friendsQuery(value) {
     _friendsQuery = value;
     notifyListeners();
@@ -145,7 +153,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
     else if (_game == null) {
       // friends
       if (_viewFriends) {
-        return QuellenreiterRoutePath.friends();
+        return QuellenreiterRoutePath.friends(friendsQuery);
       }
       // settings
       else if (_viewSettings) {
@@ -185,17 +193,17 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
   }
 
   /// Function that handles taps on statement cards and sets [_statement].
-  void _onSelectStatement(Statement statement) {
-    _statement = statement;
-    notifyListeners();
-  }
+  // void _onSelectStatement(Statement statement) {
+  //   _statement = statement;
+  //   notifyListeners();
+  // }
 
   /// Function that handles the search queries.
   void _onQueryChanged(String? query) async {
     // If query is null, make it empty
     query ?? "";
-    _query = query;
-    _statements = await db.searchStatements(query);
+    _friendsQuery = query;
+    _friendsSearchResult = await db.searchFriends(_friendsQuery);
     notifyListeners();
   }
 
@@ -336,19 +344,19 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
 
     if (viewOpenGames) {
       // get open games if not existing
-      openGames ?? db.getOpenGames();
+      openGames ?? await db.getOpenGames();
     }
     if (viewArchive) {
       // get safed Statements if not exisiting.
-      safedStatements ?? db.getSafedStatements();
+      safedStatements ?? await db.getSafedStatements();
     }
     if (viewFriends) {
       // get list of friends, if not existing.
-      enemies ?? db.getFriends();
+      enemies ?? await db.getFriends();
     }
     if (viewSettings) {
       // get user, if not existing.
-      player ?? db.authenticate();
+      player ?? await db.authenticate();
     }
   }
 }
