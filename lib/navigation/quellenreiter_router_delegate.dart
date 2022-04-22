@@ -290,10 +290,15 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
           viewOpenGames = false;
           viewSettings = false;
         }
-        if (game != null) {
+        if (game != null && isLoggedIn) {
           // decide the game routes here. HERE WE ARE
+          // implement detail result pages here
+          // in game mode, no pop should be possible.
         }
-
+        // if on signup page, go back to login.
+        else if (signUp) {
+          signUp = false;
+        }
         notifyListeners();
         return true;
       },
