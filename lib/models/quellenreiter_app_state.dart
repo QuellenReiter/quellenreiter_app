@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 
@@ -25,14 +27,6 @@ class QuellenreiterAppState extends ChangeNotifier {
     _game = value;
     notifyListeners();
   }
-
-  // /// True if on home page.
-  // bool _viewHome = false;
-  // bool get home => _viewHome;
-  // set home(value) {
-  //   _viewHome = value;
-  //   notifyListeners();
-  // }
 
   /// The current [Player]. Should be set, if user is logged in.
   Player? _player;
@@ -95,57 +89,25 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  // /// True if user wants to sign up.
-  // bool _signUp = false;
-  // bool get signUp => _signUp;
-  // set signUp(value) {
-  //   _signUp = value;
-  //   notifyListeners();
-  // }
-
-  // /// True if user wants to see the friends page.
-  // bool _viewFriends = false;
-  // bool get viewFriends => _viewFriends;
-  // set viewFriends(value) {
-  //   _viewFriends = value;
-  //   notifyListeners();
-  // }
-
-  // /// True if user wants to see the settings page.
-  // bool _viewSettings = false;
-  // bool get viewSettings => _viewSettings;
-  // set viewSettings(value) {
-  //   _viewSettings = value;
-  //   notifyListeners();
-  // }
-
-  // /// True if user wants to see the open Games page.
-  // bool _viewOpenGames = false;
-  // bool get viewOpenGames => _viewOpenGames;
-  // set viewOpenGames(value) {
-  //   _viewOpenGames = value;
-  //   notifyListeners();
-  // }
-
-  // /// True if user wants to see the archive page.
-  // bool _viewArchive = false;
-  // bool get viewArchive => _viewArchive;
-  // set viewArchive(value) {
-  //   _viewArchive = value;
-  //   notifyListeners();
-  // }
-
-  // /// True if user wants to see the startNewGame page.
-  // bool _startGame = false;
-  // bool get startGame => _startGame;
-  // set startGame(value) {
-  //   _startGame = value;
-  //   notifyListeners();
-  // }
-
   QuellenreiterAppState()
       : _game = null,
         _friendsQuery = null,
         _isLoggedIn = false,
         _route = Routes.login;
+
+  void tryLogin(String username, String password, Function callback) {
+    // db.login(username, password, authCallback);
+    Timer(Duration(seconds: 1), () {
+      route = Routes.home;
+      callback();
+    });
+  }
+
+  void trySignUp(String username, String password, Function callback) async {
+    // db.signUp(username, password, authCallback);
+    Timer(Duration(seconds: 1), () {
+      route = Routes.home;
+      callback();
+    });
+  }
 }
