@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:quellenreiter_app/constants/constants.dart';
+import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/navigation/quellenreiter_routes.dart';
 
 /// Class to parse given links and direct users to the correct page.
@@ -14,36 +16,36 @@ class QuellenreiterRouteInformationParser
     // Handle '/'
     if (uri.pathSegments.isEmpty) {
       // check if logged in somehow.
-      return QuellenreiterRoutePath.home();
+      return QuellenreiterRoutePath(
+          QuellenreiterAppState()..route = Routes.home);
     }
 
     // Handle '/user/:id'
     if (uri.pathSegments.length == 2) {
       if (uri.pathSegments[0] != 'user') {
-        return QuellenreiterRoutePath.home();
+        return QuellenreiterRoutePath(
+            QuellenreiterAppState()..route = Routes.home);
       }
       var remaining = uri.pathSegments[1];
       // check if logged in
       // try to login, if usccess return edit page
-      return QuellenreiterRoutePath.friends(remaining);
+      return QuellenreiterRoutePath(QuellenreiterAppState()
+        ..route = Routes.friends
+        ..friendsQuery = remaining);
     }
     // Handle unknown routes
-    return QuellenreiterRoutePath.home();
+    return QuellenreiterRoutePath(QuellenreiterAppState()..route = Routes.home);
   }
 
-  // @override
-  // RouteInformation? restoreRouteInformation(
-  //     QuellenreiterRoutePath configuration) {
-  //   if (configuration.isUnknown) {
-  //     return const RouteInformation(location: '/');
-  //   }
-  //   if (configuration.isHomePage) {
-  //     return const RouteInformation(location: '/');
-  //   }
-  //   if (configuration.isDetailsPage) {
-  //     return RouteInformation(
-  //         location: '/statement/${configuration.statementID}');
-  //   }
-  //   return null;
-  // }
+  @override
+  RouteInformation? restoreRouteInformation(
+      QuellenreiterRoutePath configuration) {
+    if (configuration.isFriendsPage) {
+      return const RouteInformation(location: '/user/');
+    }
+    if (configuration.isHomePage) {
+      return const RouteInformation(location: '/');
+    }
+    return null;
+  }
 }
