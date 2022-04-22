@@ -17,7 +17,7 @@ class QuellenreiterRouteInformationParser
     if (uri.pathSegments.isEmpty) {
       // check if logged in somehow.
       return QuellenreiterRoutePath(
-          QuellenreiterAppState()..route = Routes.home);
+          QuellenreiterAppState()..route = Routes.login);
     }
 
     // Handle '/user/:id'
