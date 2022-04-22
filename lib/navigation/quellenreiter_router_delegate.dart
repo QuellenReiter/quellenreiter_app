@@ -12,6 +12,8 @@ import 'package:quellenreiter_app/screens/main/friends_screen.dart';
 import 'package:quellenreiter_app/screens/main/open_games_screen.dart';
 import 'package:quellenreiter_app/screens/main/settings_screen.dart';
 import 'package:quellenreiter_app/screens/main/start_game_screen.dart';
+import '../models/enemy.dart';
+import '../models/player.dart';
 import '../models/statement.dart';
 import '../provider/database_utils.dart';
 import '../screens/auth/login_screen.dart';
@@ -35,11 +37,27 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
     notifyListeners();
   }
 
+  /// The current [Player]. Should be set, if user is logged in.
+  Player? _player;
+  Player? get player => _player;
+  set player(value) {
+    _player = value;
+    notifyListeners();
+  }
+
   /// The [Games] that are open currently.
   Games? _openGames;
   Games? get openGames => _openGames;
   set openGames(value) {
     _openGames = value;
+    notifyListeners();
+  }
+
+  /// The [Enemies] (Friends) someone has.
+  Enemies? _enemies;
+  Enemies? get enemies => _enemies;
+  set enemies(value) {
+    _enemies = value;
     notifyListeners();
   }
 
@@ -308,25 +326,29 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
   @override
   Future<void> setNewRoutePath(QuellenreiterRoutePath configuration) async {
     var db = DatabaseUtils();
-    if (configuration.isUnknown) {
-      _statement = null;
-      _show404 = true;
-      return;
-    }
-    // Download the statement before opening the detail page.
-    Statement? statement = await db.getStatement(configuration.statementID);
-    if (configuration.isDetailsPage) {
-      // check if statement exists here
-      if (statement == null) {
-        _show404 = true;
-        return;
-      }
-      // fetch statement from DB here
-      _statement = statement;
-    } else {
-      _statement = null;
-    }
+    startGame = false;
+    viewArchive = configuration.isArchivePage;
+    viewFriends = configuration.isFriendsPage;
+    viewOpenGames = configuration.isOpenGames;
+    viewSettings = configuration.isSettingsPage;
+    startGame = configuration.isStartGame;
+    game = configuration.game;
 
-    _show404 = false;
+    if (viewOpenGames) {
+      // get open games if not existing
+      openGames ?? db.getOpenGames();
+    }
+    if (viewArchive) {
+      // get safed Statements if not exisiting.
+      safedStatements ?? db.getSafedStatements();
+    }
+    if (viewFriends) {
+      // get list of friends, if not existing.
+      enemies ?? db.getFriends();
+    }
+    if (viewSettings) {
+      // get user, if not existing.
+      player ?? db.authenticate();
+    }
   }
 }
