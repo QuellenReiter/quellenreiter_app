@@ -56,3 +56,17 @@ class DbFields {
   static String factAuthor = "author";
   static String factMedia = "media";
 }
+
+enum Routes {
+  home,
+  settings,
+  friends,
+  startGame,
+  archive,
+  login,
+  signUp,
+  openGames,
+  quest,
+  gameResults,
+  gameReadyToStart
+}
