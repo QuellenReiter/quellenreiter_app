@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:quellenreiter_app/models/statement.dart';
 
 import 'enemy.dart';

@@ -30,8 +30,11 @@ class QuellenreiterRoutePath {
   /// Stores wether the user wants to sign up.
   final bool showSignUp;
 
+  final String? friendsQuery;
+
   QuellenreiterRoutePath.login()
       : game = null,
+        friendsQuery = null,
         viewHome = false,
         viewFriends = false,
         viewSettings = false,
@@ -44,6 +47,7 @@ class QuellenreiterRoutePath {
   QuellenreiterRoutePath.signUp()
       : game = null,
         viewHome = false,
+        friendsQuery = null,
         viewFriends = false,
         viewSettings = false,
         viewOpenGames = false,
@@ -54,6 +58,7 @@ class QuellenreiterRoutePath {
   QuellenreiterRoutePath.home()
       : game = null,
         viewHome = true,
+        friendsQuery = null,
         viewFriends = false,
         viewSettings = false,
         viewOpenGames = false,
@@ -61,8 +66,9 @@ class QuellenreiterRoutePath {
         viewStartGame = false,
         isLoggedIn = true,
         showSignUp = false;
-  QuellenreiterRoutePath.friends()
+  QuellenreiterRoutePath.friends(query)
       : game = null,
+        friendsQuery = query,
         viewHome = false,
         viewFriends = true,
         viewSettings = false,
@@ -74,6 +80,7 @@ class QuellenreiterRoutePath {
   QuellenreiterRoutePath.settings()
       : game = null,
         viewHome = false,
+        friendsQuery = null,
         viewFriends = false,
         viewSettings = true,
         viewOpenGames = false,
@@ -84,6 +91,7 @@ class QuellenreiterRoutePath {
   QuellenreiterRoutePath.openGames()
       : game = null,
         viewHome = false,
+        friendsQuery = null,
         viewFriends = false,
         viewSettings = false,
         viewOpenGames = true,
@@ -94,6 +102,7 @@ class QuellenreiterRoutePath {
   QuellenreiterRoutePath.archive()
       : game = null,
         viewHome = false,
+        friendsQuery = null,
         viewFriends = false,
         viewSettings = false,
         viewOpenGames = false,
@@ -104,6 +113,7 @@ class QuellenreiterRoutePath {
   QuellenreiterRoutePath.startGame()
       : game = null,
         viewHome = false,
+        friendsQuery = null,
         viewFriends = false,
         viewSettings = false,
         viewOpenGames = false,
@@ -114,6 +124,7 @@ class QuellenreiterRoutePath {
   QuellenreiterRoutePath.gameResults(this.game)
       : viewFriends = false,
         viewHome = false,
+        friendsQuery = null,
         viewSettings = false,
         viewOpenGames = false,
         viewArchive = false,
@@ -123,6 +134,7 @@ class QuellenreiterRoutePath {
   QuellenreiterRoutePath.gameReadyToStart(this.game)
       : viewFriends = false,
         viewHome = false,
+        friendsQuery = null,
         viewSettings = false,
         viewOpenGames = false,
         viewArchive = false,
@@ -132,6 +144,7 @@ class QuellenreiterRoutePath {
   QuellenreiterRoutePath.questScreen(this.game)
       : viewFriends = false,
         viewHome = false,
+        friendsQuery = null,
         viewSettings = false,
         viewOpenGames = false,
         viewArchive = false,

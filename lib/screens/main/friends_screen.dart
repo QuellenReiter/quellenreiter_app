@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 class FriendsScreen extends StatefulWidget {
-  const FriendsScreen({Key? key}) : super(key: key);
+  const FriendsScreen({Key? key, this.query = ""}) : super(key: key);
 
+  /// The query used to search for friends.
+  final String query;
   @override
   State<FriendsScreen> createState() => _FriendsScreenState();
 }
