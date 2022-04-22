@@ -24,9 +24,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
 
   QuellenreiterAppState appState = QuellenreiterAppState();
 
-  QuellenreiterRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>() {
-    appState.addListener(notifyListeners);
-  }
+  QuellenreiterRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>();
   @override
   QuellenreiterRoutePath get currentConfiguration {
     return QuellenreiterRoutePath(appState);
@@ -35,6 +33,14 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
   void _handleNavigationChange(Routes r) {
     appState.route = r;
     notifyListeners();
+  }
+
+  void _tryLogin(String username, String password) async {
+    appState.tryLogin(username, password, notifyListeners);
+  }
+
+  void _trySignUp(String username, String password) async {
+    appState.trySignUp(username, password, notifyListeners);
   }
 
   @override
@@ -67,6 +73,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
       key: const ValueKey('LoginPage'),
       child: LoginScreen(
         signUpTapped: _handleNavigationChange,
+        tryLogin: _tryLogin,
       ),
     );
     switch (appState.route) {
@@ -79,6 +86,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
             key: const ValueKey('SignupPage'),
             child: SignupScreen(
               loginTapped: _handleNavigationChange,
+              trySignUp: _trySignUp,
             ),
           ),
         ];

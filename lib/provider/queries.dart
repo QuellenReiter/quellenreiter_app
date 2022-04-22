@@ -236,6 +236,23 @@ mutation LogIn{
     return ret;
   }
 
+  /// Returns the graphQL mutation to login.
+  static String signUp(String username, String password) {
+    String ret = '''
+mutation SignUp{
+  signUp(input: {
+    username: "$username"
+    password: "$password"
+  }){
+    viewer{
+      sessionToken
+    }
+  }
+}
+''';
+    return ret;
+  }
+
   /// Returns the graphQL query to check the current user.
   static String getCurrentUser() {
     String ret = '''
