@@ -10,8 +10,11 @@ class OpenGamesScreen extends StatefulWidget {
 class _OpenGamesScreenState extends State<OpenGamesScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(child: Text("Open Games not implemented.")),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Offene Spiele"),
+      ),
+      body: Center(child: Text("list of all open games here.")),
     );
   }
 }

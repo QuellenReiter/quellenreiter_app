@@ -89,7 +89,9 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
     Page home = MaterialPage(
       key: const ValueKey('HomePage'),
       child: HomeScreen(
-        body: StartScreen(),
+        body: StartScreen(
+          navCallback: _handleNavigationChange,
+        ),
         bottomNavCallback: _bottomNavCallback,
         title: "Dein Büro",
         index: 0,
