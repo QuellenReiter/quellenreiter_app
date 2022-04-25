@@ -10,8 +10,11 @@ class StartGameScreen extends StatefulWidget {
 class _StartGameScreenState extends State<StartGameScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(child: Text("StartGame not implemented.")),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Neues Spiel"),
+      ),
+      body: Center(child: Text("list of all friends.")),
     );
   }
 }
