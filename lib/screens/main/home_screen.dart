@@ -22,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Colors.purple[100],
         items: const [
           BottomNavigationBarItem(
             activeIcon: Icon(Icons.rocket_launch),
