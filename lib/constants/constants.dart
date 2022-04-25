@@ -70,3 +70,14 @@ enum Routes {
   gameResults,
   gameReadyToStart
 }
+
+class CorrectnessCategory {
+  static String correct = "richtig";
+  static String unverified = "unbelegt";
+  static String falseContext = "falscher Kontext";
+  static String manipulated = "manipuliert";
+  static String misleading = "irreführend";
+  static String fabricatedContent = "frei erfunden";
+  static String falseInformation = "Fehlinformation";
+  static String satire = "Satire";
+}
