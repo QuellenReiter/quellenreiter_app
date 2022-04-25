@@ -10,6 +10,7 @@ import 'package:quellenreiter_app/screens/main/friends_screen.dart';
 import 'package:quellenreiter_app/screens/main/open_games_screen.dart';
 import 'package:quellenreiter_app/screens/main/settings_screen.dart';
 import 'package:quellenreiter_app/screens/main/start_game_screen.dart';
+import 'package:quellenreiter_app/screens/main/start_screen.dart';
 import '../constants/constants.dart';
 import '../provider/database_utils.dart';
 import '../screens/auth/login_screen.dart';
@@ -43,6 +44,26 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
     appState.trySignUp(username, password, notifyListeners);
   }
 
+  void _bottomNavCallback(int indexTapped) {
+    switch (indexTapped) {
+      case 0:
+        appState.route = Routes.home;
+        break;
+      case 1:
+        appState.route = Routes.friends;
+        break;
+      case 2:
+        appState.route = Routes.archive;
+        break;
+      case 3:
+        appState.route = Routes.settings;
+        break;
+      default:
+        appState.route = Routes.home;
+    }
+    notifyListeners();
+  }
+
   @override
   Widget build(BuildContext context) {
     print(appState.route.toString());
@@ -67,7 +88,12 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
   List<Page> buildPages() {
     Page home = MaterialPage(
       key: const ValueKey('HomePage'),
-      child: HomeScreen(),
+      child: HomeScreen(
+        body: StartScreen(),
+        bottomNavCallback: _bottomNavCallback,
+        title: "Dein Büro",
+        index: 0,
+      ),
     );
     Page login = MaterialPage(
       key: const ValueKey('LoginPage'),
@@ -94,26 +120,38 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         return [home];
       case Routes.archive:
         return [
-          home,
           MaterialPage(
-            key: const ValueKey('ArchivePage'),
-            child: ArchiveScreen(),
+            key: const ValueKey('ArchiveScreen'),
+            child: HomeScreen(
+              body: const ArchiveScreen(),
+              bottomNavCallback: _bottomNavCallback,
+              title: "Archiv",
+              index: 2,
+            ),
           ),
         ];
       case Routes.friends:
         return [
-          home,
           MaterialPage(
-            key: const ValueKey('FriendsPage'),
-            child: FriendsScreen(),
+            key: const ValueKey('FriendsScreen'),
+            child: HomeScreen(
+              body: const FriendsScreen(),
+              bottomNavCallback: _bottomNavCallback,
+              title: "Freund:innen",
+              index: 1,
+            ),
           ),
         ];
       case Routes.settings:
         return [
-          home,
           MaterialPage(
-            key: const ValueKey('SettingsPage'),
-            child: SettingsScreen(),
+            key: const ValueKey('SettingsScreen'),
+            child: HomeScreen(
+              body: const SettingsScreen(),
+              bottomNavCallback: _bottomNavCallback,
+              title: "Einstellungen",
+              index: 3,
+            ),
           ),
         ];
       case Routes.openGames:
