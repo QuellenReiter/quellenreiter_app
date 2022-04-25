@@ -125,7 +125,9 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
           MaterialPage(
             key: const ValueKey('ArchiveScreen'),
             child: HomeScreen(
-              body: const ArchiveScreen(),
+              body: ArchiveScreen(
+                statements: appState.safedStatements,
+              ),
               bottomNavCallback: _bottomNavCallback,
               title: "Archiv",
               index: 2,

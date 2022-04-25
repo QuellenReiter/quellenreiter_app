@@ -34,8 +34,15 @@ class _QuellenreiterAppState extends State<QuellenreiterApp> {
         return Theme(
           child: child!,
           data: ThemeData(
-            brightness: Brightness.light,
-            primarySwatch: Colors.grey,
+            pageTransitionsTheme: PageTransitionsTheme(
+              builders: {
+                // Set your transitions here:
+                TargetPlatform.android: OpenUpwardsPageTransitionsBuilder(),
+                TargetPlatform.iOS: OpenUpwardsPageTransitionsBuilder(),
+              },
+            ),
+            brightness: Brightness.dark,
+            primarySwatch: Colors.purple,
             textTheme: TextTheme(
 
                 // Small text for light backgrounds.
