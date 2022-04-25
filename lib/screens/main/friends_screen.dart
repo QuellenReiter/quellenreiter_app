@@ -12,8 +12,20 @@ class FriendsScreen extends StatefulWidget {
 class _FriendsScreenState extends State<FriendsScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(child: Text("Friends not implemented.")),
-    );
+    return Stack(children: [
+      Padding(
+        padding: const EdgeInsets.all(10),
+        child: Align(
+          alignment: Alignment.topRight,
+          child: FloatingActionButton(
+            onPressed: () => {},
+            child: Icon(Icons.add),
+          ),
+        ),
+      ),
+      Center(
+        child: Text("Friends not implemented."),
+      ),
+    ]);
   }
 }
