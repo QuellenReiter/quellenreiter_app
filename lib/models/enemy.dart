@@ -7,5 +7,5 @@ class Enemy {
 }
 
 class Enemies {
-  late final List<Enemies> enemies;
+  late final List<Enemy> enemies;
 }
