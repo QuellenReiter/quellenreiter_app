@@ -64,10 +64,21 @@ class DbFields {
   static String userTrueFakeAnswers = "trueFakeAnswers";
   static String userFalseCorrectAnswers = "falseCorrectAnswers";
   static String userFalseFakeAnswers = "falseFakeAnswers";
+  static String userPlayedStatements = "playedStatements";
 
   static String friendshipOpenGame = "openGame";
+  static String friendshipNumGamesPlayed = "numPlayedGames";
+  static String friendshipPlayer1 = "player1";
+  static String friendshipPlayer2 = "player2";
+  static String friendshipWonGamesPlayer1 = "wonGamesPlayer1";
+  static String friendshipWonGamesPlayer2 = "wonGamesPlayer2";
+
+  static String friendshipApproved1 = "approvedPlayer1";
+  static String friendshipApproved2 = "approvedPlayer2";
 
   static String openGameStatements = "statements";
+
+  static String enemyName = "name";
 }
 
 enum Routes {

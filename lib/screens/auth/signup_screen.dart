@@ -22,7 +22,7 @@ class _SignupScreenState extends State<SignupScreen> {
         child: Column(
           children: [
             ElevatedButton.icon(
-              onPressed: () => widget.trySignUp("uname", "pw"),
+              onPressed: () => widget.trySignUp("sim", "pw", "🦾"),
               icon: const Icon(Icons.login),
               label: const Text("anmelden"),
             ),
