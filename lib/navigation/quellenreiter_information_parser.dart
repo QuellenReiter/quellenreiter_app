@@ -16,36 +16,42 @@ class QuellenreiterRouteInformationParser
     // Handle '/'
     if (uri.pathSegments.isEmpty) {
       // check if logged in somehow.
-      return QuellenreiterRoutePath(
-          QuellenreiterAppState()..route = Routes.login);
+      return QuellenreiterRoutePath(Routes.login);
     }
 
     // Handle '/user/:id'
     if (uri.pathSegments.length == 2) {
       if (uri.pathSegments[0] != 'user') {
-        return QuellenreiterRoutePath(
-            QuellenreiterAppState()..route = Routes.home);
+        return QuellenreiterRoutePath(Routes.home);
       }
       var remaining = uri.pathSegments[1];
       // check if logged in
-      // try to login, if usccess return edit page
-      return QuellenreiterRoutePath(QuellenreiterAppState()
-        ..route = Routes.friends
-        ..friendsQuery = remaining);
+      return QuellenreiterRoutePath(Routes.friends); // add the query somehow!!
     }
     // Handle unknown routes
-    return QuellenreiterRoutePath(QuellenreiterAppState()..route = Routes.home);
+    return QuellenreiterRoutePath(Routes.home);
   }
 
   @override
   RouteInformation? restoreRouteInformation(
       QuellenreiterRoutePath configuration) {
-    if (configuration.isFriendsPage) {
-      return const RouteInformation(location: '/user/');
-    }
-    if (configuration.isHomePage) {
-      return const RouteInformation(location: '/');
-    }
-    return null;
+    // if (configuration.isFriendsPage) {
+    //   return const RouteInformation(location: '/user/');
+    // }
+    // if (configuration.isHomePage) {
+    //   return const RouteInformation(location: '/');
+    // }
+    // if (configuration.isLoginPage) {
+    //   return const RouteInformation(location: '/login/');
+    // }
+    // if (configuration.isSignUpPage) {
+    //   return const RouteInformation(location: '/signup/');
+    // }
+    // if (configuration.isArchivePage) {
+    //   return const RouteInformation(location: '/archive/');
+    // }
+    return RouteInformation(location: '/${configuration.route}');
+
+    // return null;
   }
 }
