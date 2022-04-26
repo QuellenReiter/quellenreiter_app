@@ -41,11 +41,11 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
   }
 
   void _tryLogin(String username, String password) async {
-    appState.tryLogin(username, password, notifyListeners);
+    appState.tryLogin(username, password);
   }
 
-  void _trySignUp(String username, String password) async {
-    appState.trySignUp(username, password, notifyListeners);
+  void _trySignUp(String username, String password, String emoji) async {
+    appState.trySignUp(username, password, emoji);
   }
 
   void _bottomNavCallback(int indexTapped) {
@@ -94,6 +94,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
       key: const ValueKey('HomePage'),
       child: HomeScreen(
         body: StartScreen(
+          appState: appState,
           navCallback: _handleNavigationChange,
         ),
         bottomNavCallback: _bottomNavCallback,

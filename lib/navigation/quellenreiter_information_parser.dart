@@ -50,7 +50,9 @@ class QuellenreiterRouteInformationParser
     // if (configuration.isArchivePage) {
     //   return const RouteInformation(location: '/archive/');
     // }
-    return RouteInformation(location: '/${configuration.route}');
+    return RouteInformation(
+        location:
+            '/${configuration.route.toString().replaceAll('Routes.', '')}');
 
     // return null;
   }

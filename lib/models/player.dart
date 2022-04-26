@@ -1,15 +1,32 @@
 import 'package:quellenreiter_app/models/enemy.dart';
+import '../constants/constants.dart';
 import 'game.dart';
 
 class Player {
+  late String id;
   late String name;
   late String emoji;
   String? email;
   late int numPlayedGames;
-  late int totalCorrectAnswers;
+  late int trueCorrectAnswers;
+  late int trueFakeAnswers;
   late int falseCorrectAnswers;
   late int falseFakeAnswers;
-  late List<Enemy> friends;
-  late List<Game> openGames;
-  late List<String> playedStatementIds;
+  late Enemies friends;
+  late Games openGames;
+  // late List<String> playedStatements;
+
+  Player.fromMap(Map<String, dynamic>? map)
+      : name = map?[DbFields.userName],
+        emoji = map?[DbFields.userEmoji],
+        numPlayedGames = map?[DbFields.userPlayedGames],
+        trueCorrectAnswers = map?[DbFields.userTrueCorrectAnswers],
+        trueFakeAnswers = map?[DbFields.userTrueFakeAnswers],
+        falseCorrectAnswers = map?[DbFields.userFalseCorrectAnswers],
+        falseFakeAnswers = map?[DbFields.userFalseFakeAnswers],
+        friends = Enemies.fromMap(map?[DbFields.userFriendships]),
+        id = map?["objectId"],
+        openGames = Games.fromMap(map?[DbFields.userFriendships])
+  // playedStatements = map?[DbFields.userPlayedStatements]
+  ;
 }

@@ -36,19 +36,23 @@ class DatabaseUtils {
     );
     // If login result has any exceptions.
     if (loginResult.hasException) {
-      loginCallback(false, "Login fehlgeschlagen.");
+      print(loginResult.exception.toString());
+      loginCallback(null);
       return;
     }
+    print(loginResult.data.toString());
+
     // Safe the new token.
     safeStorage.write(
         key: "token",
         value: loginResult.data?["logIn"]["viewer"]["sessionToken"]);
-    loginCallback(true, null);
+    loginCallback(Player.fromMap(loginResult.data?["logIn"]["viewer"]["user"]));
     // Safe the User
   }
 
   /// Login a user.
-  void signUp(String username, String password, Function authCallback) async {
+  void signUp(String username, String password, String emoji,
+      Function signUpCallback) async {
     // Link to server.
     final HttpLink httpLink = HttpLink(kUrl, defaultHeaders: {
       'X-Parse-Application-Id': kParseApplicationId,
@@ -63,21 +67,22 @@ class DatabaseUtils {
     );
 
     // The result returned from the query.
-    var loginResult = await client.mutate(
+    var signUpResult = await client.mutate(
       MutationOptions(
         document: gql(Queries.signUp(username, password)),
       ),
     );
     // If login result has any exceptions.
-    if (loginResult.hasException) {
-      authCallback(false, "Login fehlgeschlagen.");
+    if (signUpResult.hasException) {
+      signUpCallback(null);
       return;
     }
     // Safe the new token.
     safeStorage.write(
         key: "token",
-        value: loginResult.data?["logIn"]["viewer"]["sessionToken"]);
-    authCallback(true, null);
+        value: signUpResult.data?["logIn"]["viewer"]["sessionToken"]);
+    signUpCallback(
+        Player.fromMap(signUpResult.data?["logIn"]["viewer"]["user"]));
   }
 
   /// Logsout a user by deleting the session token.
