@@ -25,15 +25,19 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
 
   QuellenreiterAppState appState = QuellenreiterAppState();
 
-  QuellenreiterRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>();
+  QuellenreiterRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>() {
+    appState.addListener(notifyListeners);
+    print(appState.route);
+    print('appState.addListener(notifyListeners) called');
+  }
   @override
   QuellenreiterRoutePath get currentConfiguration {
-    return QuellenreiterRoutePath(appState);
+    return QuellenreiterRoutePath(appState.route);
   }
 
   void _handleNavigationChange(Routes r) {
     appState.route = r;
-    notifyListeners();
+    // notifyListeners();
   }
 
   void _tryLogin(String username, String password) async {
@@ -203,21 +207,21 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
   @override
   Future<void> setNewRoutePath(QuellenreiterRoutePath configuration) async {
     var db = DatabaseUtils();
-    appState = configuration.appState;
+    // appState = configuration.appState;
 
-    if (appState.route == Routes.openGames) {
+    if (configuration.route == Routes.openGames) {
       // get open games if not existing
       appState.openGames ?? await db.getOpenGames();
     }
-    if (appState.route == Routes.archive) {
+    if (configuration.route == Routes.archive) {
       // get safed Statements if not exisiting.
       appState.safedStatements ?? await db.getSafedStatements();
     }
-    if (appState.route == Routes.friends) {
+    if (configuration.route == Routes.friends) {
       // get list of friends, if not existing.
       appState.enemies ?? await db.getFriends();
     }
-    if (appState.route == Routes.settings) {
+    if (configuration.route == Routes.settings) {
       // get user, if not existing.
       appState.player ?? await db.authenticate();
     }

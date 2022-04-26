@@ -95,11 +95,16 @@ class QuellenreiterAppState extends ChangeNotifier {
         _isLoggedIn = false,
         _route = Routes.login;
 
-  void tryLogin(String username, String password, Function callback) {
-    // db.login(username, password, authCallback);
+  void _authCallback(Player p) {
+    player = p;
+  }
+
+  void tryLogin(String username, String password, Function callback) async {
+    // await db.login(username, password, authCallback);
     Timer(Duration(seconds: 1), () {
       route = Routes.home;
-      callback();
+      // callback();
+      notifyListeners();
     });
   }
 
@@ -107,7 +112,8 @@ class QuellenreiterAppState extends ChangeNotifier {
     // db.signUp(username, password, authCallback);
     Timer(Duration(seconds: 1), () {
       route = Routes.home;
-      callback();
+      // callback();
+      notifyListeners();
     });
   }
 }

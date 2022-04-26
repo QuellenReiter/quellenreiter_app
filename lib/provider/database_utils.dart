@@ -44,6 +44,7 @@ class DatabaseUtils {
         key: "token",
         value: loginResult.data?["logIn"]["viewer"]["sessionToken"]);
     loginCallback(true, null);
+    // Safe the User
   }
 
   /// Login a user.
