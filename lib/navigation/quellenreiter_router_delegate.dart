@@ -105,8 +105,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
     Page login = MaterialPage(
       key: const ValueKey('LoginPage'),
       child: LoginScreen(
-        signUpTapped: _handleNavigationChange,
-        tryLogin: _tryLogin,
+        appState: appState,
       ),
     );
     switch (appState.route) {
@@ -118,8 +117,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
           MaterialPage(
             key: const ValueKey('SignupPage'),
             child: SignupScreen(
-              loginTapped: _handleNavigationChange,
-              trySignUp: _trySignUp,
+              appState: appState,
             ),
           ),
         ];
