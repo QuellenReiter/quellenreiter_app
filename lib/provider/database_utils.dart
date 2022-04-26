@@ -86,9 +86,10 @@ class DatabaseUtils {
   }
 
   /// Logsout a user by deleting the session token.
-  Future<void> logout() async {
+  Future<void> logout(Function logoutCallback) async {
     const safeStorage = FlutterSecureStorage();
     await safeStorage.delete(key: "token");
+    logoutCallback();
   }
 
   /// Checks if token is valid.

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
-
+  const SettingsScreen({Key? key, required this.appState}) : super(key: key);
+  final QuellenreiterAppState appState;
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
@@ -25,7 +26,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             label: const Text("Namen ändern."),
           ),
           ElevatedButton.icon(
-            onPressed: () => {},
+            onPressed: () => {widget.appState.logout()},
             icon: const Icon(Icons.logout),
             label: const Text("Abmelden"),
           ),
