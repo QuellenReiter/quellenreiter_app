@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(children: [
         Text("login not implemented."),
         ElevatedButton.icon(
-          onPressed: () => widget.tryLogin("uname", "pw"),
+          onPressed: () => widget.tryLogin("simon", "Honkaha-97"),
           icon: const Icon(Icons.login),
           label: const Text("einloggen"),
         ),

@@ -20,6 +20,14 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Holds any error message that might occur.
+  String? _error;
+  String? get error => _error;
+  set error(value) {
+    _error = value;
+    notifyListeners();
+  }
+
   /// The current [Game]. If [Player] is not playing, [_game] is null.
   Game? _game;
   Game? get game => _game;
@@ -95,25 +103,39 @@ class QuellenreiterAppState extends ChangeNotifier {
         _isLoggedIn = false,
         _route = Routes.login;
 
-  void _authCallback(Player p) {
-    player = p;
+  void _loginCallback(Player? p) {
+    if (p == null) {
+      _error = "Login fehlgeschlagen.";
+    } else {
+      player = p;
+      route = Routes.home;
+      isLoggedIn = true;
+    }
   }
 
-  void tryLogin(String username, String password, Function callback) async {
-    // await db.login(username, password, authCallback);
-    Timer(Duration(seconds: 1), () {
-      route = Routes.home;
-      // callback();
-      notifyListeners();
-    });
+  void _signUpCallback(Player? p) {
+    if (p == null) {
+      _error = "Anmeldung fehlgeschlagen.";
+    } else {
+      player = p;
+    }
   }
 
-  void trySignUp(String username, String password, Function callback) async {
-    // db.signUp(username, password, authCallback);
-    Timer(Duration(seconds: 1), () {
-      route = Routes.home;
-      // callback();
-      notifyListeners();
-    });
+  void tryLogin(String username, String password) async {
+    db.login(username, password, _loginCallback);
+    // Timer(Duration(seconds: 1), () {
+    //   route = Routes.home;
+    //   // callback();
+    //   notifyListeners();
+    // });
+  }
+
+  void trySignUp(String username, String password, String emoji) async {
+    db.signUp(username, password, emoji, _signUpCallback);
+    // Timer(Duration(seconds: 1), () {
+    //   route = Routes.home;
+    //   // callback();
+    //   notifyListeners();
+    // });
   }
 }

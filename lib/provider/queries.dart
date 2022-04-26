@@ -241,17 +241,41 @@ mutation LogIn{
           edges{
             node{
               objectId
+              ${DbFields.friendshipPlayer1} (where:  { username: {notEqualTo: "$username"} }){
+                edges{
+                  node{
+                    objectId
+                    ${DbFields.userEmoji}
+                    ${DbFields.userName}
+                  }
+                }
+              }
+              ${DbFields.friendshipPlayer2} (where:  { username: {notEqualTo: "$username"} }){
+                edges{
+                  node{
+                    objectId
+                    ${DbFields.userEmoji}
+                    ${DbFields.userName}
+                  }
+                }
+              }
+              ${DbFields.friendshipWonGamesPlayer1}
+              ${DbFields.friendshipWonGamesPlayer2}
+              ${DbFields.friendshipApproved2}
+              ${DbFields.friendshipNumGamesPlayed}
+              ${DbFields.friendshipApproved1}
+              ${DbFields.friendshipApproved2}
               ${DbFields.friendshipOpenGame}{
                 edges{
                   node{
                     objectId
+                    createdAt
                   }
                 }
               }
             }
           }
         }
-
       }
       sessionToken
     }
@@ -287,6 +311,35 @@ mutation SignUp{
                 edges{
                   node{
                     objectId
+                    ${DbFields.friendshipPlayer1} (where:  { username: {notEqualTo: "$username"} }){
+                      edges{
+                        node{
+                          objectId
+                          ${DbFields.userEmoji}
+                          ${DbFields.userName}
+                        }
+                      }
+                    }
+                    ${DbFields.friendshipPlayer2} (where:  { username: {notEqualTo: "$username"} }){
+                      edges{
+                        node{
+                          objectId
+                          ${DbFields.userEmoji}
+                          ${DbFields.userName}
+                        }
+                      }
+                    }
+                    ${DbFields.friendshipNumGamesPlayed}
+                    ${DbFields.friendshipApproved1}
+                    ${DbFields.friendshipApproved2}
+                    ${DbFields.friendshipOpenGame}{
+                      edges{
+                        node{
+                          objectId
+                          createdAt
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -317,21 +370,6 @@ query GetCurrentUser{
         ${DbFields.userFalseCorrectAnswers}
         ${DbFields.userTrueFakeAnswers}
         ${DbFields.userFalseFakeAnswers}
-        ${DbFields.userFriendships}{
-          edges{
-            node{
-              objectId
-              ${DbFields.friendshipOpenGame}{
-                edges{
-                  node{
-                    objectId
-                  }
-                }
-              }
-            }
-          }
-        }
-
       }
       sessionToken
     }
