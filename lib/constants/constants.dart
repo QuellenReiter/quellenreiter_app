@@ -55,6 +55,19 @@ class DbFields {
   static String factArchivedLink = "archivedLink";
   static String factAuthor = "author";
   static String factMedia = "media";
+
+  static String userEmoji = "emoji";
+  static String userName = "username";
+  static String userPlayedGames = "numPlayedGames";
+  static String userFriendships = "friendships";
+  static String userTrueCorrectAnswers = "trueCorrectAnswers";
+  static String userTrueFakeAnswers = "trueFakeAnswers";
+  static String userFalseCorrectAnswers = "falseCorrectAnswers";
+  static String userFalseFakeAnswers = "falseFakeAnswers";
+
+  static String friendshipOpenGame = "openGame";
+
+  static String openGameStatements = "statements";
 }
 
 enum Routes {

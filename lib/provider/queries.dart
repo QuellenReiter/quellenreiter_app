@@ -228,6 +228,31 @@ mutation LogIn{
     password: "$password"
   }){
     viewer{
+      user{
+        objectId
+        ${DbFields.userName}
+        ${DbFields.userEmoji}
+        ${DbFields.userPlayedGames}
+        ${DbFields.userTrueCorrectAnswers}
+        ${DbFields.userFalseCorrectAnswers}
+        ${DbFields.userTrueFakeAnswers}
+        ${DbFields.userFalseFakeAnswers}
+        ${DbFields.userFriendships}{
+          edges{
+            node{
+              objectId
+              ${DbFields.friendshipOpenGame}{
+                edges{
+                  node{
+                    objectId
+                  }
+                }
+              }
+            }
+          }
+        }
+
+      }
       sessionToken
     }
   }
@@ -245,6 +270,31 @@ mutation SignUp{
     password: "$password"
   }){
     viewer{
+      user{
+        objectId
+        ${DbFields.userName}
+        ${DbFields.userEmoji}
+        ${DbFields.userPlayedGames}
+        ${DbFields.userTrueCorrectAnswers}
+        ${DbFields.userFalseCorrectAnswers}
+        ${DbFields.userTrueFakeAnswers}
+        ${DbFields.userFalseFakeAnswers}
+        ${DbFields.userFriendships}{
+          edges{
+            node{
+              objectId
+              ${DbFields.friendshipOpenGame}{
+                edges{
+                  node{
+                    objectId
+                  }
+                }
+              }
+            }
+          }
+        }
+
+      }
       sessionToken
     }
   }
@@ -258,7 +308,33 @@ mutation SignUp{
     String ret = '''
 query GetCurrentUser{
   viewer{
-    sessionToken
+      user{
+        objectId
+        ${DbFields.userName}
+        ${DbFields.userEmoji}
+        ${DbFields.userPlayedGames}
+        ${DbFields.userTrueCorrectAnswers}
+        ${DbFields.userFalseCorrectAnswers}
+        ${DbFields.userTrueFakeAnswers}
+        ${DbFields.userFalseFakeAnswers}
+        ${DbFields.userFriendships}{
+          edges{
+            node{
+              objectId
+              ${DbFields.friendshipOpenGame}{
+                edges{
+                  node{
+                    objectId
+                  }
+                }
+              }
+            }
+          }
+        }
+
+      }
+      sessionToken
+    }
   }
 }
 ''';
