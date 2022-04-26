@@ -94,28 +94,33 @@ class QuellenreiterAppState extends ChangeNotifier {
   bool get isLoggedIn => _isLoggedIn;
   set isLoggedIn(value) {
     _isLoggedIn = value;
+    if (_isLoggedIn) {
+      route = Routes.home;
+    } else {
+      route = Routes.login;
+    }
     notifyListeners();
   }
 
   QuellenreiterAppState()
       : _game = null,
         _friendsQuery = null,
+        // try login here !!
         _isLoggedIn = false,
         _route = Routes.login;
 
   void _loginCallback(Player? p) {
     if (p == null) {
-      _error = "Login fehlgeschlagen.";
+      error = "Login fehlgeschlagen.";
     } else {
       player = p;
-      route = Routes.home;
       isLoggedIn = true;
     }
   }
 
   void _signUpCallback(Player? p) {
     if (p == null) {
-      _error = "Anmeldung fehlgeschlagen.";
+      error = "Anmeldung fehlgeschlagen.";
     } else {
       player = p;
     }
@@ -123,19 +128,17 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void tryLogin(String username, String password) async {
     db.login(username, password, _loginCallback);
-    // Timer(Duration(seconds: 1), () {
-    //   route = Routes.home;
-    //   // callback();
-    //   notifyListeners();
-    // });
   }
 
   void trySignUp(String username, String password, String emoji) async {
     db.signUp(username, password, emoji, _signUpCallback);
-    // Timer(Duration(seconds: 1), () {
-    //   route = Routes.home;
-    //   // callback();
-    //   notifyListeners();
-    // });
+  }
+
+  void _logoutCallback() {
+    isLoggedIn = false;
+  }
+
+  void logout() async {
+    db.logout(_logoutCallback);
   }
 }

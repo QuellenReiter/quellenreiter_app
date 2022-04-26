@@ -154,7 +154,9 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
           MaterialPage(
             key: const ValueKey('SettingsScreen'),
             child: HomeScreen(
-              body: const SettingsScreen(),
+              body: SettingsScreen(
+                appState: appState,
+              ),
               bottomNavCallback: _bottomNavCallback,
               title: "Einstellungen",
               index: 3,
