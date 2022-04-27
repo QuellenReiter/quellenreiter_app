@@ -121,11 +121,13 @@ class DatabaseUtils {
       print(queryResult.toString());
       if (queryResult.hasException) {
         checkTokenCallback(null);
+        return;
       } else {
         // Safe the new token.
         safeStorage.write(
             key: "token", value: queryResult.data?["viewer"]["sessionToken"]);
         checkTokenCallback(Player.fromMap(queryResult.data?["viewer"]["user"]));
+        return;
       }
     }
     // no token, return false
