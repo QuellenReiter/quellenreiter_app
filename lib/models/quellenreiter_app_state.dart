@@ -108,7 +108,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     db.checkToken(_checkTokenCallback);
   }
 
-  void _checkTokenCallback(Player p) {
+  void _checkTokenCallback(Player? p) {
     if (p == null) {
       _isLoggedIn = false;
     } else {
