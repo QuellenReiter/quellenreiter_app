@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 
@@ -33,6 +31,14 @@ class QuellenreiterAppState extends ChangeNotifier {
   Game? get game => _game;
   set game(value) {
     _game = value;
+    notifyListeners();
+  }
+
+  /// Friend requests of the current [Player].
+  Enemies? _enemyRequests;
+  Enemies? get enemyRequests => _enemyRequests;
+  set enemyRequests(value) {
+    _enemyRequests = value;
     notifyListeners();
   }
 
@@ -87,6 +93,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     _isLoggedIn = value;
     if (_isLoggedIn) {
       route = Routes.home;
+      db.getFriendRequests(player!.id, _friendRequestCallback);
     } else {
       route = Routes.login;
     }
@@ -135,6 +142,10 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void _logoutCallback() {
     isLoggedIn = false;
+  }
+
+  void _friendRequestCallback(Enemies? enemies) {
+    enemyRequests = enemies;
   }
 
   void logout() async {
