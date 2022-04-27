@@ -414,21 +414,21 @@ query GetCurrentUser{
   }
 
   /// Returns the graphQL query to check the friend requests.
-  static String getFriendRequests(String playerId) {
+  static String getFriendRequests(Player player) {
     String ret = '''
 query GetOpenFriendRequests{
   friendships(
     where:{
       OR:[
-        {${DbFields.friendshipPlayer1}: { have:{objectId : { equalTo: "$playerId"}}}}
-        {${DbFields.friendshipPlayer2}: { have:{objectId : { equalTo: "$playerId"}}}}
+        {${DbFields.friendshipPlayer1}: { have:{objectId : { equalTo: "${player.id}"}}}}
+        {${DbFields.friendshipPlayer2}: { have:{objectId : { equalTo: "${player.id}"}}}}
       ]
     }
   ){
     edges{
       node{
         objectId
-        ${DbFields.friendshipPlayer1}{
+        ${DbFields.friendshipPlayer1} (where:  { username: {notEqualTo: "${player.name}"} }){
           edges{
             node{
               objectId
@@ -437,7 +437,7 @@ query GetOpenFriendRequests{
             }
           }
         }
-        ${DbFields.friendshipPlayer2}{
+        ${DbFields.friendshipPlayer2} (where:  { username: {notEqualTo: "${player.name}"} }){
           edges{
             node{
               objectId

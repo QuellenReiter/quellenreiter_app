@@ -136,7 +136,7 @@ class DatabaseUtils {
 
   /// Get all friend requests.
   Future<void> getFriendRequests(
-      String userId, Function friendRequestCallback) async {
+      Player player, Function friendRequestCallback) async {
     // The session token.
     String? token = await safeStorage.read(key: "token");
     // If token is not null, check if it is valid.
@@ -157,7 +157,7 @@ class DatabaseUtils {
       // The query result.
       var queryResult = await client.query(
         QueryOptions(
-          document: gql(Queries.getFriendRequests(userId)),
+          document: gql(Queries.getFriendRequests(player)),
         ),
       );
 
