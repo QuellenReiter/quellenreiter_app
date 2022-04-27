@@ -193,7 +193,44 @@ class DatabaseUtils {
   Future<Statements?> getSafedStatements() async {}
 
   /// Fetch all Friends ([Enemies]) of a [Player].
-  Future<Enemies?> getFriends() async {}
+  // Future<Player?> getFriends(Player user) async {
+  //   // The session token.
+  //   String? token = await safeStorage.read(key: "token");
+  //   // If token is not null, check if it is valid.
+  //   if (token != null) {
+  //     // Link to the database.
+  //     final HttpLink httpLink = HttpLink(kUrl, defaultHeaders: {
+  //       'X-Parse-Application-Id': kParseApplicationId,
+  //       'X-Parse-Client-Key': kParseClientKey,
+  //       'X-Parse-Session-Token': token,
+  //     });
+
+  //     // The client that provides the connection.
+  //     GraphQLClient client = GraphQLClient(
+  //       cache: GraphQLCache(),
+  //       link: httpLink,
+  //     );
+
+  //     // The query result.
+  //     var queryResult = await client.query(
+  //       QueryOptions(
+  //         document: gql(Queries.getFriends(user)),
+  //       ),
+  //     );
+
+  //     print(queryResult.toString());
+  //     if (queryResult.hasException) {
+  //       return null;
+  //     } else {
+  //       // Safe the new token.
+  //       safeStorage.write(
+  //           key: "token", value: queryResult.data?["viewer"]["sessionToken"]);
+  //       return Player.fromMap(queryResult.data?["viewer"]["user"]);
+  //     }
+  //   }
+  //   // no token, return false
+  //   return null;
+  // }
 
   /// Authenticate a [Player] to get its emoji etc.
   Future<Player?> authenticate() async {}
