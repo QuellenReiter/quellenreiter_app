@@ -1,5 +1,6 @@
 import '../constants/constants.dart';
 import '../models/fact.dart';
+import '../models/player.dart';
 
 /// Class containg various utilities for the database connection.
 class Queries {
@@ -365,14 +366,110 @@ query GetCurrentUser{
       ${DbFields.userFalseCorrectAnswers}
       ${DbFields.userTrueFakeAnswers}
       ${DbFields.userFalseFakeAnswers}
+      ${DbFields.userFriendships}{
+        edges{
+          node{
+            objectId
+            ${DbFields.friendshipPlayer1}{
+              edges{
+                node{
+                  objectId
+                  ${DbFields.userEmoji}
+                  ${DbFields.userName}
+                }
+              }
+            }
+            ${DbFields.friendshipPlayer2}{
+              edges{
+                node{
+                  objectId
+                  ${DbFields.userEmoji}
+                  ${DbFields.userName}
+                }
+              }
+            }
+            ${DbFields.friendshipWonGamesPlayer1}
+            ${DbFields.friendshipWonGamesPlayer2}
+            ${DbFields.friendshipApproved2}
+            ${DbFields.friendshipNumGamesPlayed}
+            ${DbFields.friendshipApproved1}
+            ${DbFields.friendshipApproved2}
+            ${DbFields.friendshipOpenGame}{
+              edges{
+                node{
+                  objectId
+                  createdAt
+                }
+              }
+            }
+          }
+        }
+      }
     }
     sessionToken
   }
 }
-
 ''';
     return ret;
   }
+
+//   static String getFriends(Player user) {
+//     String ret = '''
+// query GetFriends{
+//   user(id:"${user.id}"){
+//     objectId
+//     ${DbFields.userName}
+//     ${DbFields.userEmoji}
+//     ${DbFields.userPlayedGames}
+//     ${DbFields.userTrueCorrectAnswers}
+//     ${DbFields.userFalseCorrectAnswers}
+//     ${DbFields.userTrueFakeAnswers}
+//     ${DbFields.userFalseFakeAnswers}
+//     ${DbFields.userFriendships}{
+//       edges{
+//         node{
+//           objectId
+//           ${DbFields.friendshipPlayer1} (where:  { username: {notEqualTo: "${user.name}}"} }){
+//             edges{
+//               node{
+//                 objectId
+//                 ${DbFields.userEmoji}
+//                 ${DbFields.userName}
+//               }
+//             }
+//           }
+//           ${DbFields.friendshipPlayer2} (where:  { username: {notEqualTo: "${user.name}}"} }){
+//             edges{
+//               node{
+//                 objectId
+//                 ${DbFields.userEmoji}
+//                 ${DbFields.userName}
+//               }
+//             }
+//           }
+//           ${DbFields.friendshipWonGamesPlayer1}
+//           ${DbFields.friendshipWonGamesPlayer2}
+//           ${DbFields.friendshipApproved2}
+//           ${DbFields.friendshipNumGamesPlayed}
+//           ${DbFields.friendshipApproved1}
+//           ${DbFields.friendshipApproved2}
+//           ${DbFields.friendshipOpenGame}{
+//             edges{
+//               node{
+//                 objectId
+//                 createdAt
+//               }
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+
+// ''';
+//     return ret;
+//   }
 
   /// Returns the graphQL query to get a [Statement] by [Statement.objectId].
   static String getStatement(String? statementID) {

@@ -52,15 +52,6 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// The [Enemies] (Friends) someone has. Also [Enemies] that requested a
-  /// friendship and your open requests will be in here.
-  Enemies? _enemies;
-  Enemies? get enemies => _enemies;
-  set enemies(value) {
-    _enemies = value;
-    notifyListeners();
-  }
-
   /// The [Enemies] (Friends) search result, if [Player] is searching.
   Enemies? _friendsSearchResult;
   Enemies? get friendsSearchResult => _friendsSearchResult;
