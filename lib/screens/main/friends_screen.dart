@@ -15,43 +15,66 @@ class FriendsScreen extends StatefulWidget {
 class _FriendsScreenState extends State<FriendsScreen> {
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Padding(
-        padding: const EdgeInsets.all(10),
-        child: Align(
-          alignment: Alignment.topRight,
-          child: FloatingActionButton(
-            onPressed: () => {},
-            child: Icon(Icons.add),
+    return Column(children: [
+      Flexible(
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Align(
+            alignment: Alignment.topRight,
+            child: FloatingActionButton(
+              onPressed: () => {},
+              child: Icon(Icons.add),
+            ),
           ),
         ),
       ),
       (widget.appState.player?.friends == null ||
               widget.appState.player!.friends!.enemies.isEmpty)
-          ? Center(
-              child: Column(
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () => {},
-                  icon: const Icon(Icons.send_rounded),
-                  label: const Text("Freunde einladen"),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () => {},
-                  icon: const Icon(Icons.search),
-                  label: const Text("Freunde finden"),
-                ),
-              ],
-            ))
-          : ListView.builder(
-              itemCount: widget.appState.player!.friends!.enemies.length,
-              itemBuilder: (BuildContext context, int index) {
-                return EnemyCard(
-                  enemy: widget.appState.player!.friends!.enemies[index],
-                  onTapped: (enemy) => {},
-                );
-              },
+          ? Flexible(
+              child: Center(
+                  child: Column(
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () => {},
+                    icon: const Icon(Icons.send_rounded),
+                    label: const Text("Freunde einladen"),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () => {},
+                    icon: const Icon(Icons.search),
+                    label: const Text("Freunde finden"),
+                  ),
+                ],
+              )),
+            )
+          : Flexible(
+              child: ListView.builder(
+                itemCount: widget.appState.player!.friends!.enemies.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return EnemyCard(
+                    enemy: widget.appState.player!.friends!.enemies[index],
+                    onTapped: (enemy) => {},
+                  );
+                },
+              ),
             ),
+      Padding(
+        padding: const EdgeInsets.all(10),
+        child: Text("Anfragen:"),
+      ),
+      widget.appState.enemyRequests != null
+          ? Flexible(
+              child: ListView.builder(
+                itemCount: widget.appState.enemyRequests!.enemies.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return EnemyCard(
+                    enemy: widget.appState.enemyRequests!.enemies[index],
+                    onTapped: (enemy) => {},
+                  );
+                },
+              ),
+            )
+          : Flexible(child: SizedBox.shrink()),
     ]);
   }
 }
