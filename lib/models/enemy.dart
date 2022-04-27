@@ -26,11 +26,11 @@ class Enemy {
       acceptedByPlayer = map?[DbFields.friendshipApproved1];
     } else {
       // The player corresponds to player2 in the database friendship.
-      name = map?[DbFields.friendshipPlayer2]["edges"][0]["node"]
+      name = map?[DbFields.friendshipPlayer1]["edges"][0]["node"]
           [DbFields.userName];
-      emoji = map?[DbFields.friendshipPlayer2]["edges"][0]["node"]
+      emoji = map?[DbFields.friendshipPlayer1]["edges"][0]["node"]
           [DbFields.userEmoji];
-      userID = map?[DbFields.friendshipPlayer2]["edges"][0]["node"]["objectId"];
+      userID = map?[DbFields.friendshipPlayer1]["edges"][0]["node"]["objectId"];
       wonGamesOther = map?[DbFields.friendshipWonGamesPlayer1];
       wonGamesPlayer = map?[DbFields.friendshipWonGamesPlayer2];
       acceptedByOther = map?[DbFields.friendshipApproved1];

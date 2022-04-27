@@ -93,7 +93,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     _isLoggedIn = value;
     if (_isLoggedIn) {
       route = Routes.home;
-      db.getFriendRequests(player!.id, _friendRequestCallback);
+      db.getFriendRequests(player!, _friendRequestCallback);
     } else {
       route = Routes.login;
     }
