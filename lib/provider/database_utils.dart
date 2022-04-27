@@ -93,7 +93,7 @@ class DatabaseUtils {
   }
 
   /// Checks if token is valid.
-  Future<bool> checkToken() async {
+  Future<void> checkToken(Function checkTokenCallback) async {
     // The session token.
     String? token = await safeStorage.read(key: "token");
     // If token is not null, check if it is valid.
@@ -117,14 +117,19 @@ class DatabaseUtils {
           document: gql(Queries.getCurrentUser()),
         ),
       );
+
+      print(queryResult.toString());
       if (queryResult.hasException) {
-        return false;
+        checkTokenCallback(null);
       } else {
-        return true;
+        // Safe the new token.
+        safeStorage.write(
+            key: "token", value: queryResult.data?["viewer"]["sessionToken"]);
+        checkTokenCallback(Player.fromMap(queryResult.data?["viewer"]["user"]));
       }
     }
     // no token, return false
-    return false;
+    checkTokenCallback(null);
   }
 
   /// Get a single [Statement] from the Database by [Statement.objectId].

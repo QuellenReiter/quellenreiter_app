@@ -307,46 +307,41 @@ mutation SignUp{
           edges{
             node{
               objectId
+              ${DbFields.friendshipPlayer1} (where:  { username: {notEqualTo: "$username"} }){
+                edges{
+                  node{
+                    objectId
+                    ${DbFields.userEmoji}
+                    ${DbFields.userName}
+                  }
+                }
+              }
+              ${DbFields.friendshipPlayer2} (where:  { username: {notEqualTo: "$username"} }){
+                edges{
+                  node{
+                    objectId
+                    ${DbFields.userEmoji}
+                    ${DbFields.userName}
+                  }
+                }
+              }
+              ${DbFields.friendshipWonGamesPlayer1}
+              ${DbFields.friendshipWonGamesPlayer2}
+              ${DbFields.friendshipApproved2}
+              ${DbFields.friendshipNumGamesPlayed}
+              ${DbFields.friendshipApproved1}
+              ${DbFields.friendshipApproved2}
               ${DbFields.friendshipOpenGame}{
                 edges{
                   node{
                     objectId
-                    ${DbFields.friendshipPlayer1} (where:  { username: {notEqualTo: "$username"} }){
-                      edges{
-                        node{
-                          objectId
-                          ${DbFields.userEmoji}
-                          ${DbFields.userName}
-                        }
-                      }
-                    }
-                    ${DbFields.friendshipPlayer2} (where:  { username: {notEqualTo: "$username"} }){
-                      edges{
-                        node{
-                          objectId
-                          ${DbFields.userEmoji}
-                          ${DbFields.userName}
-                        }
-                      }
-                    }
-                    ${DbFields.friendshipNumGamesPlayed}
-                    ${DbFields.friendshipApproved1}
-                    ${DbFields.friendshipApproved2}
-                    ${DbFields.friendshipOpenGame}{
-                      edges{
-                        node{
-                          objectId
-                          createdAt
-                        }
-                      }
-                    }
+                    createdAt
                   }
                 }
               }
             }
           }
         }
-
       }
       sessionToken
     }
@@ -361,20 +356,20 @@ mutation SignUp{
     String ret = '''
 query GetCurrentUser{
   viewer{
-      user{
-        objectId
-        ${DbFields.userName}
-        ${DbFields.userEmoji}
-        ${DbFields.userPlayedGames}
-        ${DbFields.userTrueCorrectAnswers}
-        ${DbFields.userFalseCorrectAnswers}
-        ${DbFields.userTrueFakeAnswers}
-        ${DbFields.userFalseFakeAnswers}
-      }
-      sessionToken
+    user{
+      objectId
+      ${DbFields.userName}
+      ${DbFields.userEmoji}
+      ${DbFields.userPlayedGames}
+      ${DbFields.userTrueCorrectAnswers}
+      ${DbFields.userFalseCorrectAnswers}
+      ${DbFields.userTrueFakeAnswers}
+      ${DbFields.userFalseFakeAnswers}
     }
+    sessionToken
   }
 }
+
 ''';
     return ret;
   }

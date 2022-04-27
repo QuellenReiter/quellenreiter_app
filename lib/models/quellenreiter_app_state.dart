@@ -102,12 +102,20 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  QuellenreiterAppState()
-      : _game = null,
-        _friendsQuery = null,
-        // try login here !!
-        _isLoggedIn = false,
-        _route = Routes.login;
+  QuellenreiterAppState() {
+    game = null;
+    _friendsQuery = null;
+    db.checkToken(_checkTokenCallback);
+  }
+
+  void _checkTokenCallback(Player p) {
+    if (p == null) {
+      _isLoggedIn = false;
+    } else {
+      player = p;
+      isLoggedIn = true;
+    }
+  }
 
   void _loginCallback(Player? p) {
     if (p == null) {
