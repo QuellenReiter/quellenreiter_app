@@ -142,7 +142,9 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
           MaterialPage(
             key: const ValueKey('FriendsScreen'),
             child: HomeScreen(
-              body: const FriendsScreen(),
+              body: FriendsScreen(
+                appState: appState,
+              ),
               bottomNavCallback: _bottomNavCallback,
               title: "Freund:innen",
               index: 1,
@@ -218,10 +220,10 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
       // get safed Statements if not exisiting.
       appState.safedStatements ?? await db.getSafedStatements();
     }
-    if (configuration.route == Routes.friends) {
-      // get list of friends, if not existing.
-      appState.enemies ?? await db.getFriends();
-    }
+    // if (configuration.route == Routes.friends) {
+    //   // get list of friends, if not existing.
+    //   appState.player?.friends ?? await db.getFriends(appState.player!);
+    // }
     if (configuration.route == Routes.settings) {
       // get user, if not existing.
       appState.player ?? await db.authenticate();

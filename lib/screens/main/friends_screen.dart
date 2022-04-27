@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/models/enemy.dart';
+import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/enemy_card.dart';
 
 class FriendsScreen extends StatefulWidget {
-  const FriendsScreen({Key? key, this.enemies}) : super(key: key);
+  const FriendsScreen({Key? key, required this.appState}) : super(key: key);
 
   /// The query used to search for friends.
-  final Enemies? enemies;
+  final QuellenreiterAppState appState;
   @override
   State<FriendsScreen> createState() => _FriendsScreenState();
 }
@@ -25,7 +26,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
           ),
         ),
       ),
-      widget.enemies == null
+      (widget.appState.player?.friends == null ||
+              widget.appState.player!.friends!.enemies.isEmpty)
           ? Center(
               child: Column(
               children: [
@@ -42,10 +44,10 @@ class _FriendsScreenState extends State<FriendsScreen> {
               ],
             ))
           : ListView.builder(
-              itemCount: widget.enemies!.enemies.length,
+              itemCount: widget.appState.player!.friends!.enemies.length,
               itemBuilder: (BuildContext context, int index) {
                 return EnemyCard(
-                  enemy: widget.enemies!.enemies[index],
+                  enemy: widget.appState.player!.friends!.enemies[index],
                   onTapped: (enemy) => {},
                 );
               },
