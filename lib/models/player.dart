@@ -12,8 +12,8 @@ class Player {
   late int trueFakeAnswers;
   late int falseCorrectAnswers;
   late int falseFakeAnswers;
-  late Enemies friends;
-  late Games openGames;
+  late Enemies? friends;
+  late Games? openGames;
   // late List<String> playedStatements;
 
   Player.fromMap(Map<String, dynamic>? map)
@@ -24,9 +24,13 @@ class Player {
         trueFakeAnswers = map?[DbFields.userTrueFakeAnswers],
         falseCorrectAnswers = map?[DbFields.userFalseCorrectAnswers],
         falseFakeAnswers = map?[DbFields.userFalseFakeAnswers],
-        friends = Enemies.fromMap(map?[DbFields.userFriendships]),
+        friends = map?[DbFields.userFriendships] != null
+            ? Enemies.fromMap(map?[DbFields.userFriendships])
+            : null,
         id = map?["objectId"],
-        openGames = Games.fromMap(map?[DbFields.userFriendships])
+        openGames = map?[DbFields.userFriendships] != null
+            ? Games.fromMap(map?[DbFields.userFriendships])
+            : null
   // playedStatements = map?[DbFields.userPlayedStatements]
   ;
 }
