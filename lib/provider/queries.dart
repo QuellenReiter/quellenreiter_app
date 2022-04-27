@@ -413,6 +413,69 @@ query GetCurrentUser{
     return ret;
   }
 
+  /// Returns the graphQL query to check the friend requests.
+  static String getFriendRequests(String playerId) {
+    String ret = '''
+query GetOpenFriendRequests{
+  friendships(
+    where:{
+      OR:[
+        {${DbFields.friendshipPlayer1}: { have:{objectId : { equalTo: "$playerId"}}}}
+        {${DbFields.friendshipPlayer2}: { have:{objectId : { equalTo: "$playerId"}}}}
+      ]
+    }
+  ){
+    edges{
+      node{
+        objectId
+        ${DbFields.friendshipPlayer1}{
+          edges{
+            node{
+              objectId
+              ${DbFields.userName}
+              ${DbFields.userEmoji}
+            }
+          }
+        }
+        ${DbFields.friendshipPlayer2}{
+          edges{
+            node{
+              objectId
+              ${DbFields.userName}
+              ${DbFields.userEmoji}
+            }
+          }
+        }
+        ${DbFields.friendshipOpenGame}{
+          edges{
+            node{
+              createdAt
+              objectId
+            }
+          }
+        }
+        ${DbFields.friendshipWonGamesPlayer1}
+        ${DbFields.friendshipWonGamesPlayer2}
+        ${DbFields.friendshipApproved2}
+        ${DbFields.friendshipNumGamesPlayed}
+        ${DbFields.friendshipApproved1}
+        ${DbFields.friendshipApproved2}
+        ${DbFields.friendshipOpenGame}{
+          edges{
+            node{
+              objectId
+              createdAt
+            }
+          }
+        }
+      }
+    }
+  }
+}
+''';
+    return ret;
+  }
+
 //   static String getFriends(Player user) {
 //     String ret = '''
 // query GetFriends{
