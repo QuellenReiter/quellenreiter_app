@@ -135,8 +135,7 @@ class DatabaseUtils {
   }
 
   /// Get all friend requests.
-  Future<void> getFriendRequests(
-      Player player, Function friendRequestCallback) async {
+  Future<void> getFriends(Player player, Function friendRequestCallback) async {
     // The session token.
     String? token = await safeStorage.read(key: "token");
     // If token is not null, check if it is valid.
@@ -157,7 +156,7 @@ class DatabaseUtils {
       // The query result.
       var queryResult = await client.query(
         QueryOptions(
-          document: gql(Queries.getFriendRequests(player)),
+          document: gql(Queries.getFriends(player)),
         ),
       );
 
@@ -173,6 +172,47 @@ class DatabaseUtils {
     }
     // no token, return false
     friendRequestCallback(null);
+    return;
+  }
+
+  /// Accept a friend request
+  Future<void> acceptFriendRequest(
+      Player p, Enemy e, Function acceptFriendCallback) async {
+    // The session token.
+    String? token = await safeStorage.read(key: "token");
+    // If token is not null, check if it is valid.
+    if (token != null) {
+      // Link to the database.
+      final HttpLink httpLink = HttpLink(kUrl, defaultHeaders: {
+        'X-Parse-Application-Id': kParseApplicationId,
+        'X-Parse-Client-Key': kParseClientKey,
+        'X-Parse-Session-Token': token,
+      });
+
+      // The client that provides the connection.
+      GraphQLClient client = GraphQLClient(
+        cache: GraphQLCache(),
+        link: httpLink,
+      );
+
+      // Update the friendship to be accepted by both players.
+      var mutationResult = await client.mutate(
+        MutationOptions(
+          document: gql(Queries.updateFriendshipStatus(e.friendshipId)),
+        ),
+      );
+
+      print(mutationResult.toString());
+      if (mutationResult.hasException) {
+        acceptFriendCallback(false);
+        return;
+      } else {
+        acceptFriendCallback(true);
+        return;
+      }
+    }
+    // no token, return false
+    acceptFriendCallback(false);
     return;
   }
 

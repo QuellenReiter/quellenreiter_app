@@ -93,7 +93,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     _isLoggedIn = value;
     if (_isLoggedIn) {
       route = Routes.home;
-      db.getFriendRequests(player!, _friendRequestCallback);
+      getFriends();
     } else {
       route = Routes.login;
     }
@@ -132,11 +132,11 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
   }
 
-  void tryLogin(String username, String password) async {
+  void tryLogin(String username, String password) {
     db.login(username, password, _loginCallback);
   }
 
-  void trySignUp(String username, String password, String emoji) async {
+  void trySignUp(String username, String password, String emoji) {
     db.signUp(username, password, emoji, _signUpCallback);
   }
 
@@ -144,11 +144,34 @@ class QuellenreiterAppState extends ChangeNotifier {
     isLoggedIn = false;
   }
 
+  void getFriends() {
+    db.getFriends(player!, _friendRequestCallback);
+  }
+
   void _friendRequestCallback(Enemies? enemies) {
-    enemyRequests = enemies;
+    player?.friends = Enemies.empty()
+      ..enemies = enemies!.enemies
+          .where((enemy) => enemy.acceptedByOther && enemy.acceptedByPlayer)
+          .toList();
+    enemyRequests = Enemies.empty()
+      ..enemies = enemies!.enemies
+          .where((enemy) => enemy.acceptedByOther && !enemy.acceptedByPlayer)
+          .toList();
   }
 
   void logout() async {
     db.logout(_logoutCallback);
+  }
+
+  void acceptRequest(Enemy e) {
+    db.acceptFriendRequest(player!, e, _acceptRequestCallback);
+  }
+
+  void _acceptRequestCallback(bool success) {
+    if (!success) {
+      error = "Das hat nicht funktioniert.";
+    } else {
+      getFriends();
+    }
   }
 }

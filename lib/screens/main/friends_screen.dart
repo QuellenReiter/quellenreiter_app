@@ -58,20 +58,28 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 },
               ),
             ),
-      Padding(
-        padding: const EdgeInsets.all(10),
-        child: Text("Anfragen:"),
-      ),
-      widget.appState.enemyRequests != null
+      (widget.appState.enemyRequests != null &&
+              widget.appState.enemyRequests!.enemies.isNotEmpty)
           ? Flexible(
-              child: ListView.builder(
-                itemCount: widget.appState.enemyRequests!.enemies.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return EnemyCard(
-                    enemy: widget.appState.enemyRequests!.enemies[index],
-                    onTapped: (enemy) => {},
-                  );
-                },
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Text("Offene Anfragen:"),
+                  ),
+                  Flexible(
+                    child: ListView.builder(
+                      itemCount: widget.appState.enemyRequests!.enemies.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return EnemyCard(
+                          enemy: widget.appState.enemyRequests!.enemies[index],
+                          onTapped: (enemy) =>
+                              widget.appState.acceptRequest(enemy),
+                        );
+                      },
+                    ),
+                  )
+                ],
               ),
             )
           : Flexible(child: SizedBox.shrink()),

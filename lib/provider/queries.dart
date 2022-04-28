@@ -238,45 +238,6 @@ mutation LogIn{
         ${DbFields.userFalseCorrectAnswers}
         ${DbFields.userTrueFakeAnswers}
         ${DbFields.userFalseFakeAnswers}
-        ${DbFields.userFriendships}{
-          edges{
-            node{
-              objectId
-              ${DbFields.friendshipPlayer1} (where:  { username: {notEqualTo: "$username"} }){
-                edges{
-                  node{
-                    objectId
-                    ${DbFields.userEmoji}
-                    ${DbFields.userName}
-                  }
-                }
-              }
-              ${DbFields.friendshipPlayer2} (where:  { username: {notEqualTo: "$username"} }){
-                edges{
-                  node{
-                    objectId
-                    ${DbFields.userEmoji}
-                    ${DbFields.userName}
-                  }
-                }
-              }
-              ${DbFields.friendshipWonGamesPlayer1}
-              ${DbFields.friendshipWonGamesPlayer2}
-              ${DbFields.friendshipApproved2}
-              ${DbFields.friendshipNumGamesPlayed}
-              ${DbFields.friendshipApproved1}
-              ${DbFields.friendshipApproved2}
-              ${DbFields.friendshipOpenGame}{
-                edges{
-                  node{
-                    objectId
-                    createdAt
-                  }
-                }
-              }
-            }
-          }
-        }
       }
       sessionToken
     }
@@ -304,45 +265,6 @@ mutation SignUp{
         ${DbFields.userFalseCorrectAnswers}
         ${DbFields.userTrueFakeAnswers}
         ${DbFields.userFalseFakeAnswers}
-        ${DbFields.userFriendships}{
-          edges{
-            node{
-              objectId
-              ${DbFields.friendshipPlayer1} (where:  { username: {notEqualTo: "$username"} }){
-                edges{
-                  node{
-                    objectId
-                    ${DbFields.userEmoji}
-                    ${DbFields.userName}
-                  }
-                }
-              }
-              ${DbFields.friendshipPlayer2} (where:  { username: {notEqualTo: "$username"} }){
-                edges{
-                  node{
-                    objectId
-                    ${DbFields.userEmoji}
-                    ${DbFields.userName}
-                  }
-                }
-              }
-              ${DbFields.friendshipWonGamesPlayer1}
-              ${DbFields.friendshipWonGamesPlayer2}
-              ${DbFields.friendshipApproved2}
-              ${DbFields.friendshipNumGamesPlayed}
-              ${DbFields.friendshipApproved1}
-              ${DbFields.friendshipApproved2}
-              ${DbFields.friendshipOpenGame}{
-                edges{
-                  node{
-                    objectId
-                    createdAt
-                  }
-                }
-              }
-            }
-          }
-        }
       }
       sessionToken
     }
@@ -366,45 +288,6 @@ query GetCurrentUser{
       ${DbFields.userFalseCorrectAnswers}
       ${DbFields.userTrueFakeAnswers}
       ${DbFields.userFalseFakeAnswers}
-      ${DbFields.userFriendships}{
-        edges{
-          node{
-            objectId
-            ${DbFields.friendshipPlayer1}{
-              edges{
-                node{
-                  objectId
-                  ${DbFields.userEmoji}
-                  ${DbFields.userName}
-                }
-              }
-            }
-            ${DbFields.friendshipPlayer2}{
-              edges{
-                node{
-                  objectId
-                  ${DbFields.userEmoji}
-                  ${DbFields.userName}
-                }
-              }
-            }
-            ${DbFields.friendshipWonGamesPlayer1}
-            ${DbFields.friendshipWonGamesPlayer2}
-            ${DbFields.friendshipApproved2}
-            ${DbFields.friendshipNumGamesPlayed}
-            ${DbFields.friendshipApproved1}
-            ${DbFields.friendshipApproved2}
-            ${DbFields.friendshipOpenGame}{
-              edges{
-                node{
-                  objectId
-                  createdAt
-                }
-              }
-            }
-          }
-        }
-      }
     }
     sessionToken
   }
@@ -413,8 +296,29 @@ query GetCurrentUser{
     return ret;
   }
 
+  static String updateFriendshipStatus(String id) {
+    String ret = '''
+mutation updateFriendship{
+  updateFriendship(
+    input:{
+      id: "$id"
+      fields:{
+        ${DbFields.friendshipApproved1}: true
+        ${DbFields.friendshipApproved2}: true
+      }
+    }
+  ){
+    friendship{
+      objectId
+    }
+  }
+}
+''';
+    return ret;
+  }
+
   /// Returns the graphQL query to check the friend requests.
-  static String getFriendRequests(Player player) {
+  static String getFriends(Player player) {
     String ret = '''
 query GetOpenFriendRequests{
   friendships(
@@ -428,7 +332,7 @@ query GetOpenFriendRequests{
     edges{
       node{
         objectId
-        ${DbFields.friendshipPlayer1} (where:  { username: {notEqualTo: "${player.name}"} }){
+        ${DbFields.friendshipPlayer1} (where:  { objectId: {notEqualTo: "${player.id}"} }){
           edges{
             node{
               objectId
@@ -437,7 +341,7 @@ query GetOpenFriendRequests{
             }
           }
         }
-        ${DbFields.friendshipPlayer2} (where:  { username: {notEqualTo: "${player.name}"} }){
+        ${DbFields.friendshipPlayer2} (where:  { objectId: {notEqualTo: "${player.id}"} }){
           edges{
             node{
               objectId
@@ -456,7 +360,6 @@ query GetOpenFriendRequests{
         }
         ${DbFields.friendshipWonGamesPlayer1}
         ${DbFields.friendshipWonGamesPlayer2}
-        ${DbFields.friendshipApproved2}
         ${DbFields.friendshipNumGamesPlayed}
         ${DbFields.friendshipApproved1}
         ${DbFields.friendshipApproved2}
@@ -476,6 +379,35 @@ query GetOpenFriendRequests{
     return ret;
   }
 
+//   /// Returns the graphQL query to check the friend requests.
+//   static String acceptFriendRequest(Player player, String friendshipId) {
+//     String ret = '''
+// mutation AcceptFriendRequest{
+//   updateUser(
+//     input: {
+//       id: "${player.id}"
+//       fields: {
+//         friendships: {
+//           add: "$friendshipId"
+//         }
+//       }
+//     }
+//   ){
+//     user{
+//       objectId
+//       ${DbFields.userName}
+//       ${DbFields.userEmoji}
+//       ${DbFields.userPlayedGames}
+//       ${DbFields.userTrueCorrectAnswers}
+//       ${DbFields.userFalseCorrectAnswers}
+//       ${DbFields.userTrueFakeAnswers}
+//       ${DbFields.userFalseFakeAnswers}
+//     }
+//   }
+// }
+// ''';
+//     return ret;
+//   }
 //   static String getFriends(Player user) {
 //     String ret = '''
 // query GetFriends{
