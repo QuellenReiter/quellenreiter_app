@@ -65,4 +65,12 @@ class Enemies {
   Enemies.empty() {
     enemies = [];
   }
+
+  List<String> getNames() {
+    List<String> ret = [];
+    for (Enemy e in enemies) {
+      ret.add(e.name);
+    }
+    return ret;
+  }
 }

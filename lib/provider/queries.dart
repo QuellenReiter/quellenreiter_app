@@ -379,6 +379,65 @@ query GetOpenFriendRequests{
     return ret;
   }
 
+  static String searchFriends(String query, List<String> friendNames) {
+    String friendsString = "[";
+    for (String word in friendNames) {
+      friendsString += "\"$word\",";
+    }
+    friendsString += "]";
+
+    String ret = '''
+query GetOpenFriendRequests{
+  users(
+    where:{
+      AND:{
+        { ${DbFields.userName}: { equalTo: "$query"} }
+        { ${DbFields.userName}: { notIn: $friendsString} }
+      }
+     
+    }
+  ){
+    edges{
+      node{
+        objectId
+        ${DbFields.userName}
+        ${DbFields.userEmoji}
+      }
+    }
+  }
+}
+    
+''';
+    return ret;
+  }
+
+  static String sendFriendRequest(String playerId, String enemyId) {
+    String ret = '''
+mutation sendFriendRequest {
+  createFriendship(
+    input: {
+      fields:{
+        ${DbFields.friendshipPlayer1}:{
+          add:"$playerId"
+        }
+        ${DbFields.friendshipPlayer2}:{
+          add: "$enemyId"
+        }
+        ${DbFields.friendshipApproved1}: true
+        ${DbFields.friendshipApproved2}: false
+      }
+    }
+  ) {
+    friendship{
+      objectId
+    }
+  }
+}
+
+
+''';
+    return ret;
+  }
 //   /// Returns the graphQL query to check the friend requests.
 //   static String acceptFriendRequest(Player player, String friendshipId) {
 //     String ret = '''

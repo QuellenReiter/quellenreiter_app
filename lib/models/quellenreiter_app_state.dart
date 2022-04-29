@@ -78,12 +78,12 @@ class QuellenreiterAppState extends ChangeNotifier {
   String? _friendsQuery;
   String? get friendsQuery => _friendsQuery;
   set friendsQuery(value) {
-    // If query is null, make it empty
-    value ?? "";
     friendsQuery = value;
     // This is async. As soon as it completes, app will rebuild.
-    db.searchFriends(friendsQuery);
-    notifyListeners();
+    if (friendsQuery != null) {
+      searchFriends();
+      notifyListeners();
+    }
   }
 
   /// True if user is logged in.
@@ -152,6 +152,18 @@ class QuellenreiterAppState extends ChangeNotifier {
     db.getFriends(player!, _friendRequestCallback);
   }
 
+  void sendFriendRequest(Enemy e) {
+    db.sendFriendRequest(player!.id, e.userID, _sendFriendRequest);
+  }
+
+  void _sendFriendRequest(bool success) {
+    if (success) {
+      route = Routes.friends;
+    } else {
+      error = "Ein Fehler ist aufgetreten.";
+    }
+  }
+
   void _friendRequestCallback(Enemies? enemies) {
     player?.friends = Enemies.empty()
       ..enemies = enemies!.enemies
@@ -179,6 +191,24 @@ class QuellenreiterAppState extends ChangeNotifier {
       error = "Das hat nicht funktioniert.";
     } else {
       getFriends();
+    }
+  }
+
+  void searchFriends() {
+    if (friendsQuery != null) {
+      if (player!.friends == null) {
+        db.searchFriends(friendsQuery!, [], _searchFriendsCallback);
+      }
+      db.searchFriends(
+          friendsQuery!, player!.friends!.getNames(), _searchFriendsCallback);
+    }
+  }
+
+  void _searchFriendsCallback(Enemies? e) {
+    if (e != null) {
+      friendsSearchResult = e;
+    } else {
+      error = "keine Suchergebnisse";
     }
   }
 
