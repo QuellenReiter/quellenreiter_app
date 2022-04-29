@@ -181,4 +181,8 @@ class QuellenreiterAppState extends ChangeNotifier {
       getFriends();
     }
   }
+
+  void handleNavigationChange(Routes r) {
+    route = r;
+  }
 }

@@ -1,25 +1,87 @@
 import 'package:flutter/material.dart';
+import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
+import 'package:quellenreiter_app/screens/main/friends_screen.dart';
+import 'package:quellenreiter_app/screens/main/settings_screen.dart';
+import 'package:quellenreiter_app/screens/main/start_screen.dart';
+
+import '../../constants/constants.dart';
+import 'archive_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({
-    Key? key,
-    required this.index,
-    required this.bottomNavCallback,
-    required this.body,
-    required this.title,
-  }) : super(key: key);
+  const HomeScreen({Key? key, required this.appState}) : super(key: key);
+  final QuellenreiterAppState appState;
 
-  final int index;
-  final Function(int) bottomNavCallback;
-  final Widget body;
-  final String title;
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late Widget body;
+  int index = 0;
+
+  void onTap(int indexTapped) {
+    switch (indexTapped) {
+      case 0:
+        widget.appState.route = Routes.home;
+        setState(() {
+          index = 0;
+        });
+        break;
+      case 1:
+        widget.appState.route = Routes.friends;
+        setState(() {
+          index = 1;
+        });
+        break;
+      case 2:
+        widget.appState.route = Routes.archive;
+        setState(() {
+          index = 2;
+        });
+        break;
+      case 3:
+        widget.appState.route = Routes.settings;
+        setState(() {
+          index = 3;
+        });
+
+        break;
+      default:
+        widget.appState.route = Routes.home;
+        setState(() {
+          index = 0;
+        });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    switch (index) {
+      case 0:
+        body = StartScreen(
+          appState: widget.appState,
+        );
+        break;
+      case 1:
+        body = FriendsScreen(
+          appState: widget.appState,
+        );
+        break;
+      case 2:
+        body = ArchiveScreen(
+          appState: widget.appState,
+        );
+        break;
+      case 3:
+        body = StartScreen(
+          appState: widget.appState,
+        );
+        break;
+      default:
+        body = StartScreen(
+          appState: widget.appState,
+        );
+    }
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.purple[100],
@@ -42,13 +104,13 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Einstellungen',
           ),
         ],
-        currentIndex: widget.index,
-        onTap: widget.bottomNavCallback,
+        currentIndex: index,
+        onTap: onTap,
       ),
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text("Home"),
       ),
-      body: widget.body,
+      body: body,
     );
   }
 }
