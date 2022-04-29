@@ -93,7 +93,8 @@ enum Routes {
   quest,
   gameResults,
   gameReadyToStart,
-  loading
+  loading,
+  addFriends
 }
 
 class CorrectnessCategory {
