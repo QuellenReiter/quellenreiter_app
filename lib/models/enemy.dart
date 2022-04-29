@@ -1,4 +1,5 @@
 import '../constants/constants.dart';
+import 'game.dart';
 
 class Enemy {
   late final int playerIndex;
@@ -11,6 +12,7 @@ class Enemy {
   late final int wonGamesOther;
   late final bool acceptedByOther;
   late final bool acceptedByPlayer;
+  late final Game? openGame;
 
   /// Constructor that takes a Map and resolves which of player1 and player2 is
   /// the player and which is the enemy.
@@ -42,6 +44,13 @@ class Enemy {
     }
     numGamesPlayed = map?[DbFields.friendshipNumGamesPlayed];
     friendshipId = map?["objectId"];
+    // if an open game exists, safe it.
+    if (map?[DbFields.friendshipOpenGame]["edges"].isNotEmpty) {
+      openGame =
+          Game.fromMap(map?[DbFields.friendshipOpenGame]["edges"][0]["node"]);
+    } else {
+      openGame = null;
+    }
   }
 }
 
