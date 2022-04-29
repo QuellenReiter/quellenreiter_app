@@ -37,8 +37,8 @@ class _QuellenreiterAppState extends State<QuellenreiterApp> {
             pageTransitionsTheme: PageTransitionsTheme(
               builders: {
                 // Set your transitions here:
-                TargetPlatform.android: OpenUpwardsPageTransitionsBuilder(),
-                TargetPlatform.iOS: OpenUpwardsPageTransitionsBuilder(),
+                TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
               },
             ),
             brightness: Brightness.dark,
