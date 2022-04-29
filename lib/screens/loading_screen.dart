@@ -10,7 +10,10 @@ class LoadingScreen extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text(msg)],
+          children: [
+            const CircularProgressIndicator(),
+            Text(msg),
+          ],
         ),
       ),
     );
