@@ -6,6 +6,7 @@ import 'package:quellenreiter_app/screens/game/game_results_screen.dart';
 import 'package:quellenreiter_app/screens/game/quest_screen.dart';
 import 'package:quellenreiter_app/screens/game/ready_to_start_screen.dart';
 import 'package:quellenreiter_app/screens/loading_screen.dart';
+import 'package:quellenreiter_app/screens/main/add_friend_screen.dart';
 import 'package:quellenreiter_app/screens/main/archive_screen.dart';
 import 'package:quellenreiter_app/screens/main/friends_screen.dart';
 import 'package:quellenreiter_app/screens/main/open_games_screen.dart';
@@ -34,19 +35,6 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
   @override
   QuellenreiterRoutePath get currentConfiguration {
     return QuellenreiterRoutePath(appState.route);
-  }
-
-  void _handleNavigationChange(Routes r) {
-    appState.route = r;
-    // notifyListeners();
-  }
-
-  void _tryLogin(String username, String password) async {
-    appState.tryLogin(username, password);
-  }
-
-  void _trySignUp(String username, String password, String emoji) async {
-    appState.trySignUp(username, password, emoji);
   }
 
   @override
@@ -111,6 +99,17 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
           MaterialPage(
             key: const ValueKey('OpenGamesPage'),
             child: OpenGamesScreen(
+              appState: appState,
+            ),
+          ),
+        ];
+
+      case Routes.addFriends:
+        return [
+          home,
+          MaterialPage(
+            key: const ValueKey('addFriends'),
+            child: AddFriendScreen(
               appState: appState,
             ),
           ),
