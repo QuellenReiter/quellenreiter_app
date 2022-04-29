@@ -17,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Widget body;
+  late String title;
   int index = 0;
 
   void onTap(int indexTapped) {
@@ -61,26 +62,31 @@ class _HomeScreenState extends State<HomeScreen> {
         body = StartScreen(
           appState: widget.appState,
         );
+        title = "Büro";
         break;
       case 1:
         body = FriendsScreen(
           appState: widget.appState,
         );
+        title = "Freund:innen";
         break;
       case 2:
         body = ArchiveScreen(
           appState: widget.appState,
         );
+        title = "Archiv";
         break;
       case 3:
-        body = StartScreen(
+        body = SettingsScreen(
           appState: widget.appState,
         );
+        title = "Einstellungen";
         break;
       default:
         body = StartScreen(
           appState: widget.appState,
         );
+        title = "Büro";
     }
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
@@ -108,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: onTap,
       ),
       appBar: AppBar(
-        title: Text("Home"),
+        title: Text(title),
       ),
       body: body,
     );

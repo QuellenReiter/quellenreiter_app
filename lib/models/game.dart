@@ -4,6 +4,7 @@ import 'package:quellenreiter_app/models/statement.dart';
 import 'enemy.dart';
 
 class Game {
+  String? id;
   int round = 0;
   int statementIndex = 0;
   late final Statements? statements;
@@ -13,7 +14,7 @@ class Game {
   late List<bool> enemyAnswers;
 
   Game.fromMap(Map<String, dynamic>? map) {
-    statements = null;
+    id = statements = map?["objectId"];
     enemy = map?[DbFields.enemyName]; //  WRONG
     playersTurn = true;
     playerAnswers = [];
@@ -21,6 +22,7 @@ class Game {
   }
 
   Game.new(Enemy e) {
+    id = null;
     statements = null;
     enemy = e;
     playersTurn = true;
