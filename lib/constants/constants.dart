@@ -92,7 +92,8 @@ enum Routes {
   openGames,
   quest,
   gameResults,
-  gameReadyToStart
+  gameReadyToStart,
+  loading
 }
 
 class CorrectnessCategory {

@@ -5,6 +5,7 @@ import 'package:quellenreiter_app/screens/auth/signup_screen.dart';
 import 'package:quellenreiter_app/screens/game/game_results_screen.dart';
 import 'package:quellenreiter_app/screens/game/quest_screen.dart';
 import 'package:quellenreiter_app/screens/game/ready_to_start_screen.dart';
+import 'package:quellenreiter_app/screens/loading_screen.dart';
 import 'package:quellenreiter_app/screens/main/archive_screen.dart';
 import 'package:quellenreiter_app/screens/main/friends_screen.dart';
 import 'package:quellenreiter_app/screens/main/open_games_screen.dart';
@@ -109,6 +110,13 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
       ),
     );
     switch (appState.route) {
+      case Routes.loading:
+        return [
+          const MaterialPage(
+            key: ValueKey('SignupPage'),
+            child: LoadingScreen(),
+          ),
+        ];
       case Routes.login:
         return [login];
       case Routes.signUp:

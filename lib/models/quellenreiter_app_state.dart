@@ -101,6 +101,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   QuellenreiterAppState() {
+    route = Routes.loading;
     game = null;
     _friendsQuery = null;
     db.checkToken(_checkTokenCallback);
@@ -108,7 +109,7 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void _checkTokenCallback(Player? p) {
     if (p == null) {
-      _isLoggedIn = false;
+      isLoggedIn = false;
     } else {
       player = p;
       isLoggedIn = true;
@@ -127,16 +128,19 @@ class QuellenreiterAppState extends ChangeNotifier {
   void _signUpCallback(Player? p) {
     if (p == null) {
       error = "Anmeldung fehlgeschlagen.";
+      route = Routes.signUp;
     } else {
       player = p;
     }
   }
 
   void tryLogin(String username, String password) {
+    route = Routes.loading;
     db.login(username, password, _loginCallback);
   }
 
   void trySignUp(String username, String password, String emoji) {
+    route = Routes.loading;
     db.signUp(username, password, emoji, _signUpCallback);
   }
 
@@ -160,15 +164,18 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   void logout() async {
+    route = Routes.loading;
     db.logout(_logoutCallback);
   }
 
   void acceptRequest(Enemy e) {
+    route = Routes.loading;
     db.acceptFriendRequest(player!, e, _acceptRequestCallback);
   }
 
   void _acceptRequestCallback(bool success) {
     if (!success) {
+      route = Routes.friends;
       error = "Das hat nicht funktioniert.";
     } else {
       getFriends();

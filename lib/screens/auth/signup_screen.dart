@@ -28,7 +28,7 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   void dispose() {
     usernameController.dispose();
-    usernameController.dispose();
+    passwordController.dispose();
     emojiController.dispose();
     super.dispose();
   }
