@@ -42,6 +42,14 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Pending friend requests sent by the current [Player].
+  Enemies? _pendingRequests;
+  Enemies? get pendingRequests => _pendingRequests;
+  set pendingRequests(value) {
+    _pendingRequests = value;
+    notifyListeners();
+  }
+
   /// The current [Player]. Should be set, if user is logged in.
   Player? _player;
   Player? get player => _player;
@@ -66,6 +74,10 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void resetSearchResults() {
+    _friendsSearchResult = null;
+  }
+
   /// The [Statements] that the [Player] safed.
   Statements? _safedStatements;
   Statements? get safedStatements => _safedStatements;
@@ -78,9 +90,9 @@ class QuellenreiterAppState extends ChangeNotifier {
   String? _friendsQuery;
   String? get friendsQuery => _friendsQuery;
   set friendsQuery(value) {
-    friendsQuery = value;
+    _friendsQuery = value;
     // This is async. As soon as it completes, app will rebuild.
-    if (friendsQuery != null) {
+    if (_friendsQuery != null && _friendsQuery!.isNotEmpty) {
       searchFriends();
       notifyListeners();
     }
@@ -153,26 +165,37 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   void sendFriendRequest(Enemy e) {
+    route = Routes.loading;
     db.sendFriendRequest(player!.id, e.userID, _sendFriendRequest);
   }
 
   void _sendFriendRequest(bool success) {
     if (success) {
-      route = Routes.friends;
+      getFriends();
     } else {
       error = "Ein Fehler ist aufgetreten.";
     }
   }
 
   void _friendRequestCallback(Enemies? enemies) {
+    // set friends
     player?.friends = Enemies.empty()
       ..enemies = enemies!.enemies
           .where((enemy) => enemy.acceptedByOther && enemy.acceptedByPlayer)
           .toList();
+    // set received requests
     enemyRequests = Enemies.empty()
       ..enemies = enemies!.enemies
           .where((enemy) => enemy.acceptedByOther && !enemy.acceptedByPlayer)
           .toList();
+    // set pending requests
+    pendingRequests = Enemies.empty()
+      ..enemies = enemies.enemies
+          .where((enemy) => !enemy.acceptedByOther && enemy.acceptedByPlayer)
+          .toList();
+    if (route == Routes.loading) {
+      route = Routes.friends;
+    }
   }
 
   void logout() async {
@@ -197,10 +220,9 @@ class QuellenreiterAppState extends ChangeNotifier {
   void searchFriends() {
     if (friendsQuery != null) {
       if (player!.friends == null) {
-        db.searchFriends(friendsQuery!, [], _searchFriendsCallback);
+        db.searchFriends(friendsQuery!, [player!.name], _searchFriendsCallback);
       }
-      db.searchFriends(
-          friendsQuery!, player!.friends!.getNames(), _searchFriendsCallback);
+      db.searchFriends(friendsQuery!, getNames(), _searchFriendsCallback);
     }
   }
 
@@ -214,5 +236,13 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void handleNavigationChange(Routes r) {
     route = r;
+  }
+
+  List<String> getNames() {
+    var ret = player!.friends!.getNames();
+    ret.add(player!.name);
+    ret.addAll(enemyRequests!.getNames());
+    ret.addAll(pendingRequests!.getNames());
+    return ret;
   }
 }

@@ -166,7 +166,7 @@ class DatabaseUtils {
         return;
       } else {
         friendRequestCallback(
-            Enemies.fromMap(queryResult.data?["friendships"]));
+            Enemies.fromFriendshipMap(queryResult.data?["friendships"]));
         return;
       }
     }
@@ -349,8 +349,7 @@ class DatabaseUtils {
         searchFriendsCallback(null);
         return;
       } else {
-        searchFriendsCallback(
-            Enemies.fromMap(queryResult.data?["friendships"]));
+        searchFriendsCallback(Enemies.fromUserMap(queryResult.data?["users"]));
         return;
       }
     }
