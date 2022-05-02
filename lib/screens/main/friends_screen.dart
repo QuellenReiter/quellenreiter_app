@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/enemy_card.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../constants/constants.dart';
 
@@ -33,12 +34,17 @@ class _FriendsScreenState extends State<FriendsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       ElevatedButton.icon(
-                        onPressed: () => {},
+                        onPressed: () => {
+                          Share.share("https://quellenreiter.app",
+                              subject:
+                                  "Teile die app mit deinen Freund:innen."),
+                        },
                         icon: const Icon(Icons.send_rounded),
                         label: const Text("Freunde einladen"),
                       ),
                       ElevatedButton.icon(
-                        onPressed: () => {},
+                        onPressed: () =>
+                            {widget.appState.route = Routes.addFriends},
                         icon: const Icon(Icons.search),
                         label: const Text("Freunde finden"),
                       ),

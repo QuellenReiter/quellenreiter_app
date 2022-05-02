@@ -248,12 +248,19 @@ mutation LogIn{
   }
 
   /// Returns the graphQL mutation to login.
-  static String signUp(String username, String password) {
+  static String signUp(String username, String password, String emoji) {
     String ret = '''
 mutation SignUp{
   signUp(input: {
-    username: "$username"
-    password: "$password"
+    fields: {
+      username: "$username"
+      password: "$password"
+      emoji: "$emoji"
+      ${DbFields.userTrueCorrectAnswers}: 0
+      ${DbFields.userFalseCorrectAnswers}: 0
+      ${DbFields.userTrueFakeAnswers}: 0
+      ${DbFields.userFalseFakeAnswers}: 0
+    }
   }){
     viewer{
       user{
