@@ -69,9 +69,10 @@ class DatabaseUtils {
     // The result returned from the query.
     var signUpResult = await client.mutate(
       MutationOptions(
-        document: gql(Queries.signUp(username, password)),
+        document: gql(Queries.signUp(username, password, emoji)),
       ),
     );
+    print(signUpResult.toString());
     // If login result has any exceptions.
     if (signUpResult.hasException) {
       signUpCallback(null);
@@ -80,9 +81,9 @@ class DatabaseUtils {
     // Safe the new token.
     safeStorage.write(
         key: "token",
-        value: signUpResult.data?["logIn"]["viewer"]["sessionToken"]);
+        value: signUpResult.data?["signUp"]["viewer"]["sessionToken"]);
     signUpCallback(
-        Player.fromMap(signUpResult.data?["logIn"]["viewer"]["user"]));
+        Player.fromMap(signUpResult.data?["signUp"]["viewer"]["user"]));
   }
 
   /// Logsout a user by deleting the session token.

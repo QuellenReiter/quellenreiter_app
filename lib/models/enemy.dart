@@ -61,7 +61,7 @@ class Enemy {
     wonGamesOther = 0;
     wonGamesPlayer = 0;
     acceptedByOther = false;
-    acceptedByPlayer = true;
+    acceptedByPlayer = false;
     numGamesPlayed = 0;
     friendshipId = "";
     openGame = null;

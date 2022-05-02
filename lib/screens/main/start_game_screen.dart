@@ -42,8 +42,7 @@ class _StartGameScreenState extends State<StartGameScreen> {
           else
             Center(
               child: ElevatedButton.icon(
-                onPressed: () =>
-                    widget.appState.handleNavigationChange(Routes.friends),
+                onPressed: () => {widget.appState.route = Routes.addFriends},
                 icon: const Icon(Icons.gamepad_outlined),
                 label: const Text("Freund:innen einladen"),
               ),
