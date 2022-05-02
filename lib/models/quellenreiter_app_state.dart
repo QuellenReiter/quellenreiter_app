@@ -160,8 +160,8 @@ class QuellenreiterAppState extends ChangeNotifier {
     isLoggedIn = false;
   }
 
-  void getFriends() {
-    db.getFriends(player!, _friendRequestCallback);
+  Future<void> getFriends() async {
+    await db.getFriends(player!, _getFriendsCallback);
   }
 
   void sendFriendRequest(Enemy e) {
@@ -177,7 +177,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
   }
 
-  void _friendRequestCallback(Enemies? enemies) {
+  void _getFriendsCallback(Enemies? enemies) {
     // set friends
     player?.friends = Enemies.empty()
       ..enemies = enemies!.enemies
