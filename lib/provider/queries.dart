@@ -390,11 +390,10 @@ query GetOpenFriendRequests{
 query GetOpenFriendRequests{
   users(
     where:{
-      AND:{
+      AND:[
         { ${DbFields.userName}: { equalTo: "$query"} }
         { ${DbFields.userName}: { notIn: $friendsString} }
-      }
-     
+      ]
     }
   ){
     edges{

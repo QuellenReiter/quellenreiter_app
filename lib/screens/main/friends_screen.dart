@@ -17,18 +17,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      alignment: Alignment.topCenter,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(10),
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: FloatingActionButton(
-              onPressed: () =>
-                  {widget.appState.handleNavigationChange(Routes.addFriends)},
-              child: const Icon(Icons.add),
-            ),
-          ),
-        ),
         Column(
           children: [
             // display button if user has no friends yet.
@@ -38,6 +28,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ElevatedButton.icon(
                       onPressed: () => {},
@@ -79,7 +70,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const Padding(
-                        padding: const EdgeInsets.all(10),
+                        padding: EdgeInsets.all(10),
                         child: Text("Offene Anfragen:"),
                       ),
                       Flexible(
@@ -87,13 +78,11 @@ class _FriendsScreenState extends State<FriendsScreen> {
                           itemCount:
                               widget.appState.enemyRequests!.enemies.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return Flexible(
-                              child: EnemyCard(
-                                enemy: widget
-                                    .appState.enemyRequests!.enemies[index],
-                                onTapped: (enemy) =>
-                                    widget.appState.acceptRequest(enemy),
-                              ),
+                            return EnemyCard(
+                              enemy:
+                                  widget.appState.enemyRequests!.enemies[index],
+                              onTapped: (enemy) =>
+                                  widget.appState.acceptRequest(enemy),
                             );
                           },
                         ),
@@ -105,6 +94,17 @@ class _FriendsScreenState extends State<FriendsScreen> {
             else
               const Flexible(child: SizedBox.shrink()),
           ],
+        ),
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: FloatingActionButton(
+              onPressed: () =>
+                  {widget.appState.handleNavigationChange(Routes.addFriends)},
+              child: const Icon(Icons.add),
+            ),
+          ),
         ),
       ],
     );
