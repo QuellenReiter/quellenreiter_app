@@ -14,9 +14,10 @@ class Enemy {
   late final bool acceptedByPlayer;
   late final Game? openGame;
 
-  /// Constructor that takes a Map and resolves which of player1 and player2 is
+  /// Constructor that takes a Map of a friendship query and resolves which of
+  /// player1 and player2 is
   /// the player and which is the enemy.
-  Enemy.fromMap(Map<String, dynamic>? map) {
+  Enemy.fromFriendshipMap(Map<String, dynamic>? map) {
     if (map?[DbFields.friendshipPlayer1]["edges"]?.length == 0) {
       // The player corresponds to player1 in the database friendship.
       playerIndex = 0;
@@ -52,14 +53,39 @@ class Enemy {
       openGame = null;
     }
   }
+
+  Enemy.fromUserMap(Map<String, dynamic>? map) {
+    name = map?[DbFields.userName];
+    emoji = map?[DbFields.userEmoji];
+    userID = map?["objectId"];
+    wonGamesOther = 0;
+    wonGamesPlayer = 0;
+    acceptedByOther = false;
+    acceptedByPlayer = true;
+    numGamesPlayed = 0;
+    friendshipId = "";
+    openGame = null;
+  }
 }
 
 class Enemies {
   List<Enemy> enemies = [];
 
-  Enemies.fromMap(Map<String, dynamic>? map) {
+  Enemies.fromFriendshipMap(Map<String, dynamic>? map) {
+    if (map?["edges"] == null) {
+      return;
+    }
     for (Map<String, dynamic>? enemy in map?["edges"]) {
-      enemies.add(Enemy.fromMap(enemy?["node"]));
+      enemies.add(Enemy.fromFriendshipMap(enemy?["node"]));
+    }
+  }
+
+  Enemies.fromUserMap(Map<String, dynamic>? map) {
+    if (map?["edges"] == null) {
+      return;
+    }
+    for (Map<String, dynamic>? enemy in map?["edges"]) {
+      enemies.add(Enemy.fromUserMap(enemy?["node"]));
     }
   }
   Enemies.empty() {

@@ -25,7 +25,7 @@ class Player {
         falseCorrectAnswers = map?[DbFields.userFalseCorrectAnswers],
         falseFakeAnswers = map?[DbFields.userFalseFakeAnswers],
         friends = map?[DbFields.userFriendships] != null
-            ? Enemies.fromMap(map?[DbFields.userFriendships])
+            ? Enemies.fromFriendshipMap(map?[DbFields.userFriendships])
             : null,
         id = map?["objectId"],
         openGames = map?[DbFields.userFriendships] != null

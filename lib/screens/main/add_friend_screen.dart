@@ -21,10 +21,15 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
     searchController = widget.appState.friendsQuery == null
         ? TextEditingController()
         : TextEditingController(text: widget.appState.friendsQuery);
-    searchController.addListener(() {
-      widget.appState.friendsQuery = searchController.text;
-    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget.appState.resetSearchResults();
+    widget.appState.friendsQuery = null;
+    searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -64,7 +69,13 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                         ),
                       ),
                     ),
-                  )
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () =>
+                        {widget.appState.friendsQuery = searchController.text},
+                    icon: const Icon(Icons.search),
+                    label: const Text("Suchen"),
+                  ),
                 ],
               ),
               widget.appState.friendsSearchResult != null
