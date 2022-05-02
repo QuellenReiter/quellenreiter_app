@@ -19,81 +19,95 @@ class _FriendsScreenState extends State<FriendsScreen> {
     return Stack(
       alignment: Alignment.topCenter,
       children: [
-        Column(
-          children: [
-            // display button if user has no friends yet.
-            if (widget.appState.player?.friends == null ||
-                widget.appState.player!.friends!.enemies.isEmpty)
-              Flexible(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: () => {},
-                      icon: const Icon(Icons.send_rounded),
-                      label: const Text("Freunde einladen"),
+        RefreshIndicator(
+          onRefresh: widget.appState.getFriends,
+          child: Column(
+            children: [
+              // Display all open Requests
+              if (widget.appState.enemyRequests != null &&
+                  widget.appState.enemyRequests!.enemies.isNotEmpty)
+                ElevatedButton.icon(
+                  onPressed: () => {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Text("Offene Anfragen:"),
+                              ),
+                              Flexible(
+                                child: ListView.builder(
+                                  itemCount: widget
+                                      .appState.enemyRequests!.enemies.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return EnemyCard(
+                                      enemy: widget.appState.enemyRequests!
+                                          .enemies[index],
+                                      onTapped: (enemy) =>
+                                          widget.appState.acceptRequest(enemy),
+                                    );
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                      },
                     ),
-                    ElevatedButton.icon(
-                      onPressed: () => {},
-                      icon: const Icon(Icons.search),
-                      label: const Text("Freunde finden"),
-                    ),
-                  ],
+                  },
+                  icon: const Icon(Icons.group_add),
+                  label: const Text("Offene Anfragen"),
                 ),
-              )
-            else
-              // display current friends
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: ListView.builder(
-                    itemCount: widget.appState.player!.friends!.enemies.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return EnemyCard(
-                        enemy: widget.appState.player!.friends!.enemies[index],
-                        onTapped: (enemy) => {},
-                      );
-                    },
-                  ),
-                ),
-              ),
-            // Display all open Requests
-            if (widget.appState.enemyRequests != null &&
-                widget.appState.enemyRequests!.enemies.isNotEmpty)
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
+
+              // display button if user has no friends yet.
+              if (widget.appState.player?.friends == null ||
+                  widget.appState.player!.friends!.enemies.isEmpty)
+                Flexible(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Text("Offene Anfragen:"),
+                      ElevatedButton.icon(
+                        onPressed: () => {},
+                        icon: const Icon(Icons.send_rounded),
+                        label: const Text("Freunde einladen"),
                       ),
-                      Flexible(
-                        child: ListView.builder(
-                          itemCount:
-                              widget.appState.enemyRequests!.enemies.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return EnemyCard(
-                              enemy:
-                                  widget.appState.enemyRequests!.enemies[index],
-                              onTapped: (enemy) =>
-                                  widget.appState.acceptRequest(enemy),
-                            );
-                          },
-                        ),
-                      )
+                      ElevatedButton.icon(
+                        onPressed: () => {},
+                        icon: const Icon(Icons.search),
+                        label: const Text("Freunde finden"),
+                      ),
                     ],
                   ),
+                )
+              else
+                // display current friends
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: ListView.builder(
+                      itemCount:
+                          widget.appState.player!.friends!.enemies.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return EnemyCard(
+                          enemy:
+                              widget.appState.player!.friends!.enemies[index],
+                          onTapped: (enemy) => {},
+                        );
+                      },
+                    ),
+                  ),
                 ),
-              )
-            else
-              const Flexible(child: SizedBox.shrink()),
-          ],
+            ],
+          ),
         ),
         Padding(
           padding: const EdgeInsets.all(10),
