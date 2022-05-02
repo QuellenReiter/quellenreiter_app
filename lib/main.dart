@@ -43,48 +43,48 @@ class _QuellenreiterAppState extends State<QuellenreiterApp> {
             ),
             brightness: Brightness.dark,
             primarySwatch: Colors.purple,
-            textTheme: TextTheme(
+            // textTheme: TextTheme(
 
-                // Small text for light backgrounds.
-                bodyText2: TextStyle(
-                  color: DesignColors.black,
-                  fontFamily: 'Oswald',
-                ),
+            //     // Small text for light backgrounds.
+            //     bodyText2: TextStyle(
+            //       color: DesignColors.black,
+            //       fontFamily: 'Oswald',
+            //     ),
 
-                // Small text for blue backgrounds.
-                bodyText1: TextStyle(
-                  // default all text widget
-                  fontFamily: 'Oswald',
-                  color: DesignColors.lightBlue,
-                ),
+            //     // Small text for blue backgrounds.
+            //     bodyText1: TextStyle(
+            //       // default all text widget
+            //       fontFamily: 'Oswald',
+            //       color: DesignColors.lightBlue,
+            //     ),
 
-                // Title in for appBar.
-                headline1: TextStyle(
-                  fontFamily: 'Bangers',
-                  color: DesignColors.lightBlue,
-                ),
+            //     // Title in for appBar.
+            //     headline1: TextStyle(
+            //       fontFamily: 'Bangers',
+            //       color: DesignColors.lightBlue,
+            //     ),
 
-                // Huge text in bangers font.
-                headline3: TextStyle(
-                  fontFamily: 'Bangers',
-                  color: DesignColors.lightGrey,
-                ),
+            //     // Huge text in bangers font.
+            //     headline3: TextStyle(
+            //       fontFamily: 'Bangers',
+            //       color: DesignColors.lightGrey,
+            //     ),
 
-                // Large font for subtitles on blue backgrounds.
-                subtitle1: TextStyle(
-                  fontFamily: 'Oswald',
-                  color: DesignColors.lightBlue,
-                ),
+            //     // Large font for subtitles on blue backgrounds.
+            //     subtitle1: TextStyle(
+            //       fontFamily: 'Oswald',
+            //       color: DesignColors.lightBlue,
+            //     ),
 
-                // X-Large font for subtitles on light backgrounds.
-                subtitle2: TextStyle(
-                  fontFamily: 'Oswald',
-                ),
+            //     // X-Large font for subtitles on light backgrounds.
+            //     subtitle2: TextStyle(
+            //       fontFamily: 'Oswald',
+            //     ),
 
-                // Large font for subtitles on light backgrounds.
-                headline2: TextStyle(
-                  fontFamily: 'Oswald',
-                )),
+            //     // Large font for subtitles on light backgrounds.
+            //     headline2: TextStyle(
+            //       fontFamily: 'Oswald',
+            //     )),
             // fill back inside all TextFormField
             inputDecorationTheme: const InputDecorationTheme(
               isDense: true,
