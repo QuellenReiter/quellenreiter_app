@@ -20,6 +20,27 @@ class _HomeScreenState extends State<HomeScreen> {
   late String title;
   int index = 0;
 
+  @override
+  void initState() {
+    switch (widget.appState.route) {
+      case Routes.friends:
+        index = 1;
+        break;
+      case Routes.archive:
+        index = 2;
+        break;
+      case Routes.addFriends:
+        index = 1;
+        break;
+      case Routes.settings:
+        index = 3;
+        break;
+      default:
+        index = 0;
+    }
+    super.initState();
+  }
+
   void onTap(int indexTapped) {
     switch (indexTapped) {
       case 0:
