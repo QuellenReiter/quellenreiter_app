@@ -23,49 +23,6 @@ class _FriendsScreenState extends State<FriendsScreen> {
           onRefresh: widget.appState.getFriends,
           child: Column(
             children: [
-              // Display all open Requests
-              if (widget.appState.enemyRequests != null &&
-                  widget.appState.enemyRequests!.enemies.isNotEmpty)
-                ElevatedButton.icon(
-                  onPressed: () => {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.all(10),
-                                child: Text("Offene Anfragen:"),
-                              ),
-                              Flexible(
-                                child: ListView.builder(
-                                  itemCount: widget
-                                      .appState.enemyRequests!.enemies.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return EnemyCard(
-                                      enemy: widget.appState.enemyRequests!
-                                          .enemies[index],
-                                      onTapped: (enemy) =>
-                                          widget.appState.acceptRequest(enemy),
-                                    );
-                                  },
-                                ),
-                              )
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  },
-                  icon: const Icon(Icons.group_add),
-                  label: const Text("Offene Anfragen"),
-                ),
-
               // display button if user has no friends yet.
               if (widget.appState.player?.friends == null ||
                   widget.appState.player!.friends!.enemies.isEmpty)
@@ -109,6 +66,54 @@ class _FriendsScreenState extends State<FriendsScreen> {
             ],
           ),
         ),
+        // Display all open Requests
+        if (widget.appState.enemyRequests != null &&
+            widget.appState.enemyRequests!.enemies.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: FloatingActionButton.extended(
+                onPressed: () => {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Text("Offene Anfragen:"),
+                            ),
+                            Flexible(
+                              child: ListView.builder(
+                                itemCount: widget
+                                    .appState.enemyRequests!.enemies.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return EnemyCard(
+                                    enemy: widget
+                                        .appState.enemyRequests!.enemies[index],
+                                    onTapped: (enemy) =>
+                                        widget.appState.acceptRequest(enemy),
+                                  );
+                                },
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                },
+                icon: const Icon(Icons.group_add),
+                label: const Text("Offene Anfragen"),
+              ),
+            ),
+          ),
+
         Padding(
           padding: const EdgeInsets.all(10),
           child: Align(
@@ -116,7 +121,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
             child: FloatingActionButton(
               onPressed: () =>
                   {widget.appState.handleNavigationChange(Routes.addFriends)},
-              child: const Icon(Icons.add),
+              child: const Icon(Icons.group_add),
             ),
           ),
         ),

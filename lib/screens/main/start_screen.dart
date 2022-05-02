@@ -19,7 +19,10 @@ class _StartScreenState extends State<StartScreen> {
         children: [
           Padding(
               padding: const EdgeInsets.all(10),
-              child: Text(widget.appState.player!.emoji)),
+              child: Text("Hallo, " +
+                  widget.appState.player!.name +
+                  " " +
+                  widget.appState.player!.emoji)),
           ElevatedButton.icon(
             onPressed: () =>
                 widget.appState.handleNavigationChange(Routes.startGame),
