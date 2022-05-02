@@ -56,8 +56,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                       child: TextField(
                         controller: searchController,
                         decoration: const InputDecoration(
-                          hintText:
-                              "Gebe den exakten Namen eine:r Freund:in ein.",
+                          hintText: "Gebe den exakten Namen ein.",
                           border: UnderlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(10),
@@ -70,52 +69,44 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                       ),
                     ),
                   ),
-                  ElevatedButton.icon(
+                  IconButton(
                     onPressed: () =>
                         {widget.appState.friendsQuery = searchController.text},
                     icon: const Icon(Icons.search),
-                    label: const Text("Suchen"),
                   ),
                 ],
               ),
-              widget.appState.friendsSearchResult != null
-                  ? Flexible(
-                      child: ScrollConfiguration(
-                        behavior: ScrollConfiguration.of(context)
-                            .copyWith(scrollbars: false),
-                        child: AnimationLimiter(
-                          child: ListView.builder(
-                            keyboardDismissBehavior:
-                                ScrollViewKeyboardDismissBehavior.onDrag,
-                            itemCount: widget
-                                .appState.friendsSearchResult!.enemies.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return AnimationConfiguration.staggeredList(
-                                position: index,
-                                duration: const Duration(milliseconds: 400),
-                                child: SlideAnimation(
-                                  horizontalOffset: 30,
-                                  child: FadeInAnimation(
-                                    child: EnemyCard(
-                                      enemy: widget.appState
-                                          .friendsSearchResult!.enemies[index],
-                                      onTapped:
-                                          widget.appState.sendFriendRequest,
-                                    ),
-                                  ),
+              if (widget.appState.friendsSearchResult != null)
+                Flexible(
+                  child: ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(context)
+                        .copyWith(scrollbars: false),
+                    child: AnimationLimiter(
+                      child: ListView.builder(
+                        keyboardDismissBehavior:
+                            ScrollViewKeyboardDismissBehavior.onDrag,
+                        itemCount:
+                            widget.appState.friendsSearchResult!.enemies.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return AnimationConfiguration.staggeredList(
+                            position: index,
+                            duration: const Duration(milliseconds: 400),
+                            child: SlideAnimation(
+                              horizontalOffset: 30,
+                              child: FadeInAnimation(
+                                child: EnemyCard(
+                                  enemy: widget.appState.friendsSearchResult!
+                                      .enemies[index],
+                                  onTapped: widget.appState.sendFriendRequest,
                                 ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    )
-                  : const Center(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text("Ergebnisse laden..."),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
+                  ),
+                )
             ]),
           ),
         ),

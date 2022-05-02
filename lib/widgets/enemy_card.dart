@@ -20,7 +20,7 @@ class EnemyCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Material(
         borderRadius: const BorderRadius.all(Radius.circular(15)),
-        color: DesignColors.lightGrey,
+        color: DesignColors.black,
         // Make it clickable.
         child: InkWell(
           hoverColor: Colors.grey[300],
