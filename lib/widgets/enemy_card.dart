@@ -26,7 +26,7 @@ class EnemyCard extends StatelessWidget {
           hoverColor: Colors.grey[300],
           highlightColor: Colors.grey[400],
           splashColor: Colors.grey[600],
-          onTap: () => onTapped(enemy),
+          onTap: () => {},
           borderRadius: const BorderRadius.all(Radius.circular(15)),
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -61,7 +61,7 @@ class EnemyCard extends StatelessWidget {
                   else
                     // if player has to wait for the enemy to play.
                     const Text("warten...")
-                else
+                else if (enemy.acceptedByPlayer && enemy.acceptedByOther)
                   // if there is no open game.
                   Flexible(
                     child: ElevatedButton.icon(
@@ -69,7 +69,25 @@ class EnemyCard extends StatelessWidget {
                       icon: const Icon(Icons.not_started),
                       label: const Text("neues Spiel starten"),
                     ),
-                  ),
+                  )
+                else if (!enemy.acceptedByOther && !enemy.acceptedByPlayer)
+                  // if the enemy has not accepted, we can send a request.
+                  Flexible(
+                    child: ElevatedButton.icon(
+                      onPressed: () => onTapped(enemy),
+                      icon: const Icon(Icons.check_circle),
+                      label: const Text("Anfragen"),
+                    ),
+                  )
+                else if (enemy.acceptedByOther && !enemy.acceptedByPlayer)
+                  // else it is a request which we can accept.
+                  Flexible(
+                    child: ElevatedButton.icon(
+                      onPressed: () => onTapped(enemy),
+                      icon: const Icon(Icons.check_circle),
+                      label: const Text("Annehmen"),
+                    ),
+                  )
               ],
             ),
           ),
