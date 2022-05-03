@@ -112,21 +112,49 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.purple[100],
-        items: const [
-          BottomNavigationBarItem(
+        items: [
+          const BottomNavigationBarItem(
             activeIcon: Icon(Icons.rocket_launch),
             icon: Icon(Icons.rocket),
             label: 'Büro',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.supervised_user_circle_rounded),
+            icon: Stack(
+              children: [
+                const Icon(Icons.group_outlined),
+                if (widget.appState.enemyRequests!.enemies.isNotEmpty)
+                  Positioned(
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(1),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 12,
+                        minHeight: 12,
+                      ),
+                      child: Text(
+                        '${widget.appState.enemyRequests?.enemies.length}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 8,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  )
+              ],
+            ),
+            activeIcon: const Icon(Icons.group),
             label: 'Freund:innen',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.archive),
             label: 'Archiv',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: 'Einstellungen',
           ),
