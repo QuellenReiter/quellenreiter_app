@@ -115,14 +115,15 @@ class _HomeScreenState extends State<HomeScreen> {
         items: [
           const BottomNavigationBarItem(
             activeIcon: Icon(Icons.rocket_launch),
-            icon: Icon(Icons.rocket),
+            icon: Icon(Icons.rocket_outlined),
             label: 'Büro',
           ),
           BottomNavigationBarItem(
             icon: Stack(
               children: [
                 const Icon(Icons.group_outlined),
-                if (widget.appState.enemyRequests!.enemies.isNotEmpty)
+                if (widget.appState.enemyRequests != null &&
+                    widget.appState.enemyRequests!.enemies.isNotEmpty)
                   Positioned(
                     right: 0,
                     child: Container(
@@ -147,15 +148,45 @@ class _HomeScreenState extends State<HomeScreen> {
                   )
               ],
             ),
-            activeIcon: const Icon(Icons.group),
+            activeIcon: Stack(
+              children: [
+                const Icon(Icons.group),
+                if (widget.appState.enemyRequests != null &&
+                    widget.appState.enemyRequests!.enemies.isNotEmpty)
+                  Positioned(
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(1),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 12,
+                        minHeight: 12,
+                      ),
+                      child: Text(
+                        '${widget.appState.enemyRequests?.enemies.length}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 8,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  )
+              ],
+            ),
             label: 'Freund:innen',
           ),
           const BottomNavigationBarItem(
-            icon: Icon(Icons.archive),
+            icon: Icon(Icons.archive_outlined),
+            activeIcon: Icon(Icons.archive),
             label: 'Archiv',
           ),
           const BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
+            icon: Icon(Icons.settings_outlined),
+            activeIcon: Icon(Icons.settings),
             label: 'Einstellungen',
           ),
         ],
