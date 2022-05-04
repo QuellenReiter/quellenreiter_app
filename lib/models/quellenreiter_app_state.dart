@@ -240,6 +240,22 @@ class QuellenreiterAppState extends ChangeNotifier {
     route = r;
   }
 
+  void updateUser() {
+    route = Routes.loading;
+    db.updateUser(player!, _updateUserCallback);
+  }
+
+  void _updateUserCallback(Player? player) {
+    if (player == null) {
+      error = "User nicht geupdatet.";
+      // login again and reset the user.
+      db.checkToken(_checkTokenCallback);
+      route = Routes.settings;
+    }
+    // player should still be the same object so we do not set it again.
+    route = Routes.settings;
+  }
+
   List<String> getNames() {
     var ret = player!.friends!.getNames();
     ret.add(player!.name);

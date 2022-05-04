@@ -444,92 +444,29 @@ mutation sendFriendRequest {
 ''';
     return ret;
   }
-//   /// Returns the graphQL query to check the friend requests.
-//   static String acceptFriendRequest(Player player, String friendshipId) {
-//     String ret = '''
-// mutation AcceptFriendRequest{
-//   updateUser(
-//     input: {
-//       id: "${player.id}"
-//       fields: {
-//         friendships: {
-//           add: "$friendshipId"
-//         }
-//       }
-//     }
-//   ){
-//     user{
-//       objectId
-//       ${DbFields.userName}
-//       ${DbFields.userEmoji}
-//       ${DbFields.userPlayedGames}
-//       ${DbFields.userTrueCorrectAnswers}
-//       ${DbFields.userFalseCorrectAnswers}
-//       ${DbFields.userTrueFakeAnswers}
-//       ${DbFields.userFalseFakeAnswers}
-//     }
-//   }
-// }
-// ''';
-//     return ret;
-//   }
-//   static String getFriends(Player user) {
-//     String ret = '''
-// query GetFriends{
-//   user(id:"${user.id}"){
-//     objectId
-//     ${DbFields.userName}
-//     ${DbFields.userEmoji}
-//     ${DbFields.userPlayedGames}
-//     ${DbFields.userTrueCorrectAnswers}
-//     ${DbFields.userFalseCorrectAnswers}
-//     ${DbFields.userTrueFakeAnswers}
-//     ${DbFields.userFalseFakeAnswers}
-//     ${DbFields.userFriendships}{
-//       edges{
-//         node{
-//           objectId
-//           ${DbFields.friendshipPlayer1} (where:  { username: {notEqualTo: "${user.name}}"} }){
-//             edges{
-//               node{
-//                 objectId
-//                 ${DbFields.userEmoji}
-//                 ${DbFields.userName}
-//               }
-//             }
-//           }
-//           ${DbFields.friendshipPlayer2} (where:  { username: {notEqualTo: "${user.name}}"} }){
-//             edges{
-//               node{
-//                 objectId
-//                 ${DbFields.userEmoji}
-//                 ${DbFields.userName}
-//               }
-//             }
-//           }
-//           ${DbFields.friendshipWonGamesPlayer1}
-//           ${DbFields.friendshipWonGamesPlayer2}
-//           ${DbFields.friendshipApproved2}
-//           ${DbFields.friendshipNumGamesPlayed}
-//           ${DbFields.friendshipApproved1}
-//           ${DbFields.friendshipApproved2}
-//           ${DbFields.friendshipOpenGame}{
-//             edges{
-//               node{
-//                 objectId
-//                 createdAt
-//               }
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
 
-// ''';
-//     return ret;
-//   }
+//   /// Returns the graphQL query to check the friend requests.
+  static String updateUser() {
+    String ret = '''
+mutation updateUser(\$user: UpdateUserInput!){
+  updateUser(
+    input: \$user
+  ){
+    user{
+      objectId
+      ${DbFields.userName}
+      ${DbFields.userEmoji}
+      ${DbFields.userPlayedGames}
+      ${DbFields.userTrueCorrectAnswers}
+      ${DbFields.userFalseCorrectAnswers}
+      ${DbFields.userTrueFakeAnswers}
+      ${DbFields.userFalseFakeAnswers}
+    }
+  }
+}
+''';
+    return ret;
+  }
 
   /// Returns the graphQL query to get a [Statement] by [Statement.objectId].
   static String getStatement(String? statementID) {
