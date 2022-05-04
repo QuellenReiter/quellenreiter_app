@@ -239,6 +239,42 @@ class DatabaseUtils {
     return Statement.fromMap(queryResult.data?["statement"]);
   }
 
+  /// Update a [Player] in the Database by [String].
+  ///
+  /// Can be a new name or emoji.
+  Future<void> updateUser(Player player, Function updateUserCallback) async {
+    // The session token.
+    String? token = await safeStorage.read(key: "token");
+    final HttpLink httpLink = HttpLink(kUrl, defaultHeaders: {
+      'X-Parse-Application-Id': kParseApplicationId,
+      'X-Parse-Client-Key': kParseClientKey,
+      'X-Parse-Session-Token': token!,
+    });
+    // create the data provider
+    GraphQLClient client = GraphQLClient(
+      cache: GraphQLCache(),
+      link: httpLink,
+    );
+    var mutationResult = await client.mutate(
+      MutationOptions(
+        document: gql(Queries.updateUser()),
+        variables: {
+          "user": player.toMap(),
+        },
+      ),
+    );
+
+    print(mutationResult);
+    if (mutationResult.hasException) {
+      updateUserCallback(null);
+      return;
+    } else {
+      updateUserCallback(
+          Player.fromMap(mutationResult.data?["updateUser"]["user"]));
+      return;
+    }
+  }
+
   /// Search for [Statements] from the Database by [String].
   ///
   /// If [query] is empty or null, return the newest [Statements].
