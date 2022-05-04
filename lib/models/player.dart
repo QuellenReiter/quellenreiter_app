@@ -33,4 +33,21 @@ class Player {
             : null
   // playedStatements = map?[DbFields.userPlayedStatements]
   ;
+
+  Map<String, dynamic> toMap() {
+    var ret = {
+      "id": id,
+      "fields": {
+        DbFields.userName: name,
+        DbFields.userEmoji: emoji,
+        DbFields.userPlayedGames: numPlayedGames,
+        DbFields.userTrueCorrectAnswers: trueCorrectAnswers,
+        DbFields.userFalseCorrectAnswers: falseCorrectAnswers,
+        DbFields.userTrueFakeAnswers: trueFakeAnswers,
+        DbFields.userFalseFakeAnswers: falseFakeAnswers,
+        DbFields.userName: name,
+      }
+    };
+    return ret;
+  }
 }
