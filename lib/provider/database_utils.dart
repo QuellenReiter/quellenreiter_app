@@ -176,6 +176,41 @@ class DatabaseUtils {
     return;
   }
 
+  /// Get all friend requests as stream.
+  Future<Stream<QueryResult<Enemies>>> getFriendsStream(
+      Player player, Function friendRequestCallback) async {
+    // The session token.
+    String? token = await safeStorage.read(key: "token");
+    // If token is not null, check if it is valid.
+    if (token != null) {
+      // Link to the database.
+      final HttpLink httpLink = HttpLink(kUrl, defaultHeaders: {
+        'X-Parse-Application-Id': kParseApplicationId,
+        'X-Parse-Client-Key': kParseClientKey,
+        'X-Parse-Session-Token': token,
+      });
+
+      // The client that provides the connection.
+      GraphQLClient client = GraphQLClient(
+        cache: GraphQLCache(),
+        link: httpLink,
+      );
+
+      // The query result.
+      var queryResult = client.subscribe(
+        SubscriptionOptions(
+            document: gql(Queries.getFriends(player)),
+            parserFn: (data) {
+              return Enemies.fromFriendshipMap(data["friendships"]);
+            }),
+      );
+
+      return queryResult;
+    }
+    // no token, return false
+    friendRequestCallback(null);
+  }
+
   /// Accept a friend request
   Future<void> acceptFriendRequest(
       Player p, Enemy e, Function acceptFriendCallback) async {
