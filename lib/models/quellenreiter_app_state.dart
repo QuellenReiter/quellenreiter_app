@@ -130,7 +130,7 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void _loginCallback(Player? p) {
     if (p == null) {
-      error = "Login fehlgeschlagen.";
+      error = "Login fehlgeschlagen. ";
       route = Routes.login;
     } else {
       error = null;
@@ -141,8 +141,8 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void _signUpCallback(Player? p) {
     if (p == null) {
-      error = "Anmeldung fehlgeschlagen.";
-      route = Routes.login;
+      error = "Username schon vergeben.";
+      route = Routes.signUp;
     } else {
       error = null;
       player = p;

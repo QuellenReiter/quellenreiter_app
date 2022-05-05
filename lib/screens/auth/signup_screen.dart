@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 
@@ -88,6 +89,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   return Container(
                     padding: const EdgeInsets.all(5),
                     child: TextField(
+                      maxLength: 1,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(Utils.regexEmoji),
+                      ],
                       controller: emojiController,
                       decoration: const InputDecoration(
                         labelText: "Wähle ein Emoji",
@@ -98,17 +103,36 @@ class _SignupScreenState extends State<SignupScreen> {
                 },
               ),
             ),
-            ElevatedButton.icon(
-              onPressed: () => widget.appState.trySignUp(
-                  usernameController.text,
-                  passwordController.text,
-                  emojiController.text),
-              icon: const Icon(Icons.login),
-              label: const Text("anmelden"),
+            ValueListenableBuilder(
+              valueListenable: passwordController,
+              builder: (context, TextEditingValue value, __) {
+                return ValueListenableBuilder(
+                  valueListenable: usernameController,
+                  builder: (context, TextEditingValue value, __) {
+                    return ValueListenableBuilder(
+                      valueListenable: emojiController,
+                      builder: (context, TextEditingValue value, __) {
+                        return ElevatedButton.icon(
+                          onPressed: usernameController.text.isNotEmpty &&
+                                  passwordController.text.isNotEmpty &&
+                                  emojiController.text.isNotEmpty
+                              ? () => widget.appState.trySignUp(
+                                  usernameController.text,
+                                  passwordController.text,
+                                  emojiController.text)
+                              : null,
+                          icon: const Icon(Icons.login),
+                          label: const Text("anmelden"),
+                        );
+                      },
+                    );
+                  },
+                );
+              },
             ),
             TextButton(
               onPressed: () => widget.appState.route = Routes.login,
-              child: Text("Einloggen"),
+              child: const Text("Einloggen"),
             )
           ],
         ),
