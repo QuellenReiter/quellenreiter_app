@@ -42,6 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void onTap(int indexTapped) {
+    //reset the error message.
+    widget.appState.error = null;
     switch (indexTapped) {
       case 0:
         widget.appState.route = Routes.home;

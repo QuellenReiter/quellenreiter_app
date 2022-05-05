@@ -133,6 +133,7 @@ class QuellenreiterAppState extends ChangeNotifier {
       error = "Login fehlgeschlagen.";
       route = Routes.login;
     } else {
+      error = null;
       player = p;
       isLoggedIn = true;
     }
@@ -143,6 +144,7 @@ class QuellenreiterAppState extends ChangeNotifier {
       error = "Anmeldung fehlgeschlagen.";
       route = Routes.login;
     } else {
+      error = null;
       player = p;
       isLoggedIn = true;
     }
@@ -173,6 +175,7 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void _sendFriendRequest(bool success) {
     if (success) {
+      error = null;
       getFriends();
     } else {
       error = "Ein Fehler ist aufgetreten.";
@@ -215,6 +218,7 @@ class QuellenreiterAppState extends ChangeNotifier {
       route = Routes.friends;
       error = "Das hat nicht funktioniert.";
     } else {
+      error = null;
       getFriends();
     }
   }
@@ -230,6 +234,7 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void _searchFriendsCallback(Enemies? e) {
     if (e != null) {
+      error = null;
       friendsSearchResult = e;
     } else {
       error = "keine Suchergebnisse";
@@ -247,13 +252,15 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void _updateUserCallback(Player? player) {
     if (player == null) {
-      error = "User nicht geupdatet.";
       // login again and reset the user.
       db.checkToken(_checkTokenCallback);
+      error = "Username existiert bereits.";
+      route = Routes.settings;
+    } else {
+      error = null;
+      // player should still be the same object so we do not set it again.
       route = Routes.settings;
     }
-    // player should still be the same object so we do not set it again.
-    route = Routes.settings;
   }
 
   List<String> getNames() {
