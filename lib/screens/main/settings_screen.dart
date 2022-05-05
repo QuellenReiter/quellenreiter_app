@@ -71,6 +71,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   widget.appState.player!.emoji &&
                               emojiController.text.isNotEmpty
                           ? () {
+                              HapticFeedback.selectionClick();
                               widget.appState.player?.emoji =
                                   emojiController.text;
                               widget.appState.updateUser();
@@ -110,6 +111,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 widget.appState.player!.name &&
                             usernameController.text.isNotEmpty
                         ? () {
+                            HapticFeedback.selectionClick();
                             widget.appState.player?.name =
                                 usernameController.text;
                             widget.appState.updateUser();
@@ -126,7 +128,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               widget.appState.error!.isNotEmpty)
             Text(widget.appState.error!),
           ElevatedButton.icon(
-            onPressed: () => {widget.appState.logout()},
+            onPressed: () {
+              HapticFeedback.heavyImpact();
+              widget.appState.logout();
+            },
             icon: const Icon(Icons.logout),
             label: const Text("Abmelden"),
           ),
