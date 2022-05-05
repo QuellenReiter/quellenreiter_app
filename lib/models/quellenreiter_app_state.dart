@@ -90,6 +90,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   String? _friendsQuery;
   String? get friendsQuery => _friendsQuery;
   set friendsQuery(value) {
+    route = Routes.loading;
     _friendsQuery = value;
     // This is async. As soon as it completes, app will rebuild.
     if (_friendsQuery != null && _friendsQuery!.isNotEmpty) {
@@ -234,9 +235,11 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void _searchFriendsCallback(Enemies? e) {
     if (e != null) {
+      route = Routes.addFriends;
       error = null;
       friendsSearchResult = e;
     } else {
+      route = Routes.addFriends;
       error = "keine Suchergebnisse";
     }
   }
