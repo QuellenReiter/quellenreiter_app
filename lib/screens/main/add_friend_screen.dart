@@ -54,6 +54,9 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           child: TextField(
+                            textInputAction: TextInputAction.search,
+                            onSubmitted: (query) =>
+                                {widget.appState.friendsQuery = query.trim()},
                             controller: searchController,
                             decoration: const InputDecoration(
                               hintText: "Gebe den exakten Namen ein.",
@@ -69,12 +72,12 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                           ),
                         ),
                       ),
-                      IconButton(
-                        onPressed: () => {
-                          widget.appState.friendsQuery = searchController.text
-                        },
-                        icon: const Icon(Icons.search),
-                      ),
+                      // IconButton(
+                      //   onPressed: () => {
+                      //     widget.appState.friendsQuery = searchController.text
+                      //   },
+                      //   icon: const Icon(Icons.search),
+                      // ),
                     ],
                   ),
                   if (widget.appState.friendsSearchResult != null)
