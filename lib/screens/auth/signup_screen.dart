@@ -49,6 +49,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   return Container(
                     padding: const EdgeInsets.all(5),
                     child: TextField(
+                      autofillHints: const [AutofillHints.newUsername],
                       controller: usernameController,
                       decoration: InputDecoration(
                         labelText: "Nutzername",
@@ -67,6 +68,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   return Container(
                     padding: const EdgeInsets.all(5),
                     child: TextField(
+                      autofillHints: const [AutofillHints.newPassword],
                       obscureText: true,
                       controller: passwordController,
                       decoration: InputDecoration(
@@ -87,9 +89,9 @@ class _SignupScreenState extends State<SignupScreen> {
                     padding: const EdgeInsets.all(5),
                     child: TextField(
                       controller: emojiController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: "Wähle ein Emoji",
-                        border: const OutlineInputBorder(),
+                        border: OutlineInputBorder(),
                       ),
                     ),
                   );
