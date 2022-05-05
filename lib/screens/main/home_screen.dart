@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/screens/main/friends_screen.dart';
 import 'package:quellenreiter_app/screens/main/settings_screen.dart';
@@ -42,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void onTap(int indexTapped) {
+    HapticFeedback.selectionClick();
     //reset the error message.
     widget.appState.error = null;
     switch (indexTapped) {
