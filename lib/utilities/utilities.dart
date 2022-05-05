@@ -16,6 +16,10 @@ class Utils {
     return null;
   }
 
+  /// Regular expression to filter emojis.
+  static final RegExp regexEmoji = RegExp(
+      r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])');
+
   /// Checks if the Value of a [TextEditingController] is a number within
   /// the interval [0, 31].
   static String? checkIfDay(TextEditingController textEditingController) {

@@ -39,10 +39,12 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Flexible(
               child: AutofillGroup(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Flexible(
                       child: ValueListenableBuilder(
@@ -103,20 +105,31 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-            Flexible(
-              child: ElevatedButton.icon(
-                onPressed: () => widget.appState.tryLogin(
-                  usernameController.text,
-                  passwordController.text,
-                ),
-                icon: const Icon(Icons.login),
-                label: const SelectableText("Einloggen"),
-              ),
+            ValueListenableBuilder(
+              valueListenable: passwordController,
+              builder: (context, TextEditingValue value, __) {
+                return ValueListenableBuilder(
+                  valueListenable: usernameController,
+                  builder: (context, TextEditingValue value, __) {
+                    return ElevatedButton.icon(
+                      onPressed: usernameController.text.isNotEmpty &&
+                              passwordController.text.isNotEmpty
+                          ? () => widget.appState.tryLogin(
+                                usernameController.text,
+                                passwordController.text,
+                              )
+                          : null,
+                      icon: const Icon(Icons.login),
+                      label: const SelectableText("Einloggen"),
+                    );
+                  },
+                );
+              },
             ),
             TextButton(
               onPressed: () => widget.appState.route = Routes.signUp,
               child: const Text("Anmelden"),
-            )
+            ),
           ],
         ),
       ),

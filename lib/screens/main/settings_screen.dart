@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
+import 'package:quellenreiter_app/utilities/utilities.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key, required this.appState}) : super(key: key);
@@ -12,9 +13,6 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   late TextEditingController emojiController;
   late TextEditingController usernameController;
-
-  static final RegExp regexEmoji = RegExp(
-      r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])');
 
   // TODO add controller for name controller
   /// Initialize [emojiController] to safe the emoji.
@@ -42,67 +40,87 @@ class _SettingsScreenState extends State<SettingsScreen> {
       padding: const EdgeInsets.all(20),
       child: ListView(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(regexEmoji),
-                  ],
-                  controller: emojiController,
-                  maxLength: 1,
-                  decoration: const InputDecoration(
-                    hintText: "Gebe einen neuen Emoji ein.",
-                    border: UnderlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
+          ValueListenableBuilder(
+            valueListenable: emojiController,
+            builder: (context, TextEditingValue value, __) {
+              return Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(Utils.regexEmoji),
+                      ],
+                      controller: emojiController,
+                      maxLength: 1,
+                      decoration: const InputDecoration(
+                        hintText: "Gebe einen neuen Emoji ein.",
+                        border: UnderlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                        ),
+                        filled: true,
+                        fillColor: Colors.transparent,
+                        contentPadding: EdgeInsets.all(10),
                       ),
                     ),
-                    filled: true,
-                    fillColor: Colors.transparent,
-                    contentPadding: EdgeInsets.all(10),
                   ),
-                ),
-              ),
-              Flexible(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    widget.appState.player?.emoji = emojiController.text;
-                    widget.appState.updateUser();
-                  },
-                  icon: const Icon(Icons.emoji_emotions),
-                  label: const Text("Emoji ändern"),
-                ),
-              ),
-            ],
+                  Flexible(
+                    child: ElevatedButton.icon(
+                      onPressed: emojiController.text !=
+                                  widget.appState.player!.emoji &&
+                              emojiController.text.isNotEmpty
+                          ? () {
+                              widget.appState.player?.emoji =
+                                  emojiController.text;
+                              widget.appState.updateUser();
+                            }
+                          : null,
+                      icon: const Icon(Icons.emoji_emotions),
+                      label: const Text("Emoji ändern"),
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: usernameController,
-                  decoration: const InputDecoration(
-                    hintText: "Gebe einen neuen Username ein.",
-                    border: UnderlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
+          ValueListenableBuilder(
+            valueListenable: usernameController,
+            builder: (context, TextEditingValue value, __) {
+              return Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: usernameController,
+                      decoration: const InputDecoration(
+                        hintText: "Gebe einen neuen Username ein.",
+                        border: UnderlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                        ),
+                        filled: true,
+                        fillColor: Colors.transparent,
+                        contentPadding: EdgeInsets.all(10),
                       ),
                     ),
-                    filled: true,
-                    fillColor: Colors.transparent,
-                    contentPadding: EdgeInsets.all(10),
                   ),
-                ),
-              ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  widget.appState.player?.name = usernameController.text;
-                  widget.appState.updateUser();
-                },
-                icon: const Icon(Icons.switch_access_shortcut),
-                label: const Text("Username ändern."),
-              ),
-            ],
+                  ElevatedButton.icon(
+                    onPressed: usernameController.text !=
+                                widget.appState.player!.name &&
+                            usernameController.text.isNotEmpty
+                        ? () {
+                            widget.appState.player?.name =
+                                usernameController.text;
+                            widget.appState.updateUser();
+                          }
+                        : null,
+                    icon: const Icon(Icons.switch_access_shortcut),
+                    label: const Text("Username ändern."),
+                  ),
+                ],
+              );
+            },
           ),
           if (widget.appState.error != null &&
               widget.appState.error!.isNotEmpty)
