@@ -14,7 +14,8 @@ class Player {
   late int falseFakeAnswers;
   late Enemies? friends;
   late Games? openGames;
-  // late List<String> playedStatements;
+  late List<String>? safedStatementsIds;
+  late List<String>? playedStatements;
 
   Player.fromMap(Map<String, dynamic>? map)
       : name = map?[DbFields.userName],
@@ -30,9 +31,18 @@ class Player {
         id = map?["objectId"],
         openGames = map?[DbFields.userFriendships] != null
             ? Games.fromMap(map?[DbFields.userFriendships])
-            : null
-  // playedStatements = map?[DbFields.userPlayedStatements]
-  ;
+            : null,
+        playedStatements = map?[DbFields.userPlayedStatements] != null
+            ? map![DbFields.userPlayedStatements]
+                .map((x) => x["value"])
+                .toList()
+            : null,
+        safedStatementsIds = map?[DbFields.userSafedStatements] != null
+            ? map![DbFields.userSafedStatements]
+                .map((x) => x["value"])
+                .toList()
+                .cast<String>()
+            : null;
 
   Map<String, dynamic> toMap() {
     var ret = {

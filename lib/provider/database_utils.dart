@@ -16,9 +16,9 @@ class DatabaseUtils {
   /// Login a user.
   void login(String username, String password, Function loginCallback) async {
     // Link to server.
-    final HttpLink httpLink = HttpLink(kUrl, defaultHeaders: {
-      'X-Parse-Application-Id': kParseApplicationId,
-      'X-Parse-Client-Key': kParseClientKey,
+    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
+      'X-Parse-Application-Id': userDatabaseApplicationID,
+      'X-Parse-Client-Key': userDatabaseClientKey,
       //'X-Parse-REST-API-Key' : kParseRestApiKey,
     });
 
@@ -54,9 +54,9 @@ class DatabaseUtils {
   void signUp(String username, String password, String emoji,
       Function signUpCallback) async {
     // Link to server.
-    final HttpLink httpLink = HttpLink(kUrl, defaultHeaders: {
-      'X-Parse-Application-Id': kParseApplicationId,
-      'X-Parse-Client-Key': kParseClientKey,
+    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
+      'X-Parse-Application-Id': userDatabaseApplicationID,
+      'X-Parse-Client-Key': userDatabaseClientKey,
       //'X-Parse-REST-API-Key' : kParseRestApiKey,
     });
 
@@ -100,9 +100,9 @@ class DatabaseUtils {
     // If token is not null, check if it is valid.
     if (token != null) {
       // Link to the database.
-      final HttpLink httpLink = HttpLink(kUrl, defaultHeaders: {
-        'X-Parse-Application-Id': kParseApplicationId,
-        'X-Parse-Client-Key': kParseClientKey,
+      final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
+        'X-Parse-Application-Id': userDatabaseApplicationID,
+        'X-Parse-Client-Key': userDatabaseClientKey,
         'X-Parse-Session-Token': token,
       });
 
@@ -142,9 +142,9 @@ class DatabaseUtils {
     // If token is not null, check if it is valid.
     if (token != null) {
       // Link to the database.
-      final HttpLink httpLink = HttpLink(kUrl, defaultHeaders: {
-        'X-Parse-Application-Id': kParseApplicationId,
-        'X-Parse-Client-Key': kParseClientKey,
+      final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
+        'X-Parse-Application-Id': userDatabaseApplicationID,
+        'X-Parse-Client-Key': userDatabaseClientKey,
         'X-Parse-Session-Token': token,
       });
 
@@ -184,9 +184,9 @@ class DatabaseUtils {
     // If token is not null, check if it is valid.
     if (token != null) {
       // Link to the database.
-      final HttpLink httpLink = HttpLink(kUrl, defaultHeaders: {
-        'X-Parse-Application-Id': kParseApplicationId,
-        'X-Parse-Client-Key': kParseClientKey,
+      final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
+        'X-Parse-Application-Id': userDatabaseApplicationID,
+        'X-Parse-Client-Key': userDatabaseClientKey,
         'X-Parse-Session-Token': token,
       });
 
@@ -219,9 +219,9 @@ class DatabaseUtils {
 
   /// Get a single [Statement] from the Database by [Statement.objectId].
   Future<Statement?> getStatement(String? statementID) async {
-    final HttpLink httpLink = HttpLink(kUrl, defaultHeaders: {
-      'X-Parse-Application-Id': kParseApplicationId,
-      'X-Parse-Client-Key': kParseClientKey,
+    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
+      'X-Parse-Application-Id': userDatabaseApplicationID,
+      'X-Parse-Client-Key': userDatabaseClientKey,
     });
     // create the data provider
     GraphQLClient client = GraphQLClient(
@@ -229,9 +229,11 @@ class DatabaseUtils {
       link: httpLink,
     );
     var queryResult = await client.query(
-      QueryOptions(
-        document: gql(Queries.getStatement(statementID)),
-      ),
+      QueryOptions(document: gql(Queries.getStatements()), variables: {
+        "ids": {
+          "objectId": {"in": "[\"$statementID\"]"}
+        }
+      }),
     );
     if (queryResult.hasException) {
       return null;
@@ -245,9 +247,9 @@ class DatabaseUtils {
   Future<void> updateUser(Player player, Function updateUserCallback) async {
     // The session token.
     String? token = await safeStorage.read(key: "token");
-    final HttpLink httpLink = HttpLink(kUrl, defaultHeaders: {
-      'X-Parse-Application-Id': kParseApplicationId,
-      'X-Parse-Client-Key': kParseClientKey,
+    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
+      'X-Parse-Application-Id': userDatabaseApplicationID,
+      'X-Parse-Client-Key': userDatabaseClientKey,
       'X-Parse-Session-Token': token!,
     });
     // create the data provider
@@ -279,9 +281,9 @@ class DatabaseUtils {
   ///
   /// If [query] is empty or null, return the newest [Statements].
   Future<Statements?> searchStatements(String? query) async {
-    final HttpLink httpLink = HttpLink(kUrl, defaultHeaders: {
-      'X-Parse-Application-Id': kParseApplicationId,
-      'X-Parse-Client-Key': kParseClientKey,
+    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
+      'X-Parse-Application-Id': userDatabaseApplicationID,
+      'X-Parse-Client-Key': userDatabaseClientKey,
     });
     // create the data provider
     GraphQLClient client = GraphQLClient(
@@ -309,7 +311,35 @@ class DatabaseUtils {
   Future<Games?> getOpenGames() async {}
 
   /// Fetch all safed/liked [Statements] from a [Player].
-  Future<Statements?> getSafedStatements() async {}
+  Future<void> getSafedStatements(
+      List<String> ids, Function getStatementsCallback) async {
+    final HttpLink httpLink = HttpLink(statementDatabaseUrl, defaultHeaders: {
+      'X-Parse-Application-Id': statementDatabaseApplicationID,
+      'X-Parse-Client-Key': statementDatabaseClientKey,
+    });
+    // create the data provider
+    GraphQLClient client = GraphQLClient(
+      cache: GraphQLCache(),
+      link: httpLink,
+    );
+    var queryResult = await client.query(
+      QueryOptions(
+        document: gql(
+          Queries.getStatements(),
+        ),
+        variables: {
+          "ids": {
+            "objectId": {"in": ids}
+          }
+        },
+      ),
+    );
+    print(queryResult);
+    if (queryResult.hasException) {
+      getStatementsCallback(null);
+    }
+    getStatementsCallback(Statements.fromMap(queryResult.data));
+  }
 
   /// Authenticate a [Player] to get its emoji etc.
   Future<Player?> authenticate() async {}
@@ -321,9 +351,9 @@ class DatabaseUtils {
     // If token is not null, check if it is valid.
     if (token != null) {
       // Link to the database.
-      final HttpLink httpLink = HttpLink(kUrl, defaultHeaders: {
-        'X-Parse-Application-Id': kParseApplicationId,
-        'X-Parse-Client-Key': kParseClientKey,
+      final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
+        'X-Parse-Application-Id': userDatabaseApplicationID,
+        'X-Parse-Client-Key': userDatabaseClientKey,
         'X-Parse-Session-Token': token,
       });
 
@@ -362,9 +392,9 @@ class DatabaseUtils {
     // If token is not null, check if it is valid.
     if (token != null) {
       // Link to the database.
-      final HttpLink httpLink = HttpLink(kUrl, defaultHeaders: {
-        'X-Parse-Application-Id': kParseApplicationId,
-        'X-Parse-Client-Key': kParseClientKey,
+      final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
+        'X-Parse-Application-Id': userDatabaseApplicationID,
+        'X-Parse-Client-Key': userDatabaseClientKey,
         'X-Parse-Session-Token': token,
       });
 

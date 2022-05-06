@@ -65,6 +65,7 @@ class DbFields {
   static String userFalseCorrectAnswers = "falseCorrectAnswers";
   static String userFalseFakeAnswers = "falseFakeAnswers";
   static String userPlayedStatements = "playedStatements";
+  static String userSafedStatements = "safedStatements";
 
   static String friendshipOpenGame = "openGame";
   static String friendshipNumGamesPlayed = "numPlayedGames";
