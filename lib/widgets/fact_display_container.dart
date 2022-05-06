@@ -18,14 +18,14 @@ class FactDisplayContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 40, left: 40, right: 40),
+      padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
       // The grey background container.
       child: Container(
         alignment: Alignment.topLeft,
         clipBehavior: Clip.none,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(10)),
-          color: DesignColors.lightGrey,
+          color: DesignColors.black,
         ),
         child: Stack(
           children: [
@@ -39,12 +39,12 @@ class FactDisplayContainer extends StatelessWidget {
                 ),
                 child: SelectableText(
                   "Fakt",
-                  style: Theme.of(context).textTheme.headline3,
+                  style: Theme.of(context).textTheme.subtitle1,
                 ),
               ),
             ),
             FractionallySizedBox(
-              widthFactor: 1.22,
+              widthFactor: 1.1,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -81,62 +81,48 @@ class FactDisplayContainer extends StatelessWidget {
                   // Display more information.
                   Padding(
                     padding: const EdgeInsets.all(20),
-                    child: Flex(
+                    child: Wrap(
+                      spacing: 20,
+                      runSpacing: 10,
+                      alignment: WrapAlignment.spaceBetween,
                       direction: Axis.horizontal,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            // Author.
-                            Row(
-                              children: [
-                                const Icon(Icons.person),
-                                Padding(
-                                    padding: const EdgeInsets.only(left: 3),
-                                    child: SelectableText(fact.factAuthor)),
-                              ],
-                            ),
-                            const Divider(
-                              height: 20,
-                            ),
-                            // Media.
-                            Row(
-                              children: [
-                                const Icon(Icons.newspaper),
-                                Padding(
-                                    padding: const EdgeInsets.only(left: 3),
-                                    child: SelectableText(fact.factMedia)),
-                              ],
-                            )
+                            const Icon(Icons.person),
+                            Padding(
+                                padding: const EdgeInsets.only(left: 3),
+                                child: SelectableText(fact.factAuthor)),
                           ],
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        // Media.
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            // Date.
-                            Row(
-                              children: [
-                                const Icon(Icons.calendar_month),
-                                Padding(
-                                    padding: const EdgeInsets.only(left: 3),
-                                    child: SelectableText(fact.dateAsString())),
-                              ],
-                            ),
-                            const Divider(
-                              height: 20,
-                            ),
-                            // Language.
-                            Row(
-                              children: [
-                                const Icon(Icons.language),
-                                Padding(
-                                    padding: const EdgeInsets.only(left: 3),
-                                    child: SelectableText(fact.factLanguage)),
-                              ],
-                            )
+                            const Icon(Icons.newspaper),
+                            Padding(
+                                padding: const EdgeInsets.only(left: 3),
+                                child: SelectableText(fact.factMedia)),
+                          ],
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.calendar_month),
+                            Padding(
+                                padding: const EdgeInsets.only(left: 3),
+                                child: SelectableText(fact.dateAsString())),
+                          ],
+                        ),
+                        // Language.
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.language),
+                            Padding(
+                                padding: const EdgeInsets.only(left: 3),
+                                child: SelectableText(fact.factLanguage)),
                           ],
                         )
                       ],
@@ -145,11 +131,14 @@ class FactDisplayContainer extends StatelessWidget {
                   FractionallySizedBox(
                     widthFactor: 0.8,
                     child: Divider(
-                        height: 20, thickness: 2, color: DesignColors.black),
+                        height: 20,
+                        thickness: 2,
+                        color: DesignColors.lightGrey),
                   ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  Wrap(
+                    spacing: 20,
+                    alignment: WrapAlignment.spaceBetween,
+                    direction: Axis.horizontal,
                     children: [
                       LinkAlert(
                           label: "Link zum Artikel",
