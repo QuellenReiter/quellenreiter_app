@@ -24,7 +24,7 @@ class StatementCard extends StatelessWidget {
         children: [
           Icon(
             Icons.fact_check,
-            color: DesignColors.black,
+            color: DesignColors.lightGrey,
           ),
           Padding(
             padding: const EdgeInsets.only(right: 20, left: 3),
@@ -37,16 +37,16 @@ class StatementCard extends StatelessWidget {
       ),
     );
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20),
+      padding: const EdgeInsets.all(10),
       // The grey background box.
       child: Material(
         borderRadius: const BorderRadius.all(Radius.circular(15)),
-        color: DesignColors.lightGrey,
+        color: DesignColors.black,
         // Make it clickable.
         child: InkWell(
-          hoverColor: Colors.grey[300],
-          highlightColor: Colors.grey[400],
-          splashColor: Colors.grey[600],
+          hoverColor: Colors.black54,
+          highlightColor: Colors.black45,
+          splashColor: Colors.black38,
           onTap: () => onTapped(statement),
           borderRadius: const BorderRadius.all(Radius.circular(15)),
           child: Padding(
@@ -114,7 +114,7 @@ class StatementCard extends StatelessWidget {
                     alignment: Alignment.center,
                     child: Text(
                       "Faktenchecks",
-                      style: Theme.of(context).textTheme.headline2,
+                      style: Theme.of(context).textTheme.subtitle1,
                     ),
                   ),
                   Expanded(
