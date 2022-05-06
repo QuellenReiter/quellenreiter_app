@@ -87,7 +87,8 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
                                     const EdgeInsets.symmetric(horizontal: 20),
                                 // Grey background box.
                                 child: Container(
-                                  padding: const EdgeInsets.all(10),
+                                  padding: const EdgeInsets.only(
+                                      bottom: 10, left: 10, right: 10),
                                   alignment: Alignment.topLeft,
                                   clipBehavior: Clip.none,
                                   decoration: BoxDecoration(
@@ -246,9 +247,8 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
                                           padding: const EdgeInsets.all(20),
                                           child: Wrap(
                                             direction: Axis.horizontal,
-                                            alignment:
-                                                WrapAlignment.spaceBetween,
-                                            runAlignment: WrapAlignment.center,
+                                            alignment: WrapAlignment.start,
+                                            runAlignment: WrapAlignment.start,
                                             runSpacing: 10,
                                             spacing: 10,
                                             children: [

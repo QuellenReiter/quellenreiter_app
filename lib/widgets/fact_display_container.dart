@@ -84,7 +84,8 @@ class FactDisplayContainer extends StatelessWidget {
                     child: Wrap(
                       spacing: 20,
                       runSpacing: 10,
-                      alignment: WrapAlignment.spaceBetween,
+                      alignment: WrapAlignment.start,
+                      runAlignment: WrapAlignment.start,
                       direction: Axis.horizontal,
                       children: [
                         Row(
@@ -106,15 +107,16 @@ class FactDisplayContainer extends StatelessWidget {
                                 child: SelectableText(fact.factMedia)),
                           ],
                         ),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.calendar_month),
-                            Padding(
-                                padding: const EdgeInsets.only(left: 3),
-                                child: SelectableText(fact.dateAsString())),
-                          ],
-                        ),
+                        if (fact.dateAsString().isNotEmpty)
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.calendar_month),
+                              Padding(
+                                  padding: const EdgeInsets.only(left: 3),
+                                  child: SelectableText(fact.dateAsString())),
+                            ],
+                          ),
                         // Language.
                         Row(
                           mainAxisSize: MainAxisSize.min,
@@ -136,8 +138,9 @@ class FactDisplayContainer extends StatelessWidget {
                         color: DesignColors.lightGrey),
                   ),
                   Wrap(
-                    spacing: 20,
-                    alignment: WrapAlignment.spaceBetween,
+                    runSpacing: 0,
+                    spacing: 10,
+                    alignment: WrapAlignment.start,
                     direction: Axis.horizontal,
                     children: [
                       LinkAlert(
