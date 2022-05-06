@@ -22,59 +22,70 @@ class LinkAlert extends StatelessWidget {
       onPressed: msg != ""
           ? () => showModalBottomSheet<void>(
                 context: context,
+                backgroundColor: Colors.transparent,
                 isDismissible: true,
                 builder: (BuildContext context) {
-                  return Align(
-                    alignment: Alignment.topCenter,
-                    child: Container(
-                      padding: const EdgeInsets.only(
-                          bottom: 20, left: 20, right: 20),
-                      constraints: const BoxConstraints(
-                        maxWidth: 700,
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[800],
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        topRight: Radius.circular(15),
                       ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: IconButton(
-                              icon: const Icon(Icons.close),
-                              iconSize: 20,
-                              onPressed: () =>
-                                  Navigator.of(context).pop(context),
+                    ),
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Container(
+                        padding: const EdgeInsets.only(
+                            bottom: 20, left: 20, right: 20),
+                        constraints: const BoxConstraints(
+                          maxWidth: 700,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Align(
+                              alignment: Alignment.topRight,
+                              child: IconButton(
+                                icon: const Icon(Icons.close),
+                                iconSize: 20,
+                                onPressed: () =>
+                                    Navigator.of(context).pop(context),
+                              ),
                             ),
-                          ),
-                          SelectableText(
-                            "Du verlässt diese Website!",
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle1!
-                                .copyWith(color: DesignColors.red),
-                          ),
-                          SelectableText(
-                            msg,
-                            style: Theme.of(context).textTheme.subtitle2,
-                          ),
-                          Text(link),
-                          ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  DesignColors.red),
+                            SelectableText(
+                              "Du verlässt diese Website!",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1!
+                                  .copyWith(color: DesignColors.red),
                             ),
-                            onPressed: () async {
-                              if (!await launch(link)) {
-                                throw 'could not launch';
-                              }
-                              Navigator.of(context).pop(context);
-                            },
-                            child: Text(
-                              "Trotzdem fortfahren.",
-                              style: Theme.of(context).textTheme.subtitle1,
+                            SelectableText(
+                              msg,
+                              style: Theme.of(context).textTheme.subtitle2,
                             ),
-                          ),
-                        ],
+                            Text(link),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        DesignColors.red),
+                              ),
+                              onPressed: () async {
+                                if (!await launch(link)) {
+                                  throw 'could not launch';
+                                }
+                                Navigator.of(context).pop(context);
+                              },
+                              child: Text(
+                                "Trotzdem fortfahren.",
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );
@@ -86,10 +97,11 @@ class LinkAlert extends StatelessWidget {
               }
             },
       style: ButtonStyle(
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           padding: MaterialStateProperty.all<EdgeInsets>(
             const EdgeInsets.all(0),
           ),
-          alignment: Alignment.topLeft),
+          alignment: Alignment.centerLeft),
       label: Text(
         label,
         style: Theme.of(context)

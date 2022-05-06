@@ -83,8 +83,16 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 onPressed: () => {
                   showModalBottomSheet(
                     context: context,
+                    backgroundColor: Colors.transparent,
                     builder: (BuildContext context) {
-                      return Padding(
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[800],
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15),
+                          ),
+                        ),
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
