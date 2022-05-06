@@ -35,77 +35,84 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Login"),
+        title: const Text("Einloggen"),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Flexible(
-              child: AutofillGroup(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Flexible(
-                      child: ValueListenableBuilder(
-                        valueListenable: usernameController,
-                        builder: (context, TextEditingValue value, __) {
-                          return Container(
-                            padding: const EdgeInsets.all(5),
-                            child: TextField(
-                              controller: usernameController,
-                              decoration: InputDecoration(
-                                labelText: "Nutzername",
-                                border: const OutlineInputBorder(),
-                                errorText:
-                                    Utils.checkIfEmpty(usernameController),
-                              ),
-                              autofillHints: const [AutofillHints.username],
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    Flexible(
-                      child: ValueListenableBuilder(
-                        valueListenable: passwordController,
-                        builder: (context, TextEditingValue value, __) {
-                          return Container(
-                            padding: const EdgeInsets.all(5),
-                            child: TextField(
-                              obscureText: true,
-                              controller: passwordController,
-                              decoration: InputDecoration(
-                                labelText: "Passwort",
-                                border: const OutlineInputBorder(),
-                                errorText:
-                                    Utils.checkIfEmpty(passwordController),
-                              ),
-                              autofillHints: const [AutofillHints.password],
-                              onEditingComplete: () =>
-                                  TextInput.finishAutofillContext(),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+      body: ListView(
+        // padding: const EdgeInsets.all(40),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        children: [
+          FractionallySizedBox(
+            widthFactor: 0.5,
+            child: Image.asset(
+              'assets/logo-pink.png',
+              width: 200,
             ),
-            widget.appState.error == null
-                ? const SizedBox.shrink()
-                : Container(
-                    padding: const EdgeInsets.all(10),
-                    color: Colors.red,
-                    child: SelectableText(
-                      widget.appState.error!,
-                      style: const TextStyle(
-                        fontSize: 20,
-                      ),
+          ),
+          FractionallySizedBox(
+            widthFactor: 0.8,
+            child: AutofillGroup(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: ValueListenableBuilder(
+                      valueListenable: usernameController,
+                      builder: (context, TextEditingValue value, __) {
+                        return Container(
+                          padding: const EdgeInsets.all(5),
+                          child: TextField(
+                            controller: usernameController,
+                            decoration: const InputDecoration(
+                              labelText: "Nutzername",
+                              border: OutlineInputBorder(),
+                            ),
+                            autofillHints: const [AutofillHints.username],
+                          ),
+                        );
+                      },
                     ),
                   ),
-            ValueListenableBuilder(
+                  Flexible(
+                    child: ValueListenableBuilder(
+                      valueListenable: passwordController,
+                      builder: (context, TextEditingValue value, __) {
+                        return Container(
+                          padding: const EdgeInsets.all(5),
+                          child: TextField(
+                            obscureText: true,
+                            controller: passwordController,
+                            decoration: const InputDecoration(
+                              labelText: "Passwort",
+                              border: OutlineInputBorder(),
+                            ),
+                            autofillHints: const [AutofillHints.password],
+                            onEditingComplete: () =>
+                                TextInput.finishAutofillContext(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          widget.appState.error == null
+              ? const SizedBox.shrink()
+              : Container(
+                  padding: const EdgeInsets.all(10),
+                  color: Colors.red,
+                  child: SelectableText(
+                    widget.appState.error!,
+                    style: const TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+          FractionallySizedBox(
+            widthFactor: 0.4,
+            child: ValueListenableBuilder(
               valueListenable: passwordController,
               builder: (context, TextEditingValue value, __) {
                 return ValueListenableBuilder(
@@ -126,12 +133,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 );
               },
             ),
-            TextButton(
-              onPressed: () => widget.appState.route = Routes.signUp,
-              child: const Text("Anmelden"),
-            ),
-          ],
-        ),
+          ),
+          TextButton(
+            onPressed: () => widget.appState.route = Routes.signUp,
+            child: const Text("Anmelden"),
+          ),
+        ],
       ),
     );
   }
