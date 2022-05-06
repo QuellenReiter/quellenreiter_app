@@ -41,14 +41,9 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.share),
-                      iconSize: 50,
+                      iconSize: 20,
                       onPressed: () => Share.share(
                           "https://quellenreiter.github.io/fact-browser-deployment/#/statement/${statement.objectId}"),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      iconSize: 50,
-                      onPressed: () => Navigator.of(context).pop(context),
                     ),
                   ],
                 ),
@@ -58,15 +53,13 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
                   behavior: ScrollConfiguration.of(context)
                       .copyWith(scrollbars: false),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    constraints: const BoxConstraints(maxWidth: 1000),
-                    height: MediaQuery.of(context).size.height,
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     // Scrollable container displaying all the information.
                     child: ScrollConfiguration(
                       behavior: ScrollConfiguration.of(context)
                           .copyWith(scrollbars: false),
                       child: ListView(
-                        clipBehavior: Clip.none,
+                        clipBehavior: Clip.hardEdge,
                         shrinkWrap: true,
                         children: AnimationConfiguration.toStaggeredList(
                           duration: const Duration(milliseconds: 400),
@@ -77,52 +70,21 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
                             ),
                           ),
                           children: [
-                            // The backbutton.
-                            FractionallySizedBox(
-                              widthFactor: 1.1,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 40, top: 20, bottom: 20),
-                                child: Wrap(
-                                  children: [
-                                    TextButton.icon(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(),
-                                      icon: Icon(
-                                        Icons.arrow_back,
-                                        color: DesignColors.black,
-                                      ),
-                                      label: Padding(
-                                        padding: const EdgeInsets.all(7),
-                                        child: Text(
-                                          "zurück zur Suche",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText2!
-                                              .copyWith(
-                                                  decoration:
-                                                      TextDecoration.underline),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
                             Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 40),
+                                  const EdgeInsets.symmetric(horizontal: 20),
                               // Grey background box.
                               child: Container(
+                                padding: const EdgeInsets.all(10),
                                 alignment: Alignment.topLeft,
                                 clipBehavior: Clip.none,
                                 decoration: BoxDecoration(
                                   borderRadius: const BorderRadius.all(
                                       Radius.circular(10)),
-                                  color: DesignColors.lightGrey,
+                                  color: DesignColors.black,
                                 ),
                                 child: FractionallySizedBox(
-                                  widthFactor: 1.22,
+                                  widthFactor: 1.15,
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -266,89 +228,64 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
                                       // Display more information.
                                       Padding(
                                         padding: const EdgeInsets.all(20),
-                                        child: Flex(
+                                        child: Wrap(
                                           direction: Axis.horizontal,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
+                                          runAlignment: WrapAlignment.center,
+                                          runSpacing: 10,
                                           children: [
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                            Row(
                                               children: [
-                                                // Author
-                                                Row(
-                                                  children: [
-                                                    const Icon(Icons.person),
-                                                    Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(left: 3),
-                                                        child: Text(statement
-                                                            .statementAuthor)),
-                                                  ],
+                                                const Icon(Icons.person),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 3),
+                                                  child: Text(statement
+                                                      .statementAuthor),
                                                 ),
-
-                                                const Divider(
-                                                  height: 20,
-                                                ),
-                                                // Media and Mediatype
-                                                Row(
-                                                  children: [
-                                                    const Icon(Icons.newspaper),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 3),
-                                                      child: Text(statement
-                                                              .statementMedia +
-                                                          ' | ' +
-                                                          statement
-                                                              .statementMediatype),
-                                                    ),
-                                                  ],
-                                                )
                                               ],
                                             ),
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                            // Media and Mediatype
+                                            Row(
                                               children: [
-                                                // Date
-                                                Row(
-                                                  children: [
-                                                    const Icon(
-                                                        Icons.calendar_month),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 3),
-                                                      child: SelectableText(
-                                                          statement
-                                                              .dateAsString()),
-                                                    ),
-                                                  ],
+                                                const Icon(Icons.newspaper),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 3),
+                                                  child: Text(statement
+                                                          .statementMedia +
+                                                      ' | ' +
+                                                      statement
+                                                          .statementMediatype),
                                                 ),
-                                                const Divider(
-                                                  height: 20,
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                const Icon(
+                                                    Icons.calendar_month),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 3),
+                                                  child: SelectableText(
+                                                      statement.dateAsString()),
                                                 ),
-                                                // Language
-                                                Row(
-                                                  children: [
-                                                    const Icon(Icons.language),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 3),
-                                                      child: SelectableText(
-                                                          statement
-                                                              .statementLanguage),
-                                                    ),
-                                                  ],
-                                                )
+                                              ],
+                                            ),
+                                            // Language
+                                            Row(
+                                              children: [
+                                                const Icon(Icons.language),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 3),
+                                                  child: SelectableText(
+                                                      statement
+                                                          .statementLanguage),
+                                                ),
                                               ],
                                             )
                                           ],
