@@ -38,72 +38,82 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("SignUp"),
+        title: const Text("Anmelden"),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            Flexible(
-              child: ValueListenableBuilder(
-                valueListenable: usernameController,
-                builder: (context, TextEditingValue value, __) {
-                  return Container(
-                    padding: const EdgeInsets.all(5),
-                    child: TextField(
-                      autofillHints: const [AutofillHints.newUsername],
-                      controller: usernameController,
-                      decoration: InputDecoration(
-                        labelText: "Nutzername",
-                        border: const OutlineInputBorder(),
-                        errorText: Utils.checkIfEmpty(usernameController),
-                      ),
-                    ),
-                  );
-                },
-              ),
+      body: ListView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        children: [
+          FractionallySizedBox(
+            widthFactor: 0.5,
+            child: Image.asset(
+              'assets/logo-pink.png',
+              width: MediaQuery.of(context).size.width * 0.3,
             ),
-            Flexible(
-              child: ValueListenableBuilder(
-                valueListenable: passwordController,
-                builder: (context, TextEditingValue value, __) {
-                  return Container(
-                    padding: const EdgeInsets.all(5),
-                    child: TextField(
-                      autofillHints: const [AutofillHints.newPassword],
-                      obscureText: true,
-                      controller: passwordController,
-                      decoration: InputDecoration(
-                        labelText: "Passwort",
-                        border: const OutlineInputBorder(),
-                        errorText: Utils.checkIfEmpty(passwordController),
-                      ),
+          ),
+          FractionallySizedBox(
+            widthFactor: 0.8,
+            child: ValueListenableBuilder(
+              valueListenable: usernameController,
+              builder: (context, TextEditingValue value, __) {
+                return Container(
+                  padding: const EdgeInsets.all(5),
+                  child: TextField(
+                    autofillHints: const [AutofillHints.newUsername],
+                    controller: usernameController,
+                    decoration: const InputDecoration(
+                      labelText: "Nutzername",
+                      border: OutlineInputBorder(),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
-            Flexible(
-              child: ValueListenableBuilder(
-                valueListenable: emojiController,
-                builder: (context, TextEditingValue value, __) {
-                  return Container(
-                    padding: const EdgeInsets.all(5),
-                    child: TextField(
-                      maxLength: 1,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(Utils.regexEmoji),
-                      ],
-                      controller: emojiController,
-                      decoration: const InputDecoration(
-                        labelText: "Wähle ein Emoji",
-                        border: OutlineInputBorder(),
-                      ),
+          ),
+          FractionallySizedBox(
+            widthFactor: 0.8,
+            child: ValueListenableBuilder(
+              valueListenable: passwordController,
+              builder: (context, TextEditingValue value, __) {
+                return Container(
+                  padding: const EdgeInsets.all(5),
+                  child: TextField(
+                    autofillHints: const [AutofillHints.newPassword],
+                    obscureText: true,
+                    controller: passwordController,
+                    decoration: const InputDecoration(
+                      labelText: "Passwort",
+                      border: OutlineInputBorder(),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
-            ValueListenableBuilder(
+          ),
+          FractionallySizedBox(
+            widthFactor: 0.8,
+            child: ValueListenableBuilder(
+              valueListenable: emojiController,
+              builder: (context, TextEditingValue value, __) {
+                return Container(
+                  padding: const EdgeInsets.all(5),
+                  child: TextField(
+                    maxLength: 1,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(Utils.regexEmoji),
+                    ],
+                    controller: emojiController,
+                    decoration: const InputDecoration(
+                      labelText: "Wähle ein Emoji",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          FractionallySizedBox(
+            widthFactor: 0.4,
+            child: ValueListenableBuilder(
               valueListenable: passwordController,
               builder: (context, TextEditingValue value, __) {
                 return ValueListenableBuilder(
@@ -130,12 +140,12 @@ class _SignupScreenState extends State<SignupScreen> {
                 );
               },
             ),
-            TextButton(
-              onPressed: () => widget.appState.route = Routes.login,
-              child: const Text("Einloggen"),
-            )
-          ],
-        ),
+          ),
+          TextButton(
+            onPressed: () => widget.appState.route = Routes.login,
+            child: const Text("Einloggen"),
+          )
+        ],
       ),
     );
   }
