@@ -159,10 +159,10 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
       // get open games if not existing
       appState.openGames ?? await db.getOpenGames();
     }
-    if (configuration.route == Routes.archive) {
-      // get safed Statements if not exisiting.
-      appState.safedStatements ?? await db.getSafedStatements();
-    }
+    // if (configuration.route == Routes.archive) {
+    //   // get safed Statements if not exisiting.
+    //   appState.safedStatements ?? await db.getSafedStatements();
+    // }
     // if (configuration.route == Routes.friends) {
     //   // get list of friends, if not existing.
     //   appState.player?.friends ?? await db.getFriends(appState.player!);

@@ -238,6 +238,16 @@ mutation LogIn{
         ${DbFields.userFalseCorrectAnswers}
         ${DbFields.userTrueFakeAnswers}
         ${DbFields.userFalseFakeAnswers}
+        ${DbFields.userSafedStatements}{
+          ... on Element{
+            value
+          }
+        }
+        ${DbFields.userPlayedStatements}{
+          ... on Element{
+            value
+          }
+        }
       }
       sessionToken
     }
@@ -272,6 +282,16 @@ mutation SignUp{
         ${DbFields.userFalseCorrectAnswers}
         ${DbFields.userTrueFakeAnswers}
         ${DbFields.userFalseFakeAnswers}
+        ${DbFields.userSafedStatements}{
+          ... on Element{
+            value
+          }
+        }
+        ${DbFields.userPlayedStatements}{
+          ... on Element{
+            value
+          }
+        }
       }
       sessionToken
     }
@@ -295,6 +315,16 @@ query GetCurrentUser{
       ${DbFields.userFalseCorrectAnswers}
       ${DbFields.userTrueFakeAnswers}
       ${DbFields.userFalseFakeAnswers}
+      ${DbFields.userSafedStatements}{
+        ... on Element{
+          value
+        }
+      }
+      ${DbFields.userPlayedStatements}{
+        ... on Element{
+          value
+        }
+      }
     }
     sessionToken
   }
@@ -345,6 +375,11 @@ query GetOpenFriendRequests{
               objectId
               ${DbFields.userName}
               ${DbFields.userEmoji}
+              ${DbFields.userPlayedStatements}{
+                ... on Element{
+                  value
+                }
+              }
             }
           }
         }
@@ -354,6 +389,11 @@ query GetOpenFriendRequests{
               objectId
               ${DbFields.userName}
               ${DbFields.userEmoji}
+              ${DbFields.userPlayedStatements}{
+                ... on Element{
+                  value
+                }
+              }
             }
           }
         }
@@ -461,6 +501,16 @@ mutation updateUser(\$user: UpdateUserInput!){
       ${DbFields.userFalseCorrectAnswers}
       ${DbFields.userTrueFakeAnswers}
       ${DbFields.userFalseFakeAnswers}
+      ${DbFields.userSafedStatements}{
+        ... on Element{
+          value
+        }
+      }
+      ${DbFields.userPlayedStatements}{
+        ... on Element{
+          value
+        }
+      }
     }
   }
 }
@@ -469,46 +519,51 @@ mutation updateUser(\$user: UpdateUserInput!){
   }
 
   /// Returns the graphQL query to get a [Statement] by [Statement.objectId].
-  static String getStatement(String? statementID) {
+  static String getStatements() {
     String ret = '''
-query getStatement{
-  statement(
-    	id: "$statementID"
+query getStatement(\$ids: StatementWhereInput!){
+  statements(
+    	where: \$ids
   ){
-    objectId
-    ${DbFields.statementText}
-    ${DbFields.statementPictureFile}{url}
-    ${DbFields.statementYear}
-    ${DbFields.statementMonth}
-    ${DbFields.statementDay}
-    ${DbFields.statementCorrectness}
-    ${DbFields.statementMedia}
-    ${DbFields.statementLanguage}
-    ${DbFields.statementCategory}
-    ${DbFields.statementMediatype}
-    ${DbFields.statementAuthor}
-    ${DbFields.statementLink}
-    ${DbFields.statementRectification}
-    ${DbFields.statementPictureCopyright}
-    ${DbFields.statementFactcheckIDs}{
-      edges{
-        node{
-          objectId
-            ${DbFields.factText}
-            ${DbFields.factAuthor}
-            ${DbFields.factYear}
-            ${DbFields.factMonth}
-            ${DbFields.factDay}
-            ${DbFields.factLanguage}
-            ${DbFields.factMedia}
-            ${DbFields.factLink}
-            ${DbFields.factArchivedLink}
+  edges{
+    node{
+      objectId
+        ${DbFields.statementText}
+        ${DbFields.statementPictureFile}{url}
+        ${DbFields.statementYear}
+        ${DbFields.statementMonth}
+        ${DbFields.statementDay}
+        ${DbFields.statementCorrectness}
+        ${DbFields.statementMedia}
+        ${DbFields.statementLanguage}
+        ${DbFields.statementCategory}
+        ${DbFields.statementMediatype}
+        ${DbFields.statementAuthor}
+        ${DbFields.statementLink}
+        ${DbFields.statementRectification}
+        ${DbFields.statementPictureCopyright}
+        ${DbFields.statementFactcheckIDs}{
+          edges{
+            node{
+              objectId
+              ${DbFields.factText}
+              ${DbFields.factAuthor}
+              ${DbFields.factYear}
+              ${DbFields.factMonth}
+              ${DbFields.factDay}
+              ${DbFields.factLanguage}
+              ${DbFields.factMedia}
+              ${DbFields.factLink}
+              ${DbFields.factArchivedLink}
+            }
+          }
         }
       }
     }
   }
 }
 ''';
+    print(ret);
     return ret;
   }
 }

@@ -107,6 +107,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     if (_isLoggedIn) {
       route = Routes.home;
       getFriends();
+      getArchivedStatements();
     } else {
       route = Routes.login;
     }
@@ -263,6 +264,22 @@ class QuellenreiterAppState extends ChangeNotifier {
       error = null;
       // player should still be the same object so we do not set it again.
       route = Routes.settings;
+    }
+  }
+
+  void getArchivedStatements() {
+    if (player!.safedStatementsIds != null) {
+      // Change this dummy data
+      db.getSafedStatements(
+          player!.safedStatementsIds!, _getStatementsCallback);
+    }
+  }
+
+  void _getStatementsCallback(Statements? statements) {
+    if (statements == null) {
+      error = "Archiv konnte nicht geladen werden.";
+    } else {
+      safedStatements = statements;
     }
   }
 
