@@ -133,7 +133,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     valueListenable: usernameController,
                     builder: (context, TextEditingValue value, __) {
                       return ElevatedButton.icon(
-                        onPressed: usernameController.text.length > 3 &&
+                        onPressed: usernameController.text.length >=
+                                    Utils.usernameMinLength &&
                                 passwordController.text.length > 7
                             ? () => widget.appState.tryLogin(
                                   usernameController.text,
