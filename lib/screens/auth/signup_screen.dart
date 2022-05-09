@@ -43,11 +43,14 @@ class _SignupScreenState extends State<SignupScreen> {
       body: ListView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         children: [
-          FractionallySizedBox(
-            widthFactor: 0.5,
-            child: Image.asset(
-              'assets/logo-pink.png',
-              width: MediaQuery.of(context).size.width * 0.3,
+          Hero(
+            tag: "authLogo",
+            child: FractionallySizedBox(
+              widthFactor: 0.5,
+              child: Image.asset(
+                'assets/logo-pink.png',
+                width: MediaQuery.of(context).size.width * 0.3,
+              ),
             ),
           ),
           FractionallySizedBox(
@@ -58,12 +61,20 @@ class _SignupScreenState extends State<SignupScreen> {
                 return Container(
                   padding: const EdgeInsets.all(5),
                   child: TextField(
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    textCapitalization: TextCapitalization.none,
+                    inputFormatters: [
+                      UsernameTextFormatter(),
+                      FilteringTextInputFormatter.allow(Utils.regexUsername),
+                    ],
                     autofillHints: const [AutofillHints.newUsername],
                     controller: usernameController,
                     decoration: const InputDecoration(
                       labelText: "Nutzername",
                       border: OutlineInputBorder(),
                     ),
+                    keyboardType: TextInputType.visiblePassword,
                   ),
                 );
               },
@@ -111,39 +122,45 @@ class _SignupScreenState extends State<SignupScreen> {
               },
             ),
           ),
-          FractionallySizedBox(
-            widthFactor: 0.4,
-            child: ValueListenableBuilder(
-              valueListenable: passwordController,
-              builder: (context, TextEditingValue value, __) {
-                return ValueListenableBuilder(
-                  valueListenable: usernameController,
-                  builder: (context, TextEditingValue value, __) {
-                    return ValueListenableBuilder(
-                      valueListenable: emojiController,
-                      builder: (context, TextEditingValue value, __) {
-                        return ElevatedButton.icon(
-                          onPressed: usernameController.text.isNotEmpty &&
-                                  passwordController.text.isNotEmpty &&
-                                  emojiController.text.isNotEmpty
-                              ? () => widget.appState.trySignUp(
-                                  usernameController.text,
-                                  passwordController.text,
-                                  emojiController.text)
-                              : null,
-                          icon: const Icon(Icons.login),
-                          label: const Text("anmelden"),
-                        );
-                      },
-                    );
-                  },
-                );
-              },
+          Hero(
+            tag: "authButton",
+            child: FractionallySizedBox(
+              widthFactor: 0.4,
+              child: ValueListenableBuilder(
+                valueListenable: passwordController,
+                builder: (context, TextEditingValue value, __) {
+                  return ValueListenableBuilder(
+                    valueListenable: usernameController,
+                    builder: (context, TextEditingValue value, __) {
+                      return ValueListenableBuilder(
+                        valueListenable: emojiController,
+                        builder: (context, TextEditingValue value, __) {
+                          return ElevatedButton.icon(
+                            onPressed: usernameController.text.length > 3 &&
+                                    passwordController.text.length > 7 &&
+                                    emojiController.text.isNotEmpty
+                                ? () => widget.appState.trySignUp(
+                                    usernameController.text,
+                                    passwordController.text,
+                                    emojiController.text)
+                                : null,
+                            icon: const Icon(Icons.login),
+                            label: const Text("anmelden"),
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ),
-          TextButton(
-            onPressed: () => widget.appState.route = Routes.login,
-            child: const Text("Einloggen"),
+          Hero(
+            tag: "authSwitch",
+            child: TextButton(
+              onPressed: () => widget.appState.route = Routes.login,
+              child: const Text("Einloggen"),
+            ),
           )
         ],
       ),

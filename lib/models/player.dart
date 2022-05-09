@@ -36,6 +36,7 @@ class Player {
             ? map![DbFields.userPlayedStatements]
                 .map((x) => x["value"])
                 .toList()
+                .cast<String>()
             : null,
         safedStatementsIds = map?[DbFields.userSafedStatements] != null
             ? map![DbFields.userSafedStatements]
