@@ -136,7 +136,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         valueListenable: emojiController,
                         builder: (context, TextEditingValue value, __) {
                           return ElevatedButton.icon(
-                            onPressed: usernameController.text.length > 3 &&
+                            onPressed: usernameController.text.length >=
+                                        Utils.usernameMinLength &&
                                     passwordController.text.length > 7 &&
                                     emojiController.text.isNotEmpty
                                 ? () => widget.appState.trySignUp(

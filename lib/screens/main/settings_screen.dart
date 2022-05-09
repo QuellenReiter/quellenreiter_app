@@ -118,7 +118,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ElevatedButton.icon(
                     onPressed: usernameController.text !=
                                 widget.appState.player!.name &&
-                            usernameController.text.length > 3
+                            usernameController.text.length >=
+                                Utils.usernameMinLength
                         ? () {
                             HapticFeedback.selectionClick();
                             widget.appState.player?.name =

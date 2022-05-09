@@ -23,6 +23,8 @@ class Utils {
 
   static final RegExp regexUsername = RegExp(r'[a-zA-Z0-9_.-]');
 
+  static final int usernameMinLength = 3;
+
   /// Checks if the Value of a [TextEditingController] is a number within
   /// the interval [0, 31].
   static String? checkIfDay(TextEditingController textEditingController) {
