@@ -48,10 +48,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 children: [
                   Expanded(
                     child: TextField(
+                      controller: emojiController,
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(Utils.regexEmoji),
                       ],
-                      controller: emojiController,
                       maxLength: 1,
                       decoration: const InputDecoration(
                         hintText: "Gebe einen neuen Emoji ein.",
@@ -93,7 +93,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 children: [
                   Expanded(
                     child: TextField(
+                      inputFormatters: [
+                        UsernameTextFormatter(),
+                        FilteringTextInputFormatter.allow(Utils.regexUsername),
+                      ],
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      textCapitalization: TextCapitalization.none,
                       controller: usernameController,
+                      autofillHints: const [AutofillHints.newUsername],
                       decoration: const InputDecoration(
                         hintText: "Gebe einen neuen Username ein.",
                         border: UnderlineInputBorder(
@@ -110,7 +118,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ElevatedButton.icon(
                     onPressed: usernameController.text !=
                                 widget.appState.player!.name &&
-                            usernameController.text.isNotEmpty
+                            usernameController.text.length > 3
                         ? () {
                             HapticFeedback.selectionClick();
                             widget.appState.player?.name =

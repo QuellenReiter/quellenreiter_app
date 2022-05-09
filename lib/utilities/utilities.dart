@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 
 /// Static Class containing various utility functions. Can be called without
@@ -19,6 +20,8 @@ class Utils {
   /// Regular expression to filter emojis.
   static final RegExp regexEmoji = RegExp(
       r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])');
+
+  static final RegExp regexUsername = RegExp(r'[a-zA-Z0-9_.-]');
 
   /// Checks if the Value of a [TextEditingController] is a number within
   /// the interval [0, 31].
@@ -107,4 +110,15 @@ class CorrectnessCategory {
   static String fabricatedContent = "frei erfunden";
   static String falseInformation = "Fehlinformation";
   static String satire = "Satire";
+}
+
+class UsernameTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    return TextEditingValue(
+      text: newValue.text.toLowerCase(),
+      selection: newValue.selection,
+    );
+  }
 }

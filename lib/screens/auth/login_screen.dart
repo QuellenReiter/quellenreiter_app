@@ -41,11 +41,14 @@ class _LoginScreenState extends State<LoginScreen> {
         // padding: const EdgeInsets.all(40),
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         children: [
-          FractionallySizedBox(
-            widthFactor: 0.5,
-            child: Image.asset(
-              'assets/logo-pink.png',
-              width: 200,
+          Hero(
+            tag: "authLogo",
+            child: FractionallySizedBox(
+              widthFactor: 0.5,
+              child: Image.asset(
+                'assets/logo-pink.png',
+                width: 200,
+              ),
             ),
           ),
           FractionallySizedBox(
@@ -68,6 +71,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               border: OutlineInputBorder(),
                             ),
                             autofillHints: const [AutofillHints.username],
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            textCapitalization: TextCapitalization.none,
+                            inputFormatters: [
+                              UsernameTextFormatter(),
+                              FilteringTextInputFormatter.allow(
+                                  Utils.regexUsername),
+                            ],
+                            keyboardType: TextInputType.visiblePassword,
                           ),
                         );
                       },
@@ -110,33 +122,39 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-          FractionallySizedBox(
-            widthFactor: 0.4,
-            child: ValueListenableBuilder(
-              valueListenable: passwordController,
-              builder: (context, TextEditingValue value, __) {
-                return ValueListenableBuilder(
-                  valueListenable: usernameController,
-                  builder: (context, TextEditingValue value, __) {
-                    return ElevatedButton.icon(
-                      onPressed: usernameController.text.isNotEmpty &&
-                              passwordController.text.isNotEmpty
-                          ? () => widget.appState.tryLogin(
-                                usernameController.text,
-                                passwordController.text,
-                              )
-                          : null,
-                      icon: const Icon(Icons.login),
-                      label: const SelectableText("Einloggen"),
-                    );
-                  },
-                );
-              },
+          Hero(
+            tag: "authButton",
+            child: FractionallySizedBox(
+              widthFactor: 0.4,
+              child: ValueListenableBuilder(
+                valueListenable: passwordController,
+                builder: (context, TextEditingValue value, __) {
+                  return ValueListenableBuilder(
+                    valueListenable: usernameController,
+                    builder: (context, TextEditingValue value, __) {
+                      return ElevatedButton.icon(
+                        onPressed: usernameController.text.length > 3 &&
+                                passwordController.text.length > 7
+                            ? () => widget.appState.tryLogin(
+                                  usernameController.text,
+                                  passwordController.text,
+                                )
+                            : null,
+                        icon: const Icon(Icons.login),
+                        label: const SelectableText("Einloggen"),
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ),
-          TextButton(
-            onPressed: () => widget.appState.route = Routes.signUp,
-            child: const Text("Anmelden"),
+          Hero(
+            tag: "authSwitch",
+            child: TextButton(
+              onPressed: () => widget.appState.route = Routes.signUp,
+              child: const Text("Anmelden"),
+            ),
           ),
         ],
       ),
