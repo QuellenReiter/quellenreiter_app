@@ -32,6 +32,7 @@ class _StartGameScreenState extends State<StartGameScreen> {
                   itemCount: enemiesWithNoGame.length,
                   itemBuilder: (BuildContext context, int index) {
                     return EnemyCard(
+                      appState: widget.appState,
                       enemy: enemiesWithNoGame[index],
                       onTapped: (enemy) => {},
                     );
