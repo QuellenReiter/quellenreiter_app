@@ -61,6 +61,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                           widget.appState.player!.friends!.enemies.length,
                       itemBuilder: (BuildContext context, int index) {
                         return EnemyCard(
+                          appState: widget.appState,
                           enemy:
                               widget.appState.player!.friends!.enemies[index],
                           onTapped: (enemy) => {},
@@ -108,6 +109,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                     .appState.enemyRequests!.enemies.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return EnemyCard(
+                                    appState: widget.appState,
                                     enemy: widget
                                         .appState.enemyRequests!.enemies[index],
                                     onTapped: (enemy) =>

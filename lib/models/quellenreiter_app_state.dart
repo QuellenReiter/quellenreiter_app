@@ -283,6 +283,23 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
   }
 
+  void startNewGame(Enemy e, bool withTimer) async {
+    Routes tempRoute = route;
+    route = Routes.loading;
+    e.openGame = Game.empty(withTimer, e.playerIndex);
+    e.openGame!.statements = await db.getPlayableStatements(e);
+    e.openGame!.statementIds =
+        e.openGame!.statements!.statements.map((e) => e.objectId!).toList();
+    if (e.openGame!.statements != null) {
+      route = Routes.gameReadyToStart;
+      error = null;
+    } else {
+      route = tempRoute;
+      error =
+          "Spielstarten fehlgeschlagen. Quests konnten nicht geladen werden.";
+    }
+  }
+
   List<String> getNames() {
     var ret = player!.friends!.getNames();
     ret.add(player!.name);
