@@ -1,6 +1,5 @@
 import 'package:quellenreiter_app/models/enemy.dart';
 import '../constants/constants.dart';
-import 'game.dart';
 
 class Player {
   late String id;
@@ -13,7 +12,6 @@ class Player {
   late int falseCorrectAnswers;
   late int falseFakeAnswers;
   late Enemies? friends;
-  late Games? openGames;
   late List<String>? safedStatementsIds;
   late List<String>? playedStatements;
 
@@ -29,9 +27,6 @@ class Player {
             ? Enemies.fromFriendshipMap(map?[DbFields.userFriendships])
             : null,
         id = map?["objectId"],
-        openGames = map?[DbFields.userFriendships] != null
-            ? Games.fromMap(map?[DbFields.userFriendships])
-            : null,
         playedStatements = map?[DbFields.userPlayedStatements] != null
             ? map![DbFields.userPlayedStatements]
                 .map((x) => x["value"])

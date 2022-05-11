@@ -3,16 +3,17 @@ import 'game.dart';
 
 class Enemy {
   late final int playerIndex;
-  late final String friendshipId;
+  late String friendshipId;
+  late List<String> playedStatementIds;
   late final String name;
   late final String userID;
   late final String emoji;
-  late final int numGamesPlayed;
-  late final int wonGamesPlayer;
-  late final int wonGamesOther;
-  late final bool acceptedByOther;
-  late final bool acceptedByPlayer;
-  late final Game? openGame;
+  late int numGamesPlayed;
+  late int wonGamesPlayer;
+  late int wonGamesOther;
+  late bool acceptedByOther;
+  late bool acceptedByPlayer;
+  late Game? openGame;
 
   /// Constructor that takes a Map of a friendship query and resolves which of
   /// player1 and player2 is
@@ -21,6 +22,17 @@ class Enemy {
     if (map?[DbFields.friendshipPlayer1]["edges"]?.length == 0) {
       // The player corresponds to player1 in the database friendship.
       playerIndex = 0;
+      if (map?[DbFields.friendshipPlayer2]["edges"][0]["node"]
+              [DbFields.userPlayedStatements] ==
+          null) {
+        playedStatementIds = [];
+      } else {
+        playedStatementIds = map?[DbFields.friendshipPlayer2]["edges"][0]
+                ["node"][DbFields.userPlayedStatements]
+            .map((x) => x["value"])
+            .toList()
+            .cast<String>();
+      }
       name = map?[DbFields.friendshipPlayer2]["edges"][0]["node"]
           [DbFields.userName];
       emoji = map?[DbFields.friendshipPlayer2]["edges"][0]["node"]
@@ -33,6 +45,11 @@ class Enemy {
     } else {
       // The player corresponds to player2 in the database friendship.
       playerIndex = 1;
+      playedStatementIds = map?[DbFields.friendshipPlayer1]["edges"][0]["node"]
+              [DbFields.userPlayedStatements]
+          .map((x) => x["value"])
+          .toList()
+          .cast<String>();
       name = map?[DbFields.friendshipPlayer1]["edges"][0]["node"]
           [DbFields.userName];
       emoji = map?[DbFields.friendshipPlayer1]["edges"][0]["node"]
@@ -47,8 +64,32 @@ class Enemy {
     friendshipId = map?["objectId"];
     // if an open game exists, safe it.
     if (map?[DbFields.friendshipOpenGame]["edges"].isNotEmpty) {
-      openGame =
-          Game.fromMap(map?[DbFields.friendshipOpenGame]["edges"][0]["node"]);
+      openGame = Game(
+        //object Id
+        map?[DbFields.friendshipOpenGame]["edges"][0]["node"]["objectId"],
+        // enemyAnswers
+        map?[DbFields.friendshipOpenGame]["edges"][0]["node"][playerIndex == 0
+                ? DbFields.gameAnswersPlayer2
+                : DbFields.gameAnswersPlayer1]
+            .map((x) => x["value"])
+            .toList()
+            .cast<bool>(),
+        // player answers
+        map?[DbFields.friendshipOpenGame]["edges"][0]["node"][playerIndex == 0
+                ? DbFields.gameAnswersPlayer1
+                : DbFields.gameAnswersPlayer2]
+            .map((x) => x["value"])
+            .toList()
+            .cast<bool>(),
+        playerIndex,
+        map?[DbFields.friendshipOpenGame]["edges"][0]["node"]
+                [DbFields.gameStatementIds]
+            .map((x) => x["value"])
+            .toList()
+            .cast<String>(),
+        map?[DbFields.friendshipOpenGame]["edges"][0]["node"]
+            [DbFields.gameWithTimer],
+      );
     } else {
       openGame = null;
     }
