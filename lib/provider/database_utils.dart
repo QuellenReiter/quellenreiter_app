@@ -424,4 +424,6 @@ class DatabaseUtils {
     searchFriendsCallback(null);
     return;
   }
+
+  getPlayableStatements(Enemy e) {}
 }

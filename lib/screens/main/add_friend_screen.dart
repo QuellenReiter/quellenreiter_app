@@ -99,6 +99,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                                   horizontalOffset: 30,
                                   child: FadeInAnimation(
                                     child: EnemyCard(
+                                      appState: widget.appState,
                                       enemy: widget.appState
                                           .friendsSearchResult!.enemies[index],
                                       onTapped:
