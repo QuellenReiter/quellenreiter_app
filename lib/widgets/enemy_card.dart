@@ -50,7 +50,7 @@ class EnemyCard extends StatelessWidget {
                 // if an open Game exists.
                 if (enemy.openGame != null)
                   // .. and if its the players turn
-                  if (enemy.openGame!.playersTurn)
+                  if (enemy.openGame!.isPlayersTurn())
                     Flexible(
                       child: ElevatedButton.icon(
                         onPressed: () => {},

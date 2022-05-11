@@ -80,6 +80,13 @@ class DbFields {
   static String openGameStatements = "statements";
 
   static String enemyName = "name";
+
+  static String gameStatementIds = "statementIds";
+  static String gameWithTimer = "withTimer";
+  static String gameAnswersPlayer1 = "answersPlayer1";
+  static String gameAnswersPlayer2 = "answersPlayer2";
+  static String gamePlayer1 = "player1";
+  static String gamePlayer2 = "player2";
 }
 
 enum Routes {
