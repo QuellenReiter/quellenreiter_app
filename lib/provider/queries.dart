@@ -402,6 +402,22 @@ query GetOpenFriendRequests{
             node{
               createdAt
               objectId
+              ${DbFields.gameWithTimer}
+              ${DbFields.gameAnswersPlayer1}{
+                ... on Element{
+                    value
+                } 
+              }
+              ${DbFields.gameAnswersPlayer2}{
+                ... on Element{
+                    value
+                } 
+              }
+              ${DbFields.gameStatementIds}{
+                ... on Element{
+                    value
+                } 
+              }
             }
           }
         }
