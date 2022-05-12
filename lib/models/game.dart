@@ -19,14 +19,15 @@ class Game {
   // }
   Game(this.id, this.enemyAnswers, this.playerAnswers, this.playerIndex,
       this.statementIds, this.withTimer);
-  Game.empty(bool timer, int playerIndex) {
+
+  Game.empty(bool timer, int pIndex) {
     // where to get statement ids? download all possible and pickRandom on device.
     // not downloading all but only 50 could be the bin approach wanted.
     // sort by object ID should be date and category independent.
 
     // get statements directlly and then safe the ids ! :)
     id = null;
-    playerIndex = playerIndex;
+    playerIndex = pIndex;
     id = null;
     statements = null;
     playerAnswers = [];
@@ -51,6 +52,33 @@ class Game {
     } else {
       return false;
     }
+  }
+
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> ret = {};
+    if (playerIndex == 0) {
+      ret = {
+        "id": id,
+        "fields": {
+          DbFields.gameStatementIds: statementIds ?? [],
+          DbFields.gameAnswersPlayer1: playerAnswers,
+          DbFields.gameAnswersPlayer2: enemyAnswers,
+          DbFields.gameWithTimer: withTimer,
+        }
+      };
+    } else {
+      ret = {
+        "id": id,
+        "fields": {
+          DbFields.gameStatementIds: statementIds ?? [],
+          DbFields.gameAnswersPlayer1: enemyAnswers,
+          DbFields.gameAnswersPlayer2: playerAnswers,
+          DbFields.gameWithTimer: withTimer,
+        }
+      };
+    }
+    print(ret);
+    return ret;
   }
 }
 

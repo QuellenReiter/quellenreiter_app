@@ -52,6 +52,7 @@ class Player {
         DbFields.userTrueFakeAnswers: trueFakeAnswers,
         DbFields.userFalseFakeAnswers: falseFakeAnswers,
         DbFields.userName: name,
+        DbFields.userPlayedStatements: playedStatements
       }
     };
     return ret;

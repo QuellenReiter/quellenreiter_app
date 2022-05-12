@@ -354,6 +354,22 @@ mutation updateFriendship{
     return ret;
   }
 
+  static String updateFriendship() {
+    String ret = '''
+mutation updateFriendship(\$friendship: UpdateFriendshipInput!){
+  updateFriendship(
+    input: \$friendship
+  ){
+    friendship{
+      objectId
+    }
+  }
+}
+''';
+    print(ret);
+    return ret;
+  }
+
   /// Returns the graphQL query to check the friend requests.
   static String getFriends(Player player) {
     String ret = '''
@@ -426,14 +442,6 @@ query GetOpenFriendRequests{
         ${DbFields.friendshipNumGamesPlayed}
         ${DbFields.friendshipApproved1}
         ${DbFields.friendshipApproved2}
-        ${DbFields.friendshipOpenGame}{
-          edges{
-            node{
-              objectId
-              createdAt
-            }
-          }
-        }
       }
     }
   }
@@ -501,7 +509,7 @@ mutation sendFriendRequest {
     return ret;
   }
 
-//   /// Returns the graphQL query to check the friend requests.
+  /// Returns the graphQL query to check the friend requests.
   static String updateUser() {
     String ret = '''
 mutation updateUser(\$user: UpdateUserInput!){
@@ -531,6 +539,73 @@ mutation updateUser(\$user: UpdateUserInput!){
   }
 }
 ''';
+    return ret;
+  }
+
+  /// Returns the graphQL query to update a game.
+  static String updateGame() {
+    String ret = '''
+mutation updateGame(\$openGame: UpdateOpenGameInput!){
+  updateOpenGame(
+    input: \$openGame
+  ){
+    openGame{
+      createdAt
+      objectId
+      ${DbFields.gameWithTimer}
+      ${DbFields.gameAnswersPlayer1}{
+        ... on Element{
+            value
+        } 
+      }
+      ${DbFields.gameAnswersPlayer2}{
+        ... on Element{
+            value
+        } 
+      }
+      ${DbFields.gameStatementIds}{
+        ... on Element{
+            value
+        } 
+      }
+    }
+  }
+}
+''';
+    return ret;
+  }
+
+  /// Returns the graphQL query to update a game.
+  static String uploadGame() {
+    String ret = '''
+mutation uploadGame(\$openGame: CreateOpenGameInput!){
+  createOpenGame(
+    input: \$openGame
+  ){
+    openGame{
+      createdAt
+      objectId
+      ${DbFields.gameWithTimer}
+      ${DbFields.gameAnswersPlayer1}{
+        ... on Element{
+            value
+        } 
+      }
+      ${DbFields.gameAnswersPlayer2}{
+        ... on Element{
+            value
+        } 
+      }
+      ${DbFields.gameStatementIds}{
+        ... on Element{
+            value
+        } 
+      }
+    }
+  }
+}
+''';
+    print(ret);
     return ret;
   }
 
