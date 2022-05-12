@@ -107,6 +107,54 @@ class Enemy {
     friendshipId = "";
     openGame = null;
   }
+
+  Map<String, dynamic> toUserMap() {
+    var ret = {
+      "id": userID,
+      "fields": {
+        DbFields.userName: name,
+        DbFields.userEmoji: emoji,
+        DbFields.userName: name,
+        DbFields.userPlayedStatements: playedStatementIds
+      }
+    };
+    return ret;
+  }
+
+  Map<String, dynamic> toFriendshipMap() {
+    Map<String, dynamic> ret = {};
+    if (playerIndex == 0) {
+      ret = {
+        "id": friendshipId,
+        "fields": {
+          DbFields.friendshipApproved1: acceptedByPlayer,
+          DbFields.friendshipApproved2: acceptedByOther,
+          DbFields.friendshipWonGamesPlayer1: wonGamesPlayer,
+          DbFields.friendshipWonGamesPlayer2: wonGamesOther,
+          DbFields.friendshipNumGamesPlayed: numGamesPlayed,
+          DbFields.friendshipOpenGame: {
+            "add": openGame!.id,
+          }
+        }
+      };
+    } else {
+      ret = {
+        "id": friendshipId,
+        "fields": {
+          DbFields.friendshipApproved2: acceptedByPlayer,
+          DbFields.friendshipApproved1: acceptedByOther,
+          DbFields.friendshipWonGamesPlayer2: wonGamesPlayer,
+          DbFields.friendshipWonGamesPlayer1: wonGamesOther,
+          DbFields.friendshipNumGamesPlayed: numGamesPlayed,
+          DbFields.friendshipOpenGame: {
+            "add": openGame!.id,
+          }
+        }
+      };
+    }
+    print(ret);
+    return ret;
+  }
 }
 
 class Enemies {

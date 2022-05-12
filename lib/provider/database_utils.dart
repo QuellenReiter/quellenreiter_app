@@ -4,6 +4,7 @@ import 'package:quellenreiter_app/models/enemy.dart';
 import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/player.dart';
 import '../consonents.dart';
+import '../constants/constants.dart';
 import '../models/statement.dart';
 import 'queries.dart';
 
@@ -244,7 +245,7 @@ class DatabaseUtils {
   /// Update a [Player] in the Database by [String].
   ///
   /// Can be a new name or emoji.
-  Future<void> updateUser(Player player, Function updateUserCallback) async {
+  Future<void> updateUser(dynamic player, Function updateUserCallback) async {
     // The session token.
     String? token = await safeStorage.read(key: "token");
     final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
@@ -261,7 +262,9 @@ class DatabaseUtils {
       MutationOptions(
         document: gql(Queries.updateUser()),
         variables: {
-          "user": player.toMap(),
+          "user": player.runtimeType == Player
+              ? player.toMap()
+              : player.toUserMap(),
         },
       ),
     );
@@ -274,6 +277,137 @@ class DatabaseUtils {
       updateUserCallback(
           Player.fromMap(mutationResult.data?["updateUser"]["user"]));
       return;
+    }
+  }
+
+  /// Update a [Friendship] in the Database by [String].
+
+  Future<bool> updateFriendship(Enemy enemy) async {
+    // The session token.
+    String? token = await safeStorage.read(key: "token");
+    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
+      'X-Parse-Application-Id': userDatabaseApplicationID,
+      'X-Parse-Client-Key': userDatabaseClientKey,
+      'X-Parse-Session-Token': token!,
+    });
+    // create the data provider
+    GraphQLClient client = GraphQLClient(
+      cache: GraphQLCache(),
+      link: httpLink,
+    );
+    var mutationResult = await client.mutate(
+      MutationOptions(
+        document: gql(Queries.updateFriendship()),
+        variables: {
+          "friendship": enemy.toFriendshipMap(),
+        },
+      ),
+    );
+
+    print(mutationResult);
+    if (mutationResult.hasException) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  /// Update a [Game] in the Database by [String].
+  ///
+  /// Can be a new name or emoji.
+  Future<bool> updateGame(Enemy enemy) async {
+    // The session token.
+    String? token = await safeStorage.read(key: "token");
+    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
+      'X-Parse-Application-Id': userDatabaseApplicationID,
+      'X-Parse-Client-Key': userDatabaseClientKey,
+      'X-Parse-Session-Token': token!,
+    });
+    // create the data provider
+    GraphQLClient client = GraphQLClient(
+      cache: GraphQLCache(),
+      link: httpLink,
+    );
+    var mutationResult = await client.mutate(
+      MutationOptions(
+        document: gql(Queries.updateGame()),
+        variables: {
+          "openGame": enemy.openGame!.toMap(),
+        },
+      ),
+    );
+
+    print(mutationResult);
+    if (mutationResult.hasException) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  /// Upload a [Game] into the Database by [String].
+  ///
+  /// Can be a new name or emoji.
+  Future<Game?> uploadGame(Enemy enemy) async {
+    // The session token.
+    String? token = await safeStorage.read(key: "token");
+    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
+      'X-Parse-Application-Id': userDatabaseApplicationID,
+      'X-Parse-Client-Key': userDatabaseClientKey,
+      'X-Parse-Session-Token': token!,
+    });
+    // create the data provider
+    GraphQLClient client = GraphQLClient(
+      cache: GraphQLCache(),
+      link: httpLink,
+    );
+    var temp = enemy.openGame!.toMap();
+    temp.remove("id");
+
+    // ERROR HERE !!!!
+    var mutationResult = await client.mutate(
+      MutationOptions(
+        document: gql(Queries.uploadGame()),
+        variables: {
+          "openGame": temp,
+        },
+      ),
+    );
+    print(mutationResult);
+
+    print(mutationResult);
+    if (mutationResult.hasException) {
+      return null;
+    } else {
+      return Game(
+        //object Id
+        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
+            ["objectId"],
+        // enemyAnswers
+        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame][
+                enemy.playerIndex == 0
+                    ? DbFields.gameAnswersPlayer2
+                    : DbFields.gameAnswersPlayer1]
+            .map((x) => x["value"])
+            .toList()
+            .cast<bool>(),
+        // player answers
+        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame][
+                enemy.playerIndex == 0
+                    ? DbFields.gameAnswersPlayer1
+                    : DbFields.gameAnswersPlayer2]
+            .map((x) => x["value"])
+            .toList()
+            .cast<bool>(),
+        enemy.playerIndex,
+        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
+                [DbFields.gameStatementIds]
+            .map((x) => x["value"])
+            .toList()
+            .cast<String>(),
+        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
+            [DbFields.gameWithTimer],
+      );
     }
   }
 
@@ -306,9 +440,6 @@ class DatabaseUtils {
     }
     return Statements.fromMap(queryResult.data);
   }
-
-  /// Fetch the open [Games] of a [Player]..
-  Future<Games?> getOpenGames() async {}
 
   /// Fetch all safed/liked [Statements] from a [Player].
   Future<void> getSafedStatements(
@@ -425,5 +556,90 @@ class DatabaseUtils {
     return;
   }
 
-  getPlayableStatements(Enemy e) {}
+  /// Function to find and load nine statements that have not been played by neither user.
+  Future<List<String>?> getPlayableStatements(Enemy e, Player p) async {
+    // setup statement db connection
+    final HttpLink httpLinkStatementDB =
+        HttpLink(statementDatabaseUrl, defaultHeaders: {
+      'X-Parse-Application-Id': statementDatabaseApplicationID,
+      'X-Parse-Client-Key': statementDatabaseClientKey,
+    });
+    // create the data provider
+    GraphQLClient clientStatementDB = GraphQLClient(
+      cache: GraphQLCache(),
+      link: httpLinkStatementDB,
+    );
+    // setup gameDB connection
+    // The session token.
+    String? token = await safeStorage.read(key: "token");
+    // If token is not null, check if it is valid.
+    if (token == null) {
+      return null;
+    }
+    // Link to the database.
+    final HttpLink httpLinkUserDB = HttpLink(userDatabaseUrl, defaultHeaders: {
+      'X-Parse-Application-Id': userDatabaseApplicationID,
+      'X-Parse-Client-Key': userDatabaseClientKey,
+      'X-Parse-Session-Token': token,
+    });
+
+    // The client that provides the connection.
+    GraphQLClient clientUserDB = GraphQLClient(
+      cache: GraphQLCache(),
+      link: httpLinkUserDB,
+    );
+    // combine played statements
+    List<String> playedStatemntsCombined = e.playedStatementIds
+      ..addAll(p.playedStatements!);
+    // get 50 possible ids
+    var playableStatements = await clientStatementDB.query(
+      QueryOptions(
+        document: gql(Queries.getStatements()),
+        variables: {
+          "ids": {
+            "objectId": {"notIn": playedStatemntsCombined}
+          }
+        },
+      ),
+    );
+    // if exception in query, return null.
+    if (playableStatements.hasException) {
+      return null;
+    }
+    // if not enough statements are accessible.
+    if (playableStatements.data?["statements"]["edges"].length < 9) {
+      return null;
+    }
+    // choose 9 random statements
+    // List<Map<String, dynamic>?> idsTemp =
+    //     playableStatements.data?["statements"]["edges"];
+    List<String> ids = playableStatements.data?["statements"]["edges"]
+        .map((el) => el!["node"]["objectId"].toString())
+        .toList()
+        .cast<String>();
+    // random shufflung
+    ids.shuffle();
+    // add to played statements of p and e
+    e.playedStatementIds.addAll(ids.take(9));
+    p.playedStatements!.addAll(ids.take(9));
+    //upload game game
+    e.openGame!.statementIds = ids.take(9).toList();
+    e.openGame = await uploadGame(e);
+    if (e.openGame == null) {
+      return null;
+    }
+    //update p and e in database
+    await updateUser(p, (Player? player) {});
+
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    // ERROR: insufficient auth rights to update other player..
+    // maybe store played statements only in friendships.
+    // or add cloud function ?!
+    await updateUser(e, (Player? player) {});
+    // update friendship
+
+    await updateFriendship(e);
+    // updateUser(player, updateUserCallback)
+    return ids.take(9).toList();
+  }
 }

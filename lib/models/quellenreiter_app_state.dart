@@ -287,16 +287,29 @@ class QuellenreiterAppState extends ChangeNotifier {
     Routes tempRoute = route;
     route = Routes.loading;
     e.openGame = Game.empty(withTimer, e.playerIndex);
-    e.openGame!.statements = await db.getPlayableStatements(e);
-    e.openGame!.statementIds =
-        e.openGame!.statements!.statements.map((e) => e.objectId!).toList();
-    if (e.openGame!.statements != null) {
-      route = Routes.gameReadyToStart;
-      error = null;
-    } else {
+    e.openGame!.statementIds = await db.getPlayableStatements(e, player!);
+    if (e.openGame!.statementIds == null) {
+      // reset game because not started
+      e.openGame = null;
       route = tempRoute;
       error =
-          "Spielstarten fehlgeschlagen. Quests konnten nicht geladen werden.";
+          "Spielstarten fehlgeschlagen. ${e.emoji} ${e.name} wurde nicht herausgefordert. Versuche es erneut.";
+      return;
+    }
+    print(e.openGame!.statementIds.toString());
+    // if successfully fetched statements
+    if (e.openGame!.statements != null) {
+      route = tempRoute;
+      error =
+          "${e.emoji} ${e.name} wurde herausgefordert. Warte, bis ${e.emoji} ${e.name} die erste Runde gespielt hat.";
+      return;
+    } else {
+      // reset game because not started
+      e.openGame = null;
+      route = tempRoute;
+      error =
+          "Spielstarten fehlgeschlagen. ${e.emoji} ${e.name} wurde nicht herausgefordert. Versuche es erneut.";
+      return;
     }
   }
 

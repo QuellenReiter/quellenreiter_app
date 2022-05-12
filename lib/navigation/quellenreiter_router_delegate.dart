@@ -153,20 +153,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
   @override
   Future<void> setNewRoutePath(QuellenreiterRoutePath configuration) async {
     var db = DatabaseUtils();
-    // appState = configuration.appState;
 
-    if (configuration.route == Routes.openGames) {
-      // get open games if not existing
-      appState.openGames ?? await db.getOpenGames();
-    }
-    // if (configuration.route == Routes.archive) {
-    //   // get safed Statements if not exisiting.
-    //   appState.safedStatements ?? await db.getSafedStatements();
-    // }
-    // if (configuration.route == Routes.friends) {
-    //   // get list of friends, if not existing.
-    //   appState.player?.friends ?? await db.getFriends(appState.player!);
-    // }
     if (configuration.route == Routes.settings) {
       // get user, if not existing.
       appState.player ?? await db.authenticate();
