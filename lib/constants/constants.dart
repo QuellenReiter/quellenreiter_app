@@ -56,6 +56,7 @@ class DbFields {
   static String factAuthor = "author";
   static String factMedia = "media";
 
+  static String userData = "userData";
   static String userEmoji = "emoji";
   static String userName = "username";
   static String userPlayedGames = "numPlayedGames";

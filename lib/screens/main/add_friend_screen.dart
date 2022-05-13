@@ -28,7 +28,6 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
   @override
   void dispose() {
     widget.appState.resetSearchResults();
-    widget.appState.friendsQuery = null;
     searchController.dispose();
     super.dispose();
   }

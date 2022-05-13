@@ -51,7 +51,12 @@ class DatabaseUtils {
     // Safe the User
   }
 
-  /// Login a user.
+  /// Signup a user.
+  ///
+  // Emoji can not be safed while not authenticated.
+  // 1. signup with username and password,
+  // 2. create userdata with emoji and so on!
+  // 3. turn on class protection on back4app.
   void signUp(String username, String password, String emoji,
       Function signUpCallback) async {
     // Link to server.
@@ -167,8 +172,8 @@ class DatabaseUtils {
         friendRequestCallback(null);
         return;
       } else {
-        friendRequestCallback(
-            Enemies.fromFriendshipMap(queryResult.data?["friendships"]));
+        friendRequestCallback(Enemies.fromFriendshipMap(
+            queryResult.data?["friendships"], player));
         return;
       }
     }
@@ -242,10 +247,8 @@ class DatabaseUtils {
     return Statement.fromMap(queryResult.data?["statement"]);
   }
 
-  /// Update a [Player] in the Database by [String].
-  ///
-  /// Can be a new name or emoji.
-  Future<void> updateUser(dynamic player, Function updateUserCallback) async {
+  /// Update a [Player] in the Database by [String]. Only for username!
+  Future<void> updateUser(Player player, Function updateUserCallback) async {
     // The session token.
     String? token = await safeStorage.read(key: "token");
     final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
@@ -260,11 +263,45 @@ class DatabaseUtils {
     );
     var mutationResult = await client.mutate(
       MutationOptions(
-        document: gql(Queries.updateUser()),
+        document: gql(Queries.updateUserData()),
         variables: {
-          "user": player.runtimeType == Player
-              ? player.toMap()
-              : player.toUserMap(),
+          "user": player.toUserMap(),
+        },
+      ),
+    );
+    print(mutationResult);
+    if (mutationResult.hasException) {
+      updateUserCallback(null);
+      return;
+    } else {
+      updateUserCallback(
+          Player.fromMap(mutationResult.data?["updateUserData"]["userData"]));
+      return;
+    }
+  }
+
+  /// Update a [Player]s userdata in the Database by [String].
+  ///
+  /// Can be anything except username and auth stuff.
+  Future<void> updateUserData(
+      dynamic player, Function updateUserCallback) async {
+    // The session token.
+    String? token = await safeStorage.read(key: "token");
+    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
+      'X-Parse-Application-Id': userDatabaseApplicationID,
+      'X-Parse-Client-Key': userDatabaseClientKey,
+      'X-Parse-Session-Token': token!,
+    });
+    // create the data provider
+    GraphQLClient client = GraphQLClient(
+      cache: GraphQLCache(),
+      link: httpLink,
+    );
+    var mutationResult = await client.mutate(
+      MutationOptions(
+        document: gql(Queries.updateUserData()),
+        variables: {
+          "user": player.toUserDataMap(),
         },
       ),
     );
@@ -274,8 +311,9 @@ class DatabaseUtils {
       updateUserCallback(null);
       return;
     } else {
-      updateUserCallback(
-          Player.fromMap(mutationResult.data?["updateUser"]["user"]));
+      updateUserCallback(player
+        ..updateDataWithMap(
+            mutationResult.data?["updateUserData"]["userData"]));
       return;
     }
   }
@@ -629,13 +667,13 @@ class DatabaseUtils {
       return null;
     }
     //update p and e in database
-    await updateUser(p, (Player? player) {});
+    await updateUserData(p, (Player? player) {});
 
     // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     // ERROR: insufficient auth rights to update other player..
     // maybe store played statements only in friendships.
     // or add cloud function ?!
-    await updateUser(e, (Player? player) {});
+    await updateUserData(e, (Enemy? player) {});
     // update friendship
 
     await updateFriendship(e);
