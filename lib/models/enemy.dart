@@ -1,13 +1,15 @@
 import '../constants/constants.dart';
 import 'game.dart';
+import 'player.dart';
 
 class Enemy {
-  late final int playerIndex;
+  late int playerIndex;
   late String friendshipId;
   late List<String> playedStatementIds;
-  late final String name;
-  late final String userID;
-  late final String emoji;
+  late String name;
+  late String userId;
+  late String userDataID;
+  late String emoji;
   late int numGamesPlayed;
   late int wonGamesPlayer;
   late int wonGamesOther;
@@ -18,26 +20,27 @@ class Enemy {
   /// Constructor that takes a Map of a friendship query and resolves which of
   /// player1 and player2 is
   /// the player and which is the enemy.
-  Enemy.fromFriendshipMap(Map<String, dynamic>? map) {
-    if (map?[DbFields.friendshipPlayer1]["edges"]?.length == 0) {
+  Enemy.fromFriendshipMap(Map<String, dynamic>? map, Player p) {
+    if (map?[DbFields.friendshipPlayer1]["objectId"] == p.id) {
       // The player corresponds to player1 in the database friendship.
       playerIndex = 0;
-      if (map?[DbFields.friendshipPlayer2]["edges"][0]["node"]
+      if (map?[DbFields.friendshipPlayer2][DbFields.userData]
               [DbFields.userPlayedStatements] ==
           null) {
         playedStatementIds = [];
       } else {
-        playedStatementIds = map?[DbFields.friendshipPlayer2]["edges"][0]
-                ["node"][DbFields.userPlayedStatements]
+        playedStatementIds = map?[DbFields.friendshipPlayer2][DbFields.userData]
+                [DbFields.userPlayedStatements]
             .map((x) => x["value"])
             .toList()
             .cast<String>();
       }
-      name = map?[DbFields.friendshipPlayer2]["edges"][0]["node"]
-          [DbFields.userName];
-      emoji = map?[DbFields.friendshipPlayer2]["edges"][0]["node"]
+      name = map?[DbFields.friendshipPlayer2][DbFields.userName];
+      emoji = map?[DbFields.friendshipPlayer2][DbFields.userData]
           [DbFields.userEmoji];
-      userID = map?[DbFields.friendshipPlayer2]["edges"][0]["node"]["objectId"];
+      userDataID =
+          map?[DbFields.friendshipPlayer2][DbFields.userData]["objectId"];
+      userId = map?[DbFields.friendshipPlayer2]["objectId"];
       wonGamesOther = map?[DbFields.friendshipWonGamesPlayer2];
       wonGamesPlayer = map?[DbFields.friendshipWonGamesPlayer1];
       acceptedByOther = map?[DbFields.friendshipApproved2];
@@ -45,16 +48,17 @@ class Enemy {
     } else {
       // The player corresponds to player2 in the database friendship.
       playerIndex = 1;
-      playedStatementIds = map?[DbFields.friendshipPlayer1]["edges"][0]["node"]
+      playedStatementIds = map?[DbFields.friendshipPlayer1][DbFields.userData]
               [DbFields.userPlayedStatements]
           .map((x) => x["value"])
           .toList()
           .cast<String>();
-      name = map?[DbFields.friendshipPlayer1]["edges"][0]["node"]
-          [DbFields.userName];
-      emoji = map?[DbFields.friendshipPlayer1]["edges"][0]["node"]
+      name = map?[DbFields.friendshipPlayer1][DbFields.userName];
+      emoji = map?[DbFields.friendshipPlayer1][DbFields.userData]
           [DbFields.userEmoji];
-      userID = map?[DbFields.friendshipPlayer1]["edges"][0]["node"]["objectId"];
+      userDataID =
+          map?[DbFields.friendshipPlayer1][DbFields.userData]["objectId"];
+      userId = map?[DbFields.friendshipPlayer1]["objectId"];
       wonGamesOther = map?[DbFields.friendshipWonGamesPlayer1];
       wonGamesPlayer = map?[DbFields.friendshipWonGamesPlayer2];
       acceptedByOther = map?[DbFields.friendshipApproved1];
@@ -63,32 +67,30 @@ class Enemy {
     numGamesPlayed = map?[DbFields.friendshipNumGamesPlayed];
     friendshipId = map?["objectId"];
     // if an open game exists, safe it.
-    if (map?[DbFields.friendshipOpenGame]["edges"].isNotEmpty) {
+    if (map?[DbFields.friendshipOpenGame] != null) {
       openGame = Game(
         //object Id
-        map?[DbFields.friendshipOpenGame]["edges"][0]["node"]["objectId"],
+        map?[DbFields.friendshipOpenGame]["objectId"],
         // enemyAnswers
-        map?[DbFields.friendshipOpenGame]["edges"][0]["node"][playerIndex == 0
+        map?[DbFields.friendshipOpenGame][playerIndex == 0
                 ? DbFields.gameAnswersPlayer2
                 : DbFields.gameAnswersPlayer1]
             .map((x) => x["value"])
             .toList()
             .cast<bool>(),
         // player answers
-        map?[DbFields.friendshipOpenGame]["edges"][0]["node"][playerIndex == 0
+        map?[DbFields.friendshipOpenGame][playerIndex == 0
                 ? DbFields.gameAnswersPlayer1
                 : DbFields.gameAnswersPlayer2]
             .map((x) => x["value"])
             .toList()
             .cast<bool>(),
         playerIndex,
-        map?[DbFields.friendshipOpenGame]["edges"][0]["node"]
-                [DbFields.gameStatementIds]
+        map?[DbFields.friendshipOpenGame][DbFields.gameStatementIds]
             .map((x) => x["value"])
             .toList()
             .cast<String>(),
-        map?[DbFields.friendshipOpenGame]["edges"][0]["node"]
-            [DbFields.gameWithTimer],
+        map?[DbFields.friendshipOpenGame][DbFields.gameWithTimer],
       );
     } else {
       openGame = null;
@@ -97,8 +99,13 @@ class Enemy {
 
   Enemy.fromUserMap(Map<String, dynamic>? map) {
     name = map?[DbFields.userName];
-    emoji = map?[DbFields.userEmoji];
-    userID = map?["objectId"];
+    emoji = map?[DbFields.userData] == null
+        ? ""
+        : map?[DbFields.userData][DbFields.userEmoji];
+    userDataID = map?[DbFields.userData] == null
+        ? ""
+        : map?[DbFields.userData]["objectId"];
+    userId = map?["objectId"];
     wonGamesOther = 0;
     wonGamesPlayer = 0;
     acceptedByOther = false;
@@ -108,13 +115,11 @@ class Enemy {
     openGame = null;
   }
 
-  Map<String, dynamic> toUserMap() {
+  Map<String, dynamic> toUserDataMap() {
     var ret = {
-      "id": userID,
+      "id": userDataID,
       "fields": {
-        DbFields.userName: name,
         DbFields.userEmoji: emoji,
-        DbFields.userName: name,
         DbFields.userPlayedStatements: playedStatementIds
       }
     };
@@ -133,7 +138,7 @@ class Enemy {
           DbFields.friendshipWonGamesPlayer2: wonGamesOther,
           DbFields.friendshipNumGamesPlayed: numGamesPlayed,
           DbFields.friendshipOpenGame: {
-            "add": openGame!.id,
+            "link": openGame!.id,
           }
         }
       };
@@ -147,7 +152,7 @@ class Enemy {
           DbFields.friendshipWonGamesPlayer1: wonGamesOther,
           DbFields.friendshipNumGamesPlayed: numGamesPlayed,
           DbFields.friendshipOpenGame: {
-            "add": openGame!.id,
+            "link": openGame!.id,
           }
         }
       };
@@ -155,17 +160,26 @@ class Enemy {
     print(ret);
     return ret;
   }
+
+  void updateDataWithMap(Map<String, dynamic> map) {
+    userDataID = map["objectId"];
+    emoji = map[DbFields.userEmoji];
+    playedStatementIds = map[DbFields.userPlayedStatements]
+        .map((x) => x["value"])
+        .toList()
+        .cast<String>();
+  }
 }
 
 class Enemies {
   List<Enemy> enemies = [];
 
-  Enemies.fromFriendshipMap(Map<String, dynamic>? map) {
+  Enemies.fromFriendshipMap(Map<String, dynamic>? map, Player p) {
     if (map?["edges"] == null) {
       return;
     }
     for (Map<String, dynamic>? enemy in map?["edges"]) {
-      enemies.add(Enemy.fromFriendshipMap(enemy?["node"]));
+      enemies.add(Enemy.fromFriendshipMap(enemy?["node"], p));
     }
   }
 

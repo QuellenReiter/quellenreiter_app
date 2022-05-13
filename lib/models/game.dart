@@ -28,7 +28,6 @@ class Game {
     // get statements directlly and then safe the ids ! :)
     id = null;
     playerIndex = pIndex;
-    id = null;
     statements = null;
     playerAnswers = [];
     enemyAnswers = [];
@@ -41,6 +40,8 @@ class Game {
   }
 
   /// Returns true if the player is the next one to play.
+  ///
+  // ERROR: playerIndex says who started the friendship, not who started the game !!
   bool isPlayersTurn() {
     /// if enemy has answered more or equal number of quests and player is not initiator.
     /// and number of enemy answers is 0,3,6or9

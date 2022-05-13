@@ -75,6 +75,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   void resetSearchResults() {
+    _friendsQuery = null;
     _friendsSearchResult = null;
   }
 
@@ -172,7 +173,7 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void sendFriendRequest(Enemy e) {
     route = Routes.loading;
-    db.sendFriendRequest(player!.id, e.userID, _sendFriendRequest);
+    db.sendFriendRequest(player!.id, e.userId, _sendFriendRequest);
   }
 
   void _sendFriendRequest(bool success) {
@@ -185,14 +186,18 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   void _getFriendsCallback(Enemies? enemies) {
+    if (enemies == null) {
+      player?.friends = Enemies.empty();
+      return;
+    }
     // set friends
     player?.friends = Enemies.empty()
-      ..enemies = enemies!.enemies
+      ..enemies = enemies.enemies
           .where((enemy) => enemy.acceptedByOther && enemy.acceptedByPlayer)
           .toList();
     // set received requests
     enemyRequests = Enemies.empty()
-      ..enemies = enemies!.enemies
+      ..enemies = enemies.enemies
           .where((enemy) => enemy.acceptedByOther && !enemy.acceptedByPlayer)
           .toList();
     // set pending requests
@@ -249,9 +254,16 @@ class QuellenreiterAppState extends ChangeNotifier {
     route = r;
   }
 
+  /// For updating the username
   void updateUser() {
     route = Routes.loading;
     db.updateUser(player!, _updateUserCallback);
+  }
+
+  /// for updating any other user trait.
+  void updateUserData() {
+    route = Routes.loading;
+    db.updateUserData(player!, _updateUserCallback);
   }
 
   void _updateUserCallback(Player? player) {
@@ -298,19 +310,10 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
     print(e.openGame!.statementIds.toString());
     // if successfully fetched statements
-    if (e.openGame!.statements != null) {
-      route = tempRoute;
-      error =
-          "${e.emoji} ${e.name} wurde herausgefordert. Warte, bis ${e.emoji} ${e.name} die erste Runde gespielt hat.";
-      return;
-    } else {
-      // reset game because not started
-      e.openGame = null;
-      route = tempRoute;
-      error =
-          "Spielstarten fehlgeschlagen. ${e.emoji} ${e.name} wurde nicht herausgefordert. Versuche es erneut.";
-      return;
-    }
+    route = tempRoute;
+    error =
+        "${e.emoji} ${e.name} wurde herausgefordert. Warte, bis ${e.emoji} ${e.name} die erste Runde gespielt hat.";
+    return;
   }
 
   List<String> getNames() {

@@ -75,7 +75,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               HapticFeedback.selectionClick();
                               widget.appState.player?.emoji =
                                   emojiController.text;
-                              widget.appState.updateUser();
+                              widget.appState.updateUserData();
                             }
                           : null,
                       icon: const Icon(Icons.emoji_emotions),
