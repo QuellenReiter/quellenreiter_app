@@ -232,20 +232,23 @@ mutation LogIn{
       user{
         objectId
         ${DbFields.userName}
-        ${DbFields.userEmoji}
-        ${DbFields.userPlayedGames}
-        ${DbFields.userTrueCorrectAnswers}
-        ${DbFields.userFalseCorrectAnswers}
-        ${DbFields.userTrueFakeAnswers}
-        ${DbFields.userFalseFakeAnswers}
-        ${DbFields.userSafedStatements}{
-          ... on Element{
-            value
+        ${DbFields.userData}{
+          objectId
+          ${DbFields.userEmoji}
+          ${DbFields.userPlayedGames}
+          ${DbFields.userTrueCorrectAnswers}
+          ${DbFields.userFalseCorrectAnswers}
+          ${DbFields.userTrueFakeAnswers}
+          ${DbFields.userFalseFakeAnswers}
+          ${DbFields.userSafedStatements}{
+            ... on Element{
+              value
+            }
           }
-        }
-        ${DbFields.userPlayedStatements}{
-          ... on Element{
-            value
+          ${DbFields.userPlayedStatements}{
+            ... on Element{
+              value
+            }
           }
         }
       }
@@ -265,31 +268,40 @@ mutation SignUp{
     fields: {
       username: "$username"
       password: "$password"
-      emoji: "$emoji"
-      ${DbFields.userTrueCorrectAnswers}: 0
-      ${DbFields.userFalseCorrectAnswers}: 0
-      ${DbFields.userTrueFakeAnswers}: 0
-      ${DbFields.userFalseFakeAnswers}: 0
+      ${DbFields.userData}: {
+        createAndLink:{
+          emoji: "$emoji"
+          ${DbFields.userTrueCorrectAnswers}: 0
+          ${DbFields.userFalseCorrectAnswers}: 0
+          ${DbFields.userTrueFakeAnswers}: 0
+          ${DbFields.userFalseFakeAnswers}: 0
+          ${DbFields.userSafedStatements}: []
+          ${DbFields.userPlayedStatements}: []
+        }
+      }
     }
   }){
     viewer{
       user{
         objectId
         ${DbFields.userName}
-        ${DbFields.userEmoji}
-        ${DbFields.userPlayedGames}
-        ${DbFields.userTrueCorrectAnswers}
-        ${DbFields.userFalseCorrectAnswers}
-        ${DbFields.userTrueFakeAnswers}
-        ${DbFields.userFalseFakeAnswers}
-        ${DbFields.userSafedStatements}{
-          ... on Element{
-            value
+        ${DbFields.userData}{
+          objectId
+          ${DbFields.userEmoji}
+          ${DbFields.userPlayedGames}
+          ${DbFields.userTrueCorrectAnswers}
+          ${DbFields.userFalseCorrectAnswers}
+          ${DbFields.userTrueFakeAnswers}
+          ${DbFields.userFalseFakeAnswers}
+          ${DbFields.userSafedStatements}{
+            ... on Element{
+              value
+            }
           }
-        }
-        ${DbFields.userPlayedStatements}{
-          ... on Element{
-            value
+          ${DbFields.userPlayedStatements}{
+            ... on Element{
+              value
+            }
           }
         }
       }
@@ -309,20 +321,23 @@ query GetCurrentUser{
     user{
       objectId
       ${DbFields.userName}
-      ${DbFields.userEmoji}
-      ${DbFields.userPlayedGames}
-      ${DbFields.userTrueCorrectAnswers}
-      ${DbFields.userFalseCorrectAnswers}
-      ${DbFields.userTrueFakeAnswers}
-      ${DbFields.userFalseFakeAnswers}
-      ${DbFields.userSafedStatements}{
-        ... on Element{
-          value
+      ${DbFields.userData}{
+        objectId
+        ${DbFields.userEmoji}
+        ${DbFields.userPlayedGames}
+        ${DbFields.userTrueCorrectAnswers}
+        ${DbFields.userFalseCorrectAnswers}
+        ${DbFields.userTrueFakeAnswers}
+        ${DbFields.userFalseFakeAnswers}
+        ${DbFields.userSafedStatements}{
+          ... on Element{
+            value
+          }
         }
-      }
-      ${DbFields.userPlayedStatements}{
-        ... on Element{
-          value
+        ${DbFields.userPlayedStatements}{
+          ... on Element{
+            value
+          }
         }
       }
     }
@@ -377,64 +392,58 @@ query GetOpenFriendRequests{
   friendships(
     where:{
       OR:[
-        {${DbFields.friendshipPlayer1}: { have:{objectId : { equalTo: "${player.id}"}}}}
-        {${DbFields.friendshipPlayer2}: { have:{objectId : { equalTo: "${player.id}"}}}}
+        {${DbFields.friendshipPlayer1}: { have: {objectId : { equalTo: "${player.id}"}}}}
+        {${DbFields.friendshipPlayer2}: { have: {objectId : { equalTo: "${player.id}"}}}}
       ]
     }
   ){
     edges{
       node{
         objectId
-        ${DbFields.friendshipPlayer1} (where:  { objectId: {notEqualTo: "${player.id}"} }){
-          edges{
-            node{
-              objectId
-              ${DbFields.userName}
-              ${DbFields.userEmoji}
-              ${DbFields.userPlayedStatements}{
-                ... on Element{
-                  value
-                }
+        ${DbFields.friendshipPlayer1}{
+          objectId
+          ${DbFields.userName}
+          ${DbFields.userData}{
+            objectId
+            ${DbFields.userEmoji}
+            ${DbFields.userPlayedStatements}{
+              ... on Element{
+                value
               }
             }
           }
         }
-        ${DbFields.friendshipPlayer2} (where:  { objectId: {notEqualTo: "${player.id}"} }){
-          edges{
-            node{
-              objectId
-              ${DbFields.userName}
-              ${DbFields.userEmoji}
-              ${DbFields.userPlayedStatements}{
-                ... on Element{
-                  value
-                }
+        ${DbFields.friendshipPlayer2}{
+          objectId
+          ${DbFields.userName}
+          ${DbFields.userData}{
+            objectId
+            ${DbFields.userEmoji}
+            ${DbFields.userPlayedStatements}{
+              ... on Element{
+                value
               }
             }
           }
         }
         ${DbFields.friendshipOpenGame}{
-          edges{
-            node{
-              createdAt
-              objectId
-              ${DbFields.gameWithTimer}
-              ${DbFields.gameAnswersPlayer1}{
-                ... on Element{
-                    value
-                } 
-              }
-              ${DbFields.gameAnswersPlayer2}{
-                ... on Element{
-                    value
-                } 
-              }
-              ${DbFields.gameStatementIds}{
-                ... on Element{
-                    value
-                } 
-              }
-            }
+          createdAt
+          objectId
+          ${DbFields.gameWithTimer}
+          ${DbFields.gameAnswersPlayer1}{
+            ... on Element{
+                value
+            } 
+          }
+          ${DbFields.gameAnswersPlayer2}{
+            ... on Element{
+                value
+            } 
+          }
+          ${DbFields.gameStatementIds}{
+            ... on Element{
+                value
+            } 
           }
         }
         ${DbFields.friendshipWonGamesPlayer1}
@@ -471,7 +480,10 @@ query GetOpenFriendRequests{
       node{
         objectId
         ${DbFields.userName}
-        ${DbFields.userEmoji}
+        ${DbFields.userData}{
+          objectId
+          ${DbFields.userEmoji}
+        }
       }
     }
   }
@@ -488,10 +500,10 @@ mutation sendFriendRequest {
     input: {
       fields:{
         ${DbFields.friendshipPlayer1}:{
-          add:"$playerId"
+          link:"$playerId"
         }
         ${DbFields.friendshipPlayer2}:{
-          add: "$enemyId"
+          link: "$enemyId"
         }
         ${DbFields.friendshipApproved1}: true
         ${DbFields.friendshipApproved2}: false
@@ -510,15 +522,14 @@ mutation sendFriendRequest {
   }
 
   /// Returns the graphQL query to check the friend requests.
-  static String updateUser() {
+  static String updateUserData() {
     String ret = '''
-mutation updateUser(\$user: UpdateUserInput!){
-  updateUser(
+mutation updateUser(\$user: UpdateUserDataInput!){
+  updateUserData(
     input: \$user
   ){
-    user{
+    userData{
       objectId
-      ${DbFields.userName}
       ${DbFields.userEmoji}
       ${DbFields.userPlayedGames}
       ${DbFields.userTrueCorrectAnswers}
