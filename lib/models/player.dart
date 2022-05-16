@@ -3,7 +3,7 @@ import '../constants/constants.dart';
 
 class Player {
   late String id;
-  late String dataId;
+  late String? dataId;
   late String name;
   late String emoji;
   String? email;
@@ -18,27 +18,39 @@ class Player {
 
   Player.fromMap(Map<String, dynamic>? map)
       : name = map?[DbFields.userName],
-        emoji = map?[DbFields.userData]?[DbFields.userEmoji],
-        numPlayedGames = map?[DbFields.userData]?[DbFields.userPlayedGames],
-        trueCorrectAnswers =
-            map?[DbFields.userData]?[DbFields.userTrueCorrectAnswers],
-        trueFakeAnswers =
-            map?[DbFields.userData]?[DbFields.userTrueFakeAnswers],
-        falseCorrectAnswers =
-            map?[DbFields.userData]?[DbFields.userFalseCorrectAnswers],
-        falseFakeAnswers =
-            map?[DbFields.userData]?[DbFields.userFalseFakeAnswers],
+        dataId = map?[DbFields.userData] == null
+            ? null
+            : map?[DbFields.userData]?["objectId"],
+        emoji = map?[DbFields.userData] == null
+            ? ""
+            : map?[DbFields.userData]?[DbFields.userEmoji],
+        numPlayedGames = map?[DbFields.userData] == null
+            ? 0
+            : map?[DbFields.userData]?[DbFields.userPlayedGames],
+        trueCorrectAnswers = map?[DbFields.userData] == null
+            ? 0
+            : map?[DbFields.userData]?[DbFields.userTrueCorrectAnswers],
+        trueFakeAnswers = map?[DbFields.userData] == null
+            ? 0
+            : map?[DbFields.userData]?[DbFields.userTrueFakeAnswers],
+        falseCorrectAnswers = map?[DbFields.userData] == null
+            ? 0
+            : map?[DbFields.userData]?[DbFields.userFalseCorrectAnswers],
+        falseFakeAnswers = map?[DbFields.userData] == null
+            ? 0
+            : map?[DbFields.userData]?[DbFields.userFalseFakeAnswers],
         id = map?["objectId"],
-        dataId = map?[DbFields.userData]?["objectId"],
-        playedStatements =
-            map?[DbFields.userData]?[DbFields.userPlayedStatements] != null
+        playedStatements = map?[DbFields.userData] == null
+            ? []
+            : map?[DbFields.userData]?[DbFields.userPlayedStatements] != null
                 ? map![DbFields.userData][DbFields.userPlayedStatements]
                     .map((x) => x["value"])
                     .toList()
                     .cast<String>()
                 : null,
-        safedStatementsIds =
-            map?[DbFields.userData]?[DbFields.userSafedStatements] != null
+        safedStatementsIds = map?[DbFields.userData] == null
+            ? []
+            : map?[DbFields.userData]?[DbFields.userSafedStatements] != null
                 ? map![DbFields.userData][DbFields.userSafedStatements]
                     .map((x) => x["value"])
                     .toList()
@@ -55,7 +67,8 @@ class Player {
         DbFields.userFalseCorrectAnswers: falseCorrectAnswers,
         DbFields.userTrueFakeAnswers: trueFakeAnswers,
         DbFields.userFalseFakeAnswers: falseFakeAnswers,
-        DbFields.userPlayedStatements: playedStatements
+        DbFields.userPlayedStatements: playedStatements,
+        DbFields.userSafedStatements: safedStatementsIds,
       }
     };
     return ret;
@@ -71,6 +84,27 @@ class Player {
     return ret;
   }
 
+  Map<String, dynamic> toUserMapWithNewUserData() {
+    var ret = {
+      "id": id,
+      "fields": {
+        DbFields.userData: {
+          "createAndLink": {
+            DbFields.userEmoji: emoji,
+            DbFields.userPlayedGames: numPlayedGames,
+            DbFields.userTrueCorrectAnswers: trueCorrectAnswers,
+            DbFields.userFalseCorrectAnswers: falseCorrectAnswers,
+            DbFields.userTrueFakeAnswers: trueFakeAnswers,
+            DbFields.userFalseFakeAnswers: falseFakeAnswers,
+            DbFields.userPlayedStatements: playedStatements,
+            DbFields.userSafedStatements: safedStatementsIds,
+          }
+        }
+      }
+    };
+    return ret;
+  }
+
   void updateDataWithMap(Map<String, dynamic> map) {
     dataId = map["objectId"];
     emoji = map[DbFields.userEmoji];
@@ -80,6 +114,10 @@ class Player {
     falseCorrectAnswers = map[DbFields.userFalseCorrectAnswers];
     falseFakeAnswers = map[DbFields.userFalseFakeAnswers];
     playedStatements = map[DbFields.userPlayedStatements]
+        .map((x) => x["value"])
+        .toList()
+        .cast<String>();
+    safedStatementsIds = map[DbFields.userSafedStatements]
         .map((x) => x["value"])
         .toList()
         .cast<String>();
