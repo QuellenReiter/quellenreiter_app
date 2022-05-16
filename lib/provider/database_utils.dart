@@ -85,11 +85,18 @@ class DatabaseUtils {
       return;
     }
     // Safe the new token.
-    safeStorage.write(
+    await safeStorage.write(
         key: "token",
         value: signUpResult.data?["signUp"]["viewer"]["sessionToken"]);
-    signUpCallback(
-        Player.fromMap(signUpResult.data?["signUp"]["viewer"]["user"]));
+
+    // parse player.
+    var player = Player.fromMap(signUpResult.data?["signUp"]["viewer"]["user"]);
+    player.emoji = emoji;
+
+    // upload emoji
+    await createUserData(player, (p) => {player = p});
+
+    signUpCallback(player);
   }
 
   /// Logsout a user by deleting the session token.
@@ -263,7 +270,7 @@ class DatabaseUtils {
     );
     var mutationResult = await client.mutate(
       MutationOptions(
-        document: gql(Queries.updateUserData()),
+        document: gql(Queries.updateUser()),
         variables: {
           "user": player.toUserMap(),
         },
@@ -275,7 +282,7 @@ class DatabaseUtils {
       return;
     } else {
       updateUserCallback(
-          Player.fromMap(mutationResult.data?["updateUserData"]["userData"]));
+          Player.fromMap(mutationResult.data?["updateUser"]["user"]));
       return;
     }
   }
@@ -314,6 +321,44 @@ class DatabaseUtils {
       updateUserCallback(player
         ..updateDataWithMap(
             mutationResult.data?["updateUserData"]["userData"]));
+      return;
+    }
+  }
+
+  /// Create a [Player]s userdata in the Database by [String].
+  ///
+  /// Can be anything except username and auth stuff.
+  Future<void> createUserData(
+      Player player, Function createUserDataCallback) async {
+    // The session token.
+    String? token = await safeStorage.read(key: "token");
+    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
+      'X-Parse-Application-Id': userDatabaseApplicationID,
+      'X-Parse-Client-Key': userDatabaseClientKey,
+      'X-Parse-Session-Token': token!,
+    });
+    // create the data provider
+    GraphQLClient client = GraphQLClient(
+      cache: GraphQLCache(),
+      link: httpLink,
+    );
+
+    var mutationResult = await client.mutate(
+      MutationOptions(
+        document: gql(Queries.updateUser()),
+        variables: {
+          "user": player.toUserMapWithNewUserData(),
+        },
+      ),
+    );
+
+    print(mutationResult);
+    if (mutationResult.hasException) {
+      createUserDataCallback(null);
+      return;
+    } else {
+      createUserDataCallback(
+          Player.fromMap(mutationResult.data?["updateUser"]["user"]));
       return;
     }
   }
@@ -649,7 +694,6 @@ class DatabaseUtils {
       return null;
     }
     // choose 9 random statements
-    // List<Map<String, dynamic>?> idsTemp =
     //     playableStatements.data?["statements"]["edges"];
     List<String> ids = playableStatements.data?["statements"]["edges"]
         .map((el) => el!["node"]["objectId"].toString())
@@ -669,13 +713,8 @@ class DatabaseUtils {
     //update p and e in database
     await updateUserData(p, (Player? player) {});
 
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    // ERROR: insufficient auth rights to update other player..
-    // maybe store played statements only in friendships.
-    // or add cloud function ?!
     await updateUserData(e, (Enemy? player) {});
     // update friendship
-
     await updateFriendship(e);
     // updateUser(player, updateUserCallback)
     return ids.take(9).toList();
