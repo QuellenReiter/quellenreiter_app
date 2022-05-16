@@ -268,17 +268,6 @@ mutation SignUp{
     fields: {
       username: "$username"
       password: "$password"
-      ${DbFields.userData}: {
-        createAndLink:{
-          emoji: "$emoji"
-          ${DbFields.userTrueCorrectAnswers}: 0
-          ${DbFields.userFalseCorrectAnswers}: 0
-          ${DbFields.userTrueFakeAnswers}: 0
-          ${DbFields.userFalseFakeAnswers}: 0
-          ${DbFields.userSafedStatements}: []
-          ${DbFields.userPlayedStatements}: []
-        }
-      }
     }
   }){
     viewer{
@@ -544,6 +533,42 @@ mutation updateUser(\$user: UpdateUserDataInput!){
       ${DbFields.userPlayedStatements}{
         ... on Element{
           value
+        }
+      }
+    }
+  }
+}
+''';
+    return ret;
+  }
+
+  /// Returns the graphQL query to check the friend requests.
+  static String updateUser() {
+    String ret = '''
+mutation updateUser(\$user: UpdateUserInput!){
+  updateUser(
+    input: \$user
+  ){
+    user{
+      objectId
+      ${DbFields.userName}
+      ${DbFields.userData}{
+        objectId
+        ${DbFields.userEmoji}
+        ${DbFields.userPlayedGames}
+        ${DbFields.userTrueCorrectAnswers}
+        ${DbFields.userFalseCorrectAnswers}
+        ${DbFields.userTrueFakeAnswers}
+        ${DbFields.userFalseFakeAnswers}
+        ${DbFields.userSafedStatements}{
+          ... on Element{
+            value
+          }
+        }
+        ${DbFields.userPlayedStatements}{
+          ... on Element{
+            value
+          }
         }
       }
     }
