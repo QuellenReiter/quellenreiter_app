@@ -88,6 +88,7 @@ class DbFields {
   static const String gameAnswersPlayer2 = "answersPlayer2";
   static const String gamePlayer1 = "player1";
   static const String gamePlayer2 = "player2";
+  static const String gameRequestingPlayerIndex = "requestingPlayerIndex";
 }
 
 enum Routes {

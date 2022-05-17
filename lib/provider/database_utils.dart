@@ -494,6 +494,8 @@ class DatabaseUtils {
             .cast<String>(),
         mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
             [DbFields.gameWithTimer],
+        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
+            [DbFields.gameRequestingPlayerIndex],
       );
     }
   }
