@@ -71,6 +71,14 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// The [Enemy] of the current game. Set when user selects game.
+  Enemy? _currentEnemy;
+  Enemy? get currentEnemy => _currentEnemy;
+  set currentEnemy(value) {
+    _currentEnemy = value;
+    notifyListeners();
+  }
+
   /// The [Enemies] (Friends) search result, if [Player] is searching.
   Enemies? _friendsSearchResult;
   Enemies? get friendsSearchResult => _friendsSearchResult;

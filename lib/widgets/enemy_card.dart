@@ -56,17 +56,42 @@ class EnemyCard extends StatelessWidget {
                 // if an open Game exists.
                 if (enemy.openGame != null)
                   // .. and if its the players turn
-                  if (enemy.openGame!.isPlayersTurn())
+                  if (enemy.openGame!.isPlayersTurn() &&
+                      enemy.openGame!.playerAnswers.isNotEmpty)
                     Flexible(
                       child: ElevatedButton.icon(
-                        onPressed: () => {},
+                        onPressed: () {
+                          appState.currentEnemy = enemy;
+                          appState.route = Routes.gameReadyToStart;
+                        },
                         icon: const Icon(Icons.play_circle_outline_rounded),
                         label: const Text("weiterspielen"),
                       ),
                     )
+                  else if (enemy.openGame!.isPlayersTurn() &&
+                      enemy.openGame!.playerAnswers.isNotEmpty)
+                    Flexible(
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          appState.currentEnemy = enemy;
+                          appState.route = Routes.gameReadyToStart;
+                        },
+                        icon: const Icon(Icons.play_circle_outline_rounded),
+                        label: const Text("Spielen"),
+                      ),
+                    )
                   else
                     // if player has to wait for the enemy to play.
-                    const Text("warten...")
+                    Flexible(
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          appState.currentEnemy = enemy;
+                          appState.route = Routes.gameReadyToStart;
+                        },
+                        icon: const Icon(Icons.pause_circle_outline_rounded),
+                        label: const Text("Du bist nicht dran."),
+                      ),
+                    )
                 else if (enemy.acceptedByPlayer && enemy.acceptedByOther)
                   // if there is no open game.
                   Flexible(
