@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:quellenreiter_app/models/enemy.dart';
@@ -12,7 +14,7 @@ import 'queries.dart';
 /// responses.
 class DatabaseUtils {
   /// Object to access [FlutterSecureStorage].
-  final safeStorage = const FlutterSecureStorage();
+  var safeStorage = const FlutterSecureStorage();
 
   /// Login a user.
   void login(String username, String password, Function loginCallback) async {
@@ -138,7 +140,7 @@ class DatabaseUtils {
         return;
       } else {
         // Safe the new token.
-        safeStorage.write(
+        await safeStorage.write(
             key: "token", value: queryResult.data?["viewer"]["sessionToken"]);
         checkTokenCallback(Player.fromMap(queryResult.data?["viewer"]["user"]));
         return;
@@ -151,6 +153,7 @@ class DatabaseUtils {
   /// Get all friend requests.
   Future<void> getFriends(Player player, Function friendRequestCallback) async {
     // The session token.
+    // WHY IS SOMETIMES NO TOKEN PRESENT?
     String? token = await safeStorage.read(key: "token");
     // If token is not null, check if it is valid.
     if (token != null) {
@@ -184,6 +187,7 @@ class DatabaseUtils {
         return;
       }
     }
+    print("token is null in getFriends()");
     // no token, return false
     friendRequestCallback(null);
     return;
