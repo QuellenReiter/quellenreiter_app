@@ -126,9 +126,12 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         ];
       case Routes.gameReadyToStart:
         return [
+          home,
           MaterialPage(
             key: const ValueKey('ReadyToStartScreen'),
-            child: ReadyToStartScreen(),
+            child: ReadyToStartScreen(
+              appState: appState,
+            ),
           ),
         ];
       case Routes.gameResults:
