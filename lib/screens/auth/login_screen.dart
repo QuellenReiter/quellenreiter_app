@@ -142,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 )
                             : null,
                         icon: const Icon(Icons.login),
-                        label: const SelectableText("Einloggen"),
+                        label: const Text("Einloggen"),
                       );
                     },
                   );
