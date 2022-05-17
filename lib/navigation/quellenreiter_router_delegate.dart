@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/navigation/quellenreiter_routes.dart';
 import 'package:quellenreiter_app/screens/auth/signup_screen.dart';
@@ -7,12 +8,8 @@ import 'package:quellenreiter_app/screens/game/quest_screen.dart';
 import 'package:quellenreiter_app/screens/game/ready_to_start_screen.dart';
 import 'package:quellenreiter_app/screens/loading_screen.dart';
 import 'package:quellenreiter_app/screens/main/add_friend_screen.dart';
-import 'package:quellenreiter_app/screens/main/archive_screen.dart';
-import 'package:quellenreiter_app/screens/main/friends_screen.dart';
 import 'package:quellenreiter_app/screens/main/open_games_screen.dart';
-import 'package:quellenreiter_app/screens/main/settings_screen.dart';
 import 'package:quellenreiter_app/screens/main/start_game_screen.dart';
-import 'package:quellenreiter_app/screens/main/start_screen.dart';
 import '../constants/constants.dart';
 import '../provider/database_utils.dart';
 import '../screens/auth/login_screen.dart';
@@ -52,6 +49,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         } else if (appState.route != Routes.home) {
           appState.route = Routes.home;
         }
+        HapticFeedback.mediumImpact();
         notifyListeners();
         return true;
       },
