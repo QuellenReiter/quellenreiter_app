@@ -69,7 +69,7 @@ class EnemyCard extends StatelessWidget {
                       ),
                     )
                   else if (enemy.openGame!.isPlayersTurn() &&
-                      enemy.openGame!.playerAnswers.isNotEmpty)
+                      enemy.openGame!.playerAnswers.isEmpty)
                     Flexible(
                       child: ElevatedButton.icon(
                         onPressed: () {
