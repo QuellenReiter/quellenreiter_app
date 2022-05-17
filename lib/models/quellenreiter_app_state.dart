@@ -14,7 +14,9 @@ class QuellenreiterAppState extends ChangeNotifier {
   Routes _route = Routes.login;
   Routes get route => _route;
   set route(value) {
-    if (value == Routes.friends) {
+    if (value == Routes.friends ||
+        value == Routes.startGame ||
+        value == Routes.openGames) {
       getFriends();
     }
     _route = value;
