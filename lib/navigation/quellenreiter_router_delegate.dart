@@ -143,7 +143,9 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         return [
           MaterialPage(
             key: const ValueKey('QuestScreen'),
-            child: QuestScreen(),
+            child: QuestScreen(
+              appState: appState,
+            ),
           ),
         ];
       default:
