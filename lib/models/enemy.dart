@@ -91,6 +91,7 @@ class Enemy {
             .toList()
             .cast<String>(),
         map?[DbFields.friendshipOpenGame][DbFields.gameWithTimer],
+        map?[DbFields.friendshipOpenGame][DbFields.gameRequestingPlayerIndex],
       );
     } else {
       openGame = null;

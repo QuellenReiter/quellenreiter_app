@@ -416,6 +416,7 @@ query GetOpenFriendRequests{
           }
         }
         ${DbFields.friendshipOpenGame}{
+          ${DbFields.gameRequestingPlayerIndex}
           createdAt
           objectId
           ${DbFields.gameWithTimer}
@@ -586,6 +587,7 @@ mutation updateGame(\$openGame: UpdateOpenGameInput!){
     input: \$openGame
   ){
     openGame{
+      ${DbFields.gameRequestingPlayerIndex}
       createdAt
       objectId
       ${DbFields.gameWithTimer}
@@ -621,6 +623,7 @@ mutation uploadGame(\$openGame: CreateOpenGameInput!){
     openGame{
       createdAt
       objectId
+      ${DbFields.gameRequestingPlayerIndex}
       ${DbFields.gameWithTimer}
       ${DbFields.gameAnswersPlayer1}{
         ... on Element{
