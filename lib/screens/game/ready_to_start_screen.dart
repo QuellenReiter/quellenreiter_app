@@ -68,14 +68,14 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                 Flexible(
                   child: ElevatedButton(
                     child: const Text("Spielen"),
-                    onPressed: () {},
+                    onPressed: () => {widget.appState.playGame()},
                   ),
                 )
               else
                 Flexible(
                   child: ElevatedButton(
                     child: const Text("Weiter spielen"),
-                    onPressed: () {},
+                    onPressed: () => {widget.appState.playGame()},
                   ),
                 )
             else

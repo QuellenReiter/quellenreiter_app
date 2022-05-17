@@ -531,8 +531,7 @@ class DatabaseUtils {
   }
 
   /// Fetch all safed/liked [Statements] from a [Player].
-  Future<void> getSafedStatements(
-      List<String> ids, Function getStatementsCallback) async {
+  Future<Statements?> getStatements(List<String> ids) async {
     final HttpLink httpLink = HttpLink(statementDatabaseUrl, defaultHeaders: {
       'X-Parse-Application-Id': statementDatabaseApplicationID,
       'X-Parse-Client-Key': statementDatabaseClientKey,
@@ -556,9 +555,9 @@ class DatabaseUtils {
     );
     print(queryResult);
     if (queryResult.hasException) {
-      getStatementsCallback(null);
+      return null;
     }
-    getStatementsCallback(Statements.fromMap(queryResult.data));
+    return Statements.fromMap(queryResult.data);
   }
 
   /// Authenticate a [Player] to get its emoji etc.

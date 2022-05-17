@@ -79,6 +79,14 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// True if game mode is started.
+  bool _gameStarted = false;
+  bool get gameStarted => _gameStarted;
+  set gameStarted(value) {
+    _gameStarted = value;
+    notifyListeners();
+  }
+
   /// The [Enemies] (Friends) search result, if [Player] is searching.
   Enemies? _friendsSearchResult;
   Enemies? get friendsSearchResult => _friendsSearchResult;
@@ -293,11 +301,14 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
   }
 
-  void getArchivedStatements() {
+  void getArchivedStatements() async {
     if (player!.safedStatementsIds != null) {
       // Change this dummy data
-      db.getSafedStatements(
-          player!.safedStatementsIds!, _getStatementsCallback);
+      safedStatements = await db.getStatements(player!.safedStatementsIds!);
+
+      if (safedStatements == null) {
+        error = "Archiv konnte nicht geladen werden.";
+      }
     }
   }
 
@@ -328,6 +339,29 @@ class QuellenreiterAppState extends ChangeNotifier {
     error =
         "${e.emoji} ${e.name} wurde herausgefordert. Warte, bis ${e.emoji} ${e.name} die erste Runde gespielt hat.";
     return;
+  }
+
+  void playGame() async {
+    route = Routes.loading;
+    if (currentEnemy!.openGame != null &&
+        currentEnemy!.openGame!.isPlayersTurn()) {
+      // download statements
+      currentEnemy!.openGame!.statements =
+          await db.getStatements(currentEnemy!.openGame!.statementIds!);
+      // check if error
+      if (currentEnemy!.openGame!.statements == null) {
+        route = Routes.home;
+        error = "Spiel konnte nicht gestarted werden.";
+        return;
+      }
+      // set new route
+      route = Routes.quest;
+      gameStarted = true;
+
+      return;
+    }
+    route = Routes.home;
+    error = "Spiel konnte nicht gestarted werden.";
   }
 
   List<String> getNames() {
