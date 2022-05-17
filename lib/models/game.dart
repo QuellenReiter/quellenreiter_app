@@ -11,6 +11,7 @@ class Game {
   late List<String>? statementIds;
   late List<bool> playerAnswers;
   late List<bool> enemyAnswers;
+  late int requestingPlayerIndex;
   bool withTimer = false;
   late int playerIndex;
 
@@ -18,7 +19,7 @@ class Game {
 
   // }
   Game(this.id, this.enemyAnswers, this.playerAnswers, this.playerIndex,
-      this.statementIds, this.withTimer);
+      this.statementIds, this.withTimer, this.requestingPlayerIndex);
 
   Game.empty(bool timer, int pIndex) {
     // where to get statement ids? download all possible and pickRandom on device.
@@ -26,6 +27,7 @@ class Game {
     // sort by object ID should be date and category independent.
 
     // get statements directlly and then safe the ids ! :)
+    requestingPlayerIndex = pIndex;
     id = null;
     playerIndex = pIndex;
     statements = null;
@@ -45,9 +47,11 @@ class Game {
   bool isPlayersTurn() {
     /// if enemy has answered more or equal number of quests and player is not initiator.
     /// and number of enemy answers is 0,3,6or9
-    if (((playerIndex == 1 && enemyAnswers.length % 3 == 0) &&
+    if (((playerIndex != requestingPlayerIndex &&
+                enemyAnswers.length % 3 == 0) &&
             enemyAnswers.length >= playerAnswers.length) ||
-        ((playerIndex == 0 && enemyAnswers.length % 3 == 0) &&
+        ((playerIndex == requestingPlayerIndex &&
+                enemyAnswers.length % 3 == 0) &&
             enemyAnswers.length > playerAnswers.length)) {
       return true;
     } else {
@@ -65,6 +69,7 @@ class Game {
           DbFields.gameAnswersPlayer1: playerAnswers,
           DbFields.gameAnswersPlayer2: enemyAnswers,
           DbFields.gameWithTimer: withTimer,
+          DbFields.gameRequestingPlayerIndex: requestingPlayerIndex,
         }
       };
     } else {
@@ -75,9 +80,11 @@ class Game {
           DbFields.gameAnswersPlayer1: enemyAnswers,
           DbFields.gameAnswersPlayer2: playerAnswers,
           DbFields.gameWithTimer: withTimer,
+          DbFields.gameRequestingPlayerIndex: requestingPlayerIndex,
         }
       };
     }
+
     print(ret);
     return ret;
   }
