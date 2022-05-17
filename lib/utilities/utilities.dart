@@ -23,7 +23,7 @@ class Utils {
 
   static final RegExp regexUsername = RegExp(r'[a-zA-Z0-9_.-]');
 
-  static final int usernameMinLength = 3;
+  static const int usernameMinLength = 3;
 
   /// Checks if the Value of a [TextEditingController] is a number within
   /// the interval [0, 31].
@@ -104,14 +104,14 @@ class Utils {
 /// static class containing all possible values of
 /// [Statement.statementCorrectness].
 class CorrectnessCategory {
-  static String correct = "richtig";
-  static String unverified = "unbelegt";
-  static String falseContext = "falscher Kontext";
-  static String manipulated = "manipuliert";
-  static String misleading = "irreführend";
-  static String fabricatedContent = "frei erfunden";
-  static String falseInformation = "Fehlinformation";
-  static String satire = "Satire";
+  static const String correct = "richtig";
+  static const String unverified = "unbelegt";
+  static const String falseContext = "falscher Kontext";
+  static const String manipulated = "manipuliert";
+  static const String misleading = "irreführend";
+  static const String fabricatedContent = "frei erfunden";
+  static const String falseInformation = "Fehlinformation";
+  static const String satire = "Satire";
 }
 
 class UsernameTextFormatter extends TextInputFormatter {

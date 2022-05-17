@@ -3,91 +3,91 @@ import 'package:flutter/material.dart';
 /// Contains colors that are needed repeatedly throughout the app.
 class DesignColors {
   /// Color for text that sits ontop of Blue backgrounds.
-  static Color lightBlue = const Color(0xFFc7ebeb);
+  static const Color lightBlue = Color(0xFFc7ebeb);
 
   /// Color used for the Appbar and other blue backgrounds.
-  static Color backgroundBlue = const Color(0xFF0999bc);
+  static const Color backgroundBlue = Color(0xFF0999bc);
 
   /// Color used in the logo. Use for strong highlighting.
-  static Color pink = const Color(0xFFff3a93);
+  static const Color pink = Color(0xFFff3a93);
 
   /// Color used in the logo.
-  static Color yellow = const Color(0xFFf5df5b);
+  static const Color yellow = Color(0xFFf5df5b);
 
   /// Color used for Fake News, manipulated news. Checked for colorblindness.
-  static Color red = const Color(0xFFd55e00);
+  static const Color red = Color(0xFFd55e00);
 
   /// Color used for Facts and real news. Checked for colorblindness.
-  static Color green = const Color(0xFF009e73);
+  static const Color green = Color(0xFF009e73);
 
   /// Color for light grey backgrounds.
-  static Color lightGrey = const Color(0xFFEEEEEE);
+  static const Color lightGrey = Color(0xFFEEEEEE);
 
   /// Color for light grey backgrounds.
-  static Color black = const Color.fromARGB(255, 23, 23, 23);
+  static const Color black = Color.fromARGB(255, 23, 23, 23);
 }
 
 /// Contains the names of DatabaseFields that are needed for querying.
 class DbFields {
-  static String statementText = "statement";
-  static String statementPicture = "pictureUrl";
-  static String statementYear = "year";
-  static String statementMonth = "month";
-  static String statementDay = "day";
-  static String statementMediatype = "mediatype";
-  static String statementLanguage = "language";
-  static String statementCorrectness = "correctness";
-  static String statementLink = "link";
-  static String statementRectification = "rectification";
-  static String statementCategory = "category";
-  static String statementPictureCopyright = "samplePictureCopyright";
-  static String statementAuthor = "author";
-  static String statementMedia = "media";
-  static String statementFactcheckIDs = "factcheckIDs";
-  static String statementPictureFile = "PictureFile";
+  static const String statementText = "statement";
+  static const String statementPicture = "pictureUrl";
+  static const String statementYear = "year";
+  static const String statementMonth = "month";
+  static const String statementDay = "day";
+  static const String statementMediatype = "mediatype";
+  static const String statementLanguage = "language";
+  static const String statementCorrectness = "correctness";
+  static const String statementLink = "link";
+  static const String statementRectification = "rectification";
+  static const String statementCategory = "category";
+  static const String statementPictureCopyright = "samplePictureCopyright";
+  static const String statementAuthor = "author";
+  static const String statementMedia = "media";
+  static const String statementFactcheckIDs = "factcheckIDs";
+  static const String statementPictureFile = "PictureFile";
 
-  static String factText = "fact";
-  static String factYear = "year";
-  static String factMonth = "month";
-  static String factDay = "day";
-  static String factLanguage = "language";
-  static String factLink = "link";
-  static String factArchivedLink = "archivedLink";
-  static String factAuthor = "author";
-  static String factMedia = "media";
+  static const String factText = "fact";
+  static const String factYear = "year";
+  static const String factMonth = "month";
+  static const String factDay = "day";
+  static const String factLanguage = "language";
+  static const String factLink = "link";
+  static const String factArchivedLink = "archivedLink";
+  static const String factAuthor = "author";
+  static const String factMedia = "media";
 
-  static String userData = "userData";
-  static String userEmoji = "emoji";
-  static String userName = "username";
-  static String userPlayedGames = "numPlayedGames";
-  static String userFriendships = "friendships";
-  static String userTrueCorrectAnswers = "trueCorrectAnswers";
-  static String userTrueFakeAnswers = "trueFakeAnswers";
-  static String userFalseCorrectAnswers = "falseCorrectAnswers";
-  static String userFalseFakeAnswers = "falseFakeAnswers";
-  static String userPlayedStatements = "playedStatements";
-  static String userSafedStatements = "safedStatements";
+  static const String userData = "userData";
+  static const String userEmoji = "emoji";
+  static const String userName = "username";
+  static const String userPlayedGames = "numPlayedGames";
+  static const String userFriendships = "friendships";
+  static const String userTrueCorrectAnswers = "trueCorrectAnswers";
+  static const String userTrueFakeAnswers = "trueFakeAnswers";
+  static const String userFalseCorrectAnswers = "falseCorrectAnswers";
+  static const String userFalseFakeAnswers = "falseFakeAnswers";
+  static const String userPlayedStatements = "playedStatements";
+  static const String userSafedStatements = "safedStatements";
 
-  static String friendshipOpenGame = "openGame";
-  static String friendshipNumGamesPlayed = "numPlayedGames";
-  static String friendshipPlayer1 = "player1";
-  static String friendshipPlayer2 = "player2";
-  static String friendshipWonGamesPlayer1 = "wonGamesPlayer1";
-  static String friendshipWonGamesPlayer2 = "wonGamesPlayer2";
+  static const String friendshipOpenGame = "openGame";
+  static const String friendshipNumGamesPlayed = "numPlayedGames";
+  static const String friendshipPlayer1 = "player1";
+  static const String friendshipPlayer2 = "player2";
+  static const String friendshipWonGamesPlayer1 = "wonGamesPlayer1";
+  static const String friendshipWonGamesPlayer2 = "wonGamesPlayer2";
 
-  static String friendshipApproved1 = "approvedPlayer1";
-  static String friendshipApproved2 = "approvedPlayer2";
+  static const String friendshipApproved1 = "approvedPlayer1";
+  static const String friendshipApproved2 = "approvedPlayer2";
 
-  static String openGameStatements = "statements";
+  static const String openGameStatements = "statements";
 
-  static String enemyName = "name";
+  static const String enemyName = "name";
 
-  static String gameStatementIds = "statementIds";
-  static String gameWithTimer = "withTimer";
-  static String gameAnswersPlayer1 = "answersPlayer1";
-  static String gameAnswersPlayer2 = "answersPlayer2";
-  static String gamePlayer1 = "player1";
-  static String gamePlayer2 = "player2";
+  static const String gameStatementIds = "statementIds";
+  static const String gameWithTimer = "withTimer";
+  static const String gameAnswersPlayer1 = "answersPlayer1";
+  static const String gameAnswersPlayer2 = "answersPlayer2";
+  static const String gamePlayer1 = "player1";
+  static const String gamePlayer2 = "player2";
 }
 
 enum Routes {
