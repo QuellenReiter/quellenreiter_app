@@ -100,6 +100,8 @@ class EnemyCard extends StatelessWidget {
                         const Icon(Icons.timer)
                       else
                         const Icon(Icons.timer_off),
+                      Text(
+                          "${enemy.openGame!.playerAnswers.length.toString()} von 9")
                     ],
                   )
                 else if (enemy.acceptedByPlayer && enemy.acceptedByOther)
