@@ -37,6 +37,7 @@ dependencies:
   transparent_image: ^2.0.0
   share_plus: ^4.0.4
   flutter_staggered_animations: ^1.0.0
+  simple_timer: ^2.0.0
 
 
   # The following adds the Cupertino Icons font to your application.

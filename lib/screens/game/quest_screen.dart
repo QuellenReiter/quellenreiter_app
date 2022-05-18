@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
+import 'package:simple_timer/simple_timer.dart';
 
 class QuestScreen extends StatefulWidget {
   const QuestScreen({Key? key, required this.appState}) : super(key: key);
@@ -11,9 +13,8 @@ class QuestScreen extends StatefulWidget {
   State<QuestScreen> createState() => _QuestScreenState();
 }
 
-class _QuestScreenState extends State<QuestScreen> {
-  double timerValue = 0;
-
+class _QuestScreenState extends State<QuestScreen>
+    with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     // set index of statement to be shown
@@ -25,7 +26,6 @@ class _QuestScreenState extends State<QuestScreen> {
       widget.appState.currentEnemy!.openGame!.playerAnswers.add(false);
     }
 
-    startTimer(statementIndex);
     if (widget.appState.currentEnemy!.openGame!.statements == null) {
       return const Scaffold(
         body: Text("Fehler"),
@@ -45,9 +45,14 @@ class _QuestScreenState extends State<QuestScreen> {
             children: [
               // Timer
               if (widget.appState.currentEnemy!.openGame!.withTimer)
-                LinearProgressIndicator(
-                  minHeight: 5,
-                  value: timerValue,
+                SimpleTimer(
+                  // controller: _timerController
+                  //   ..start(startFrom: const Duration(seconds: 30)),
+                  status: TimerStatus.start,
+                  duration: const Duration(seconds: 40),
+                  onEnd: () =>
+                      registerAnswer(statementIndex, false, timeOver: true),
+                  timerStyle: TimerStyle.ring,
                 ),
               // image
               Flexible(
@@ -90,11 +95,11 @@ class _QuestScreenState extends State<QuestScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () => registerAnswer(statementIndex, false),
                       child: Text("Fake"),
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () => registerAnswer(statementIndex, true),
                       child: Text("Fakt"),
                     ),
                   ],
@@ -107,26 +112,9 @@ class _QuestScreenState extends State<QuestScreen> {
     );
   }
 
-  void startTimer(int statementIndex) {
-    Timer.periodic(const Duration(seconds: 1), (Timer timer) {
-      setState(() {
-        if (timerValue >= 1) {
-          // timer is over, break round.
-          timer.cancel();
-          widget.appState.currentEnemy!.openGame!
-              .playerAnswers[statementIndex] = false;
-          // show in between screen with result
-        } else {
-          timerValue = timerValue + 0.05;
-          // OTHERWISE THIS TRIGGERS A REBUILD.... AND THUS SWITCHES TO NEW STATEMENT.
-          widget.appState.currentEnemy!.openGame!.playerAnswers.removeLast();
-        }
-      });
-    });
-  }
-
   void registerAnswer(int statementIndex, bool answer,
       {bool timeOver = false}) async {
+    widget.appState.route = Routes.loading;
     if (timeOver) {
       widget.appState.currentEnemy!.openGame!.playerAnswers[statementIndex] =
           false;
@@ -152,6 +140,8 @@ class _QuestScreenState extends State<QuestScreen> {
     if ([2, 5, 8].contains(statementIndex)) {
       //return to readyToStartGameScreen
       widget.appState.route = Routes.gameReadyToStart;
+    } else {
+      widget.appState.route = Routes.quest;
     }
     // show some inbetween screen
   }
