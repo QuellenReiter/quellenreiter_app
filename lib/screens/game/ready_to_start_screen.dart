@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/enemy.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
+import 'package:quellenreiter_app/widgets/start_game_button.dart';
 
 class ReadyToStartScreen extends StatefulWidget {
   const ReadyToStartScreen({Key? key, required this.appState})
@@ -42,6 +44,28 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                       children: [
                         Text(widget.appState.player!.emoji),
                         Text(widget.appState.player!.name),
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 20),
+                            child: GridView.count(
+                              shrinkWrap: true,
+                              crossAxisCount: 3,
+                              children: widget.appState.currentEnemy!.openGame!
+                                  .playerAnswers
+                                  .map(
+                                    (e) => Padding(
+                                      padding: const EdgeInsets.all(10),
+                                      child: CircleAvatar(
+                                        backgroundColor: e == true
+                                            ? DesignColors.green
+                                            : DesignColors.red,
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -53,6 +77,28 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                       children: [
                         Text(widget.appState.currentEnemy!.emoji),
                         Text(widget.appState.currentEnemy!.name),
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 20),
+                            child: GridView.count(
+                              shrinkWrap: true,
+                              crossAxisCount: 3,
+                              children: widget
+                                  .appState.currentEnemy!.openGame!.enemyAnswers
+                                  .map(
+                                    (e) => Padding(
+                                      padding: const EdgeInsets.all(10),
+                                      child: CircleAvatar(
+                                        backgroundColor: e == true
+                                            ? DesignColors.green
+                                            : DesignColors.red,
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -60,10 +106,13 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
               ),
             ),
             // Bottom button:
+            // if error
             if (widget.appState.currentEnemy == null ||
                 widget.appState.currentEnemy!.openGame == null)
               const Text("Fehler.")
+            //if is players turn
             else if (widget.appState.currentEnemy!.openGame!.isPlayersTurn())
+              // if not played any quests
               if (widget.appState.currentEnemy!.openGame!.playerAnswers.isEmpty)
                 Flexible(
                   child: ElevatedButton(
@@ -71,6 +120,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                     onPressed: () => {widget.appState.playGame()},
                   ),
                 )
+              // if already played in this game
               else
                 Flexible(
                   child: ElevatedButton(
@@ -78,6 +128,19 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                     onPressed: () => {widget.appState.playGame()},
                   ),
                 )
+            else if (widget.appState.currentEnemy!.openGame!.gameFinished())
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text("Das spiel ist beendet."),
+                  Flexible(
+                    child: StartGameButton(
+                      appState: widget.appState,
+                      enemy: widget.appState.currentEnemy!,
+                    ),
+                  )
+                ],
+              )
             else
               Flexible(
                 child: ElevatedButton(
