@@ -174,7 +174,7 @@ class _QuestScreenState extends State<QuestScreen>
     // push to DB
     await widget.appState.db.updateGame(widget.appState.currentEnemy!);
     // if its the end of the round (after 3 statements)
-    if ([2, 5, 8].contains(statementIndex)) {
+    if (!widget.appState.currentEnemy!.openGame!.isPlayersTurn()) {
       //return to readyToStartGameScreen
       widget.appState.route = Routes.gameReadyToStart;
     } else {
