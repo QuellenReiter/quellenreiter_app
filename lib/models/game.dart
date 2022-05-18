@@ -42,14 +42,13 @@ class Game {
   }
 
   /// Returns true if the player is the next one to play.
-  ///
-  // ERROR: playerIndex says who started the friendship, not who started the game !!
+
   bool isPlayersTurn() {
-    /// if enemy has answered more or equal number of quests and player is not initiator.
-    /// and number of enemy answers is 0,3,6or9
-    if (((playerIndex != requestingPlayerIndex &&
-                enemyAnswers.length % 3 == 0) &&
-            enemyAnswers.length >= playerAnswers.length) ||
+    // player starts and ( enemy has more or equal answers or player is within a round )
+    if ((playerIndex != requestingPlayerIndex &&
+            ((enemyAnswers.length >= playerAnswers.length) ||
+                playerAnswers.length % 3 != 0)) ||
+        // OR: enemy starts and enemy has a finished the round and enemy has more answers
         ((playerIndex == requestingPlayerIndex &&
                 enemyAnswers.length % 3 == 0) &&
             enemyAnswers.length > playerAnswers.length)) {
