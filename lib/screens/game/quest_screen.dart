@@ -15,6 +15,14 @@ class QuestScreen extends StatefulWidget {
 
 class _QuestScreenState extends State<QuestScreen>
     with SingleTickerProviderStateMixin {
+  late TimerController timerController;
+
+  @override
+  void initState() {
+    timerController = TimerController(this);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     // set index of statement to be shown
@@ -25,12 +33,15 @@ class _QuestScreenState extends State<QuestScreen>
     if (widget.appState.currentEnemy!.openGame!.withTimer) {
       widget.appState.currentEnemy!.openGame!.playerAnswers.add(false);
     }
-
+    // show error if statements not downloaded.
     if (widget.appState.currentEnemy!.openGame!.statements == null) {
       return const Scaffold(
         body: Text("Fehler"),
       );
     }
+    // Start timer when build is finished.
+    WidgetsBinding.instance!
+        .addPostFrameCallback((_) => timerController.start());
 
     return Scaffold(
       appBar: AppBar(
@@ -46,9 +57,7 @@ class _QuestScreenState extends State<QuestScreen>
               // Timer
               if (widget.appState.currentEnemy!.openGame!.withTimer)
                 SimpleTimer(
-                  // controller: _timerController
-                  //   ..start(startFrom: const Duration(seconds: 30)),
-                  status: TimerStatus.start,
+                  controller: timerController,
                   duration: const Duration(seconds: 40),
                   onEnd: () =>
                       registerAnswer(statementIndex, false, timeOver: true),
@@ -94,13 +103,23 @@ class _QuestScreenState extends State<QuestScreen>
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ElevatedButton(
-                      onPressed: () => registerAnswer(statementIndex, false),
-                      child: Text("Fake"),
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: DesignColors.red,
+                        ),
+                        onPressed: () => registerAnswer(statementIndex, false),
+                        child: const Text("Fake"),
+                      ),
                     ),
-                    ElevatedButton(
-                      onPressed: () => registerAnswer(statementIndex, true),
-                      child: Text("Fakt"),
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: DesignColors.green,
+                        ),
+                        onPressed: () => registerAnswer(statementIndex, true),
+                        child: const Text("Fakt"),
+                      ),
                     ),
                   ],
                 ),
@@ -114,7 +133,10 @@ class _QuestScreenState extends State<QuestScreen>
 
   void registerAnswer(int statementIndex, bool answer,
       {bool timeOver = false}) async {
-    widget.appState.route = Routes.loading;
+    timerController.reset();
+    if (!widget.appState.currentEnemy!.openGame!.withTimer) {
+      widget.appState.currentEnemy!.openGame!.playerAnswers.add(false);
+    }
     if (timeOver) {
       widget.appState.currentEnemy!.openGame!.playerAnswers[statementIndex] =
           false;
@@ -134,6 +156,21 @@ class _QuestScreenState extends State<QuestScreen>
       widget.appState.currentEnemy!.openGame!.playerAnswers[statementIndex] =
           false;
     }
+    HapticFeedback.heavyImpact();
+    // show some inbetween screen
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => Dialog(
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
+          child: Text(widget
+              .appState.currentEnemy!.openGame!.playerAnswers[statementIndex]
+              .toString()),
+        ),
+      ),
+    );
     // push to DB
     await widget.appState.db.updateGame(widget.appState.currentEnemy!);
     // if its the end of the round (after 3 statements)
@@ -144,5 +181,9 @@ class _QuestScreenState extends State<QuestScreen>
       widget.appState.route = Routes.quest;
     }
     // show some inbetween screen
+    await Future.delayed(const Duration(seconds: 3), () {});
+    Navigator.of(context).pop();
+    timerController.restart();
+    HapticFeedback.mediumImpact();
   }
 }
