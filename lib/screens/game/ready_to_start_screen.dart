@@ -105,6 +105,22 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                 ],
               ),
             ),
+            Text("Punktestand:"),
+            Flexible(
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(widget.appState.currentEnemy!.openGame!.playerAnswers
+                      .fold<int>(0, (p, c) => p + (c ? 1 : 0))
+                      .toString()),
+                  Text(":"),
+                  Text(widget.appState.currentEnemy!.openGame!.enemyAnswers
+                      .fold<int>(0, (p, c) => p + (c ? 1 : 0))
+                      .toString())
+                ],
+              ),
+            ),
             // Bottom button:
             // if error
             if (widget.appState.currentEnemy == null ||

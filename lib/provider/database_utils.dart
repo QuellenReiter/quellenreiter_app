@@ -424,6 +424,8 @@ class DatabaseUtils {
       ),
     );
 
+    // if game is finished, update both players and the game.
+
     print(mutationResult);
     if (mutationResult.hasException) {
       return false;
