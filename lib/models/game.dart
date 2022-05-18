@@ -44,6 +44,7 @@ class Game {
   /// Returns true if the player is the next one to play.
 
   bool isPlayersTurn() {
+    bool ret = false;
     // player starts and ( enemy has more or equal answers or player is within a round )
     if ((playerIndex != requestingPlayerIndex &&
             ((enemyAnswers.length >= playerAnswers.length) ||
@@ -52,10 +53,21 @@ class Game {
         ((playerIndex == requestingPlayerIndex &&
                 enemyAnswers.length % 3 == 0) &&
             enemyAnswers.length > playerAnswers.length)) {
-      return true;
+      ret = true;
     } else {
-      return false;
+      ret = false;
     }
+    // if both have 9 answers.
+    if (playerAnswers.length >= 9 && enemyAnswers.length >= 9) {
+      ret = false;
+    }
+    return ret;
+  }
+
+  /// Returns true if both players have played 9 statements
+  ///
+  bool gameFinished() {
+    return playerAnswers.length >= 9 && enemyAnswers.length >= 9;
   }
 
   Map<String, dynamic> toMap() {
