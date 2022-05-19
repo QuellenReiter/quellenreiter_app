@@ -1,4 +1,5 @@
 import 'package:quellenreiter_app/models/enemy.dart';
+import 'package:quellenreiter_app/models/statement.dart';
 import '../constants/constants.dart';
 
 class Player {
@@ -8,6 +9,8 @@ class Player {
   late String emoji;
   String? email;
   late int numPlayedGames;
+  late int numGamesWon;
+  late int numGamesTied;
   late int trueCorrectAnswers;
   late int trueFakeAnswers;
   late int falseCorrectAnswers;
@@ -39,6 +42,12 @@ class Player {
         falseFakeAnswers = map?[DbFields.userData] == null
             ? 0
             : map?[DbFields.userData]?[DbFields.userFalseFakeAnswers],
+        numGamesWon = map?[DbFields.userData] == null
+            ? 0
+            : map?[DbFields.userData]?[DbFields.userGamesWon],
+        numGamesTied = map?[DbFields.userData] == null
+            ? 0
+            : map?[DbFields.userData]?[DbFields.userGamesTied],
         id = map?["objectId"],
         playedStatements = map?[DbFields.userData] == null
             ? []
@@ -69,6 +78,8 @@ class Player {
         DbFields.userFalseFakeAnswers: falseFakeAnswers,
         DbFields.userPlayedStatements: playedStatements,
         DbFields.userSafedStatements: safedStatementsIds,
+        DbFields.userGamesWon: numGamesWon,
+        DbFields.userGamesTied: numGamesTied
       }
     };
     return ret;
@@ -98,6 +109,8 @@ class Player {
             DbFields.userFalseFakeAnswers: falseFakeAnswers,
             DbFields.userPlayedStatements: playedStatements,
             DbFields.userSafedStatements: safedStatementsIds,
+            DbFields.userGamesWon: numGamesWon,
+            DbFields.userGamesTied: numGamesTied
           }
         }
       }
@@ -113,6 +126,8 @@ class Player {
     trueFakeAnswers = map[DbFields.userTrueFakeAnswers];
     falseCorrectAnswers = map[DbFields.userFalseCorrectAnswers];
     falseFakeAnswers = map[DbFields.userFalseFakeAnswers];
+    numGamesWon = map[DbFields.userGamesWon];
+    numGamesTied = map[DbFields.userGamesTied];
     playedStatements = map[DbFields.userPlayedStatements]
         .map((x) => x["value"])
         .toList()
@@ -121,5 +136,37 @@ class Player {
         .map((x) => x["value"])
         .toList()
         .cast<String>();
+  }
+
+  void updateAnswerStats(List<bool> playerAnswers, Statements? statements) {
+    if (statements == null) {
+      return;
+    }
+    for (int i = 0; i < GameRules.statementsPerGame; i++) {
+      // correctly found as Reak News
+      if (playerAnswers[i] &&
+          statements.statements[i].statementCorrectness ==
+              CorrectnessCategory.correct) {
+        trueCorrectAnswers += 1;
+      }
+      // Correctly found as Fake News
+      else if (playerAnswers[i] &&
+          statements.statements[i].statementCorrectness !=
+              CorrectnessCategory.correct) {
+        trueFakeAnswers += 1;
+      }
+      // Thought to be Real but was Fake News
+      else if (!playerAnswers[i] &&
+          statements.statements[i].statementCorrectness !=
+              CorrectnessCategory.correct) {
+        falseFakeAnswers += 1;
+      }
+      // Thought to be Fake but was Real News
+      else if (!playerAnswers[i] &&
+          statements.statements[i].statementCorrectness ==
+              CorrectnessCategory.correct) {
+        falseCorrectAnswers += 1;
+      }
+    }
   }
 }

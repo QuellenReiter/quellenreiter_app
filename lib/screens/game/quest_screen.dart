@@ -134,25 +134,32 @@ class _QuestScreenState extends State<QuestScreen>
   void registerAnswer(int statementIndex, bool answer,
       {bool timeOver = false}) async {
     timerController.reset();
+    // add false as a placeHolder if not with timer.
     if (!widget.appState.currentEnemy!.openGame!.withTimer) {
       widget.appState.currentEnemy!.openGame!.playerAnswers.add(false);
     }
+    // if time is over (only if with timer)
     if (timeOver) {
       widget.appState.currentEnemy!.openGame!.playerAnswers[statementIndex] =
           false;
+      // if statemetn and answer are true.
     } else if (widget.appState.currentEnemy!.openGame!.statements!
                 .statements[statementIndex].statementCorrectness ==
             CorrectnessCategory.correct &&
         answer) {
       widget.appState.currentEnemy!.openGame!.playerAnswers[statementIndex] =
           true;
-    } else if (widget.appState.currentEnemy!.openGame!.statements!
+    }
+    // if statement and answer are fake.
+    else if (widget.appState.currentEnemy!.openGame!.statements!
                 .statements[statementIndex].statementCorrectness !=
             CorrectnessCategory.correct &&
         !answer) {
       widget.appState.currentEnemy!.openGame!.playerAnswers[statementIndex] =
           true;
-    } else {
+    }
+    // else answer is false.
+    else {
       widget.appState.currentEnemy!.openGame!.playerAnswers[statementIndex] =
           false;
     }
@@ -171,19 +178,76 @@ class _QuestScreenState extends State<QuestScreen>
         ),
       ),
     );
+
+    // if game is finished
+    if (widget.appState.currentEnemy!.openGame!.gameFinished()) {
+      if (widget.appState.currentEnemy!.openGame!.playerAnswers
+              .fold<int>(0, (p, e) => p + (e ? 1 : 0)) >
+          widget.appState.currentEnemy!.openGame!.enemyAnswers
+              .fold<int>(0, (p, e) => p + (e ? 1 : 0))) {
+        // player has won
+        widget.appState.currentEnemy!.wonGamesPlayer += 1;
+        // update player
+        widget.appState.player!.numGamesWon += 1;
+        widget.appState.player!.numPlayedGames += 1;
+        widget.appState.player!.updateAnswerStats(
+            widget.appState.currentEnemy!.openGame!.playerAnswers,
+            widget.appState.currentEnemy!.openGame!.statements);
+        // update enemy
+        widget.appState.currentEnemy!.numGamesPlayedOther += 1;
+        widget.appState.currentEnemy!.updateAnswerStats(
+            widget.appState.currentEnemy!.openGame!.enemyAnswers,
+            widget.appState.currentEnemy!.openGame!.statements);
+      } else if (widget.appState.currentEnemy!.openGame!.playerAnswers
+              .fold<int>(0, (p, e) => p + (e ? 1 : 0)) <
+          widget.appState.currentEnemy!.openGame!.enemyAnswers
+              .fold<int>(0, (p, e) => p + (e ? 1 : 0))) {
+        // enemy has won
+        widget.appState.currentEnemy!.wonGamesOther += 1;
+        // update player
+        widget.appState.player!.numPlayedGames += 1;
+        widget.appState.player!.updateAnswerStats(
+            widget.appState.currentEnemy!.openGame!.playerAnswers,
+            widget.appState.currentEnemy!.openGame!.statements);
+        // update enemy
+        widget.appState.currentEnemy!.numGamesPlayedOther += 1;
+        widget.appState.currentEnemy!.numGamesWonOther += 1;
+        widget.appState.currentEnemy!.updateAnswerStats(
+            widget.appState.currentEnemy!.openGame!.playerAnswers,
+            widget.appState.currentEnemy!.openGame!.statements);
+      } else {
+        // Game endet in a Tie
+        // update player
+        widget.appState.player!.numPlayedGames += 1;
+        widget.appState.player!.updateAnswerStats(
+            widget.appState.currentEnemy!.openGame!.playerAnswers,
+            widget.appState.currentEnemy!.openGame!.statements);
+        // update enemy
+        widget.appState.currentEnemy!.numGamesPlayedOther += 1;
+        widget.appState.currentEnemy!.updateAnswerStats(
+            widget.appState.currentEnemy!.openGame!.enemyAnswers,
+            widget.appState.currentEnemy!.openGame!.statements);
+      }
+      // increase played games of friendship
+      widget.appState.currentEnemy!.numGamesPlayed += 1;
+    }
+
     // push to DB
-    await widget.appState.db.updateGame(widget.appState.currentEnemy!);
+    await widget.appState.db.updateGame(widget.appState);
+
     // if its the end of the round (after 3 statements)
     if (!widget.appState.currentEnemy!.openGame!.isPlayersTurn()) {
       //return to readyToStartGameScreen
       widget.appState.route = Routes.gameReadyToStart;
+    } else if (widget.appState.currentEnemy!.openGame!.gameFinished()) {
+      widget.appState.route = Routes.gameReadyToStart;
     } else {
       widget.appState.route = Routes.quest;
+      // show some inbetween screen
+      await Future.delayed(const Duration(seconds: 3), () {});
+      Navigator.of(context).pop();
+      timerController.restart();
     }
-    // show some inbetween screen
-    await Future.delayed(const Duration(seconds: 3), () {});
-    Navigator.of(context).pop();
-    timerController.restart();
     HapticFeedback.mediumImpact();
   }
 }
