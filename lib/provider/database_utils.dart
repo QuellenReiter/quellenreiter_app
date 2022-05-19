@@ -5,6 +5,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:quellenreiter_app/models/enemy.dart';
 import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/player.dart';
+import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import '../consonents.dart';
 import '../constants/constants.dart';
 import '../models/statement.dart';
@@ -402,7 +403,7 @@ class DatabaseUtils {
   /// Update a [Game] in the Database by [String].
   ///
   /// Can be a new name or emoji.
-  Future<bool> updateGame(Enemy enemy) async {
+  Future<bool> updateGame(QuellenreiterAppState appState) async {
     // The session token.
     String? token = await safeStorage.read(key: "token");
     final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
@@ -419,19 +420,37 @@ class DatabaseUtils {
       MutationOptions(
         document: gql(Queries.updateGame()),
         variables: {
-          "openGame": enemy.openGame!.toMap(),
+          "openGame": appState.currentEnemy!.openGame!.toMap(),
         },
       ),
     );
 
-    // if game is finished, update both players and the game.
-
     // print(mutationResult);
     if (mutationResult.hasException) {
       return false;
-    } else {
-      return true;
     }
+    // if game is finished, update both players and the game.
+    if (appState.currentEnemy!.openGame!.gameFinished()) {
+      // update friendship
+      await updateFriendship(appState.currentEnemy!);
+      // update player
+      await updateUserData(appState.player, (Player? p) {
+        if (p != null) {
+          appState.player = p;
+        } else {
+          appState.error = "Player konnte nicht aktualisiert werden.";
+        }
+      });
+      //update enemy
+      await updateUserData(appState.currentEnemy, (Enemy? e) {
+        if (e != null) {
+          appState.currentEnemy = e;
+        } else {
+          appState.error = "Gegner konnte nicht aktualisiert werden.";
+        }
+      });
+    }
+    return true;
   }
 
   /// Upload a [Game] into the Database by [String].

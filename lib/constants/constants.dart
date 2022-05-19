@@ -57,6 +57,8 @@ class DbFields {
   static const String factMedia = "media";
 
   static const String userData = "userData";
+  static const String userGamesWon = "numGamesWon";
+  static const String userGamesTied = "numGamesTied";
   static const String userEmoji = "emoji";
   static const String userName = "username";
   static const String userPlayedGames = "numPlayedGames";
@@ -116,4 +118,10 @@ class CorrectnessCategory {
   static String fabricatedContent = "frei erfunden";
   static String falseInformation = "Fehlinformation";
   static String satire = "Satire";
+}
+
+class GameRules {
+  static const int statementsPerRound = 3;
+  static const int roundsPerGame = 3;
+  static const int statementsPerGame = statementsPerRound * roundsPerGame;
 }

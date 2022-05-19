@@ -1,6 +1,7 @@
 import '../constants/constants.dart';
 import 'game.dart';
 import 'player.dart';
+import 'statement.dart';
 
 class Enemy {
   late int playerIndex;
@@ -16,6 +17,13 @@ class Enemy {
   late bool acceptedByOther;
   late bool acceptedByPlayer;
   late Game? openGame;
+  late int trueCorrectAnswersOther;
+  late int trueFakeAnswersOther;
+  late int falseCorrectAnswersOther;
+  late int falseFakeAnswersOther;
+  late int numGamesWonOther;
+  late int numGamesTiedOther;
+  late int numGamesPlayedOther;
 
   /// Constructor that takes a Map of a friendship query and resolves which of
   /// player1 and player2 is
@@ -45,6 +53,20 @@ class Enemy {
       wonGamesPlayer = map?[DbFields.friendshipWonGamesPlayer1];
       acceptedByOther = map?[DbFields.friendshipApproved2];
       acceptedByPlayer = map?[DbFields.friendshipApproved1];
+      trueCorrectAnswersOther = map?[DbFields.friendshipPlayer2]
+          [DbFields.userData][DbFields.userTrueCorrectAnswers];
+      trueFakeAnswersOther = map?[DbFields.friendshipPlayer2][DbFields.userData]
+          [DbFields.userTrueFakeAnswers];
+      falseCorrectAnswersOther = map?[DbFields.friendshipPlayer2]
+          [DbFields.userData][DbFields.userFalseCorrectAnswers];
+      falseFakeAnswersOther = map?[DbFields.friendshipPlayer2]
+          [DbFields.userData][DbFields.userFalseFakeAnswers];
+      numGamesWonOther = map?[DbFields.friendshipPlayer2][DbFields.userData]
+          [DbFields.userGamesWon];
+      numGamesTiedOther = map?[DbFields.friendshipPlayer2][DbFields.userData]
+          [DbFields.userGamesTied];
+      numGamesPlayedOther = map?[DbFields.friendshipPlayer2][DbFields.userData]
+          [DbFields.userPlayedGames];
     } else {
       // The player corresponds to player2 in the database friendship.
       playerIndex = 1;
@@ -63,6 +85,20 @@ class Enemy {
       wonGamesPlayer = map?[DbFields.friendshipWonGamesPlayer2];
       acceptedByOther = map?[DbFields.friendshipApproved1];
       acceptedByPlayer = map?[DbFields.friendshipApproved2];
+      trueCorrectAnswersOther = map?[DbFields.friendshipPlayer1]
+          [DbFields.userData][DbFields.userTrueCorrectAnswers];
+      trueFakeAnswersOther = map?[DbFields.friendshipPlayer1][DbFields.userData]
+          [DbFields.userTrueFakeAnswers];
+      falseCorrectAnswersOther = map?[DbFields.friendshipPlayer1]
+          [DbFields.userData][DbFields.userFalseCorrectAnswers];
+      falseFakeAnswersOther = map?[DbFields.friendshipPlayer1]
+          [DbFields.userData][DbFields.userFalseFakeAnswers];
+      numGamesWonOther = map?[DbFields.friendshipPlayer1][DbFields.userData]
+          [DbFields.userGamesWon];
+      numGamesTiedOther = map?[DbFields.friendshipPlayer1][DbFields.userData]
+          [DbFields.userGamesTied];
+      numGamesPlayedOther = map?[DbFields.friendshipPlayer1][DbFields.userData]
+          [DbFields.userPlayedGames];
     }
     numGamesPlayed = map?[DbFields.friendshipNumGamesPlayed];
     friendshipId = map?["objectId"];
@@ -114,6 +150,13 @@ class Enemy {
     numGamesPlayed = 0;
     friendshipId = "";
     openGame = null;
+    trueCorrectAnswersOther = 0;
+    trueFakeAnswersOther = 0;
+    falseCorrectAnswersOther = 0;
+    falseFakeAnswersOther = 0;
+    numGamesWonOther = 0;
+    numGamesTiedOther = 0;
+    numGamesPlayedOther = 0;
   }
 
   Map<String, dynamic> toUserDataMap() {
@@ -121,7 +164,14 @@ class Enemy {
       "id": userDataID,
       "fields": {
         DbFields.userEmoji: emoji,
-        DbFields.userPlayedStatements: playedStatementIds
+        DbFields.userPlayedStatements: playedStatementIds,
+        DbFields.userTrueCorrectAnswers: trueCorrectAnswersOther,
+        DbFields.userTrueFakeAnswers: trueFakeAnswersOther,
+        DbFields.userFalseCorrectAnswers: falseCorrectAnswersOther,
+        DbFields.userFalseFakeAnswers: falseFakeAnswersOther,
+        DbFields.userGamesWon: numGamesWonOther,
+        DbFields.userGamesTied: numGamesTiedOther,
+        DbFields.userPlayedGames: numGamesPlayedOther,
       }
     };
     return ret;
@@ -162,13 +212,53 @@ class Enemy {
     return ret;
   }
 
+  void updateAnswerStats(List<bool> enemyAnswers, Statements? statements) {
+    if (statements == null) {
+      return;
+    }
+    for (int i = 0; i < GameRules.statementsPerGame; i++) {
+      // correctly found as Reak News
+      if (enemyAnswers[i] &&
+          statements.statements[i].statementCorrectness ==
+              CorrectnessCategory.correct) {
+        trueCorrectAnswersOther += 1;
+      }
+      // Correctly found as Fake News
+      else if (enemyAnswers[i] &&
+          statements.statements[i].statementCorrectness !=
+              CorrectnessCategory.correct) {
+        trueFakeAnswersOther += 1;
+      }
+      // Thought to be Real but was Fake News
+      else if (!enemyAnswers[i] &&
+          statements.statements[i].statementCorrectness !=
+              CorrectnessCategory.correct) {
+        falseFakeAnswersOther += 1;
+      }
+      // Thought to be Fake but was Real News
+      else if (!enemyAnswers[i] &&
+          statements.statements[i].statementCorrectness ==
+              CorrectnessCategory.correct) {
+        falseCorrectAnswersOther += 1;
+      }
+    }
+  }
+
   void updateDataWithMap(Map<String, dynamic> map) {
     userDataID = map["objectId"];
     emoji = map[DbFields.userEmoji];
+
     playedStatementIds = map[DbFields.userPlayedStatements]
         .map((x) => x["value"])
         .toList()
         .cast<String>();
+    trueCorrectAnswersOther = map[DbFields.userTrueCorrectAnswers];
+    trueFakeAnswersOther = map[DbFields.userTrueFakeAnswers];
+    falseCorrectAnswersOther = map[DbFields.userFalseCorrectAnswers];
+    falseFakeAnswersOther = map[DbFields.userFalseFakeAnswers];
+    numGamesWonOther = map[DbFields.userGamesWon];
+    numGamesTiedOther = map[DbFields.userGamesTied];
+    numGamesPlayedOther = map[DbFields.userPlayedGames];
   }
 }
 

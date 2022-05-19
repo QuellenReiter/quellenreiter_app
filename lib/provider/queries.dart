@@ -234,6 +234,8 @@ mutation LogIn{
         ${DbFields.userName}
         ${DbFields.userData}{
           objectId
+          ${DbFields.userGamesTied}
+          ${DbFields.userGamesWon}
           ${DbFields.userEmoji}
           ${DbFields.userPlayedGames}
           ${DbFields.userTrueCorrectAnswers}
@@ -276,6 +278,8 @@ mutation SignUp{
         ${DbFields.userName}
         ${DbFields.userData}{
           objectId
+          ${DbFields.userGamesTied}
+          ${DbFields.userGamesWon}
           ${DbFields.userEmoji}
           ${DbFields.userPlayedGames}
           ${DbFields.userTrueCorrectAnswers}
@@ -312,6 +316,8 @@ query GetCurrentUser{
       ${DbFields.userName}
       ${DbFields.userData}{
         objectId
+        ${DbFields.userGamesTied}
+        ${DbFields.userGamesWon}
         ${DbFields.userEmoji}
         ${DbFields.userPlayedGames}
         ${DbFields.userTrueCorrectAnswers}
@@ -394,7 +400,14 @@ query GetOpenFriendRequests{
           ${DbFields.userName}
           ${DbFields.userData}{
             objectId
+            ${DbFields.userGamesTied}
+            ${DbFields.userGamesWon}
             ${DbFields.userEmoji}
+            ${DbFields.userPlayedGames}
+            ${DbFields.userTrueCorrectAnswers}
+            ${DbFields.userFalseCorrectAnswers}
+            ${DbFields.userTrueFakeAnswers}
+            ${DbFields.userFalseFakeAnswers}
             ${DbFields.userPlayedStatements}{
               ... on Element{
                 value
@@ -407,7 +420,14 @@ query GetOpenFriendRequests{
           ${DbFields.userName}
           ${DbFields.userData}{
             objectId
+            ${DbFields.userGamesTied}
+            ${DbFields.userGamesWon}
             ${DbFields.userEmoji}
+            ${DbFields.userPlayedGames}
+            ${DbFields.userTrueCorrectAnswers}
+            ${DbFields.userFalseCorrectAnswers}
+            ${DbFields.userTrueFakeAnswers}
+            ${DbFields.userFalseFakeAnswers}
             ${DbFields.userPlayedStatements}{
               ... on Element{
                 value
@@ -472,7 +492,14 @@ query GetOpenFriendRequests{
         ${DbFields.userName}
         ${DbFields.userData}{
           objectId
+          ${DbFields.userGamesTied}
+          ${DbFields.userGamesWon}
           ${DbFields.userEmoji}
+          ${DbFields.userPlayedGames}
+          ${DbFields.userTrueCorrectAnswers}
+          ${DbFields.userFalseCorrectAnswers}
+          ${DbFields.userTrueFakeAnswers}
+          ${DbFields.userFalseFakeAnswers}
         }
       }
     }
@@ -520,6 +547,8 @@ mutation updateUser(\$user: UpdateUserDataInput!){
   ){
     userData{
       objectId
+      ${DbFields.userGamesTied}
+      ${DbFields.userGamesWon}
       ${DbFields.userEmoji}
       ${DbFields.userPlayedGames}
       ${DbFields.userTrueCorrectAnswers}
@@ -555,6 +584,8 @@ mutation updateUser(\$user: UpdateUserInput!){
       ${DbFields.userName}
       ${DbFields.userData}{
         objectId
+        ${DbFields.userGamesTied}
+        ${DbFields.userGamesWon}
         ${DbFields.userEmoji}
         ${DbFields.userPlayedGames}
         ${DbFields.userTrueCorrectAnswers}

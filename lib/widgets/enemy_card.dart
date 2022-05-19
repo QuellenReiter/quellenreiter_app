@@ -49,8 +49,14 @@ class EnemyCard extends StatelessWidget {
                     children: [
                       Text(enemy.emoji),
                       Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          child: Text(enemy.name)),
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Text(enemy.name),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Text(
+                            "${enemy.numGamesWonOther}/${enemy.numGamesPlayedOther} Spielen gewonnen."),
+                      ),
                     ],
                   ),
                 ),
