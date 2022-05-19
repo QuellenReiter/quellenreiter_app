@@ -163,6 +163,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                       .toString()),
                   Text(":"),
                   Text(widget.appState.currentEnemy!.openGame!.enemyAnswers
+                      .sublist(0, commonLength)
                       .fold<int>(0, (p, c) => p + (c ? 1 : 0))
                       .toString())
                 ],

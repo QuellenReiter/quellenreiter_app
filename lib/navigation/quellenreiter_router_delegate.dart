@@ -132,14 +132,16 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
             ),
           ),
         ];
-      case Routes.gameResults:
-        return [
-          MaterialPage(
-            key: const ValueKey('GameResultsScreen'),
-            child: GameResultsScreen(),
-          ),
-        ];
       case Routes.quest:
+        if (appState.currentEnemy != null &&
+            appState.currentEnemy!.openGame!.gameFinished()) {
+          return [
+            MaterialPage(
+              key: const ValueKey('GameResultsScreen'),
+              child: GameResultsScreen(),
+            ),
+          ];
+        }
         return [
           MaterialPage(
             key: const ValueKey('QuestScreen'),
@@ -148,6 +150,14 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
             ),
           ),
         ];
+      case Routes.gameResults:
+        return [
+          MaterialPage(
+            key: const ValueKey('GameResultsScreen'),
+            child: GameResultsScreen(),
+          ),
+        ];
+
       default:
         return [home];
     }
