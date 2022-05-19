@@ -39,11 +39,11 @@ class DatabaseUtils {
     );
     // If login result has any exceptions.
     if (loginResult.hasException) {
-      print(loginResult.exception.toString());
+      // print(loginResult.exception.toString());
       loginCallback(null);
       return;
     }
-    print(loginResult.data.toString());
+    // print(loginResult.data.toString());
 
     // Safe the new token.
     safeStorage.write(
@@ -80,7 +80,7 @@ class DatabaseUtils {
         document: gql(Queries.signUp(username, password, emoji)),
       ),
     );
-    print(signUpResult.toString());
+    // print(signUpResult.toString());
     // If login result has any exceptions.
     if (signUpResult.hasException) {
       signUpCallback(null);
@@ -134,7 +134,7 @@ class DatabaseUtils {
         ),
       );
 
-      print(queryResult.toString());
+      // print(queryResult.toString());
       if (queryResult.hasException) {
         checkTokenCallback(null);
         return;
@@ -177,7 +177,7 @@ class DatabaseUtils {
         ),
       );
 
-      print(queryResult.toString());
+      // print(queryResult.toString());
       if (queryResult.hasException) {
         friendRequestCallback(null);
         return;
@@ -187,7 +187,7 @@ class DatabaseUtils {
         return;
       }
     }
-    print("token is null in getFriends()");
+    // print("token is null in getFriends()");
     // no token, return false
     friendRequestCallback(null);
     return;
@@ -220,7 +220,7 @@ class DatabaseUtils {
         ),
       );
 
-      print(mutationResult.toString());
+      // print(mutationResult.toString());
       if (mutationResult.hasException) {
         acceptFriendCallback(false);
         return;
@@ -280,7 +280,7 @@ class DatabaseUtils {
         },
       ),
     );
-    print(mutationResult);
+    // print(mutationResult);
     if (mutationResult.hasException) {
       updateUserCallback(null);
       return;
@@ -317,7 +317,7 @@ class DatabaseUtils {
       ),
     );
 
-    print(mutationResult);
+    // print(mutationResult);
     if (mutationResult.hasException) {
       updateUserCallback(null);
       return;
@@ -356,7 +356,7 @@ class DatabaseUtils {
       ),
     );
 
-    print(mutationResult);
+    // print(mutationResult);
     if (mutationResult.hasException) {
       createUserDataCallback(null);
       return;
@@ -391,7 +391,7 @@ class DatabaseUtils {
       ),
     );
 
-    print(mutationResult);
+    // print(mutationResult);
     if (mutationResult.hasException) {
       return false;
     } else {
@@ -426,7 +426,7 @@ class DatabaseUtils {
 
     // if game is finished, update both players and the game.
 
-    print(mutationResult);
+    // print(mutationResult);
     if (mutationResult.hasException) {
       return false;
     } else {
@@ -462,9 +462,9 @@ class DatabaseUtils {
         },
       ),
     );
-    print(mutationResult);
+    // print(mutationResult);
 
-    print(mutationResult);
+    // print(mutationResult);
     if (mutationResult.hasException) {
       return null;
     } else {
@@ -555,7 +555,7 @@ class DatabaseUtils {
         },
       ),
     );
-    print(queryResult);
+    // print(queryResult);
     if (queryResult.hasException) {
       return null;
     }
@@ -591,7 +591,7 @@ class DatabaseUtils {
         ),
       );
 
-      print(mutationResult.toString());
+      // print(mutationResult.toString());
       if (mutationResult.hasException) {
         sendFriendRequestCallback(false);
         return;
@@ -632,7 +632,7 @@ class DatabaseUtils {
         ),
       );
 
-      print(queryResult.toString());
+      // print(queryResult.toString());
       if (queryResult.hasException) {
         searchFriendsCallback(null);
         return;

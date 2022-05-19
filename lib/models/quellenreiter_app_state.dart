@@ -28,6 +28,9 @@ class QuellenreiterAppState extends ChangeNotifier {
   String? get error => _error;
   set error(value) {
     _error = value;
+    if (_error != null) {
+      print("ERROR: $_error");
+    }
     notifyListeners();
   }
 
@@ -189,7 +192,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   Future<void> getFriends() async {
-    print("get friends called");
+    // print("get friends called");
     db.getFriends(player!, _getFriendsCallback);
   }
 
@@ -333,7 +336,7 @@ class QuellenreiterAppState extends ChangeNotifier {
           "Spielstarten fehlgeschlagen. ${e.emoji} ${e.name} wurde nicht herausgefordert. Versuche es erneut.";
       return;
     }
-    print(e.openGame!.statementIds.toString());
+    // print(e.openGame!.statementIds.toString());
     // if successfully fetched statements
     route = tempRoute;
     error =
