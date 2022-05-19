@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/enemy.dart';
@@ -13,6 +15,76 @@ class ReadyToStartScreen extends StatefulWidget {
 }
 
 class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
+  var greyCircle = const Padding(
+    padding: EdgeInsets.all(10),
+    child: CircleAvatar(
+      backgroundColor: DesignColors.black,
+    ),
+  );
+  List<Widget> enemyAnswerVisuals = [];
+  List<Widget> playerAnswerVisuals = [];
+  int commonLength = 0;
+
+  @override
+  void initState() {
+    commonLength = min(
+        widget.appState.currentEnemy!.openGame!.playerAnswers.length,
+        widget.appState.currentEnemy!.openGame!.enemyAnswers.length);
+
+    enemyAnswerVisuals.addAll([
+      greyCircle,
+      greyCircle,
+      greyCircle,
+      greyCircle,
+      greyCircle,
+      greyCircle,
+      greyCircle,
+      greyCircle,
+      greyCircle
+    ]);
+    playerAnswerVisuals.addAll([
+      greyCircle,
+      greyCircle,
+      greyCircle,
+      greyCircle,
+      greyCircle,
+      greyCircle,
+      greyCircle,
+      greyCircle,
+      greyCircle
+    ]);
+    for (int i = 0;
+        i < widget.appState.currentEnemy!.openGame!.playerAnswers.length;
+        i++) {
+      playerAnswerVisuals[i] = Padding(
+        padding: const EdgeInsets.all(10),
+        child: CircleAvatar(
+          foregroundColor: DesignColors.pink,
+          backgroundColor:
+              widget.appState.currentEnemy!.openGame!.playerAnswers[i] == true
+                  ? DesignColors.green
+                  : DesignColors.red,
+        ),
+      );
+
+      if (i > commonLength - 1) {
+        continue;
+      }
+      enemyAnswerVisuals[i] = Padding(
+        padding: const EdgeInsets.all(10),
+        child: CircleAvatar(
+          backgroundColor: widget.appState.currentEnemy!.openGame!.enemyAnswers
+                      .sublist(0, commonLength)[i] ==
+                  true
+              ? DesignColors.green
+              : DesignColors.red,
+        ),
+      );
+    }
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,22 +120,9 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                           child: Padding(
                             padding: const EdgeInsets.only(right: 20),
                             child: GridView.count(
-                              shrinkWrap: true,
-                              crossAxisCount: 3,
-                              children: widget.appState.currentEnemy!.openGame!
-                                  .playerAnswers
-                                  .map(
-                                    (e) => Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: CircleAvatar(
-                                        backgroundColor: e == true
-                                            ? DesignColors.green
-                                            : DesignColors.red,
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
+                                shrinkWrap: true,
+                                crossAxisCount: 3,
+                                children: playerAnswerVisuals),
                           ),
                         ),
                       ],
@@ -83,19 +142,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                             child: GridView.count(
                               shrinkWrap: true,
                               crossAxisCount: 3,
-                              children: widget
-                                  .appState.currentEnemy!.openGame!.enemyAnswers
-                                  .map(
-                                    (e) => Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: CircleAvatar(
-                                        backgroundColor: e == true
-                                            ? DesignColors.green
-                                            : DesignColors.red,
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
+                              children: enemyAnswerVisuals,
                             ),
                           ),
                         ),
@@ -105,7 +152,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                 ],
               ),
             ),
-            Text("Punktestand:"),
+            const Text("Punktestand:"),
             Flexible(
               child: Row(
                 mainAxisSize: MainAxisSize.max,
