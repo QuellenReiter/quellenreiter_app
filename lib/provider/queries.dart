@@ -370,7 +370,7 @@ mutation updateFriendship(\$friendship: UpdateFriendshipInput!){
   }
 }
 ''';
-    print(ret);
+    // print(ret);
     return ret;
   }
 
@@ -644,7 +644,7 @@ mutation uploadGame(\$openGame: CreateOpenGameInput!){
   }
 }
 ''';
-    print(ret);
+    // print(ret);
     return ret;
   }
 
@@ -693,7 +693,7 @@ query getStatement(\$ids: StatementWhereInput!){
   }
 }
 ''';
-    print(ret);
+    // print(ret);
     return ret;
   }
 }

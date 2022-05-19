@@ -26,8 +26,8 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
 
   QuellenreiterRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>() {
     appState.addListener(notifyListeners);
-    print(appState.route);
-    print('appState.addListener(notifyListeners) called');
+    // print(appState.route);
+    // print('appState.addListener(notifyListeners) called');
   }
   @override
   QuellenreiterRoutePath get currentConfiguration {
@@ -36,7 +36,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
 
   @override
   Widget build(BuildContext context) {
-    print(appState.route.toString());
+    // print(appState.route.toString());
     return Navigator(
       pages: buildPages(),
       // Define what happens on Navigator.pop() or back button.
