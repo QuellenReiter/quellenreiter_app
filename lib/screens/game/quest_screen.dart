@@ -134,6 +134,24 @@ class _QuestScreenState extends State<QuestScreen>
   void registerAnswer(int statementIndex, bool answer,
       {bool timeOver = false}) async {
     timerController.reset();
+    // update the player so we dont miss any updates made by other player/games.
+    await widget.appState.db.checkToken((p) {
+      if (p != null) {
+        widget.appState.player = p;
+        widget.appState.error = null;
+        return;
+      } else {
+        widget.appState.error = "Spieler nicht up to date.";
+        return;
+      }
+    });
+    // if update not working, break!
+    if (widget.appState.error != null) {
+      return;
+    }
+    // PROBLEM: This is still not completely safe.
+    // some other player could update the players stats between the above call
+    // and the below update and will then be lost.
     // add false as a placeHolder if not with timer.
     if (!widget.appState.currentEnemy!.openGame!.withTimer) {
       widget.appState.currentEnemy!.openGame!.playerAnswers.add(false);
