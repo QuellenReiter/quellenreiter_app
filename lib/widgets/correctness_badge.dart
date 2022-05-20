@@ -80,9 +80,9 @@ class CorrectnessBadge extends StatelessWidget {
                                           margin: const EdgeInsets.only(
                                               top: 10, bottom: 10),
                                           padding: const EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             borderRadius:
-                                                const BorderRadius.all(
+                                                BorderRadius.all(
                                                     Radius.circular(10)),
                                             color: DesignColors.green,
                                           ),
@@ -115,9 +115,9 @@ class CorrectnessBadge extends StatelessWidget {
                                           margin: const EdgeInsets.only(
                                               top: 10, bottom: 10),
                                           padding: const EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             borderRadius:
-                                                const BorderRadius.all(
+                                                BorderRadius.all(
                                                     Radius.circular(10)),
                                             color: DesignColors.red,
                                           ),
@@ -152,9 +152,9 @@ class CorrectnessBadge extends StatelessWidget {
                                           margin: const EdgeInsets.only(
                                               top: 10, bottom: 10),
                                           padding: const EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             borderRadius:
-                                                const BorderRadius.all(
+                                                BorderRadius.all(
                                                     Radius.circular(10)),
                                             color: DesignColors.red,
                                           ),
@@ -189,9 +189,9 @@ class CorrectnessBadge extends StatelessWidget {
                                           margin: const EdgeInsets.only(
                                               top: 10, bottom: 10),
                                           padding: const EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             borderRadius:
-                                                const BorderRadius.all(
+                                                BorderRadius.all(
                                                     Radius.circular(10)),
                                             color: DesignColors.red,
                                           ),
@@ -226,9 +226,9 @@ class CorrectnessBadge extends StatelessWidget {
                                           margin: const EdgeInsets.only(
                                               top: 10, bottom: 10),
                                           padding: const EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             borderRadius:
-                                                const BorderRadius.all(
+                                                BorderRadius.all(
                                                     Radius.circular(10)),
                                             color: DesignColors.red,
                                           ),
@@ -263,9 +263,9 @@ class CorrectnessBadge extends StatelessWidget {
                                           margin: const EdgeInsets.only(
                                               top: 10, bottom: 10),
                                           padding: const EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             borderRadius:
-                                                const BorderRadius.all(
+                                                BorderRadius.all(
                                                     Radius.circular(10)),
                                             color: DesignColors.red,
                                           ),
@@ -300,9 +300,9 @@ class CorrectnessBadge extends StatelessWidget {
                                           margin: const EdgeInsets.only(
                                               top: 10, bottom: 10),
                                           padding: const EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             borderRadius:
-                                                const BorderRadius.all(
+                                                BorderRadius.all(
                                                     Radius.circular(10)),
                                             color: DesignColors.red,
                                           ),
@@ -337,9 +337,9 @@ class CorrectnessBadge extends StatelessWidget {
                                           margin: const EdgeInsets.only(
                                               top: 10, bottom: 10),
                                           padding: const EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             borderRadius:
-                                                const BorderRadius.all(
+                                                BorderRadius.all(
                                                     Radius.circular(10)),
                                             color: DesignColors.red,
                                           ),

@@ -23,8 +23,8 @@ class FactDisplayContainer extends StatelessWidget {
       child: Container(
         alignment: Alignment.topLeft,
         clipBehavior: Clip.none,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(10)),
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
           color: DesignColors.black,
         ),
         child: Stack(
@@ -33,8 +33,8 @@ class FactDisplayContainer extends StatelessWidget {
               alignment: Alignment.topRight,
               child: Container(
                 padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
                   color: DesignColors.green,
                 ),
                 child: SelectableText(
@@ -60,9 +60,9 @@ class FactDisplayContainer extends StatelessWidget {
                             alignment: Alignment.topLeft,
                             child: Container(
                               padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 borderRadius:
-                                    const BorderRadius.all(Radius.circular(10)),
+                                    BorderRadius.all(Radius.circular(10)),
                                 color: DesignColors.backgroundBlue,
                               ),
                               child: SelectableText(
@@ -130,7 +130,7 @@ class FactDisplayContainer extends StatelessWidget {
                       ],
                     ),
                   ),
-                  FractionallySizedBox(
+                  const FractionallySizedBox(
                     widthFactor: 0.8,
                     child: Divider(
                         height: 20,

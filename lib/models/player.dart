@@ -64,7 +64,8 @@ class Player {
                     .map((x) => x["value"])
                     .toList()
                     .cast<String>()
-                : null;
+                : null,
+        friends = null;
 
   Map<String, dynamic> toUserDataMap() {
     var ret = {

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:simple_timer/simple_timer.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class QuestScreen extends StatefulWidget {
   const QuestScreen({Key? key, required this.appState}) : super(key: key);
@@ -40,7 +41,7 @@ class _QuestScreenState extends State<QuestScreen>
       );
     }
     // Start timer when build is finished.
-    WidgetsBinding.instance!
+    WidgetsBinding.instance
         .addPostFrameCallback((_) => timerController.start());
 
     return Scaffold(
@@ -56,23 +57,43 @@ class _QuestScreenState extends State<QuestScreen>
             children: [
               // Timer
               if (widget.appState.currentEnemy!.openGame!.withTimer)
-                SimpleTimer(
-                  controller: timerController,
-                  duration: const Duration(seconds: 40),
-                  onEnd: () =>
-                      registerAnswer(statementIndex, false, timeOver: true),
-                  timerStyle: TimerStyle.ring,
+                FractionallySizedBox(
+                  widthFactor: 0.3,
+                  child: SimpleTimer(
+                    controller: timerController,
+                    duration: const Duration(seconds: 40),
+                    onEnd: () =>
+                        registerAnswer(statementIndex, false, timeOver: true),
+                    timerStyle: TimerStyle.ring,
+                  ),
                 ),
               // image
               Flexible(
-                child: Image(
-                  image: NetworkImage(widget
-                      .appState
-                      .currentEnemy!
-                      .openGame!
-                      .statements!
-                      .statements[statementIndex]
-                      .statementPictureURL!),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: FadeInImage.memoryNetwork(
+                      fadeInDuration: const Duration(milliseconds: 400),
+                      fadeInCurve: Curves.easeInOut,
+                      fit: BoxFit.cover,
+                      placeholder: kTransparentImage,
+                      image: widget
+                                  .appState
+                                  .currentEnemy!
+                                  .openGame!
+                                  .statements!
+                                  .statements[statementIndex]
+                                  .statementPictureURL !=
+                              null
+                          ? widget.appState.currentEnemy!.openGame!.statements!
+                              .statements[statementIndex].statementPictureURL!
+                              .replaceAll(
+                                  "https%3A%2F%2Fparsefiles.back4app.com%2FFeP6gb7k9R2K9OztjKWA1DgYhubqhW0yJMyrHbxH%2F",
+                                  "")
+                          : "https://quellenreiter.app/assets/logo-pink.png",
+                    ),
+                  ),
                 ),
               ),
               // text
@@ -134,21 +155,7 @@ class _QuestScreenState extends State<QuestScreen>
   void registerAnswer(int statementIndex, bool answer,
       {bool timeOver = false}) async {
     timerController.reset();
-    // update the player so we dont miss any updates made by other player/games.
-    await widget.appState.db.checkToken((p) {
-      if (p != null) {
-        widget.appState.player = p;
-        widget.appState.error = null;
-        return;
-      } else {
-        widget.appState.error = "Spieler nicht up to date.";
-        return;
-      }
-    });
-    // if update not working, break!
-    if (widget.appState.error != null) {
-      return;
-    }
+
     // PROBLEM: This is still not completely safe.
     // some other player could update the players stats between the above call
     // and the below update and will then be lost.
@@ -199,6 +206,21 @@ class _QuestScreenState extends State<QuestScreen>
 
     // if game is finished
     if (widget.appState.currentEnemy!.openGame!.gameFinished()) {
+      // update the player so we dont miss any updates made by other player/games.
+      await widget.appState.db.checkToken((p) {
+        if (p != null) {
+          widget.appState.player = p;
+          widget.appState.error = null;
+          return;
+        } else {
+          widget.appState.error = "Spieler nicht up to date.";
+          return;
+        }
+      });
+      // if update not working, break!
+      if (widget.appState.error != null) {
+        return;
+      }
       if (widget.appState.currentEnemy!.openGame!.playerAnswers
               .fold<int>(0, (p, e) => p + (e ? 1 : 0)) >
           widget.appState.currentEnemy!.openGame!.enemyAnswers

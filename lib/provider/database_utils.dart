@@ -582,7 +582,9 @@ class DatabaseUtils {
   }
 
   /// Authenticate a [Player] to get its emoji etc.
-  Future<Player?> authenticate() async {}
+  Future<Player?> authenticate() async {
+    return null;
+  }
 
   Future<void> sendFriendRequest(String playerId, String enemyId,
       Function sendFriendRequestCallback) async {
@@ -698,8 +700,10 @@ class DatabaseUtils {
       link: httpLinkUserDB,
     );
     // combine played statements
-    List<String> playedStatemntsCombined = e.playedStatementIds
-      ..addAll(p.playedStatements!);
+    List<String> playedStatemntsCombined = [
+      ...e.playedStatementIds,
+      ...p.playedStatements!
+    ];
     // get 50 possible ids
     var playableStatements = await clientStatementDB.query(
       QueryOptions(
