@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/navigation/quellenreiter_information_parser.dart';
 import 'package:quellenreiter_app/navigation/quellenreiter_router_delegate.dart';
 
-import 'constants/constants.dart';
 
 void main() {
   runApp(const QuellenreiterApp());
@@ -34,7 +33,7 @@ class _QuellenreiterAppState extends State<QuellenreiterApp> {
         return Theme(
           child: child!,
           data: ThemeData(
-            pageTransitionsTheme: PageTransitionsTheme(
+            pageTransitionsTheme: const PageTransitionsTheme(
               builders: {
                 // Set your transitions here:
                 TargetPlatform.android: CupertinoPageTransitionsBuilder(),

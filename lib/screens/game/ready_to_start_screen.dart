@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
-import 'package:quellenreiter_app/models/enemy.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/start_game_button.dart';
 
@@ -100,7 +99,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             // heading
-            Text("Spiel"),
+            const Text("Spiel"),
             // user and enemy
             Flexible(
               child: Row(
@@ -161,7 +160,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                   Text(widget.appState.currentEnemy!.openGame!.playerAnswers
                       .fold<int>(0, (p, c) => p + (c ? 1 : 0))
                       .toString()),
-                  Text(":"),
+                  const Text(":"),
                   Text(widget.appState.currentEnemy!.openGame!.enemyAnswers
                       .sublist(0, commonLength)
                       .fold<int>(0, (p, c) => p + (c ? 1 : 0))

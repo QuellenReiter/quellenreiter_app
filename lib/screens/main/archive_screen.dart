@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:image/image.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -91,8 +90,8 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
                                       bottom: 10, left: 10, right: 10),
                                   alignment: Alignment.topLeft,
                                   clipBehavior: Clip.none,
-                                  decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.all(
                                         Radius.circular(10)),
                                     color: DesignColors.black,
                                   ),
@@ -197,9 +196,9 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
                                                             const EdgeInsets
                                                                 .all(10),
                                                         decoration:
-                                                            BoxDecoration(
+                                                            const BoxDecoration(
                                                           borderRadius:
-                                                              const BorderRadius
+                                                              BorderRadius
                                                                       .all(
                                                                   Radius
                                                                       .circular(

@@ -11,7 +11,7 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Center(child: Text("results not implemented.")),
+      child: const Center(child: Text("results not implemented.")),
     );
   }
 }
