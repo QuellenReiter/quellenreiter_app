@@ -124,7 +124,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                           subject: "Teile die app mit deinen Freund:innen."),
                     },
                     icon: const Icon(Icons.share),
-                    label: Text("Teilen"),
+                    label: const Text("Teilen"),
                   ),
                 ),
               ),

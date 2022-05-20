@@ -1,7 +1,6 @@
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/statement.dart';
 
-import 'enemy.dart';
 
 class Game {
   String? id;

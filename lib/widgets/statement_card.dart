@@ -22,7 +22,7 @@ class StatementCard extends StatelessWidget {
       (int i) => Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
+          const Icon(
             Icons.fact_check,
             color: DesignColors.lightGrey,
           ),

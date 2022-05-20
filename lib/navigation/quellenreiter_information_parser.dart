@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
-import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/navigation/quellenreiter_routes.dart';
 
 /// Class to parse given links and direct users to the correct page.
