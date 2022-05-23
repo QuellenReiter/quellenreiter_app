@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -11,7 +13,12 @@ import 'link_alert.dart';
 
 /// Brief information display of a single [Statement].
 class StatementCard extends StatelessWidget {
-  const StatementCard({Key? key, required this.statement}) : super(key: key);
+  const StatementCard(
+      {Key? key, required this.appState, required this.statement})
+      : super(key: key);
+
+  /// The current appstate.
+  final QuellenreiterAppState appState;
 
   /// The [Statement] to be displayed.
   final Statement statement;
@@ -60,10 +67,39 @@ class StatementCard extends StatelessWidget {
                 // Display Statementtext.
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10),
-                  child: Text(
-                    statement.statementText,
-                    style: Theme.of(context).textTheme.subtitle2,
-                  ),
+                  child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            statement.statementText,
+                            style: Theme.of(context).textTheme.subtitle2,
+                          ),
+                        ),
+                        if (appState.player!.safedStatementsIds!
+                            .contains(statement.objectId))
+                          IconButton(
+                            onPressed: () {
+                              HapticFeedback.selectionClick();
+                              appState.player!.safedStatementsIds!
+                                  .remove(statement.objectId!);
+                              appState.updateUserData();
+                            },
+                            icon: const Icon(Icons.delete),
+                          )
+                        else
+                          IconButton(
+                            onPressed: () {
+                              HapticFeedback.selectionClick();
+                              appState.player!.safedStatementsIds!
+                                  .add(statement.objectId!);
+                              appState.updateUserData();
+                            },
+                            icon: const Icon(Icons.archive_outlined),
+                          ),
+                      ]),
                 ),
 
                 Padding(
@@ -92,16 +128,28 @@ class StatementCard extends StatelessWidget {
                               ?.copyWith(color: DesignColors.lightGrey),
                         ),
                       ),
+
                       // Display Media and date.
                       Text(
                         statement.statementMedia +
                             ', ' +
                             statement.dateAsString(),
                         style: Theme.of(context).textTheme.bodyText2,
-                      )
+                      ),
                     ],
                   ),
                 ),
+                // Row(
+                //   mainAxisSize: MainAxisSize.max,
+                //   mainAxisAlignment: MainAxisAlignment.end,
+                //   children: [
+                //     TextButton.icon(
+                //       onPressed: null,
+                //       icon: const Icon(Icons.archive_outlined),
+                //       label: const Text("merken"),
+                //     ),
+                //   ],
+                // ),
                 Row(children: [
                   Expanded(
                     child: Container(
