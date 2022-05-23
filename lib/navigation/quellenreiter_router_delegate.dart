@@ -136,9 +136,11 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         if (appState.currentEnemy != null &&
             appState.currentEnemy!.openGame!.gameFinished()) {
           return [
-            const MaterialPage(
-              key: ValueKey('GameResultsScreen'),
-              child: GameResultsScreen(),
+            MaterialPage(
+              key: const ValueKey('GameResultsScreen'),
+              child: GameResultsScreen(
+                appState: appState,
+              ),
             ),
           ];
         }
@@ -152,9 +154,11 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         ];
       case Routes.gameResults:
         return [
-          const MaterialPage(
-            key: ValueKey('GameResultsScreen'),
-            child: GameResultsScreen(),
+          MaterialPage(
+            key: const ValueKey('GameResultsScreen'),
+            child: GameResultsScreen(
+              appState: appState,
+            ),
           ),
         ];
 

@@ -488,36 +488,36 @@ class DatabaseUtils {
       return null;
     } else {
       return Game(
-        //object Id
-        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
-            ["objectId"],
-        // enemyAnswers
-        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame][
-                enemy.playerIndex == 0
-                    ? DbFields.gameAnswersPlayer2
-                    : DbFields.gameAnswersPlayer1]
-            .map((x) => x["value"])
-            .toList()
-            .cast<bool>(),
-        // player answers
-        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame][
-                enemy.playerIndex == 0
-                    ? DbFields.gameAnswersPlayer1
-                    : DbFields.gameAnswersPlayer2]
-            .map((x) => x["value"])
-            .toList()
-            .cast<bool>(),
-        enemy.playerIndex,
-        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
-                [DbFields.gameStatementIds]
-            .map((x) => x["value"])
-            .toList()
-            .cast<String>(),
-        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
-            [DbFields.gameWithTimer],
-        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
-            [DbFields.gameRequestingPlayerIndex],
-      );
+          //object Id
+          mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
+              ["objectId"],
+          // enemyAnswers
+          mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame][
+                  enemy.playerIndex == 0
+                      ? DbFields.gameAnswersPlayer2
+                      : DbFields.gameAnswersPlayer1]
+              .map((x) => x["value"])
+              .toList()
+              .cast<bool>(),
+          // player answers
+          mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame][
+                  enemy.playerIndex == 0
+                      ? DbFields.gameAnswersPlayer1
+                      : DbFields.gameAnswersPlayer2]
+              .map((x) => x["value"])
+              .toList()
+              .cast<bool>(),
+          enemy.playerIndex,
+          mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
+                  [DbFields.gameStatementIds]
+              .map((x) => x["value"])
+              .toList()
+              .cast<String>(),
+          mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
+              [DbFields.gameWithTimer],
+          mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
+              [DbFields.gameRequestingPlayerIndex],
+          null);
     }
   }
 

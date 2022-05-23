@@ -15,6 +15,9 @@ class OpenGamesScreen extends StatefulWidget {
 class _OpenGamesScreenState extends State<OpenGamesScreen> {
   @override
   Widget build(BuildContext context) {
+    if (widget.appState.player?.friends == null)
+      return const CircularProgressIndicator();
+
     List<Enemy> enemiesWithOpenGame = widget.appState.player!.friends!.enemies
         .where((e) => e.openGame != null)
         .toList();
