@@ -1,7 +1,6 @@
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/statement.dart';
 
-
 class Game {
   String? id;
   int round = 0;
@@ -17,8 +16,15 @@ class Game {
   // Game.fromMap(Map<String, dynamic>? map) {
 
   // }
-  Game(this.id, this.enemyAnswers, this.playerAnswers, this.playerIndex,
-      this.statementIds, this.withTimer, this.requestingPlayerIndex);
+  Game(
+      this.id,
+      this.enemyAnswers,
+      this.playerAnswers,
+      this.playerIndex,
+      this.statementIds,
+      this.withTimer,
+      this.requestingPlayerIndex,
+      this.statements);
 
   Game.empty(bool timer, int pIndex) {
     // where to get statement ids? download all possible and pickRandom on device.

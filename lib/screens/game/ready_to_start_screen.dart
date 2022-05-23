@@ -151,6 +151,11 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                 ],
               ),
             ),
+            ElevatedButton.icon(
+              onPressed: () => widget.appState.route = Routes.gameResults,
+              icon: const Icon(Icons.fact_check),
+              label: const Text("zu den Faktenchecks"),
+            ),
             const Text("Punktestand:"),
             Flexible(
               child: Row(
