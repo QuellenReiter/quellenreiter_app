@@ -292,7 +292,7 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   /// for updating any other user trait.
   void updateUserData() {
-    route = Routes.loading;
+    // route = Routes.loading;
     db.updateUserData(player!, _updateUserCallback);
   }
 
@@ -301,15 +301,15 @@ class QuellenreiterAppState extends ChangeNotifier {
       // login again and reset the user.
       db.checkToken(_checkTokenCallback);
       error = "Username existiert bereits.";
-      route = Routes.settings;
+      // route = Routes.settings;
     } else if (safedStatements!.statements.length !=
         player!.safedStatementsIds!.length) {
       getArchivedStatements();
-      route = Routes.archive;
+      // route = Routes.archive;
     } else {
       error = null;
       // player should still be the same object so we do not set it again.
-      route = Routes.settings;
+      // route = Routes.settings;
     }
   }
 
