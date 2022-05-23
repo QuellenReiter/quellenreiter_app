@@ -105,30 +105,30 @@ class Enemy {
     // if an open game exists, safe it.
     if (map?[DbFields.friendshipOpenGame] != null) {
       openGame = Game(
-        //object Id
-        map?[DbFields.friendshipOpenGame]["objectId"],
-        // enemyAnswers
-        map?[DbFields.friendshipOpenGame][playerIndex == 0
-                ? DbFields.gameAnswersPlayer2
-                : DbFields.gameAnswersPlayer1]
-            .map((x) => x["value"])
-            .toList()
-            .cast<bool>(),
-        // player answers
-        map?[DbFields.friendshipOpenGame][playerIndex == 0
-                ? DbFields.gameAnswersPlayer1
-                : DbFields.gameAnswersPlayer2]
-            .map((x) => x["value"])
-            .toList()
-            .cast<bool>(),
-        playerIndex,
-        map?[DbFields.friendshipOpenGame][DbFields.gameStatementIds]
-            .map((x) => x["value"])
-            .toList()
-            .cast<String>(),
-        map?[DbFields.friendshipOpenGame][DbFields.gameWithTimer],
-        map?[DbFields.friendshipOpenGame][DbFields.gameRequestingPlayerIndex],
-      );
+          //object Id
+          map?[DbFields.friendshipOpenGame]["objectId"],
+          // enemyAnswers
+          map?[DbFields.friendshipOpenGame][playerIndex == 0
+                  ? DbFields.gameAnswersPlayer2
+                  : DbFields.gameAnswersPlayer1]
+              .map((x) => x["value"])
+              .toList()
+              .cast<bool>(),
+          // player answers
+          map?[DbFields.friendshipOpenGame][playerIndex == 0
+                  ? DbFields.gameAnswersPlayer1
+                  : DbFields.gameAnswersPlayer2]
+              .map((x) => x["value"])
+              .toList()
+              .cast<bool>(),
+          playerIndex,
+          map?[DbFields.friendshipOpenGame][DbFields.gameStatementIds]
+              .map((x) => x["value"])
+              .toList()
+              .cast<String>(),
+          map?[DbFields.friendshipOpenGame][DbFields.gameWithTimer],
+          map?[DbFields.friendshipOpenGame][DbFields.gameRequestingPlayerIndex],
+          null);
     } else {
       openGame = null;
     }

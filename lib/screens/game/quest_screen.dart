@@ -33,6 +33,9 @@ class _QuestScreenState extends State<QuestScreen>
     // But only if withTimer. Else doing research and closing the app is welcome.
     if (widget.appState.currentEnemy!.openGame!.withTimer) {
       widget.appState.currentEnemy!.openGame!.playerAnswers.add(false);
+      // Start timer when build is finished.
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => timerController.start());
     }
     // show error if statements not downloaded.
     if (widget.appState.currentEnemy!.openGame!.statements == null) {
@@ -40,9 +43,6 @@ class _QuestScreenState extends State<QuestScreen>
         body: Text("Fehler"),
       );
     }
-    // Start timer when build is finished.
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => timerController.start());
 
     return Scaffold(
       appBar: AppBar(
@@ -278,15 +278,17 @@ class _QuestScreenState extends State<QuestScreen>
     // if its the end of the round (after 3 statements)
     if (!widget.appState.currentEnemy!.openGame!.isPlayersTurn()) {
       //return to readyToStartGameScreen
-      widget.appState.route = Routes.gameReadyToStart;
+      widget.appState.route = Routes.gameResults;
     } else if (widget.appState.currentEnemy!.openGame!.gameFinished()) {
-      widget.appState.route = Routes.gameReadyToStart;
+      widget.appState.route = Routes.gameResults;
     } else {
       widget.appState.route = Routes.quest;
       // show some inbetween screen
       await Future.delayed(const Duration(seconds: 3), () {});
       Navigator.of(context).pop();
-      timerController.restart();
+      if (widget.appState.currentEnemy!.openGame!.withTimer) {
+        timerController.restart();
+      }
     }
     HapticFeedback.mediumImpact();
   }

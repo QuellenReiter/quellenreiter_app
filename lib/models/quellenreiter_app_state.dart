@@ -14,11 +14,16 @@ class QuellenreiterAppState extends ChangeNotifier {
   Routes _route = Routes.login;
   Routes get route => _route;
   set route(value) {
+    //refetch friends everytime we go to friends/startGame/openGames.
     if (value == Routes.friends ||
         value == Routes.startGame ||
         value == Routes.openGames) {
       getFriends();
     }
+    // // refetch user everytime we got to homescreen.
+    // if (route == Routes.home) {
+    //   db.checkToken(_checkTokenCallback);
+    // }
     _route = value;
     notifyListeners();
   }
@@ -341,6 +346,18 @@ class QuellenreiterAppState extends ChangeNotifier {
     route = tempRoute;
     error =
         "${e.emoji} ${e.name} wurde herausgefordert. Warte, bis ${e.emoji} ${e.name} die erste Runde gespielt hat.";
+    return;
+  }
+
+  void getCurrentStatements() async {
+    currentEnemy!.openGame!.statements =
+        await db.getStatements(currentEnemy!.openGame!.statementIds!);
+    if (currentEnemy!.openGame!.statements == null) {
+      route = Routes.gameReadyToStart;
+      error = "Statements konnten nicht geladen werden.";
+      return;
+    }
+    route = Routes.gameResults;
     return;
   }
 
