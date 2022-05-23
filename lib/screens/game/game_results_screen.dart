@@ -23,7 +23,7 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
         title: const Text("Faktenchecks"),
       ),
       body: widget.appState.currentEnemy!.openGame!.statements == null
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.only(bottom: 50),
               child: ListView.builder(
@@ -33,6 +33,7 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
                   return StatementCard(
                     statement: widget.appState.currentEnemy!.openGame!
                         .statements!.statements[index],
+                    appState: widget.appState,
                   );
                 },
               ),

@@ -16,7 +16,7 @@ class _StartGameScreenState extends State<StartGameScreen> {
   @override
   Widget build(BuildContext context) {
     if (widget.appState.player?.friends == null)
-      return const CircularProgressIndicator();
+      return const Center(child: CircularProgressIndicator());
     // display button if user has no friends yet.
     List<Enemy> enemiesWithNoGame = widget.appState.player!.friends!.enemies
         .where((e) => e.openGame == null)

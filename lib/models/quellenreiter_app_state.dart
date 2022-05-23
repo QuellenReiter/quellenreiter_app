@@ -296,12 +296,16 @@ class QuellenreiterAppState extends ChangeNotifier {
     db.updateUserData(player!, _updateUserCallback);
   }
 
-  void _updateUserCallback(Player? player) {
-    if (player == null) {
+  void _updateUserCallback(Player? p) {
+    if (p == null) {
       // login again and reset the user.
       db.checkToken(_checkTokenCallback);
       error = "Username existiert bereits.";
       route = Routes.settings;
+    } else if (safedStatements!.statements.length !=
+        player!.safedStatementsIds!.length) {
+      getArchivedStatements();
+      route = Routes.archive;
     } else {
       error = null;
       // player should still be the same object so we do not set it again.
