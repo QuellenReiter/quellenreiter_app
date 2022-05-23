@@ -25,7 +25,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
           child: Column(
             children: [
               if (widget.appState.player?.friends == null)
-                const CircularProgressIndicator()
+                const Center(child: CircularProgressIndicator())
               // display button if user has no friends yet.
               else if (widget.appState.player!.friends!.enemies.isEmpty)
                 Flexible(
