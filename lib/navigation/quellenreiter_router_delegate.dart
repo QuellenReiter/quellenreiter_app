@@ -140,6 +140,18 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
               key: const ValueKey('GameResultsScreen'),
               child: GameResultsScreen(
                 appState: appState,
+                showAll: true,
+              ),
+            ),
+          ];
+        } else if (appState.currentEnemy != null &&
+            !appState.currentEnemy!.openGame!.isPlayersTurn()) {
+          return [
+            MaterialPage(
+              key: const ValueKey('GameResultsScreen'),
+              child: GameResultsScreen(
+                appState: appState,
+                showAll: false,
               ),
             ),
           ];
@@ -158,6 +170,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
             key: const ValueKey('GameResultsScreen'),
             child: GameResultsScreen(
               appState: appState,
+              showAll: true,
             ),
           ),
         ];
