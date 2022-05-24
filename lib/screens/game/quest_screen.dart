@@ -334,18 +334,19 @@ class _QuestScreenState extends State<QuestScreen>
     // if its the end of the round (after 3 statements)
     if (!widget.appState.currentEnemy!.openGame!.isPlayersTurn()) {
       //return to readyToStartGameScreen
-      widget.appState.route = Routes.gameResults;
+      // widget.appState.route = Routes.gameResults;
     } else if (widget.appState.currentEnemy!.openGame!.gameFinished()) {
-      widget.appState.route = Routes.gameResults;
+      // widget.appState.route = Routes.gameResults;
     } else {
-      widget.appState.route = Routes.quest;
       // show some inbetween screen
-      await Future.delayed(const Duration(seconds: 3), () {});
-      Navigator.of(context).pop();
+
       if (widget.appState.currentEnemy!.openGame!.withTimer) {
         timerController.restart();
       }
     }
+    await Future.delayed(const Duration(seconds: 3), () {});
+    Navigator.of(context).pop();
+    widget.appState.route = Routes.quest;
     HapticFeedback.mediumImpact();
   }
 }
