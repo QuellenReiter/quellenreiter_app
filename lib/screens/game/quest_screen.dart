@@ -189,23 +189,85 @@ class _QuestScreenState extends State<QuestScreen>
           false;
     }
     HapticFeedback.heavyImpact();
-    // show some inbetween screen
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) => Dialog(
-        child: Container(
-          alignment: Alignment.center,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
-          child: Text(widget
-              .appState.currentEnemy!.openGame!.playerAnswers[statementIndex]
-              .toString()),
-        ),
-      ),
-    );
 
+    var answerCorrect =
+        widget.appState.currentEnemy!.openGame!.playerAnswers[statementIndex];
+
+    // if game is not finished
+    if (!widget.appState.currentEnemy!.openGame!.gameFinished()) {
+      // show some inbetween screen
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => Dialog(
+          insetPadding: const EdgeInsets.all(0),
+          child: Padding(
+            padding: const EdgeInsets.all(100),
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: answerCorrect ? DesignColors.green : DesignColors.red,
+              ),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  answerCorrect ? "Richtige Antwort" : "Falsche Antwort",
+                  style: Theme.of(context).textTheme.headline3,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     // if game is finished
-    if (widget.appState.currentEnemy!.openGame!.gameFinished()) {
+    else if (widget.appState.currentEnemy!.openGame!.gameFinished()) {
+      var playerWon = widget.appState.currentEnemy!.openGame!.playerAnswers
+              .fold<int>(0, (p, e) => p + (e ? 1 : 0)) >
+          widget.appState.currentEnemy!.openGame!.enemyAnswers
+              .fold<int>(0, (p, e) => p + (e ? 1 : 0));
+
+      var enemyWon = widget.appState.currentEnemy!.openGame!.playerAnswers
+              .fold<int>(0, (p, e) => p + (e ? 1 : 0)) <
+          widget.appState.currentEnemy!.openGame!.enemyAnswers
+              .fold<int>(0, (p, e) => p + (e ? 1 : 0));
+      // show some inbetween screen
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => Dialog(
+          insetPadding: const EdgeInsets.all(0),
+          child: Column(children: [
+            Padding(
+              padding: const EdgeInsets.all(100),
+              child: Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: answerCorrect ? DesignColors.green : DesignColors.red,
+                ),
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    answerCorrect ? "Richtige Antwort" : "Falsche Antwort",
+                    style: Theme.of(context).textTheme.headline3,
+                  ),
+                ),
+              ),
+            ),
+            Text(
+              playerWon
+                  ? "DU HAST GEWONNEN"
+                  : enemyWon
+                      ? "Du hast verloren."
+                      : "unentschieden",
+              style: Theme.of(context).textTheme.headline1,
+            ),
+          ]),
+        ),
+      );
+
       // update the player so we dont miss any updates made by other player/games.
       await widget.appState.db.checkToken((p) {
         if (p != null) {
@@ -221,10 +283,7 @@ class _QuestScreenState extends State<QuestScreen>
       if (widget.appState.error != null) {
         return;
       }
-      if (widget.appState.currentEnemy!.openGame!.playerAnswers
-              .fold<int>(0, (p, e) => p + (e ? 1 : 0)) >
-          widget.appState.currentEnemy!.openGame!.enemyAnswers
-              .fold<int>(0, (p, e) => p + (e ? 1 : 0))) {
+      if (playerWon) {
         // player has won
         widget.appState.currentEnemy!.wonGamesPlayer += 1;
         // update player
@@ -238,10 +297,7 @@ class _QuestScreenState extends State<QuestScreen>
         widget.appState.currentEnemy!.updateAnswerStats(
             widget.appState.currentEnemy!.openGame!.enemyAnswers,
             widget.appState.currentEnemy!.openGame!.statements);
-      } else if (widget.appState.currentEnemy!.openGame!.playerAnswers
-              .fold<int>(0, (p, e) => p + (e ? 1 : 0)) <
-          widget.appState.currentEnemy!.openGame!.enemyAnswers
-              .fold<int>(0, (p, e) => p + (e ? 1 : 0))) {
+      } else if (enemyWon) {
         // enemy has won
         widget.appState.currentEnemy!.wonGamesOther += 1;
         // update player
