@@ -262,7 +262,7 @@ class _QuestScreenState extends State<QuestScreen>
                   : enemyWon
                       ? "Du hast verloren."
                       : "unentschieden",
-              style: Theme.of(context).textTheme.headline1,
+              style: Theme.of(context).textTheme.headline4,
             ),
           ]),
         ),
