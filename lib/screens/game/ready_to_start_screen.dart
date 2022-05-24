@@ -98,8 +98,6 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            // heading
-            const Text("Spiel"),
             // user and enemy
             Flexible(
               child: Row(
@@ -113,8 +111,21 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Text(widget.appState.player!.emoji),
-                        Text(widget.appState.player!.name),
+                        Text(
+                          widget.appState.player!.emoji,
+                          style: Theme.of(context).textTheme.headline1,
+                        ),
+                        Text(
+                          widget.appState.player!.name,
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
+                        Text(
+                          widget.appState.currentEnemy!.openGame!.playerAnswers
+                                  .fold<int>(0, (p, c) => p + (c ? 1 : 0))
+                                  .toString() +
+                              " Punkte",
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
                         Flexible(
                           child: Padding(
                             padding: const EdgeInsets.only(right: 20),
@@ -133,8 +144,22 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Text(widget.appState.currentEnemy!.emoji),
-                        Text(widget.appState.currentEnemy!.name),
+                        Text(
+                          widget.appState.currentEnemy!.emoji,
+                          style: Theme.of(context).textTheme.headline1,
+                        ),
+                        Text(
+                          widget.appState.currentEnemy!.name,
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
+                        Text(
+                          widget.appState.currentEnemy!.openGame!.enemyAnswers
+                                  .sublist(0, commonLength)
+                                  .fold<int>(0, (p, c) => p + (c ? 1 : 0))
+                                  .toString() +
+                              " Punkte",
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
                         Flexible(
                           child: Padding(
                             padding: const EdgeInsets.only(left: 20),
@@ -152,26 +177,12 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
               ),
             ),
             ElevatedButton.icon(
-              onPressed: () => widget.appState.route = Routes.gameResults,
+              onPressed:
+                  widget.appState.currentEnemy!.openGame!.playerAnswers.isEmpty
+                      ? null
+                      : () => widget.appState.route = Routes.gameResults,
               icon: const Icon(Icons.fact_check),
               label: const Text("zu den Faktenchecks"),
-            ),
-            const Text("Punktestand:"),
-            Flexible(
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(widget.appState.currentEnemy!.openGame!.playerAnswers
-                      .fold<int>(0, (p, c) => p + (c ? 1 : 0))
-                      .toString()),
-                  const Text(":"),
-                  Text(widget.appState.currentEnemy!.openGame!.enemyAnswers
-                      .sublist(0, commonLength)
-                      .fold<int>(0, (p, c) => p + (c ? 1 : 0))
-                      .toString())
-                ],
-              ),
             ),
             // Bottom button:
             // if error
