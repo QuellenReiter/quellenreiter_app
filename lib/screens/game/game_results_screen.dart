@@ -44,9 +44,24 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (index == 0) Text("Runde 1"),
-                      if (index == 3) Text("Runde 2"),
-                      if (index == 6) Text("Runde 3"),
+                      if (index == 0)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20),
+                          child: Text(
+                            "Runde 1",
+                            style: Theme.of(context).textTheme.headline4,
+                          ),
+                        ),
+                      if (index == 3)
+                        Text(
+                          "Runde 2",
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
+                      if (index == 6)
+                        Text(
+                          "Runde 3",
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
                       StatementCard(
                         statement: widget.appState.currentEnemy!.openGame!
                             .statements!.statements[index],

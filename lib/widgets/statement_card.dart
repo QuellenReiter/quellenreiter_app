@@ -81,6 +81,8 @@ class StatementCard extends StatelessWidget {
                         if (appState.player!.safedStatementsIds!
                             .contains(statement.objectId))
                           IconButton(
+                            padding: const EdgeInsets.only(
+                                top: 0, right: 0, left: 10, bottom: 10),
                             onPressed: () {
                               HapticFeedback.selectionClick();
                               appState.player!.safedStatementsIds!
@@ -91,6 +93,8 @@ class StatementCard extends StatelessWidget {
                           )
                         else
                           IconButton(
+                            padding: const EdgeInsets.only(
+                                top: 0, right: 0, left: 10, bottom: 10),
                             onPressed: () {
                               HapticFeedback.selectionClick();
                               appState.player!.safedStatementsIds!
