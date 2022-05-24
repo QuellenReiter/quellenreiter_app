@@ -47,10 +47,16 @@ class EnemyCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(enemy.emoji),
+                      Text(
+                        enemy.emoji,
+                        style: Theme.of(context).textTheme.headline3,
+                      ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: Text(enemy.name),
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Text(
+                          enemy.name,
+                          style: Theme.of(context).textTheme.headline5,
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -63,52 +69,76 @@ class EnemyCard extends StatelessWidget {
                 // if an open Game exists.
 
                 if (enemy.openGame != null)
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // .. and if its the players turn
-                      if (enemy.openGame!.isPlayersTurn() &&
-                          enemy.openGame!.playerAnswers.isNotEmpty)
-                        Flexible(
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              appState.currentEnemy = enemy;
-                              appState.route = Routes.gameReadyToStart;
-                            },
-                            icon: const Icon(Icons.play_circle_outline_rounded),
-                            label: const Text("weiterspielen"),
-                          ),
-                        )
-                      else if (enemy.openGame!.isPlayersTurn() &&
-                          enemy.openGame!.playerAnswers.isEmpty)
-                        Flexible(
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              appState.currentEnemy = enemy;
-                              appState.route = Routes.gameReadyToStart;
-                            },
-                            icon: const Icon(Icons.play_circle_outline_rounded),
-                            label: const Text("Spielen"),
-                          ),
-                        )
-                      else
-                        // if player has to wait for the enemy to play.
-                        Flexible(
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              appState.currentEnemy = enemy;
-                              appState.route = Routes.gameReadyToStart;
-                            },
-                            icon:
-                                const Icon(Icons.pause_circle_outline_rounded),
-                            label: const Text("Du bist nicht dran."),
-                          ),
-                        ),
-                      if (enemy.openGame!.withTimer)
-                        const Icon(Icons.timer)
-                      else
-                        const Icon(Icons.timer_off),
-                      Text(
-                          "${enemy.openGame!.playerAnswers.length.toString()} von 9")
+                      const Text("offenes Spiel:"),
+                      Row(
+                        children: [
+                          // .. and if its the players turn
+                          if (enemy.openGame!.isPlayersTurn() &&
+                              enemy.openGame!.playerAnswers.isNotEmpty)
+                            Flexible(
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  appState.currentEnemy = enemy;
+                                  appState.route = Routes.gameReadyToStart;
+                                },
+                                icon: const Icon(
+                                    Icons.play_circle_outline_rounded),
+                                label: const Text("weiterspielen"),
+                              ),
+                            )
+                          else if (enemy.openGame!.isPlayersTurn() &&
+                              enemy.openGame!.playerAnswers.isEmpty)
+                            Flexible(
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  appState.currentEnemy = enemy;
+                                  appState.route = Routes.gameReadyToStart;
+                                },
+                                icon: const Icon(
+                                    Icons.play_circle_outline_rounded),
+                                label: const Text("Spielen"),
+                              ),
+                            )
+                          else if (enemy.openGame!.gameFinished())
+                            // if player has to wait for the enemy to play.
+                            Flexible(
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  appState.currentEnemy = enemy;
+                                  appState.route = Routes.gameReadyToStart;
+                                },
+                                icon: const Icon(Icons.stop_circle),
+                                label: const Text("Ergebnisse anzeigen"),
+                              ),
+                            )
+                          else
+                            // if player has to wait for the enemy to play.
+                            Flexible(
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  appState.currentEnemy = enemy;
+                                  appState.route = Routes.gameReadyToStart;
+                                },
+                                icon: const Icon(
+                                    Icons.pause_circle_outline_rounded),
+                                label: Text("${enemy.name} spielt..."),
+                              ),
+                            ),
+                          if (enemy.openGame!.withTimer)
+                            const Padding(
+                                padding: EdgeInsets.only(left: 10),
+                                child: Icon(Icons.timer))
+                          else
+                            const Padding(
+                                padding: EdgeInsets.only(left: 10),
+                                child: Icon(Icons.timer_off)),
+                          Text(
+                              "${enemy.openGame!.playerAnswers.length.toString()} von 9")
+                        ],
+                      )
                     ],
                   )
                 else if (enemy.acceptedByPlayer && enemy.acceptedByOther)
