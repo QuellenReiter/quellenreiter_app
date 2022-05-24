@@ -327,24 +327,15 @@ class _QuestScreenState extends State<QuestScreen>
       // increase played games of friendship
       widget.appState.currentEnemy!.numGamesPlayed += 1;
     }
-
+    // delay 3 seconds
+    await Future.delayed(const Duration(seconds: 3), () {});
     // push to DB
     await widget.appState.db.updateGame(widget.appState);
 
-    // if its the end of the round (after 3 statements)
-    if (!widget.appState.currentEnemy!.openGame!.isPlayersTurn()) {
-      //return to readyToStartGameScreen
-      // widget.appState.route = Routes.gameResults;
-    } else if (widget.appState.currentEnemy!.openGame!.gameFinished()) {
-      // widget.appState.route = Routes.gameResults;
-    } else {
-      // show some inbetween screen
-
-      if (widget.appState.currentEnemy!.openGame!.withTimer) {
-        timerController.restart();
-      }
+    // restart timer
+    if (widget.appState.currentEnemy!.openGame!.withTimer) {
+      timerController.restart();
     }
-    await Future.delayed(const Duration(seconds: 3), () {});
     Navigator.of(context).pop();
     widget.appState.route = Routes.quest;
     HapticFeedback.mediumImpact();
