@@ -749,4 +749,38 @@ class DatabaseUtils {
     // updateUser(player, updateUserCallback)
     return ids.take(9).toList();
   }
+
+  Future<void> deleteGame(Game game) async {
+    String? token = await safeStorage.read(key: "token");
+    // If token is not null, check if it is valid.
+    if (token == null) {
+      return;
+    }
+    // Link to the database.
+    final HttpLink httpLinkUserDB = HttpLink(userDatabaseUrl, defaultHeaders: {
+      'X-Parse-Application-Id': userDatabaseApplicationID,
+      'X-Parse-Client-Key': userDatabaseClientKey,
+      'X-Parse-Session-Token': token,
+    });
+
+    // The client that provides the connection.
+    GraphQLClient clientUserDB = GraphQLClient(
+      cache: GraphQLCache(),
+      link: httpLinkUserDB,
+    );
+
+    // Remeove the game
+    var mutationResult = await clientUserDB.mutate(
+      MutationOptions(
+        document: gql(Queries.removeGame()),
+        variables: {
+          "game": {
+            "id": game.id,
+          },
+        },
+      ),
+    );
+
+    return;
+  }
 }
