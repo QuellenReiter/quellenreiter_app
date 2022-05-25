@@ -55,20 +55,15 @@ class _FriendsScreenState extends State<FriendsScreen> {
               else
                 // display current friends
                 Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: ListView.builder(
-                      itemCount:
-                          widget.appState.player!.friends!.enemies.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return EnemyCard(
-                          appState: widget.appState,
-                          enemy:
-                              widget.appState.player!.friends!.enemies[index],
-                          onTapped: (enemy) => {},
-                        );
-                      },
-                    ),
+                  child: ListView.builder(
+                    itemCount: widget.appState.player!.friends!.enemies.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return EnemyCard(
+                        appState: widget.appState,
+                        enemy: widget.appState.player!.friends!.enemies[index],
+                        onTapped: (enemy) => {},
+                      );
+                    },
                   ),
                 ),
             ],
@@ -95,7 +90,6 @@ class _FriendsScreenState extends State<FriendsScreen> {
                             topRight: Radius.circular(15),
                           ),
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.start,

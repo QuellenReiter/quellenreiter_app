@@ -29,18 +29,15 @@ class _StartGameScreenState extends State<StartGameScreen> {
         children: [
           if (enemiesWithNoGame.isNotEmpty)
             Flexible(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: ListView.builder(
-                  itemCount: enemiesWithNoGame.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return EnemyCard(
-                      appState: widget.appState,
-                      enemy: enemiesWithNoGame[index],
-                      onTapped: (enemy) => {},
-                    );
-                  },
-                ),
+              child: ListView.builder(
+                itemCount: enemiesWithNoGame.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return EnemyCard(
+                    appState: widget.appState,
+                    enemy: enemiesWithNoGame[index],
+                    onTapped: (enemy) => {},
+                  );
+                },
               ),
             )
           else
