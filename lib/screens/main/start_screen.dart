@@ -52,85 +52,40 @@ class _StartScreenState extends State<StartScreen> {
         ),
         Flexible(
           child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            padding: const EdgeInsets.all(50),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Flexible(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Flexible(
-                        child: PieChart(
-                          PieChartData(
-                            centerSpaceRadius: double.infinity,
-                            sections: [
-                              PieChartSectionData(
-                                  title: "nicht geglaubt",
-                                  value: widget
-                                      .appState.player!.falseCorrectAnswers
-                                      .toDouble(),
-                                  color: DesignColors.red),
-                              PieChartSectionData(
-                                  title: "richtig",
-                                  value: widget
-                                      .appState.player!.trueCorrectAnswers
-                                      .toDouble(),
-                                  color: DesignColors.green)
-                            ],
-                          ),
-                          swapAnimationDuration:
-                              Duration(milliseconds: 400), // Optional
-                          swapAnimationCurve: Curves.linear,
-                        ),
-                      ),
-                      Text(
-                        "Fakten",
-                        style: Theme.of(context).textTheme.headline5,
-                      )
-                    ],
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 4,
+                  child: PieChart(
+                    PieChartData(
+                      centerSpaceRadius: 50,
+                      sections: [
+                        PieChartSectionData(
+                            title: "Falsch",
+                            value: widget.appState.player!.falseCorrectAnswers +
+                                widget.appState.player!.falseFakeAnswers
+                                    .toDouble(),
+                            color: DesignColors.red),
+                        PieChartSectionData(
+                            title: "Richtig",
+                            value: widget.appState.player!.trueCorrectAnswers +
+                                widget.appState.player!.trueFakeAnswers
+                                    .toDouble(),
+                            color: DesignColors.green)
+                      ],
+                    ),
+                    swapAnimationDuration:
+                        Duration(milliseconds: 400), // Optional
+                    swapAnimationCurve: Curves.linear,
                   ),
                 ),
-                const SizedBox(
-                  width: 20,
-                  height: 0,
-                ),
-                Flexible(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Flexible(
-                        child: PieChart(
-                          PieChartData(
-                            centerSpaceRadius: double.infinity,
-                            sections: [
-                              PieChartSectionData(
-                                  title: "Reingefallen",
-                                  value: widget
-                                      .appState.player!.falseFakeAnswers
-                                      .toDouble(),
-                                  color: DesignColors.red),
-                              PieChartSectionData(
-                                  title: "entlarvt",
-                                  value: widget.appState.player!.trueFakeAnswers
-                                      .toDouble(),
-                                  color: DesignColors.green)
-                            ],
-                          ),
-                          swapAnimationDuration:
-                              Duration(milliseconds: 150), // Optional
-                          swapAnimationCurve: Curves.linear,
-                        ),
-                      ),
-                      Text(
-                        "Fakes",
-                        style: Theme.of(context).textTheme.headline5,
-                      )
-                    ],
-                  ),
-                ),
+                Text(
+                  "Deine Statistik aus ${widget.appState.player!.numPlayedGames} Spielen.",
+                  style: Theme.of(context).textTheme.headline5,
+                )
               ],
             ),
           ),
