@@ -15,12 +15,13 @@ class StartScreen extends StatefulWidget {
 class _StartScreenState extends State<StartScreen> {
   @override
   void initState() {
-    widget.appState.getFriends();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    widget.appState.getFriends();
+
     int playableGames = 0;
     if (widget.appState.player!.friends != null) {
       playableGames = widget.appState.player!.friends!.enemies.fold<int>(
