@@ -291,7 +291,7 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   /// For updating the username
   void updateUser() {
-    route = Routes.loading;
+    // route = Routes.loading;
     db.updateUser(player!, _updateUserCallback);
   }
 
