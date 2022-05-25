@@ -82,9 +82,12 @@ class _StartScreenState extends State<StartScreen> {
                     swapAnimationCurve: Curves.linear,
                   ),
                 ),
-                Text(
-                  "Deine Statistik aus ${widget.appState.player!.numPlayedGames} Spielen.",
-                  style: Theme.of(context).textTheme.headline5,
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Text(
+                    "Deine Statistik aus ${widget.appState.player!.numPlayedGames} Spielen.",
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
                 )
               ],
             ),
@@ -139,14 +142,13 @@ class _StartScreenState extends State<StartScreen> {
           clipBehavior: Clip.none,
           children: [
             ElevatedButton.icon(
-              onPressed: () =>
-                  widget.appState.handleNavigationChange(Routes.openGames),
+              onPressed: () => widget.appState.route = Routes.openGames,
               icon: const Icon(Icons.playlist_play_outlined),
               label: const Text("Offene Spiele"),
             ),
             if (playableGames > 0)
               Positioned(
-                right: -2,
+                right: -6,
                 top: -2,
                 child: Container(
                   padding: const EdgeInsets.all(1),
@@ -156,13 +158,15 @@ class _StartScreenState extends State<StartScreen> {
                     minWidth: 16,
                     minHeight: 16,
                   ),
-                  child: Text(
-                    playableGames.toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
+                  child: Center(
+                    child: Text(
+                      playableGames.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                 ),
               )
