@@ -80,6 +80,10 @@ class EnemyCard extends StatelessWidget {
                               enemy.openGame!.playerAnswers.isNotEmpty)
                             Flexible(
                               child: ElevatedButton.icon(
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      DesignColors.pink),
+                                ),
                                 onPressed: () {
                                   appState.currentEnemy = enemy;
                                   appState.route = Routes.gameReadyToStart;
@@ -93,6 +97,10 @@ class EnemyCard extends StatelessWidget {
                               enemy.openGame!.playerAnswers.isEmpty)
                             Flexible(
                               child: ElevatedButton.icon(
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      DesignColors.pink),
+                                ),
                                 onPressed: () {
                                   appState.currentEnemy = enemy;
                                   appState.route = Routes.gameReadyToStart;
