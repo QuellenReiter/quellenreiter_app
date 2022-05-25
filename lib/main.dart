@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/navigation/quellenreiter_information_parser.dart';
 import 'package:quellenreiter_app/navigation/quellenreiter_router_delegate.dart';
 
-
 void main() {
+  // add these lines
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(const QuellenreiterApp());
 }
 

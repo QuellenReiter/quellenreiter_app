@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void onTap(int indexTapped) {
-    HapticFeedback.selectionClick();
+    HapticFeedback.lightImpact();
     //reset the error message.
     widget.appState.error = null;
     switch (indexTapped) {
