@@ -20,10 +20,6 @@ class QuellenreiterAppState extends ChangeNotifier {
         value == Routes.openGames) {
       getFriends();
     }
-    // // refetch user everytime we got to homescreen.
-    // if (route == Routes.home) {
-    //   db.checkToken(_checkTokenCallback);
-    // }
     _route = value;
     notifyListeners();
   }
@@ -215,9 +211,18 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
   }
 
+  Future<void> getUserData() async {
+    await db.getUserData(player!);
+  }
+
   void _getFriendsCallback(Enemies? enemies) {
+    // if no friends were returned
     if (enemies == null) {
-      player?.friends = Enemies.empty();
+      // if no friends are currently downloaded
+      if (player!.friends == null) {
+        player?.friends = Enemies.empty();
+      }
+      // else, just keep the downloaded friends.
       return;
     }
     // set friends
