@@ -29,18 +29,15 @@ class _OpenGamesScreenState extends State<OpenGamesScreen> {
         children: [
           if (enemiesWithOpenGame.isNotEmpty)
             Flexible(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: ListView.builder(
-                  itemCount: enemiesWithOpenGame.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return EnemyCard(
-                      appState: widget.appState,
-                      enemy: enemiesWithOpenGame[index],
-                      onTapped: (enemy) => {},
-                    );
-                  },
-                ),
+              child: ListView.builder(
+                itemCount: enemiesWithOpenGame.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return EnemyCard(
+                    appState: widget.appState,
+                    enemy: enemiesWithOpenGame[index],
+                    onTapped: (enemy) => {},
+                  );
+                },
               ),
             )
           else
