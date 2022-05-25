@@ -151,6 +151,40 @@ class DatabaseUtils {
     checkTokenCallback(null);
   }
 
+  Future<Player> getUserData(Player p) async {
+    // The session token.
+    String? token = await safeStorage.read(key: "token");
+    // If token is not null, check if it is valid.
+    if (token != null) {
+      // Link to the database.
+      final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
+        'X-Parse-Application-Id': userDatabaseApplicationID,
+        'X-Parse-Client-Key': userDatabaseClientKey,
+        'X-Parse-Session-Token': token,
+      });
+
+      // The client that provides the connection.
+      GraphQLClient client = GraphQLClient(
+        cache: GraphQLCache(),
+        link: httpLink,
+      );
+
+      // The query result.
+      var queryResult = await client.query(
+        QueryOptions(
+          document: gql(Queries.getUser()),
+          variables: {"user": p.id},
+        ),
+      );
+
+      if (queryResult.hasException) {
+        return p;
+      }
+      return Player.fromMap(queryResult.data!["user"]);
+    }
+    return p;
+  }
+
   /// Get all friend requests.
   Future<void> getFriends(Player player, Function friendRequestCallback) async {
     // The session token.

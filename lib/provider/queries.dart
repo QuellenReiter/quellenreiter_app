@@ -742,4 +742,37 @@ mutation removeGame(\$game:DeleteOpenGameInput!){
 ''';
     return ret;
   }
+
+  static String getUser() {
+    String ret = '''
+query getUser(\$user:ID!){
+  user(id: \$user){
+    objectId
+    ${DbFields.userName}
+    ${DbFields.userData}{
+      objectId
+      ${DbFields.userGamesTied}
+      ${DbFields.userGamesWon}
+      ${DbFields.userEmoji}
+      ${DbFields.userPlayedGames}
+      ${DbFields.userTrueCorrectAnswers}
+      ${DbFields.userFalseCorrectAnswers}
+      ${DbFields.userTrueFakeAnswers}
+      ${DbFields.userFalseFakeAnswers}
+      ${DbFields.userSafedStatements}{
+        ... on Element{
+          value
+        }
+      }
+      ${DbFields.userPlayedStatements}{
+        ... on Element{
+          value
+        }
+      }
+    }
+  }
+}
+''';
+    return ret;
+  }
 }
