@@ -335,6 +335,10 @@ class QuellenreiterAppState extends ChangeNotifier {
   void startNewGame(Enemy e, bool withTimer) async {
     Routes tempRoute = route;
     route = Routes.loading;
+    // if an open game exists, delete it
+    if (e.openGame != null) {
+      db.deleteGame(e.openGame!);
+    }
     e.openGame = Game.empty(withTimer, e.playerIndex);
     e.openGame!.statementIds = await db.getPlayableStatements(e, player!);
     if (e.openGame!.statementIds == null) {

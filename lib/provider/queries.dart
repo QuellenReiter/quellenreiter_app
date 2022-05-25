@@ -727,4 +727,19 @@ query getStatement(\$ids: StatementWhereInput!){
     // print(ret);
     return ret;
   }
+
+  static String removeGame() {
+    String ret = '''
+mutation removeGame(\$game:DeleteOpenGameInput!){
+  deleteOpenGame(
+    input: \$game
+  ){
+    openGame{
+      objectId
+    }
+  }
+}
+''';
+    return ret;
+  }
 }
