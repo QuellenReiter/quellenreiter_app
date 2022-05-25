@@ -14,7 +14,22 @@ class StartScreen extends StatefulWidget {
 
 class _StartScreenState extends State<StartScreen> {
   @override
+  void initState() {
+    widget.appState.getFriends();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    int playableGames = 0;
+    if (widget.appState.player!.friends != null) {
+      playableGames = widget.appState.player!.friends!.enemies.fold<int>(
+          0,
+          (p, e) => e.openGame == null
+              ? 0
+              : p + (e.openGame!.isPlayersTurn() ? 1 : 0));
+    }
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -164,11 +179,38 @@ class _StartScreenState extends State<StartScreen> {
           icon: const Icon(Icons.gamepad_outlined),
           label: const Text("Neues Spiel starten"),
         ),
-        ElevatedButton.icon(
-          onPressed: () =>
-              widget.appState.handleNavigationChange(Routes.openGames),
-          icon: const Icon(Icons.playlist_play_outlined),
-          label: const Text("Offene Spiele"),
+        Stack(
+          clipBehavior: Clip.none,
+          children: [
+            ElevatedButton.icon(
+              onPressed: () =>
+                  widget.appState.handleNavigationChange(Routes.openGames),
+              icon: const Icon(Icons.playlist_play_outlined),
+              label: const Text("Offene Spiele"),
+            ),
+            if (playableGames > 0)
+              Positioned(
+                right: -2,
+                top: -2,
+                child: Container(
+                  padding: const EdgeInsets.all(1),
+                  decoration: const BoxDecoration(
+                      color: Colors.red, shape: BoxShape.circle),
+                  constraints: const BoxConstraints(
+                    minWidth: 16,
+                    minHeight: 16,
+                  ),
+                  child: Text(
+                    playableGames.toString(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              )
+          ],
         ),
       ],
     );

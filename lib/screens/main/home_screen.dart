@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
@@ -6,6 +8,7 @@ import 'package:quellenreiter_app/screens/main/settings_screen.dart';
 import 'package:quellenreiter_app/screens/main/start_screen.dart';
 
 import '../../constants/constants.dart';
+import '../../models/player.dart';
 import 'archive_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,6 +20,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Timer? timer;
   late Widget body;
   late String title;
   int index = 0;
@@ -39,7 +43,21 @@ class _HomeScreenState extends State<HomeScreen> {
       default:
         index = 0;
     }
+    //periodically refetch friends and so on.
+    timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
+      widget.appState.getFriends();
+      // THROWS SOME ERROR
+      // widget.appState.getUserData();
+    });
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    // TODO: implement dispose
+    super.dispose();
   }
 
   void onTap(int indexTapped) {
