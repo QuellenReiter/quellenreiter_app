@@ -55,81 +55,51 @@ class _StartScreenState extends State<StartScreen> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height / 4,
-                  child: PieChart(
-                    PieChartData(
-                      centerSpaceRadius: 50,
-                      sections: [
-                        PieChartSectionData(
-                            title: "Falsch",
-                            value: widget.appState.player!.falseCorrectAnswers +
-                                widget.appState.player!.falseFakeAnswers
-                                    .toDouble(),
-                            color: DesignColors.red),
-                        PieChartSectionData(
-                            title: "Richtig",
-                            value: widget.appState.player!.trueCorrectAnswers +
-                                widget.appState.player!.trueFakeAnswers
-                                    .toDouble(),
-                            color: DesignColors.green)
-                      ],
+                Stack(alignment: Alignment.center, children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 4,
+                    child: PieChart(
+                      PieChartData(
+                        centerSpaceRadius: 80,
+                        sections: [
+                          PieChartSectionData(
+                              title: "Falsch",
+                              value:
+                                  widget.appState.player!.falseCorrectAnswers +
+                                      widget.appState.player!.falseFakeAnswers
+                                          .toDouble(),
+                              color: DesignColors.red),
+                          PieChartSectionData(
+                              title: "Richtig",
+                              value:
+                                  widget.appState.player!.trueCorrectAnswers +
+                                      widget.appState.player!.trueFakeAnswers
+                                          .toDouble(),
+                              color: DesignColors.green)
+                        ],
+                      ),
+                      swapAnimationDuration:
+                          Duration(milliseconds: 400), // Optional
+                      swapAnimationCurve: Curves.linear,
                     ),
-                    swapAnimationDuration:
-                        Duration(milliseconds: 400), // Optional
-                    swapAnimationCurve: Curves.linear,
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: Text(
-                    "Deine Statistik aus ${widget.appState.player!.numPlayedGames} Spielen.",
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
-                )
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.monetization_on,
+                        color: DesignColors.yellow,
+                        size: 40,
+                      ),
+                      Text(widget.appState.player!.getXp().toString(),
+                          style: Theme.of(context).textTheme.headline3),
+                    ],
+                  )
+                ]),
               ],
             ),
           ),
         ),
-        // Padding(
-        //   padding: const EdgeInsets.all(10),
-        //   child: Text(
-        //     "Falsch als Fakt bezeichnet: " +
-        //         widget.appState.player!.falseCorrectAnswers.toString(),
-        //   ),
-        // ),
-        // Padding(
-        //   padding: const EdgeInsets.all(10),
-        //   child: Text(
-        //     "Falsch als Fake bezeichnet: " +
-        //         widget.appState.player!.falseFakeAnswers.toString(),
-        //   ),
-        // ),
-        // Padding(
-        //   padding: const EdgeInsets.all(10),
-        //   child: Text(
-        //     "Richtig als Fakt erkannt: " +
-        //         widget.appState.player!.trueCorrectAnswers.toString(),
-        //   ),
-        // ),
-        // Padding(
-        //   padding: const EdgeInsets.all(10),
-        //   child: Text(
-        //     "Richtig als Fake erkannt: " +
-        //         widget.appState.player!.trueFakeAnswers.toString(),
-        //   ),
-        // ),
-        // Padding(
-        //   padding: const EdgeInsets.all(10),
-        //   child: Text(
-        //     "Anzahl bewerteter Aussagen: " +
-        //         (widget.appState.player!.trueFakeAnswers +
-        //                 widget.appState.player!.trueCorrectAnswers +
-        //                 widget.appState.player!.falseCorrectAnswers +
-        //                 widget.appState.player!.falseFakeAnswers)
-        //             .toString(),
-        //   ),
-        // ),
         ElevatedButton.icon(
           onPressed: () =>
               widget.appState.handleNavigationChange(Routes.startGame),
