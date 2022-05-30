@@ -104,8 +104,34 @@ class Game {
     // print(ret);
     return ret;
   }
+
+  GameResult getGameResult() {
+    if (playerAnswers.fold<int>(0, (p, c) => p + (c ? 1 : 0)) >
+        enemyAnswers.fold<int>(0, (p, c) => p + (c ? 1 : 0))) {
+      return GameResult.playerWon;
+    } else if (playerAnswers.fold<int>(0, (p, c) => p + (c ? 1 : 0)) <
+        enemyAnswers.fold<int>(0, (p, c) => p + (c ? 1 : 0))) {
+      return GameResult.enemyWon;
+    } else {
+      return GameResult.tied;
+    }
+  }
+
+  int getPlayerXp() {
+    int xp = 0;
+    xp = playerAnswers.fold<int>(0, (p, c) => p + (c ? 1 : 0)) *
+        GameRules.pointsPerCorrectAnswer;
+    if (getGameResult() == GameResult.tied) {
+      xp += GameRules.pointsPerTiedGame;
+    } else if (getGameResult() == GameResult.playerWon) {
+      xp += GameRules.pointsPerWonGame;
+    }
+    return xp;
+  }
 }
 
 class Games {
   List<Game> games = [];
 }
+
+enum GameResult { playerWon, tied, enemyWon }

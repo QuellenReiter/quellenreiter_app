@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
+import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/start_game_button.dart';
 
@@ -99,28 +100,50 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             if (widget.appState.currentEnemy!.openGame!.gameFinished())
-              if (widget.appState.currentEnemy!.openGame!.playerAnswers
-                      .fold<int>(0, (p, c) => p + (c ? 1 : 0)) >
-                  widget.appState.currentEnemy!.openGame!.enemyAnswers
-                      .fold<int>(0, (p, c) => p + (c ? 1 : 0)))
-                Text("Gewonnen",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2!
-                        .copyWith(color: DesignColors.green))
-              else if (widget.appState.currentEnemy!.openGame!.playerAnswers
-                      .fold<int>(0, (p, c) => p + (c ? 1 : 0)) ==
-                  widget.appState.currentEnemy!.openGame!.enemyAnswers
-                      .fold<int>(0, (p, c) => p + (c ? 1 : 0)))
-                Text("Unentschieden",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2!
-                        .copyWith(color: DesignColors.green))
-              else
-                Text("Verloren",
-                    style:
-                        Theme.of(context).textTheme.headline2!.copyWith(color: DesignColors.red)),
+              Flexible(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if (widget.appState.currentEnemy!.openGame!
+                            .getGameResult() ==
+                        GameResult.playerWon)
+                      Text("Gewonnen",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: DesignColors.green))
+                    else if (widget.appState.currentEnemy!.openGame!
+                            .getGameResult() ==
+                        GameResult.tied)
+                      Text("Unentschieden",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: DesignColors.green))
+                    else
+                      Text("Verloren",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: DesignColors.red)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("+ "),
+                        const Icon(
+                          Icons.monetization_on,
+                          color: DesignColors.yellow,
+                          size: 15,
+                        ),
+                        Text(widget.appState.currentEnemy!.openGame!
+                            .getPlayerXp()
+                            .toString()),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
 
             // user and enemy
             Flexible(
@@ -154,6 +177,8 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                           child: Padding(
                             padding: const EdgeInsets.only(right: 20),
                             child: GridView.count(
+                                clipBehavior: Clip.none,
+                                physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 crossAxisCount: 3,
                                 children: playerAnswerVisuals),
@@ -188,6 +213,8 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                           child: Padding(
                             padding: const EdgeInsets.only(left: 20),
                             child: GridView.count(
+                              clipBehavior: Clip.none,
+                              physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
                               crossAxisCount: 3,
                               children: enemyAnswerVisuals,

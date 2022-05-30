@@ -263,10 +263,10 @@ class Enemy {
 
   int getXp() {
     int xp = 0;
-    xp = numGamesWonOther * 20 + // won games give 20xp
+    xp = numGamesWonOther * GameRules.pointsPerWonGame + // won games give 20xp
         (trueCorrectAnswersOther + trueFakeAnswersOther) *
-            12 + // correct answers give 12 xp
-        numGamesTiedOther * 5; // tied games give 5 xp
+            GameRules.pointsPerCorrectAnswer + // correct answers give 12 xp
+        numGamesTiedOther * GameRules.pointsPerTiedGame; // tied games give 5 xp
     return xp;
   }
 }
