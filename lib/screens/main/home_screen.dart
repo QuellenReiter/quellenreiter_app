@@ -19,7 +19,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   Timer? timer;
   late Widget body;
   late String title;
@@ -27,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     switch (widget.appState.route) {
       case Routes.friends:
         index = 1;
@@ -45,9 +46,10 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     //periodically refetch friends and so on.
     timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-      widget.appState.getFriends();
-      // THROWS SOME ERROR
-      // widget.appState.getUserData();
+      print("timer called");
+      // check if app is in foreground
+      if (_notification == AppLifecycleState.resumed)
+        widget.appState.getFriends();
     });
 
     super.initState();
@@ -55,9 +57,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
+    // remove observer for applifecyclestate
+    WidgetsBinding.instance.removeObserver(this);
     timer?.cancel();
     // TODO: implement dispose
     super.dispose();
+  }
+
+  AppLifecycleState _notification = AppLifecycleState.resumed;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() {
+      _notification = state;
+    });
   }
 
   void onTap(int indexTapped) {
