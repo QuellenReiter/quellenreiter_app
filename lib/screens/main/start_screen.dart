@@ -25,7 +25,7 @@ class _StartScreenState extends State<StartScreen> {
       playableGames = widget.appState.player!.friends!.enemies.fold<int>(
           0,
           (p, e) => e.openGame == null
-              ? 0
+              ? p + 0
               : p + (e.openGame!.isPlayersTurn() ? 1 : 0));
     }
 
