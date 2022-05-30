@@ -58,11 +58,13 @@ class EnemyCard extends StatelessWidget {
                           style: Theme.of(context).textTheme.headline5,
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: Text(
-                            "${enemy.numGamesWonOther}/${enemy.numGamesPlayedOther} Spielen gewonnen."),
+                      const Icon(
+                        Icons.monetization_on,
+                        color: DesignColors.yellow,
+                        size: 16,
                       ),
+                      Text(enemy.getXp().toString(),
+                          style: Theme.of(context).textTheme.subtitle1),
                     ],
                   ),
                 ),
@@ -148,7 +150,7 @@ class EnemyCard extends StatelessWidget {
                                 padding: EdgeInsets.only(left: 10),
                                 child: Icon(Icons.timer_off)),
                           Text(
-                              "${enemy.openGame!.playerAnswers.length.toString()} von 9")
+                              "${enemy.openGame!.playerAnswers.length.toString()} von 9 Fragen")
                         ],
                       )
                     ],
