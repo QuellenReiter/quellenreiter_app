@@ -20,8 +20,6 @@ class _StartScreenState extends State<StartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    widget.appState.getFriends();
-
     int playableGames = 0;
     if (widget.appState.player!.friends != null) {
       playableGames = widget.appState.player!.friends!.enemies.fold<int>(
