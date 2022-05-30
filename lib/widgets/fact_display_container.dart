@@ -67,10 +67,7 @@ class FactDisplayContainer extends StatelessWidget {
                               ),
                               child: SelectableText(
                                 fact.factText,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .subtitle2
-                                    ?.copyWith(color: DesignColors.lightGrey),
+                                style: Theme.of(context).textTheme.headline6,
                               ),
                             ),
                           ),
