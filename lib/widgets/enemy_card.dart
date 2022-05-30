@@ -118,6 +118,10 @@ class EnemyCard extends StatelessWidget {
                                   appState.currentEnemy = enemy;
                                   appState.route = Routes.gameReadyToStart;
                                 },
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      DesignColors.backgroundBlue),
+                                ),
                                 icon: const Icon(Icons.stop_circle),
                                 label: const Text("Ergebnisse anzeigen"),
                               ),

@@ -98,6 +98,30 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            if (widget.appState.currentEnemy!.openGame!.gameFinished())
+              if (widget.appState.currentEnemy!.openGame!.playerAnswers
+                      .fold<int>(0, (p, c) => p + (c ? 1 : 0)) >
+                  widget.appState.currentEnemy!.openGame!.enemyAnswers
+                      .fold<int>(0, (p, c) => p + (c ? 1 : 0)))
+                Text("Gewonnen",
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline2!
+                        .copyWith(color: DesignColors.green))
+              else if (widget.appState.currentEnemy!.openGame!.playerAnswers
+                      .fold<int>(0, (p, c) => p + (c ? 1 : 0)) ==
+                  widget.appState.currentEnemy!.openGame!.enemyAnswers
+                      .fold<int>(0, (p, c) => p + (c ? 1 : 0)))
+                Text("Unentschieden",
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline2!
+                        .copyWith(color: DesignColors.green))
+              else
+                Text("Verloren",
+                    style:
+                        Theme.of(context).textTheme.headline2!.copyWith(color: DesignColors.red)),
+
             // user and enemy
             Flexible(
               child: Row(
