@@ -193,7 +193,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   Future<void> getFriends() async {
-    // print("get friends called");
+    print("get friends called");
     db.getFriends(player!, _getFriendsCallback);
   }
 
