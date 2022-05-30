@@ -74,7 +74,6 @@ class EnemyCard extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text("offenes Spiel:"),
                       Row(
                         children: [
                           // .. and if its the players turn
