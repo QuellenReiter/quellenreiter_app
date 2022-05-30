@@ -75,7 +75,7 @@ class StatementCard extends StatelessWidget {
                         Flexible(
                           child: Text(
                             statement.statementText,
-                            style: Theme.of(context).textTheme.subtitle2,
+                            style: Theme.of(context).textTheme.headline6,
                           ),
                         ),
                         if (appState.player!.safedStatementsIds!
@@ -167,7 +167,7 @@ class StatementCard extends StatelessWidget {
                   Align(
                     alignment: Alignment.center,
                     child: Text(
-                      "Faktenchecks",
+                      "Faktenchecks zur Aussage von:",
                       style: Theme.of(context).textTheme.subtitle1,
                     ),
                   ),
@@ -384,16 +384,12 @@ class StatementCard extends StatelessWidget {
                                                                   .start,
                                                           children: [
                                                             Text(
-                                                              statement
-                                                                  .statementText,
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .subtitle2
-                                                                  ?.copyWith(
-                                                                      color: DesignColors
-                                                                          .lightGrey),
-                                                            ),
+                                                                statement
+                                                                    .statementText,
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .headline6),
                                                             LinkAlert(
                                                                 link: statement
                                                                     .statementLink,
@@ -489,6 +485,13 @@ class StatementCard extends StatelessWidget {
                                       ],
                                     ),
                                   ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 20),
+                                child: Text(
+                                  "Artikel die belegen, dass diese Aussage als \"${statement.statementCorrectness}\" einzuordnen ist:",
+                                  style: Theme.of(context).textTheme.headline6,
                                 ),
                               ),
                               // Display all [statement.factChecks]
