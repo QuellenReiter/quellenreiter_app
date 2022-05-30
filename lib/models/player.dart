@@ -173,10 +173,10 @@ class Player {
 
   int getXp() {
     int xp = 0;
-    xp = numGamesWon * 20 + // won games give 20xp
+    xp = numGamesWon * GameRules.pointsPerWonGame + // won games give 20xp
         (trueCorrectAnswers + trueFakeAnswers) *
-            12 + // correct answers give 12 xp
-        numGamesTied * 5; // tied games give 5 xp
+            GameRules.pointsPerCorrectAnswer + // correct answers give 12 xp
+        numGamesTied * GameRules.pointsPerTiedGame; // tied games give 5 xp
     return xp;
   }
 }

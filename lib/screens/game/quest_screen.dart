@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
+import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:simple_timer/simple_timer.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -68,7 +69,8 @@ class _QuestScreenState extends State<QuestScreen>
                   ),
                 ),
               // image
-              Flexible(
+              FractionallySizedBox(
+                widthFactor: 1,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: ClipRRect(
@@ -223,15 +225,11 @@ class _QuestScreenState extends State<QuestScreen>
     }
     // if game is finished
     else if (widget.appState.currentEnemy!.openGame!.gameFinished()) {
-      var playerWon = widget.appState.currentEnemy!.openGame!.playerAnswers
-              .fold<int>(0, (p, e) => p + (e ? 1 : 0)) >
-          widget.appState.currentEnemy!.openGame!.enemyAnswers
-              .fold<int>(0, (p, e) => p + (e ? 1 : 0));
+      var playerWon = widget.appState.currentEnemy!.openGame!.getGameResult() ==
+          GameResult.playerWon;
 
-      var enemyWon = widget.appState.currentEnemy!.openGame!.playerAnswers
-              .fold<int>(0, (p, e) => p + (e ? 1 : 0)) <
-          widget.appState.currentEnemy!.openGame!.enemyAnswers
-              .fold<int>(0, (p, e) => p + (e ? 1 : 0));
+      var enemyWon = widget.appState.currentEnemy!.openGame!.getGameResult() ==
+          GameResult.enemyWon;
       // show some inbetween screen
       showDialog(
         barrierDismissible: false,

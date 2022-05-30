@@ -124,4 +124,7 @@ class GameRules {
   static const int statementsPerRound = 3;
   static const int roundsPerGame = 3;
   static const int statementsPerGame = statementsPerRound * roundsPerGame;
+  static const int pointsPerWonGame = 20;
+  static const int pointsPerTiedGame = 5;
+  static const int pointsPerCorrectAnswer = 12;
 }
