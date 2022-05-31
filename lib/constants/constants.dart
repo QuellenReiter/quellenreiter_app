@@ -106,7 +106,8 @@ enum Routes {
   gameResults,
   gameReadyToStart,
   loading,
-  addFriends
+  addFriends,
+  gameFinishedScreen
 }
 
 class CorrectnessCategory {
