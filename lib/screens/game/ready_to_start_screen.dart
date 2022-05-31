@@ -151,11 +151,16 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                         const Icon(
                           Icons.monetization_on,
                           color: DesignColors.yellow,
-                          size: 15,
+                          size: 24,
                         ),
-                        Text(widget.appState.currentEnemy!.openGame!
-                            .getPlayerXp()
-                            .toString()),
+                        Countup(
+                          begin: 0,
+                          end: widget.appState.currentEnemy!.openGame!
+                              .getPlayerXp()
+                              .toDouble(),
+                          duration: const Duration(seconds: 1),
+                          style: Theme.of(context).textTheme.subtitle1,
+                        )
                       ],
                     ),
                   ],
