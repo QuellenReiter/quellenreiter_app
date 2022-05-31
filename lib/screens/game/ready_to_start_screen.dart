@@ -90,6 +90,21 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Spielen"),
+        actions: [
+          const Icon(
+            Icons.monetization_on,
+            color: DesignColors.yellow,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: Center(
+              child: Text(
+                widget.appState.player!.getXp().toString(),
+                style: Theme.of(context).textTheme.headline6,
+              ),
+            ),
+          ),
+        ],
       ),
       body: Container(
         alignment: Alignment.topCenter,

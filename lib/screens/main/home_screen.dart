@@ -8,7 +8,6 @@ import 'package:quellenreiter_app/screens/main/settings_screen.dart';
 import 'package:quellenreiter_app/screens/main/start_screen.dart';
 
 import '../../constants/constants.dart';
-import '../../models/player.dart';
 import 'archive_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -45,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         index = 0;
     }
     //periodically refetch friends and so on.
-    timer = Timer.periodic(const Duration(seconds: 20), (Timer t) {
+    timer = Timer.periodic(const Duration(seconds: 60), (Timer t) {
       print("timer called");
       // check if app is in foreground
       if (_notification == AppLifecycleState.resumed) {
