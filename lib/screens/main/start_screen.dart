@@ -1,3 +1,4 @@
+import 'package:countup/countup.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
@@ -79,7 +80,7 @@ class _StartScreenState extends State<StartScreen> {
                         ],
                       ),
                       swapAnimationDuration:
-                          Duration(milliseconds: 400), // Optional
+                          const Duration(milliseconds: 400), // Optional
                       swapAnimationCurve: Curves.linear,
                     ),
                   ),
@@ -91,8 +92,12 @@ class _StartScreenState extends State<StartScreen> {
                         color: DesignColors.yellow,
                         size: 40,
                       ),
-                      Text(widget.appState.player!.getXp().toString(),
-                          style: Theme.of(context).textTheme.headline3),
+                      Countup(
+                        begin: 0,
+                        end: widget.appState.player!.getXp().toDouble(),
+                        duration: const Duration(milliseconds: 500),
+                        style: Theme.of(context).textTheme.headline3,
+                      )
                     ],
                   )
                 ]),
