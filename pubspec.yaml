@@ -39,6 +39,7 @@ dependencies:
   flutter_staggered_animations: ^1.0.0
   simple_timer: ^2.0.0
   fl_chart: ^0.50.6
+  countup: ^0.1.4
 
 
   # The following adds the Cupertino Icons font to your application.

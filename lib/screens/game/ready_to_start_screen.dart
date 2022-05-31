@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/game.dart';
@@ -98,11 +99,12 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 20),
             child: Center(
-              child: Text(
-                widget.appState.player!.getXp().toString(),
-                style: Theme.of(context).textTheme.headline6,
-              ),
-            ),
+                child: Countup(
+              begin: 0,
+              end: widget.appState.player!.getXp().toDouble(),
+              duration: const Duration(milliseconds: 500),
+              style: Theme.of(context).textTheme.headline6,
+            )),
           ),
         ],
       ),

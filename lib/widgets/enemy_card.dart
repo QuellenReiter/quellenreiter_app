@@ -1,3 +1,4 @@
+import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/models/enemy.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
@@ -63,8 +64,12 @@ class EnemyCard extends StatelessWidget {
                         color: DesignColors.yellow,
                         size: 16,
                       ),
-                      Text(enemy.getXp().toString(),
-                          style: Theme.of(context).textTheme.subtitle1),
+                      Countup(
+                        begin: 0,
+                        end: enemy.getXp().toDouble(),
+                        duration: const Duration(milliseconds: 500),
+                        style: Theme.of(context).textTheme.subtitle1,
+                      )
                     ],
                   ),
                 ),
