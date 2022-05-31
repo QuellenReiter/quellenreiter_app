@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/navigation/quellenreiter_routes.dart';
 import 'package:quellenreiter_app/screens/auth/signup_screen.dart';
+import 'package:quellenreiter_app/screens/game/game_finished_screen.dart';
 import 'package:quellenreiter_app/screens/game/game_results_screen.dart';
 import 'package:quellenreiter_app/screens/game/quest_screen.dart';
 import 'package:quellenreiter_app/screens/game/ready_to_start_screen.dart';
@@ -134,17 +135,6 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         ];
       case Routes.quest:
         if (appState.currentEnemy != null &&
-            appState.currentEnemy!.openGame!.gameFinished()) {
-          return [
-            MaterialPage(
-              key: const ValueKey('GameResultsScreen'),
-              child: GameResultsScreen(
-                appState: appState,
-                showAll: true,
-              ),
-            ),
-          ];
-        } else if (appState.currentEnemy != null &&
             !appState.currentEnemy!.openGame!.isPlayersTurn()) {
           return [
             MaterialPage(
@@ -160,6 +150,15 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
           MaterialPage(
             key: const ValueKey('QuestScreen'),
             child: QuestScreen(
+              appState: appState,
+            ),
+          ),
+        ];
+      case Routes.gameFinishedScreen:
+        return [
+          MaterialPage(
+            key: const ValueKey('GameResultsScreen'),
+            child: GameFinishedScreen(
               appState: appState,
             ),
           ),

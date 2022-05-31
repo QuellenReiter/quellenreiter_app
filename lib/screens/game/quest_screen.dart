@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
@@ -195,138 +196,42 @@ class _QuestScreenState extends State<QuestScreen>
     var answerCorrect =
         widget.appState.currentEnemy!.openGame!.playerAnswers[statementIndex];
 
-    // if game is not finished
-    if (!widget.appState.currentEnemy!.openGame!.gameFinished()) {
-      // show some inbetween screen
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) => Dialog(
-          insetPadding: const EdgeInsets.all(0),
-          child: Padding(
-            padding: const EdgeInsets.all(100),
-            child: Container(
+    // show some inbetween screen
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => Dialog(
+        insetPadding: const EdgeInsets.all(0),
+        child: Padding(
+          padding: const EdgeInsets.all(100),
+          child: Container(
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: answerCorrect ? DesignColors.green : DesignColors.red,
+            ),
+            child: Align(
               alignment: Alignment.center,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: answerCorrect ? DesignColors.green : DesignColors.red,
-              ),
-              child: Align(
-                alignment: Alignment.center,
-                child: Text(
-                  answerCorrect ? "Richtige Antwort" : "Falsche Antwort",
-                  style: Theme.of(context).textTheme.headline3,
-                ),
+              child: Text(
+                answerCorrect ? "Richtige Antwort" : "Falsche Antwort",
+                style: Theme.of(context).textTheme.headline3,
               ),
             ),
           ),
         ),
-      );
-    }
-    // if game is finished
-    else if (widget.appState.currentEnemy!.openGame!.gameFinished()) {
-      var playerWon = widget.appState.currentEnemy!.openGame!.getGameResult() ==
-          GameResult.playerWon;
+      ),
+    );
 
-      var enemyWon = widget.appState.currentEnemy!.openGame!.getGameResult() ==
-          GameResult.enemyWon;
-      // show some inbetween screen
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) => Dialog(
-          insetPadding: const EdgeInsets.all(0),
-          child: Column(children: [
-            Padding(
-              padding: const EdgeInsets.all(100),
-              child: Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: answerCorrect ? DesignColors.green : DesignColors.red,
-                ),
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    answerCorrect ? "Richtige Antwort" : "Falsche Antwort",
-                    style: Theme.of(context).textTheme.headline3,
-                  ),
-                ),
-              ),
-            ),
-            Text(
-              playerWon
-                  ? "DU HAST GEWONNEN"
-                  : enemyWon
-                      ? "Du hast verloren."
-                      : "unentschieden",
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ]),
-        ),
-      );
-
-      // update the player so we dont miss any updates made by other player/games.
-      await widget.appState.db.checkToken((p) {
-        if (p != null) {
-          widget.appState.player = p;
-          widget.appState.error = null;
-          return;
-        } else {
-          widget.appState.error = "Spieler nicht up to date.";
-          return;
-        }
-      });
-      // if update not working, break!
-      if (widget.appState.error != null) {
-        return;
-      }
-      if (playerWon) {
-        // player has won
-        widget.appState.currentEnemy!.wonGamesPlayer += 1;
-        // update player
-        widget.appState.player!.numGamesWon += 1;
-        widget.appState.player!.numPlayedGames += 1;
-        widget.appState.player!.updateAnswerStats(
-            widget.appState.currentEnemy!.openGame!.playerAnswers,
-            widget.appState.currentEnemy!.openGame!.statements);
-        // update enemy
-        widget.appState.currentEnemy!.numGamesPlayedOther += 1;
-        widget.appState.currentEnemy!.updateAnswerStats(
-            widget.appState.currentEnemy!.openGame!.enemyAnswers,
-            widget.appState.currentEnemy!.openGame!.statements);
-      } else if (enemyWon) {
-        // enemy has won
-        widget.appState.currentEnemy!.wonGamesOther += 1;
-        // update player
-        widget.appState.player!.numPlayedGames += 1;
-        widget.appState.player!.updateAnswerStats(
-            widget.appState.currentEnemy!.openGame!.playerAnswers,
-            widget.appState.currentEnemy!.openGame!.statements);
-        // update enemy
-        widget.appState.currentEnemy!.numGamesPlayedOther += 1;
-        widget.appState.currentEnemy!.numGamesWonOther += 1;
-        widget.appState.currentEnemy!.updateAnswerStats(
-            widget.appState.currentEnemy!.openGame!.playerAnswers,
-            widget.appState.currentEnemy!.openGame!.statements);
-      } else {
-        // Game endet in a Tie
-        // update player
-        widget.appState.player!.numPlayedGames += 1;
-        widget.appState.player!.updateAnswerStats(
-            widget.appState.currentEnemy!.openGame!.playerAnswers,
-            widget.appState.currentEnemy!.openGame!.statements);
-        // update enemy
-        widget.appState.currentEnemy!.numGamesPlayedOther += 1;
-        widget.appState.currentEnemy!.updateAnswerStats(
-            widget.appState.currentEnemy!.openGame!.enemyAnswers,
-            widget.appState.currentEnemy!.openGame!.statements);
-      }
-      // increase played games of friendship
-      widget.appState.currentEnemy!.numGamesPlayed += 1;
-    }
     // delay 3 seconds
     await Future.delayed(const Duration(seconds: 3), () {});
+
+    // if game is finished
+    if (widget.appState.currentEnemy!.openGame!.gameFinished()) {
+      // show game finished screen
+      widget.appState.route = Routes.gameFinishedScreen;
+      return;
+    } // if game is finished
+
     // push to DB
     await widget.appState.db.updateGame(widget.appState);
 
