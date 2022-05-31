@@ -59,7 +59,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                 ? "DU HAST GEWONNEN"
                 : enemyWon
                     ? "Du hast verloren."
-                    : "unentschieden",
+                    : "Unentschieden",
             style: Theme.of(context)
                 .textTheme
                 .headline3!
@@ -81,7 +81,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                   await Future.delayed(const Duration(seconds: 3), () {});
 
                   // updating all stats, takes a while.
-                  await widget.appState.db.checkToken((p) {
+                  await widget.appState.db.checkToken((p) async {
                     // if player is not null
                     if (p != null) {
                       // update current player
@@ -102,23 +102,11 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                       widget.appState.player!.updateAnswerStats(
                           widget.appState.currentEnemy!.openGame!.playerAnswers,
                           widget.appState.currentEnemy!.openGame!.statements);
-                      // update enemy
-                      widget.appState.currentEnemy!.numGamesPlayedOther += 1;
-                      widget.appState.currentEnemy!.updateAnswerStats(
-                          widget.appState.currentEnemy!.openGame!.enemyAnswers,
-                          widget.appState.currentEnemy!.openGame!.statements);
                     } else if (enemyWon) {
                       // enemy has won
-                      widget.appState.currentEnemy!.wonGamesOther += 1;
                       // update player
                       widget.appState.player!.numPlayedGames += 1;
                       widget.appState.player!.updateAnswerStats(
-                          widget.appState.currentEnemy!.openGame!.playerAnswers,
-                          widget.appState.currentEnemy!.openGame!.statements);
-                      // update enemy
-                      widget.appState.currentEnemy!.numGamesPlayedOther += 1;
-                      widget.appState.currentEnemy!.numGamesWonOther += 1;
-                      widget.appState.currentEnemy!.updateAnswerStats(
                           widget.appState.currentEnemy!.openGame!.playerAnswers,
                           widget.appState.currentEnemy!.openGame!.statements);
                     } else {
@@ -126,27 +114,35 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                       // update player
                       widget.appState.player!.numPlayedGames += 1;
                       widget.appState.player!.numGamesTied += 1;
+                      // PROBLEM PROBABLY HERE !!
                       widget.appState.player!.updateAnswerStats(
                           widget.appState.currentEnemy!.openGame!.playerAnswers,
                           widget.appState.currentEnemy!.openGame!.statements);
-                      // update enemy
-                      widget.appState.currentEnemy!.numGamesPlayedOther += 1;
-                      widget.appState.currentEnemy!.numGamesTiedOther += 1;
-                      widget.appState.currentEnemy!.updateAnswerStats(
-                          widget.appState.currentEnemy!.openGame!.enemyAnswers,
-                          widget.appState.currentEnemy!.openGame!.statements);
                     }
-                    // increase played games of friendship
-                    widget.appState.currentEnemy!.numGamesPlayed += 1;
+                    // increase played games of friendship if playerIndex = 0
+                    if (widget.appState.currentEnemy!.openGame!.playerIndex ==
+                        0) {
+                      widget.appState.currentEnemy!.numGamesPlayed += 1;
+                    }
+                    // FOR THE SECOND PLAYER NOT UPDATING THE STATS.. ONLY IF GAME WON OR WHATEVER..
+                    bool success =
+                        await widget.appState.db.updateGame(widget.appState);
 
-                    // update the player so we dont miss any updates made by other player/games.
-                    widget.appState.db.updateGame(widget.appState);
-                    widget.appState.route = Routes.gameReadyToStart;
+                    // delete the game if last player has got its points.
+                    if (success &&
+                        widget.appState.currentEnemy!.openGame!
+                                .requestingPlayerIndex !=
+                            widget
+                                .appState.currentEnemy!.openGame!.playerIndex) {
+                      await widget.appState.db
+                          .deleteGame(widget.appState.currentEnemy!.openGame!);
+                    }
+
                     return;
                   });
 
-                  HapticFeedback.mediumImpact();
-                  widget.appState.route = Routes.gameReadyToStart;
+                  HapticFeedback.heavyImpact();
+                  widget.appState.route = Routes.home;
                 },
                 child: Container(
                   padding: const EdgeInsets.all(10),

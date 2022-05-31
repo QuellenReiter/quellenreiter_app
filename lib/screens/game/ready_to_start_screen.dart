@@ -280,6 +280,16 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                     onPressed: () => {widget.appState.playGame()},
                   ),
                 )
+            else if (widget.appState.currentEnemy!.openGame!.gameFinished() &&
+                widget.appState.currentEnemy!.openGame!.requestingPlayerIndex ==
+                    widget.appState.currentEnemy!.openGame!.playerIndex)
+              Flexible(
+                child: ElevatedButton(
+                  child: Text(
+                      "Warte bis ${widget.appState.currentEnemy!.name} die Punkte geholt hat."),
+                  onPressed: null,
+                ),
+              )
             else if (widget.appState.currentEnemy!.openGame!.gameFinished())
               Column(
                 mainAxisSize: MainAxisSize.min,
