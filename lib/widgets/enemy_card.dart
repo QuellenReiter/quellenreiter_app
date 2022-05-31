@@ -116,8 +116,10 @@ class EnemyCard extends StatelessWidget {
                                 label: const Text("Spielen"),
                               ),
                             )
-                          else if (enemy.openGame!.gameFinished())
-                            // if player has to wait for the enemy to play.
+                          else if (enemy.openGame!.gameFinished() &&
+                              enemy.openGame!.requestingPlayerIndex !=
+                                  enemy.openGame!.playerIndex)
+                            // if player can access its points
                             Flexible(
                               child: ElevatedButton.icon(
                                 onPressed: () {
@@ -129,7 +131,25 @@ class EnemyCard extends StatelessWidget {
                                       DesignColors.backgroundBlue),
                                 ),
                                 icon: const Icon(Icons.stop_circle),
-                                label: const Text("Ergebnisse anzeigen"),
+                                label: const Text("Punkte abholen."),
+                              ),
+                            )
+                          else if (enemy.openGame!.gameFinished() &&
+                              enemy.openGame!.requestingPlayerIndex ==
+                                  enemy.openGame!.playerIndex)
+                            // if enemy has to access its points
+                            Flexible(
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  appState.currentEnemy = enemy;
+                                  appState.route = Routes.gameReadyToStart;
+                                },
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      DesignColors.backgroundBlue),
+                                ),
+                                icon: const Icon(Icons.stop_circle),
+                                label: const Text("Ergebnisse ansehen."),
                               ),
                             )
                           else
