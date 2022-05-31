@@ -463,7 +463,7 @@ class DatabaseUtils {
     if (mutationResult.hasException) {
       return false;
     }
-    // if game is finished, update both players and the game.
+    // if game is finished, update the player and the game.
     if (appState.currentEnemy!.openGame!.gameFinished()) {
       // update friendship
       await updateFriendship(appState.currentEnemy!);
@@ -473,14 +473,6 @@ class DatabaseUtils {
           appState.player = p;
         } else {
           appState.error = "Player konnte nicht aktualisiert werden.";
-        }
-      });
-      //update enemy
-      await updateUserData(appState.currentEnemy, (Enemy? e) {
-        if (e != null) {
-          appState.currentEnemy = e;
-        } else {
-          appState.error = "Gegner konnte nicht aktualisiert werden.";
         }
       });
     }

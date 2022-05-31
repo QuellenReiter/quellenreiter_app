@@ -140,6 +140,7 @@ class Player {
   }
 
   void updateAnswerStats(List<bool> playerAnswers, Statements? statements) {
+    // is this if statement a problem ?!
     if (statements == null) {
       return;
     }
