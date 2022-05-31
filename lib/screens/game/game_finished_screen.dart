@@ -125,11 +125,13 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                       // Game endet in a Tie
                       // update player
                       widget.appState.player!.numPlayedGames += 1;
+                      widget.appState.player!.numGamesTied += 1;
                       widget.appState.player!.updateAnswerStats(
                           widget.appState.currentEnemy!.openGame!.playerAnswers,
                           widget.appState.currentEnemy!.openGame!.statements);
                       // update enemy
                       widget.appState.currentEnemy!.numGamesPlayedOther += 1;
+                      widget.appState.currentEnemy!.numGamesTiedOther += 1;
                       widget.appState.currentEnemy!.updateAnswerStats(
                           widget.appState.currentEnemy!.openGame!.enemyAnswers,
                           widget.appState.currentEnemy!.openGame!.statements);
