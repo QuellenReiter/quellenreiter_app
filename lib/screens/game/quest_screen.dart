@@ -57,21 +57,10 @@ class _QuestScreenState extends State<QuestScreen>
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Timer
-              if (widget.appState.currentEnemy!.openGame!.withTimer)
-                FractionallySizedBox(
-                  widthFactor: 0.3,
-                  child: SimpleTimer(
-                    controller: timerController,
-                    duration: const Duration(seconds: 40),
-                    onEnd: () =>
-                        registerAnswer(statementIndex, false, timeOver: true),
-                    timerStyle: TimerStyle.ring,
-                  ),
-                ),
               // image
-              FractionallySizedBox(
-                widthFactor: 1,
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height * 0.6),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: ClipRRect(
@@ -140,6 +129,17 @@ class _QuestScreenState extends State<QuestScreen>
                           child: const Text("Fake"),
                         ),
                       ),
+                      // Timer
+                      if (widget.appState.currentEnemy!.openGame!.withTimer)
+                        Expanded(
+                          child: SimpleTimer(
+                            controller: timerController,
+                            duration: const Duration(seconds: 40),
+                            onEnd: () => registerAnswer(statementIndex, false,
+                                timeOver: true),
+                            timerStyle: TimerStyle.expanding_sector,
+                          ),
+                        ),
                       Expanded(
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -219,9 +219,8 @@ class _QuestScreenState extends State<QuestScreen>
             child: Align(
               alignment: Alignment.center,
               child: Text(
-                answerCorrect ? "Richtige Antwort" : "Falsche Antwort",
-                style: Theme.of(context).textTheme.headline3,
-              ),
+                  answerCorrect ? "Richtige Antwort" : "Falsche Antwort",
+                  style: Theme.of(context).textTheme.headline3!),
             ),
           ),
         ),
@@ -229,7 +228,7 @@ class _QuestScreenState extends State<QuestScreen>
     );
 
     // delay 3 seconds
-    await Future.delayed(const Duration(seconds: 3), () {});
+    await Future.delayed(const Duration(seconds: 2), () {});
 
     // if game is finished
     if (widget.appState.currentEnemy!.openGame!.gameFinished()) {

@@ -16,12 +16,14 @@ class _SignupScreenState extends State<SignupScreen> {
   late TextEditingController usernameController;
   late TextEditingController passwordController;
   late TextEditingController emojiController;
+  late TextEditingController password2Controller;
 
   @override
   void initState() {
     usernameController = TextEditingController();
     passwordController = TextEditingController();
     emojiController = TextEditingController();
+    password2Controller = TextEditingController();
 
     super.initState();
   }
@@ -31,6 +33,7 @@ class _SignupScreenState extends State<SignupScreen> {
     usernameController.dispose();
     passwordController.dispose();
     emojiController.dispose();
+    password2Controller.dispose();
     super.dispose();
   }
 
@@ -83,26 +86,6 @@ class _SignupScreenState extends State<SignupScreen> {
           FractionallySizedBox(
             widthFactor: 0.8,
             child: ValueListenableBuilder(
-              valueListenable: passwordController,
-              builder: (context, TextEditingValue value, __) {
-                return Container(
-                  padding: const EdgeInsets.all(5),
-                  child: TextField(
-                    autofillHints: const [AutofillHints.newPassword],
-                    obscureText: true,
-                    controller: passwordController,
-                    decoration: const InputDecoration(
-                      labelText: "Passwort",
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          FractionallySizedBox(
-            widthFactor: 0.8,
-            child: ValueListenableBuilder(
               valueListenable: emojiController,
               builder: (context, TextEditingValue value, __) {
                 return Container(
@@ -122,6 +105,55 @@ class _SignupScreenState extends State<SignupScreen> {
               },
             ),
           ),
+          FractionallySizedBox(
+            widthFactor: 0.8,
+            child: ValueListenableBuilder(
+              valueListenable: passwordController,
+              builder: (context, TextEditingValue value, __) {
+                return Container(
+                  padding: const EdgeInsets.all(5),
+                  child: TextField(
+                    autofillHints: const [AutofillHints.newPassword],
+                    obscureText: true,
+                    controller: passwordController,
+                    decoration: const InputDecoration(
+                      labelText: "Passwort",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          const FractionallySizedBox(
+            widthFactor: 0.8,
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: Text(
+                "Merk dir dein Passwort gut, du wirst es nicht zurücksetzen können, wenn du es vergisst.",
+              ),
+            ),
+          ),
+          FractionallySizedBox(
+            widthFactor: 0.8,
+            child: ValueListenableBuilder(
+              valueListenable: password2Controller,
+              builder: (context, TextEditingValue value, __) {
+                return Container(
+                  padding: const EdgeInsets.all(5),
+                  child: TextField(
+                    autofillHints: const [AutofillHints.newPassword],
+                    obscureText: true,
+                    controller: password2Controller,
+                    decoration: const InputDecoration(
+                      labelText: "Passwort wiederholen",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
           Hero(
             tag: "authButton",
             child: FractionallySizedBox(
@@ -133,20 +165,28 @@ class _SignupScreenState extends State<SignupScreen> {
                     valueListenable: usernameController,
                     builder: (context, TextEditingValue value, __) {
                       return ValueListenableBuilder(
-                        valueListenable: emojiController,
+                        valueListenable: password2Controller,
                         builder: (context, TextEditingValue value, __) {
-                          return ElevatedButton.icon(
-                            onPressed: usernameController.text.length >=
-                                        Utils.usernameMinLength &&
-                                    passwordController.text.length > 7 &&
-                                    emojiController.text.isNotEmpty
-                                ? () => widget.appState.trySignUp(
-                                    usernameController.text,
-                                    passwordController.text,
-                                    emojiController.text)
-                                : null,
-                            icon: const Icon(Icons.login),
-                            label: const Text("anmelden"),
+                          return ValueListenableBuilder(
+                            valueListenable: emojiController,
+                            builder: (context, TextEditingValue value, __) {
+                              return ElevatedButton.icon(
+                                onPressed: (usernameController.text.length >=
+                                                Utils.usernameMinLength &&
+                                            passwordController.text.length >
+                                                7 &&
+                                            emojiController.text.isNotEmpty) &&
+                                        password2Controller.value ==
+                                            passwordController.value
+                                    ? () => widget.appState.trySignUp(
+                                        usernameController.text,
+                                        passwordController.text,
+                                        emojiController.text)
+                                    : null,
+                                icon: const Icon(Icons.login),
+                                label: const Text("anmelden"),
+                              );
+                            },
                           );
                         },
                       );
