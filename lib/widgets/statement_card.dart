@@ -75,7 +75,7 @@ class StatementCard extends StatelessWidget {
                         Flexible(
                           child: Text(
                             statement.statementText,
-                            style: Theme.of(context).textTheme.headline6,
+                            style: Theme.of(context).textTheme.subtitle1,
                           ),
                         ),
                         if (appState.player!.safedStatementsIds!
@@ -389,7 +389,7 @@ class StatementCard extends StatelessWidget {
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
-                                                                    .headline6),
+                                                                    .subtitle1),
                                                             LinkAlert(
                                                                 link: statement
                                                                     .statementLink,
