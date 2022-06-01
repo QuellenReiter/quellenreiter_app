@@ -55,7 +55,7 @@ class _QuestScreenState extends State<QuestScreen>
           padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // Timer
               if (widget.appState.currentEnemy!.openGame!.withTimer)
@@ -123,29 +123,35 @@ class _QuestScreenState extends State<QuestScreen>
               //buttons
 
               Flexible(
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: DesignColors.red,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: DesignColors.red,
+                            minimumSize: Size(50, 100),
+                          ),
+                          onPressed: () =>
+                              registerAnswer(statementIndex, false),
+                          child: const Text("Fake"),
                         ),
-                        onPressed: () => registerAnswer(statementIndex, false),
-                        child: const Text("Fake"),
                       ),
-                    ),
-                    Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: DesignColors.green,
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: DesignColors.green,
+                            minimumSize: Size(50, 100),
+                          ),
+                          onPressed: () => registerAnswer(statementIndex, true),
+                          child: const Text("Fakt"),
                         ),
-                        onPressed: () => registerAnswer(statementIndex, true),
-                        child: const Text("Fakt"),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               )
             ],
