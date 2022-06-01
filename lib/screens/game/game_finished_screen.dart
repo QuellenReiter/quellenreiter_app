@@ -48,9 +48,9 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                 builder: (BuildContext context, val, child) {
                   if (countupStartValue == 0) {
                     return Countup(
-                      begin: 0,
+                      begin: widget.appState.player!.getXp().toDouble(),
                       end: widget.appState.player!.getXp().toDouble(),
-                      duration: const Duration(milliseconds: 500),
+                      duration: const Duration(seconds: 3),
                       style: Theme.of(context).textTheme.headline6,
                     );
                   } else {
@@ -61,7 +61,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                       duration: const Duration(seconds: 3),
                       style: Theme.of(context)
                           .textTheme
-                          .headline4!
+                          .headline2!
                           .copyWith(color: DesignColors.pink),
                     );
                   }
