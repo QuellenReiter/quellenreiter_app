@@ -114,57 +114,54 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             if (widget.appState.currentEnemy!.openGame!.gameFinished())
-              Flexible(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (widget.appState.currentEnemy!.openGame!
-                            .getGameResult() ==
-                        GameResult.playerWon)
-                      Text("Gewonnen",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline2!
-                              .copyWith(color: DesignColors.green))
-                    else if (widget.appState.currentEnemy!.openGame!
-                            .getGameResult() ==
-                        GameResult.tied)
-                      Text("Unentschieden",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline2!
-                              .copyWith(color: DesignColors.green))
-                    else
-                      Text("Verloren",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline2!
-                              .copyWith(color: DesignColors.red)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text("+ "),
-                        const Icon(
-                          Icons.monetization_on,
-                          color: DesignColors.yellow,
-                          size: 24,
-                        ),
-                        Countup(
-                          begin: 0,
-                          end: widget.appState.currentEnemy!.openGame!
-                              .getPlayerXp()
-                              .toDouble(),
-                          duration: const Duration(seconds: 1),
-                          style: Theme.of(context).textTheme.subtitle1,
-                        )
-                      ],
-                    ),
-                  ],
-                ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  if (widget.appState.currentEnemy!.openGame!.getGameResult() ==
+                      GameResult.playerWon)
+                    Text("Gewonnen",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline2!
+                            .copyWith(color: DesignColors.green))
+                  else if (widget.appState.currentEnemy!.openGame!
+                          .getGameResult() ==
+                      GameResult.tied)
+                    Text("Unentschieden",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline2!
+                            .copyWith(color: DesignColors.green))
+                  else
+                    Text("Verloren",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline2!
+                            .copyWith(color: DesignColors.red)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("+ "),
+                      const Icon(
+                        Icons.monetization_on,
+                        color: DesignColors.yellow,
+                        size: 24,
+                      ),
+                      Countup(
+                        begin: 0,
+                        end: widget.appState.currentEnemy!.openGame!
+                            .getPlayerXp()
+                            .toDouble(),
+                        duration: const Duration(seconds: 1),
+                        style: Theme.of(context).textTheme.subtitle1,
+                      )
+                    ],
+                  ),
+                ],
               ),
 
             // user and enemy
