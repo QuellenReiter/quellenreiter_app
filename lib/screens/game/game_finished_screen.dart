@@ -93,6 +93,14 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                       widget.appState.route = Routes.gameReadyToStart;
                       return;
                     }
+                    // if statements are not downloaded (especially if player
+                    // wants to get its points), download them.
+                    if (widget.appState.currentEnemy!.openGame!.statements ==
+                        null) {
+                      widget.appState.currentEnemy!.openGame!.statements =
+                          await widget.appState.db.getStatements(widget
+                              .appState.currentEnemy!.openGame!.statementIds!);
+                    }
                     if (playerWon) {
                       // player has won
                       widget.appState.currentEnemy!.wonGamesPlayer += 1;
@@ -114,7 +122,6 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                       // update player
                       widget.appState.player!.numPlayedGames += 1;
                       widget.appState.player!.numGamesTied += 1;
-                      // PROBLEM PROBABLY HERE !!
                       widget.appState.player!.updateAnswerStats(
                           widget.appState.currentEnemy!.openGame!.playerAnswers,
                           widget.appState.currentEnemy!.openGame!.statements);
@@ -124,7 +131,6 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                         0) {
                       widget.appState.currentEnemy!.numGamesPlayed += 1;
                     }
-                    // FOR THE SECOND PLAYER NOT UPDATING THE STATS.. ONLY IF GAME WON OR WHATEVER..
                     bool success =
                         await widget.appState.db.updateGame(widget.appState);
 
