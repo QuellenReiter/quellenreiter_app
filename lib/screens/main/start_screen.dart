@@ -46,63 +46,55 @@ class _StartScreenState extends State<StartScreen> {
           padding: const EdgeInsets.only(bottom: 10),
           child: Text(
             "Hallo, " + widget.appState.player!.name,
-            style: Theme.of(context).textTheme.headline4,
+            style: Theme.of(context).textTheme.headline6,
           ),
         ),
         Flexible(
           child: Padding(
             padding: const EdgeInsets.all(50),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Stack(alignment: Alignment.center, children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height / 4,
-                    child: PieChart(
-                      PieChartData(
-                        centerSpaceRadius: 80,
-                        sections: [
-                          PieChartSectionData(
-                              title: "Falsch",
-                              value:
-                                  widget.appState.player!.falseCorrectAnswers +
-                                      widget.appState.player!.falseFakeAnswers
-                                          .toDouble(),
-                              color: DesignColors.red),
-                          PieChartSectionData(
-                              title: "Richtig",
-                              value:
-                                  widget.appState.player!.trueCorrectAnswers +
-                                      widget.appState.player!.trueFakeAnswers
-                                          .toDouble(),
-                              color: DesignColors.green)
-                        ],
-                      ),
-                      swapAnimationDuration:
-                          const Duration(milliseconds: 400), // Optional
-                      swapAnimationCurve: Curves.linear,
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.monetization_on,
-                        color: DesignColors.yellow,
-                        size: 40,
-                      ),
-                      Countup(
-                        begin: 0,
-                        end: widget.appState.player!.getXp().toDouble(),
-                        duration: const Duration(milliseconds: 500),
-                        style: Theme.of(context).textTheme.headline3,
-                      )
+            child: Stack(alignment: Alignment.center, children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height / 4,
+                child: PieChart(
+                  PieChartData(
+                    centerSpaceRadius: MediaQuery.of(context).size.width / 5,
+                    sections: [
+                      PieChartSectionData(
+                          title: "Falsch",
+                          value: widget.appState.player!.falseCorrectAnswers +
+                              widget.appState.player!.falseFakeAnswers
+                                  .toDouble(),
+                          color: DesignColors.red),
+                      PieChartSectionData(
+                          title: "Richtig",
+                          value: widget.appState.player!.trueCorrectAnswers +
+                              widget.appState.player!.trueFakeAnswers
+                                  .toDouble(),
+                          color: DesignColors.green)
                     ],
+                  ),
+                  swapAnimationDuration:
+                      const Duration(milliseconds: 400), // Optional
+                  swapAnimationCurve: Curves.linear,
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.monetization_on,
+                    color: DesignColors.yellow,
+                    size: 40,
+                  ),
+                  Countup(
+                    begin: 0,
+                    end: widget.appState.player!.getXp().toDouble(),
+                    duration: const Duration(milliseconds: 500),
+                    style: Theme.of(context).textTheme.headline4,
                   )
-                ]),
-              ],
-            ),
+                ],
+              )
+            ]),
           ),
         ),
         ElevatedButton.icon(
