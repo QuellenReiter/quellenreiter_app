@@ -165,7 +165,8 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
               ),
 
             // user and enemy
-            Flexible(
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.6,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
@@ -192,7 +193,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                               " Punkte",
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
-                        Flexible(
+                        Expanded(
                           child: Padding(
                             padding: const EdgeInsets.only(right: 20),
                             child: GridView.count(
@@ -228,7 +229,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                               " Punkte",
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
-                        Flexible(
+                        Expanded(
                           child: Padding(
                             padding: const EdgeInsets.only(left: 20),
                             child: GridView.count(
