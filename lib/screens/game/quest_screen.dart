@@ -1,10 +1,7 @@
 import 'dart:async';
-
-import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
-import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:simple_timer/simple_timer.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -60,7 +57,7 @@ class _QuestScreenState extends State<QuestScreen>
               // image
               ConstrainedBox(
                 constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 0.6),
+                    maxHeight: MediaQuery.of(context).size.height * 0.5),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: ClipRRect(
@@ -90,8 +87,11 @@ class _QuestScreenState extends State<QuestScreen>
               ),
               // text
               Flexible(
-                child: Text(widget.appState.currentEnemy!.openGame!.statements!
-                    .statements[statementIndex].statementText),
+                child: Text(
+                  widget.appState.currentEnemy!.openGame!.statements!
+                      .statements[statementIndex].statementText,
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
               ),
               // detail
               Row(
@@ -109,8 +109,6 @@ class _QuestScreenState extends State<QuestScreen>
                   ),
                 ],
               ),
-              //buttons
-
               Flexible(
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 20),
@@ -122,7 +120,7 @@ class _QuestScreenState extends State<QuestScreen>
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             primary: DesignColors.red,
-                            minimumSize: Size(50, 100),
+                            minimumSize: Size(100, 70),
                           ),
                           onPressed: () =>
                               registerAnswer(statementIndex, false),
@@ -144,7 +142,7 @@ class _QuestScreenState extends State<QuestScreen>
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             primary: DesignColors.green,
-                            minimumSize: Size(50, 100),
+                            minimumSize: Size(100, 70),
                           ),
                           onPressed: () => registerAnswer(statementIndex, true),
                           child: const Text("Fakt"),

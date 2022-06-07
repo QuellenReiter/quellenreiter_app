@@ -491,7 +491,7 @@ class StatementCard extends StatelessWidget {
                                 padding: const EdgeInsets.only(top: 20),
                                 child: Text(
                                   "Artikel die belegen, dass diese Aussage als \"${statement.statementCorrectness}\" einzuordnen ist:",
-                                  style: Theme.of(context).textTheme.headline6,
+                                  style: Theme.of(context).textTheme.subtitle1,
                                 ),
                               ),
                               // Display all [statement.factChecks]
