@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 
+import '../constants/constants.dart';
 import '../models/enemy.dart';
 
 class StartGameButton extends StatelessWidget {
@@ -11,6 +12,9 @@ class StartGameButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(DesignColors.green),
+      ),
       onPressed: () => showModalBottomSheet<void>(
         context: context,
         backgroundColor: Colors.transparent,

@@ -63,7 +63,7 @@ class FactDisplayContainer extends StatelessWidget {
                               decoration: const BoxDecoration(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10)),
-                                color: DesignColors.backgroundBlue,
+                                color: DesignColors.green,
                               ),
                               child: SelectableText(
                                 fact.factText,
