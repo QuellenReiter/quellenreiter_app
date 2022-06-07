@@ -45,7 +45,7 @@ class _QuellenreiterAppState extends State<QuellenreiterApp> {
               },
             ),
             brightness: Brightness.dark,
-            primarySwatch: Colors.purple,
+            primarySwatch: Colors.deepPurple,
             // textTheme: TextTheme(
 
             //     // Small text for light backgrounds.

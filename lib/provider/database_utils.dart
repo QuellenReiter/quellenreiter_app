@@ -128,12 +128,17 @@ class DatabaseUtils {
         link: httpLink,
       );
 
+      bool timedOut = false;
       // The query result.
-      var queryResult = await client.mutate(
+      var queryResult = await client
+          .mutate(
         MutationOptions(
           document: gql(Queries.getCurrentUser()),
         ),
-      );
+      )
+          .timeout(const Duration(milliseconds: 1000), onTimeout: () {
+        throw "Timed out";
+      });
 
       // print(queryResult.toString());
       if (queryResult.hasException) {
