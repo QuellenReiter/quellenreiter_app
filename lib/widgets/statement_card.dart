@@ -286,36 +286,49 @@ class StatementCard extends StatelessWidget {
                                                   children: [
                                                     // The image with rounded edges and cropped
                                                     // to 4:3 ratio.
-                                                    ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      child: AspectRatio(
-                                                        aspectRatio: 4 / 3,
+                                                    Tooltip(
+                                                      message:
+                                                          "Klicken zum Vergrößern.",
+                                                      child: InkWell(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        onTap: () =>
+                                                            showImage(context),
                                                         child: ClipRRect(
                                                           borderRadius:
                                                               BorderRadius
                                                                   .circular(10),
-                                                          child: FadeInImage
-                                                              .memoryNetwork(
-                                                            fadeInDuration:
-                                                                const Duration(
-                                                                    milliseconds:
-                                                                        400),
-                                                            fadeInCurve: Curves
-                                                                .easeInOut,
-                                                            fit: BoxFit.cover,
-                                                            placeholder:
-                                                                kTransparentImage,
-                                                            image: statement
-                                                                        .statementPictureURL !=
-                                                                    null
-                                                                ? statement
-                                                                    .statementPictureURL!
-                                                                    .replaceAll(
-                                                                        "https%3A%2F%2Fparsefiles.back4app.com%2FFeP6gb7k9R2K9OztjKWA1DgYhubqhW0yJMyrHbxH%2F",
-                                                                        "")
-                                                                : "https://quellenreiter.app/assets/logo-pink.png",
+                                                          child: AspectRatio(
+                                                            aspectRatio: 4 / 3,
+                                                            child: ClipRRect(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              child: FadeInImage
+                                                                  .memoryNetwork(
+                                                                fadeInDuration:
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            400),
+                                                                fadeInCurve: Curves
+                                                                    .easeInOut,
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                placeholder:
+                                                                    kTransparentImage,
+                                                                image: statement
+                                                                            .statementPictureURL !=
+                                                                        null
+                                                                    ? statement
+                                                                        .statementPictureURL!
+                                                                        .replaceAll(
+                                                                            "https%3A%2F%2Fparsefiles.back4app.com%2FFeP6gb7k9R2K9OztjKWA1DgYhubqhW0yJMyrHbxH%2F",
+                                                                            "")
+                                                                    : "https://quellenreiter.app/assets/logo-pink.png",
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
                                                       ),
@@ -369,14 +382,21 @@ class StatementCard extends StatelessWidget {
                                                             const EdgeInsets
                                                                 .all(10),
                                                         decoration:
-                                                            const BoxDecoration(
+                                                            BoxDecoration(
                                                           borderRadius:
-                                                              BorderRadius.all(
+                                                              const BorderRadius
+                                                                      .all(
                                                                   Radius
                                                                       .circular(
                                                                           10)),
-                                                          color: DesignColors
-                                                              .backgroundBlue,
+                                                          color: statement
+                                                                      .statementCorrectness ==
+                                                                  CorrectnessCategory
+                                                                      .correct
+                                                              ? DesignColors
+                                                                  .green
+                                                              : DesignColors
+                                                                  .red,
                                                         ),
                                                         child: Column(
                                                           crossAxisAlignment:
@@ -488,9 +508,9 @@ class StatementCard extends StatelessWidget {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(top: 20),
+                                padding: const EdgeInsets.only(top: 40),
                                 child: Text(
-                                  "Artikel die belegen, dass diese Aussage als \"${statement.statementCorrectness}\" einzuordnen ist:",
+                                  "Warum ist diese Aussage \"${statement.statementCorrectness}\"?",
                                   style: Theme.of(context).textTheme.subtitle1,
                                 ),
                               ),
@@ -514,6 +534,53 @@ class StatementCard extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  void showImage(BuildContext context) {
+    showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Stack(alignment: Alignment.centerLeft, children: [
+            FadeInImage.memoryNetwork(
+              fadeInDuration: const Duration(milliseconds: 400),
+              fadeInCurve: Curves.easeInOut,
+              fit: BoxFit.cover,
+              placeholder: kTransparentImage,
+              image: statement.statementPictureURL != null
+                  ? statement.statementPictureURL!.replaceAll(
+                      "https%3A%2F%2Fparsefiles.back4app.com%2FFeP6gb7k9R2K9OztjKWA1DgYhubqhW0yJMyrHbxH%2F",
+                      "")
+                  : "https://quellenreiter.app/assets/logo-pink.png",
+            ),
+            // Display [statement.samplePictureCopyright]
+            RotatedBox(
+              quarterTurns: 1,
+              child: Container(
+                padding: const EdgeInsets.all(2),
+                color: const Color.fromARGB(61, 0, 0, 0),
+                child: SelectableText(
+                  statement.samplePictureCopyright.trim(),
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+              ),
+            ),
+            Positioned(
+              top: 5,
+              right: 5,
+              child: IconButton(
+                icon: const Icon(Icons.close),
+                iconSize: 50,
+                onPressed: () => Navigator.of(context).pop(context),
+              ),
+            ),
+          ]),
+        ),
+      ),
     );
   }
 }
