@@ -12,7 +12,6 @@ import 'package:quellenreiter_app/screens/main/add_friend_screen.dart';
 import 'package:quellenreiter_app/screens/main/open_games_screen.dart';
 import 'package:quellenreiter_app/screens/main/start_game_screen.dart';
 import '../constants/constants.dart';
-import '../provider/database_utils.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/main/home_screen.dart';
 
@@ -23,9 +22,10 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
   @override
   final GlobalKey<NavigatorState> navigatorKey;
 
-  QuellenreiterAppState appState = QuellenreiterAppState();
+  late QuellenreiterAppState appState;
 
   QuellenreiterRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>() {
+    appState = QuellenreiterAppState();
     appState.addListener(notifyListeners);
     // print(appState.route);
     // print('appState.addListener(notifyListeners) called');
@@ -195,11 +195,11 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
 
   @override
   Future<void> setNewRoutePath(QuellenreiterRoutePath configuration) async {
-    var db = DatabaseUtils();
+    // var db = DatabaseUtils();
 
     if (configuration.route == Routes.settings) {
       // get user, if not existing.
-      appState.player ?? await db.authenticate();
+      appState.player ?? await appState.db.authenticate();
     }
   }
 }

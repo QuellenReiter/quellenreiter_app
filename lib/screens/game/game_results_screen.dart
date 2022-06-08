@@ -24,6 +24,17 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
       appBar: AppBar(
         title: const Text("Faktenchecks"),
       ),
+      bottomSheet: widget.appState.db.error != null
+          ? Padding(
+              padding: const EdgeInsets.all(20),
+              child: Wrap(children: [
+                Text(widget.appState.db.error!),
+                ElevatedButton(
+                    onPressed: widget.appState.db.error = null,
+                    child: Text("ok"))
+              ]),
+            )
+          : null,
       body: widget.appState.currentEnemy!.openGame!.statements == null
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(

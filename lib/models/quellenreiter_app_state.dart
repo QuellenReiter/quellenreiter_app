@@ -9,7 +9,7 @@ import 'statement.dart';
 
 class QuellenreiterAppState extends ChangeNotifier {
   ///  Object to be able to access the database.
-  final db = DatabaseUtils();
+  late DatabaseUtils db;
 
   Routes _route = Routes.login;
   Routes get route => _route;
@@ -141,6 +141,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   QuellenreiterAppState() {
+    db = DatabaseUtils();
     route = Routes.loading;
     game = null;
     _friendsQuery = null;

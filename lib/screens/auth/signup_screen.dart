@@ -43,6 +43,17 @@ class _SignupScreenState extends State<SignupScreen> {
       appBar: AppBar(
         title: const Text("Anmelden"),
       ),
+      bottomSheet: widget.appState.db.error != null
+          ? Padding(
+              padding: const EdgeInsets.all(20),
+              child: Wrap(children: [
+                Text(widget.appState.db.error!),
+                ElevatedButton(
+                    onPressed: widget.appState.db.error = null,
+                    child: Text("ok"))
+              ]),
+            )
+          : null,
       body: ListView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         children: [
