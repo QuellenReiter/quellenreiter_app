@@ -145,6 +145,17 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         title = "Büro";
     }
     return Scaffold(
+      bottomSheet: widget.appState.db.error != null
+          ? Padding(
+              padding: const EdgeInsets.all(20),
+              child: Wrap(children: [
+                Text(widget.appState.db.error!),
+                ElevatedButton(
+                    onPressed: widget.appState.db.error = null,
+                    child: Text("ok"))
+              ]),
+            )
+          : null,
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.purple[100],
         items: [

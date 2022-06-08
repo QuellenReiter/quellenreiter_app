@@ -89,6 +89,17 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomSheet: widget.appState.db.error != null
+          ? Padding(
+              padding: const EdgeInsets.all(20),
+              child: Wrap(children: [
+                Text(widget.appState.db.error!),
+                ElevatedButton(
+                    onPressed: widget.appState.db.error = null,
+                    child: Text("ok"))
+              ]),
+            )
+          : null,
       appBar: AppBar(
         title: const Text("Spielen"),
         actions: [

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:quellenreiter_app/models/enemy.dart';
@@ -14,6 +16,9 @@ import 'queries.dart';
 /// This class facilitates the connection to the database and manages its
 /// responses.
 class DatabaseUtils {
+  /// Holds any error message related to DB activity
+  String? error;
+
   /// Object to access [FlutterSecureStorage].
   var safeStorage = const FlutterSecureStorage();
 
@@ -41,6 +46,7 @@ class DatabaseUtils {
     // If login result has any exceptions.
     if (loginResult.hasException) {
       // print(loginResult.exception.toString());
+      handleException(loginResult.exception!);
       loginCallback(null);
       return;
     }
@@ -84,6 +90,8 @@ class DatabaseUtils {
     // print(signUpResult.toString());
     // If login result has any exceptions.
     if (signUpResult.hasException) {
+      handleException(signUpResult.exception!);
+
       signUpCallback(null);
       return;
     }
@@ -128,7 +136,6 @@ class DatabaseUtils {
         link: httpLink,
       );
 
-      bool timedOut = false;
       // The query result.
       var queryResult = await client
           .mutate(
@@ -142,6 +149,7 @@ class DatabaseUtils {
 
       // print(queryResult.toString());
       if (queryResult.hasException) {
+        // handleException(queryResult.exception!);
         checkTokenCallback(null);
         return;
       } else {
@@ -183,6 +191,8 @@ class DatabaseUtils {
       );
 
       if (queryResult.hasException) {
+        handleException(queryResult.exception!);
+
         return p;
       }
       return Player.fromMap(queryResult.data!["user"]);
@@ -219,6 +229,8 @@ class DatabaseUtils {
 
       // print(queryResult.toString());
       if (queryResult.hasException) {
+        handleException(queryResult.exception!);
+
         friendRequestCallback(null);
         return;
       } else {
@@ -262,6 +274,8 @@ class DatabaseUtils {
 
       // print(mutationResult.toString());
       if (mutationResult.hasException) {
+        handleException(mutationResult.exception!);
+
         acceptFriendCallback(false);
         return;
       } else {
@@ -293,6 +307,8 @@ class DatabaseUtils {
       }),
     );
     if (queryResult.hasException) {
+      handleException(queryResult.exception!);
+
       return null;
     }
     return Statement.fromMap(queryResult.data?["statement"]);
@@ -322,6 +338,8 @@ class DatabaseUtils {
     );
     // print(mutationResult);
     if (mutationResult.hasException) {
+      handleException(mutationResult.exception!);
+
       updateUserCallback(null);
       return;
     } else {
@@ -359,6 +377,8 @@ class DatabaseUtils {
 
     // print(mutationResult);
     if (mutationResult.hasException) {
+      handleException(mutationResult.exception!);
+
       updateUserCallback(null);
       return;
     } else {
@@ -398,6 +418,8 @@ class DatabaseUtils {
 
     // print(mutationResult);
     if (mutationResult.hasException) {
+      handleException(mutationResult.exception!);
+
       createUserDataCallback(null);
       return;
     } else {
@@ -433,6 +455,8 @@ class DatabaseUtils {
 
     // print(mutationResult);
     if (mutationResult.hasException) {
+      handleException(mutationResult.exception!);
+
       return false;
     } else {
       return true;
@@ -466,6 +490,8 @@ class DatabaseUtils {
 
     // print(mutationResult);
     if (mutationResult.hasException) {
+      handleException(mutationResult.exception!);
+
       return false;
     }
     // if game is finished, update the player and the game.
@@ -512,10 +538,9 @@ class DatabaseUtils {
         },
       ),
     );
-    // print(mutationResult);
-
-    // print(mutationResult);
     if (mutationResult.hasException) {
+      handleException(mutationResult.exception!);
+
       return null;
     } else {
       return Game(
@@ -577,6 +602,8 @@ class DatabaseUtils {
       ),
     );
     if (queryResult.hasException) {
+      handleException(queryResult.exception!);
+
       return null;
     }
     return Statements.fromMap(queryResult.data);
@@ -607,6 +634,8 @@ class DatabaseUtils {
     );
     // print(queryResult);
     if (queryResult.hasException) {
+      handleException(queryResult.exception!);
+
       return null;
     }
     return Statements.fromMap(queryResult.data);
@@ -645,6 +674,8 @@ class DatabaseUtils {
 
       // print(mutationResult.toString());
       if (mutationResult.hasException) {
+        handleException(mutationResult.exception!);
+
         sendFriendRequestCallback(false);
         return;
       } else {
@@ -686,6 +717,8 @@ class DatabaseUtils {
 
       // print(queryResult.toString());
       if (queryResult.hasException) {
+        handleException(queryResult.exception!);
+
         searchFriendsCallback(null);
         return;
       } else {
@@ -748,6 +781,8 @@ class DatabaseUtils {
     );
     // if exception in query, return null.
     if (playableStatements.hasException) {
+      handleException(playableStatements.exception!);
+
       return null;
     }
     // if not enough statements are accessible.
@@ -811,7 +846,32 @@ class DatabaseUtils {
         },
       ),
     );
+    if (mutationResult.hasException) {
+      handleException(mutationResult.exception!);
+    }
 
     return;
+  }
+
+  void handleException(OperationException e) {
+    if (e.graphqlErrors.isNotEmpty) {
+      // handle graphql errors
+      // maybe Log this somewhere
+      print("Graphql error:");
+      // ERROR NEED CONTEXT I QUESS
+      error = e.graphqlErrors.toString();
+      print(e.graphqlErrors.toString());
+    }
+    if (e.linkException is NetworkException) {
+      // handle network errors
+      print("network exception:");
+      print(e.toString());
+      error = e.toString();
+    } else {
+      print("Other exception:");
+
+      print(e.toString());
+      error = e.toString();
+    }
   }
 }
