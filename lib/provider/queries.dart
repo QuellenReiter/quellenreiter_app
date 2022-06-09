@@ -1,3 +1,6 @@
+import 'package:quellenreiter_app/models/enemy.dart';
+import 'package:quellenreiter_app/models/game.dart';
+
 import '../constants/constants.dart';
 import '../models/fact.dart';
 import '../models/player.dart';
@@ -740,6 +743,64 @@ mutation removeGame(\$game:DeleteOpenGameInput!){
   }
 }
 ''';
+    return ret;
+  }
+
+  static String deleteUser(Player player) {
+    String deleteOpenGames = "";
+    String deleteFriendships = "";
+    if (player.friends != null) {
+      for (Enemy e in player.friends!.enemies) {
+        deleteFriendships += '''
+deleteFriendship(
+  input: {
+    id: "${e.friendshipId}"
+  }
+){
+  friendship{
+    objectId
+  }
+}
+''';
+        if (e.openGame != null) {
+          deleteOpenGames += '''
+deleteOpenGame(
+  input: {
+    id: "${e.openGame!.id}"
+  }
+){
+  openGame{
+    objectId
+  }
+}
+''';
+        }
+      }
+    }
+
+    String ret = '''
+mutation removeUser(\$user:DeleteUserInput!){
+  $deleteOpenGames
+  $deleteFriendships
+  deleteUserData(
+    input:{
+      id: "${player.dataId}"
+    }
+  ){
+    userData{
+      objectId
+    }
+  }
+  deleteUser(
+    input: \$user
+  ){
+    user{
+      objectId
+    }
+  }
+}
+''';
+    print(ret);
     return ret;
   }
 
