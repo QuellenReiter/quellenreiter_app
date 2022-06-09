@@ -14,6 +14,14 @@ class QuellenreiterAppState extends ChangeNotifier {
   Routes _route = Routes.login;
   Routes get route => _route;
   set route(value) {
+    // reset the errors if
+    // current route is not loading and pushed route is not loading
+    if (_route != Routes.loading && value != Routes.loading ||
+        value == Routes.home && _route == Routes.loading) {
+      error = null;
+      db.error = null;
+    }
+
     //refetch friends everytime we go to friends/startGame/openGames.
     if (value == Routes.friends ||
         value == Routes.startGame ||
@@ -129,14 +137,15 @@ class QuellenreiterAppState extends ChangeNotifier {
   bool _isLoggedIn = false;
   bool get isLoggedIn => _isLoggedIn;
   set isLoggedIn(value) {
-    _isLoggedIn = value;
-    if (_isLoggedIn) {
+    // if is logged and wasn't logged in before.
+    if (!_isLoggedIn && value) {
       route = Routes.home;
       getFriends();
       getArchivedStatements();
-    } else {
+    } else if (!value) {
       route = Routes.login;
     }
+    _isLoggedIn = value;
     notifyListeners();
   }
 
@@ -241,6 +250,8 @@ class QuellenreiterAppState extends ChangeNotifier {
       ..enemies = enemies.enemies
           .where((enemy) => !enemy.acceptedByOther && enemy.acceptedByPlayer)
           .toList();
+    // if current rouete is loading, go to freinds screen
+    // becuase in other cases, this clal will happen in the background.
     if (route == Routes.loading) {
       route = Routes.friends;
     }
@@ -306,7 +317,6 @@ class QuellenreiterAppState extends ChangeNotifier {
     if (p == null) {
       // login again and reset the user.
       db.checkToken(_checkTokenCallback);
-      error = "Username existiert bereits.";
       // route = Routes.settings;
     } else if (safedStatements!.statements.length !=
         player!.safedStatementsIds!.length) {

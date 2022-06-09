@@ -195,8 +195,6 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
 
   @override
   Future<void> setNewRoutePath(QuellenreiterRoutePath configuration) async {
-    // var db = DatabaseUtils();
-
     if (configuration.route == Routes.settings) {
       // get user, if not existing.
       appState.player ?? await appState.db.authenticate();

@@ -8,6 +8,7 @@ import 'package:quellenreiter_app/screens/main/settings_screen.dart';
 import 'package:quellenreiter_app/screens/main/start_screen.dart';
 
 import '../../constants/constants.dart';
+import '../../widgets/error_banner.dart';
 import 'archive_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -144,105 +145,100 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         );
         title = "Büro";
     }
-    return Scaffold(
-      bottomSheet: widget.appState.db.error != null
-          ? Padding(
-              padding: const EdgeInsets.all(20),
-              child: Wrap(children: [
-                Text(widget.appState.db.error!),
-                ElevatedButton(
-                    onPressed: widget.appState.db.error = null,
-                    child: Text("ok"))
-              ]),
-            )
-          : null,
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Colors.purple[100],
-        items: [
-          const BottomNavigationBarItem(
-            activeIcon: Icon(Icons.rocket_launch),
-            icon: Icon(Icons.rocket_outlined),
-            label: 'Büro',
-          ),
-          BottomNavigationBarItem(
-            icon: Stack(
-              children: [
-                const Icon(Icons.group_outlined),
-                if (widget.appState.enemyRequests != null &&
-                    widget.appState.enemyRequests!.enemies.isNotEmpty)
-                  Positioned(
-                    right: 0,
-                    child: Container(
-                      padding: const EdgeInsets.all(1),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      constraints: const BoxConstraints(
-                        minWidth: 12,
-                        minHeight: 12,
-                      ),
-                      child: Text(
-                        '${widget.appState.enemyRequests?.enemies.length}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 8,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  )
-              ],
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        bottomSheet: widget.appState.db.error != null
+            ? ErrorBanner(appState: widget.appState)
+            : null,
+        bottomNavigationBar: BottomNavigationBar(
+          selectedItemColor: Colors.purple[100],
+          items: [
+            const BottomNavigationBarItem(
+              activeIcon: Icon(Icons.rocket_launch),
+              icon: Icon(Icons.rocket_outlined),
+              label: 'Büro',
             ),
-            activeIcon: Stack(
-              children: [
-                const Icon(Icons.group),
-                if (widget.appState.enemyRequests != null &&
-                    widget.appState.enemyRequests!.enemies.isNotEmpty)
-                  Positioned(
-                    right: 0,
-                    child: Container(
-                      padding: const EdgeInsets.all(1),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      constraints: const BoxConstraints(
-                        minWidth: 12,
-                        minHeight: 12,
-                      ),
-                      child: Text(
-                        '${widget.appState.enemyRequests?.enemies.length}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 8,
+            BottomNavigationBarItem(
+              icon: Stack(
+                children: [
+                  const Icon(Icons.group_outlined),
+                  if (widget.appState.enemyRequests != null &&
+                      widget.appState.enemyRequests!.enemies.isNotEmpty)
+                    Positioned(
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(1),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(6),
                         ),
-                        textAlign: TextAlign.center,
+                        constraints: const BoxConstraints(
+                          minWidth: 12,
+                          minHeight: 12,
+                        ),
+                        child: Text(
+                          '${widget.appState.enemyRequests?.enemies.length}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 8,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    ),
-                  )
-              ],
+                    )
+                ],
+              ),
+              activeIcon: Stack(
+                children: [
+                  const Icon(Icons.group),
+                  if (widget.appState.enemyRequests != null &&
+                      widget.appState.enemyRequests!.enemies.isNotEmpty)
+                    Positioned(
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(1),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 12,
+                          minHeight: 12,
+                        ),
+                        child: Text(
+                          '${widget.appState.enemyRequests?.enemies.length}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 8,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                ],
+              ),
+              label: 'Freund:innen',
             ),
-            label: 'Freund:innen',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.archive_outlined),
-            activeIcon: Icon(Icons.archive),
-            label: 'Archiv',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.settings_outlined),
-            activeIcon: Icon(Icons.settings),
-            label: 'Einstellungen',
-          ),
-        ],
-        currentIndex: index,
-        onTap: onTap,
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.archive_outlined),
+              activeIcon: Icon(Icons.archive),
+              label: 'Archiv',
+            ),
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.settings_outlined),
+              activeIcon: Icon(Icons.settings),
+              label: 'Einstellungen',
+            ),
+          ],
+          currentIndex: index,
+          onTap: onTap,
+        ),
+        appBar: AppBar(
+          title: Text(title),
+        ),
+        body: body,
       ),
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      body: body,
     );
   }
 }

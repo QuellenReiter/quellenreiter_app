@@ -858,11 +858,10 @@ class DatabaseUtils {
       // handle graphql errors
       // maybe Log this somewhere
       print("Graphql error:");
-      // ERROR NEED CONTEXT I QUESS
-      error = e.graphqlErrors.toString();
+      // set the error
+      error = e.graphqlErrors[0].message;
       print(e.graphqlErrors.toString());
-    }
-    if (e.linkException is NetworkException) {
+    } else if (e.linkException is NetworkException) {
       // handle network errors
       print("network exception:");
       print(e.toString());
