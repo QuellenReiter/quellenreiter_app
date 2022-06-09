@@ -180,7 +180,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             backgroundColor: MaterialStateProperty.all<Color>(
                                 DesignColors.red),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            widget.appState.db.deleteAccount(widget.appState);
+                          },
                           child: Text("Ich bin sicher."),
                         ),
                       ],
@@ -207,7 +209,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Padding(
                 padding: const EdgeInsets.all(10),
                 child: Text(
-                  "Made in Berlin with ❤️ and ☕.",
+                  "Made in Berlin with ❤️ and ☕ and Steuergeld.",
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
               ),

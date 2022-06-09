@@ -849,6 +849,46 @@ class DatabaseUtils {
     return;
   }
 
+  Future<void> deleteAccount(QuellenreiterAppState appState) async {
+    if (appState.player == null) {
+      return;
+    }
+    String? token = await safeStorage.read(key: "token");
+    // If token is not null, check if it is valid.
+    if (token == null) {
+      return;
+    }
+    // Link to the database.
+    final HttpLink httpLinkUserDB = HttpLink(userDatabaseUrl, defaultHeaders: {
+      'X-Parse-Application-Id': userDatabaseApplicationID,
+      'X-Parse-Client-Key': userDatabaseClientKey,
+      'X-Parse-Session-Token': token,
+    });
+
+    // The client that provides the connection.
+    GraphQLClient clientUserDB = GraphQLClient(
+      cache: GraphQLCache(),
+      link: httpLinkUserDB,
+    );
+    // Remeove the User and all open games and friendships.
+    var mutationResult = await clientUserDB.mutate(
+      MutationOptions(
+        document: gql(Queries.deleteUser(appState.player!)),
+        variables: {
+          "user": {
+            "id": appState.player!.id,
+          },
+        },
+      ),
+    );
+    if (mutationResult.hasException) {
+      handleException(mutationResult.exception!);
+      return;
+    }
+    appState.route = Routes.login;
+    return;
+  }
+
   void handleException(OperationException e) {
     if (e.graphqlErrors.isNotEmpty) {
       // handle graphql errors
