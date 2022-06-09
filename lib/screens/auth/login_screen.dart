@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
+import 'package:quellenreiter_app/widgets/error_banner.dart';
 
 import '../../utilities/utilities.dart';
 
@@ -33,142 +34,125 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Einloggen"),
-      ),
-      bottomSheet: widget.appState.db.error != null
-          ? Padding(
-              padding: const EdgeInsets.all(20),
-              child: Wrap(children: [
-                Text(widget.appState.db.error!),
-                ElevatedButton(
-                    onPressed: widget.appState.db.error = null,
-                    child: Text("ok"))
-              ]),
-            )
-          : null,
-      body: ListView(
-        // padding: const EdgeInsets.all(40),
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        children: [
-          Hero(
-            tag: "authLogo",
-            child: FractionallySizedBox(
-              widthFactor: 0.5,
-              child: Image.asset(
-                'assets/logo-pink.png',
-                width: 200,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Einloggen"),
+        ),
+        bottomSheet: widget.appState.db.error != null
+            ? ErrorBanner(appState: widget.appState)
+            : null,
+        body: ListView(
+          // padding: const EdgeInsets.all(40),
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          children: [
+            Hero(
+              tag: "authLogo",
+              child: FractionallySizedBox(
+                widthFactor: 0.5,
+                child: Image.asset(
+                  'assets/logo-pink.png',
+                  width: 200,
+                ),
               ),
             ),
-          ),
-          FractionallySizedBox(
-            widthFactor: 0.8,
-            child: AutofillGroup(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Flexible(
-                    child: ValueListenableBuilder(
+            FractionallySizedBox(
+              widthFactor: 0.8,
+              child: AutofillGroup(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      child: ValueListenableBuilder(
+                        valueListenable: usernameController,
+                        builder: (context, TextEditingValue value, __) {
+                          return Container(
+                            padding: const EdgeInsets.all(5),
+                            child: TextField(
+                              controller: usernameController,
+                              decoration: const InputDecoration(
+                                labelText: "Nutzername",
+                                border: OutlineInputBorder(),
+                              ),
+                              autofillHints: const [AutofillHints.username],
+                              enableSuggestions: false,
+                              autocorrect: false,
+                              textCapitalization: TextCapitalization.none,
+                              inputFormatters: [
+                                UsernameTextFormatter(),
+                                FilteringTextInputFormatter.allow(
+                                    Utils.regexUsername),
+                              ],
+                              keyboardType: TextInputType.visiblePassword,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Flexible(
+                      child: ValueListenableBuilder(
+                        valueListenable: passwordController,
+                        builder: (context, TextEditingValue value, __) {
+                          return Container(
+                            padding: const EdgeInsets.all(5),
+                            child: TextField(
+                              obscureText: true,
+                              controller: passwordController,
+                              decoration: const InputDecoration(
+                                labelText: "Passwort",
+                                border: OutlineInputBorder(),
+                              ),
+                              autofillHints: const [AutofillHints.password],
+                              onEditingComplete: () =>
+                                  TextInput.finishAutofillContext(),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Hero(
+              tag: "authButton",
+              child: FractionallySizedBox(
+                widthFactor: 0.4,
+                child: ValueListenableBuilder(
+                  valueListenable: passwordController,
+                  builder: (context, TextEditingValue value, __) {
+                    return ValueListenableBuilder(
                       valueListenable: usernameController,
                       builder: (context, TextEditingValue value, __) {
-                        return Container(
-                          padding: const EdgeInsets.all(5),
-                          child: TextField(
-                            controller: usernameController,
-                            decoration: const InputDecoration(
-                              labelText: "Nutzername",
-                              border: OutlineInputBorder(),
-                            ),
-                            autofillHints: const [AutofillHints.username],
-                            enableSuggestions: false,
-                            autocorrect: false,
-                            textCapitalization: TextCapitalization.none,
-                            inputFormatters: [
-                              UsernameTextFormatter(),
-                              FilteringTextInputFormatter.allow(
-                                  Utils.regexUsername),
-                            ],
-                            keyboardType: TextInputType.visiblePassword,
-                          ),
+                        return ElevatedButton.icon(
+                          onPressed: usernameController.text.length >=
+                                      Utils.usernameMinLength &&
+                                  passwordController.text.length > 7
+                              ? () => widget.appState.tryLogin(
+                                    usernameController.text,
+                                    passwordController.text,
+                                  )
+                              : null,
+                          icon: const Icon(Icons.login),
+                          label: const Text("Einloggen"),
                         );
                       },
-                    ),
-                  ),
-                  Flexible(
-                    child: ValueListenableBuilder(
-                      valueListenable: passwordController,
-                      builder: (context, TextEditingValue value, __) {
-                        return Container(
-                          padding: const EdgeInsets.all(5),
-                          child: TextField(
-                            obscureText: true,
-                            controller: passwordController,
-                            decoration: const InputDecoration(
-                              labelText: "Passwort",
-                              border: OutlineInputBorder(),
-                            ),
-                            autofillHints: const [AutofillHints.password],
-                            onEditingComplete: () =>
-                                TextInput.finishAutofillContext(),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          widget.appState.error == null
-              ? const SizedBox.shrink()
-              : Container(
-                  padding: const EdgeInsets.all(10),
-                  color: Colors.red,
-                  child: SelectableText(
-                    widget.appState.error!,
-                    style: const TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
+                    );
+                  },
                 ),
-          Hero(
-            tag: "authButton",
-            child: FractionallySizedBox(
-              widthFactor: 0.4,
-              child: ValueListenableBuilder(
-                valueListenable: passwordController,
-                builder: (context, TextEditingValue value, __) {
-                  return ValueListenableBuilder(
-                    valueListenable: usernameController,
-                    builder: (context, TextEditingValue value, __) {
-                      return ElevatedButton.icon(
-                        onPressed: usernameController.text.length >=
-                                    Utils.usernameMinLength &&
-                                passwordController.text.length > 7
-                            ? () => widget.appState.tryLogin(
-                                  usernameController.text,
-                                  passwordController.text,
-                                )
-                            : null,
-                        icon: const Icon(Icons.login),
-                        label: const Text("Einloggen"),
-                      );
-                    },
-                  );
-                },
               ),
             ),
-          ),
-          Hero(
-            tag: "authSwitch",
-            child: TextButton(
-              onPressed: () => widget.appState.route = Routes.signUp,
-              child: const Text("Anmelden"),
+            Hero(
+              tag: "authSwitch",
+              child: TextButton(
+                onPressed: () => widget.appState.route = Routes.signUp,
+                child: const Text("Anmelden"),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -7,6 +7,8 @@ import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/start_game_button.dart';
 
+import '../../widgets/error_banner.dart';
+
 class ReadyToStartScreen extends StatefulWidget {
   const ReadyToStartScreen({Key? key, required this.appState})
       : super(key: key);
@@ -90,15 +92,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomSheet: widget.appState.db.error != null
-          ? Padding(
-              padding: const EdgeInsets.all(20),
-              child: Wrap(children: [
-                Text(widget.appState.db.error!),
-                ElevatedButton(
-                    onPressed: widget.appState.db.error = null,
-                    child: Text("ok"))
-              ]),
-            )
+          ? ErrorBanner(appState: widget.appState)
           : null,
       appBar: AppBar(
         title: const Text("Spielen"),

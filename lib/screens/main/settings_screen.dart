@@ -73,6 +73,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               emojiController.text.isNotEmpty
                           ? () {
                               HapticFeedback.selectionClick();
+                              FocusManager.instance.primaryFocus?.unfocus();
                               widget.appState.player?.emoji =
                                   emojiController.text;
                               widget.appState.updateUserData();
@@ -122,6 +123,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 Utils.usernameMinLength
                         ? () {
                             HapticFeedback.selectionClick();
+                            FocusManager.instance.primaryFocus?.unfocus();
                             widget.appState.player?.name =
                                 usernameController.text;
                             widget.appState.updateUser();
@@ -134,9 +136,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               );
             },
           ),
-          if (widget.appState.error != null &&
-              widget.appState.error!.isNotEmpty)
-            Text(widget.appState.error!),
           ElevatedButton.icon(
             onPressed: () {
               HapticFeedback.heavyImpact();

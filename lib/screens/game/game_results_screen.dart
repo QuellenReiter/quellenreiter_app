@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 
 import '../../constants/constants.dart';
+import '../../widgets/error_banner.dart';
 import '../../widgets/statement_card.dart';
 
 class GameResultsScreen extends StatefulWidget {
@@ -25,15 +26,7 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
         title: const Text("Faktenchecks"),
       ),
       bottomSheet: widget.appState.db.error != null
-          ? Padding(
-              padding: const EdgeInsets.all(20),
-              child: Wrap(children: [
-                Text(widget.appState.db.error!),
-                ElevatedButton(
-                    onPressed: widget.appState.db.error = null,
-                    child: Text("ok"))
-              ]),
-            )
+          ? ErrorBanner(appState: widget.appState)
           : null,
       body: widget.appState.currentEnemy!.openGame!.statements == null
           ? const Center(child: CircularProgressIndicator())
