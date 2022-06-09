@@ -1,7 +1,3 @@
-import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:quellenreiter_app/models/enemy.dart';
@@ -865,12 +861,12 @@ class DatabaseUtils {
       // handle network errors
       print("network exception:");
       print(e.toString());
-      error = e.toString();
-    } else {
+      error = "Network Exception: Netzwerkfehler.";
+    } else if (e.linkException is ServerException) {
       print("Other exception:");
 
       print(e.toString());
-      error = e.toString();
+      error = "Server Exception: Deine Netzwerkverbindung ist unterbrochen.";
     }
   }
 }
