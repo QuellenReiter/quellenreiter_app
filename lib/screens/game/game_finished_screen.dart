@@ -23,6 +23,11 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Show error is there is one !
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.appState.showError(context);
+    });
+
     playerWon = widget.appState.currentEnemy!.openGame!.getGameResult() ==
         GameResult.playerWon;
 

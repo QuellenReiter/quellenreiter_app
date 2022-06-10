@@ -133,19 +133,13 @@ class DatabaseUtils {
       );
 
       // The query result.
-      var queryResult = await client
-          .mutate(
-        MutationOptions(
-          document: gql(Queries.getCurrentUser()),
-        ),
-      )
-          .timeout(const Duration(milliseconds: 1000), onTimeout: () {
-        throw "Timed out";
-      });
+      var queryResult = await client.mutate(MutationOptions(
+        document: gql(Queries.getCurrentUser()),
+      ));
 
       // print(queryResult.toString());
       if (queryResult.hasException) {
-        // handleException(queryResult.exception!);
+        handleException(queryResult.exception!);
         checkTokenCallback(null);
         return;
       } else {

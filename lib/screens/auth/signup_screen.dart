@@ -40,15 +40,17 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Show error is there is one !
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.appState.showError(context);
+    });
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Anmelden"),
         ),
-        bottomSheet: widget.appState.db.error != null
-            ? ErrorBanner(appState: widget.appState)
-            : null,
         body: ListView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           children: [

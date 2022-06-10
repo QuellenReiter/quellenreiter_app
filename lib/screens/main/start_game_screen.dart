@@ -15,6 +15,10 @@ class StartGameScreen extends StatefulWidget {
 class _StartGameScreenState extends State<StartGameScreen> {
   @override
   Widget build(BuildContext context) {
+    // Show error is there is one !
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.appState.showError(context);
+    });
     if (widget.appState.player?.friends == null)
       return const Center(child: CircularProgressIndicator());
     // display button if user has no friends yet.

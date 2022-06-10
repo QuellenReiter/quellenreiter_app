@@ -90,10 +90,11 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Show error is there is one !
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.appState.showError(context);
+    });
     return Scaffold(
-      bottomSheet: widget.appState.db.error != null
-          ? ErrorBanner(appState: widget.appState)
-          : null,
       appBar: AppBar(
         title: const Text("Spielen"),
         actions: [

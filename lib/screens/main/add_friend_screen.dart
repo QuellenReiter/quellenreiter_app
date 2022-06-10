@@ -34,6 +34,10 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Show error is there is one !
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.appState.showError(context);
+    });
     return Scaffold(
       appBar: AppBar(
         title: const Text("Freund:in hinzufügen"),

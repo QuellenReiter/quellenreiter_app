@@ -25,6 +25,10 @@ class _QuestScreenState extends State<QuestScreen>
 
   @override
   Widget build(BuildContext context) {
+    // Show error is there is one !
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.appState.showError(context);
+    });
     // set index of statement to be shown
     int statementIndex =
         widget.appState.currentEnemy!.openGame!.playerAnswers.length;

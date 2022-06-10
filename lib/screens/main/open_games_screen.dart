@@ -15,6 +15,10 @@ class OpenGamesScreen extends StatefulWidget {
 class _OpenGamesScreenState extends State<OpenGamesScreen> {
   @override
   Widget build(BuildContext context) {
+    // Show error is there is one !
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.appState.showError(context);
+    });
     if (widget.appState.player?.friends == null)
       return const Center(child: CircularProgressIndicator());
 
