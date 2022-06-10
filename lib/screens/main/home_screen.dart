@@ -114,6 +114,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    // Show error is there is one !
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.appState.showError(context);
+    });
     switch (index) {
       case 0:
         body = StartScreen(
@@ -148,9 +152,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        bottomSheet: widget.appState.db.error != null
-            ? ErrorBanner(appState: widget.appState)
-            : null,
         bottomNavigationBar: BottomNavigationBar(
           selectedItemColor: Colors.purple[100],
           items: [

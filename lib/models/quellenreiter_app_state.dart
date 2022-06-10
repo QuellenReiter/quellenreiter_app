@@ -16,10 +16,10 @@ class QuellenreiterAppState extends ChangeNotifier {
   set route(value) {
     // reset the errors if
     // current route is not loading and pushed route is not loading
-    if (_route != Routes.loading && value != Routes.loading ||
-        value == Routes.home && _route == Routes.loading) {
+    if ((_route != Routes.loading && value != Routes.loading ||
+            value == Routes.home && _route == Routes.loading) &&
+        value != Routes.gameResults) {
       error = null;
-      db.error = null;
     }
 
     //refetch friends everytime we go to friends/startGame/openGames.
@@ -376,12 +376,12 @@ class QuellenreiterAppState extends ChangeNotifier {
   void getCurrentStatements() async {
     currentEnemy!.openGame!.statements =
         await db.getStatements(currentEnemy!.openGame!.statementIds!);
-    if (currentEnemy!.openGame!.statements == null) {
-      route = Routes.gameReadyToStart;
-      error = "Statements konnten nicht geladen werden.";
-      return;
-    }
-    route = Routes.gameResults;
+    // if (currentEnemy!.openGame!.statements == null) {
+    //   route = Routes.gameReadyToStart;
+    //   error = "Statements konnten nicht geladen werden.";
+    //   return;
+    // }
+    // route = Routes.gameResults;
     return;
   }
 
@@ -406,6 +406,34 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
     route = Routes.home;
     error = "Spiel konnte nicht gestarted werden.";
+  }
+
+  void showError(BuildContext context) {
+    if (db.error != null) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: DesignColors.red,
+              alignment: Alignment.bottomCenter,
+              title: const Text("Fehler:"),
+              content: Text(db.error!),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    db.error = null;
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("ok"),
+                ),
+              ],
+            );
+          }).then(
+        (value) {
+          db.error = null;
+        },
+      );
+    }
   }
 
   List<String> getNames() {

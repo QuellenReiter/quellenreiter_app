@@ -18,6 +18,11 @@ class GameResultsScreen extends StatefulWidget {
 class _GameResultsScreenState extends State<GameResultsScreen> {
   @override
   Widget build(BuildContext context) {
+    // Show error is there is one !
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.appState.showError(context);
+    });
+
     if (widget.appState.currentEnemy!.openGame!.statements == null) {
       widget.appState.getCurrentStatements();
     }
@@ -25,9 +30,6 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
       appBar: AppBar(
         title: const Text("Faktenchecks"),
       ),
-      bottomSheet: widget.appState.db.error != null
-          ? ErrorBanner(appState: widget.appState)
-          : null,
       body: widget.appState.currentEnemy!.openGame!.statements == null
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
@@ -47,21 +49,27 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
                   children: [
                     if (index == 0)
                       Padding(
-                        padding: const EdgeInsets.only(top: 20),
+                        padding: const EdgeInsets.only(top: 30),
                         child: Text(
                           "Runde 1",
                           style: Theme.of(context).textTheme.headline4,
                         ),
                       ),
                     if (index == 3)
-                      Text(
-                        "Runde 2",
-                        style: Theme.of(context).textTheme.headline4,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 30),
+                        child: Text(
+                          "Runde 2",
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
                       ),
                     if (index == 6)
-                      Text(
-                        "Runde 3",
-                        style: Theme.of(context).textTheme.headline4,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 30),
+                        child: Text(
+                          "Runde 3",
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
                       ),
                     StatementCard(
                       statement: widget.appState.currentEnemy!.openGame!
