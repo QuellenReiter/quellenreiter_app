@@ -212,18 +212,44 @@ class _QuestScreenState extends State<QuestScreen>
         insetPadding: const EdgeInsets.all(0),
         child: Padding(
           padding: const EdgeInsets.all(100),
-          child: Container(
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: answerCorrect ? DesignColors.green : DesignColors.red,
-            ),
-            child: Align(
-              alignment: Alignment.center,
-              child: Text(
-                  answerCorrect ? "Richtige Antwort" : "Falsche Antwort",
-                  style: Theme.of(context).textTheme.headline3!),
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: answerCorrect ? DesignColors.green : DesignColors.red,
+                ),
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                      answerCorrect ? "Richtige Antwort" : "Falsche Antwort",
+                      style: Theme.of(context).textTheme.headline3),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Text("Denn: ",
+                    style: Theme.of(context).textTheme.headline4),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Text(
+                    widget
+                                .appState
+                                .currentEnemy!
+                                .openGame!
+                                .statements!
+                                .statements[statementIndex]
+                                .statementCorrectness ==
+                            CorrectnessCategory.correct
+                        ? "Diese Aussage ist ein Fakt"
+                        : "Diese Aussage ist ein Fake",
+                    style: Theme.of(context).textTheme.headline4),
+              ),
+            ],
           ),
         ),
       ),
