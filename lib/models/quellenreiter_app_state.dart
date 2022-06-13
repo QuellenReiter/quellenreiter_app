@@ -374,14 +374,17 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   void getCurrentStatements() async {
+    if (db.error != null) {
+      return;
+    }
     currentEnemy!.openGame!.statements =
         await db.getStatements(currentEnemy!.openGame!.statementIds!);
     // if (currentEnemy!.openGame!.statements == null) {
     //   route = Routes.gameReadyToStart;
-    //   error = "Statements konnten nicht geladen werden.";
+    //   db.error = "Statements konnten nicht geladen werden.";
     //   return;
     // }
-    // route = Routes.gameResults;
+    route = Routes.gameResults;
     return;
   }
 
