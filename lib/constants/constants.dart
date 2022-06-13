@@ -25,6 +25,21 @@ class DesignColors {
 
   /// Color for light grey backgrounds.
   static const Color black = Color.fromARGB(255, 23, 23, 23);
+
+  /// Primary Swatch Pink
+
+  static const MaterialColor pinkSwatch = MaterialColor(0xFFFF3A93, {
+    50: Color.fromRGBO(255, 58, 147, 0.1),
+    100: Color.fromRGBO(255, 58, 147, .2),
+    200: Color.fromARGB(75, 255, 58, 147),
+    300: Color.fromRGBO(255, 58, 147, .4),
+    400: Color.fromRGBO(255, 58, 147, .5),
+    500: Color.fromRGBO(255, 58, 147, .6),
+    600: Color.fromRGBO(255, 58, 147, .7),
+    700: Color.fromRGBO(255, 58, 147, .8),
+    800: Color.fromRGBO(255, 58, 147, .9),
+    900: Color.fromRGBO(255, 58, 147, 1),
+  });
 }
 
 /// Contains the names of DatabaseFields that are needed for querying.
