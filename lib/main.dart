@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/navigation/quellenreiter_information_parser.dart';
 import 'package:quellenreiter_app/navigation/quellenreiter_router_delegate.dart';
 
@@ -46,6 +47,7 @@ class _QuellenreiterAppState extends State<QuellenreiterApp> {
             ),
             brightness: Brightness.dark,
             primarySwatch: Colors.deepPurple,
+            bottomAppBarColor: DesignColors.pink,
             // textTheme: TextTheme(
 
             //     // Small text for light backgrounds.

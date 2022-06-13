@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 
 import '../../constants/constants.dart';
-import '../../widgets/error_banner.dart';
 import '../../widgets/statement_card.dart';
 
 class GameResultsScreen extends StatefulWidget {
