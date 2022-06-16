@@ -24,17 +24,58 @@ class EnemyCard extends StatelessWidget {
   final ValueChanged<Enemy> onTapped;
   @override
   Widget build(BuildContext context) {
+    dynamic onClickFunk;
+    Widget label;
+    if (enemy.openGame!.isPlayersTurn() &&
+        enemy.openGame!.playerAnswers.isNotEmpty) {
+      onClickFunk = () {
+        appState.currentEnemy = enemy;
+        appState.route = Routes.gameReadyToStart;
+      };
+      label = Text("Du bist dran");
+    } else if (enemy.openGame!.isPlayersTurn() &&
+        enemy.openGame!.playerAnswers.isEmpty) {
+      onClickFunk = () {
+        appState.currentEnemy = enemy;
+        appState.route = Routes.gameReadyToStart;
+      };
+      label = Text("Du bist dran");
+    } else if (enemy.openGame!.gameFinished() &&
+        enemy.openGame!.requestingPlayerIndex != enemy.openGame!.playerIndex) {
+      onClickFunk = () {
+        appState.currentEnemy = enemy;
+        appState.route = Routes.gameReadyToStart;
+      };
+      label = Text("Punkte abholen");
+    } else if (enemy.openGame!.gameFinished() &&
+        enemy.openGame!.requestingPlayerIndex == enemy.openGame!.playerIndex) {
+      onClickFunk = () {
+        appState.currentEnemy = enemy;
+        appState.route = Routes.gameReadyToStart;
+      };
+      label = Text("Ergebnisse ansehen.");
+    }
+    // if enemy has to access its points
+
+    else {
+      onClickFunk = () {
+        appState.currentEnemy = enemy;
+        appState.route = Routes.gameReadyToStart;
+      };
+      label = Text("${enemy.name} spielt...");
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       child: Material(
         borderRadius: const BorderRadius.all(Radius.circular(15)),
-        color: DesignColors.black,
+        color: DesignColors.pink,
         // Make it clickable.
         child: InkWell(
-          hoverColor: Colors.grey[300],
-          highlightColor: Colors.grey[400],
-          splashColor: Colors.grey[600],
-          onTap: () => {},
+          hoverColor: DesignColors.lightBlue,
+          highlightColor: DesignColors.lightBlue,
+          splashColor: DesignColors.backgroundBlue,
+          onTap: onClickFunk,
           borderRadius: const BorderRadius.all(Radius.circular(15)),
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -56,7 +97,7 @@ class EnemyCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 15),
                         child: Text(
                           enemy.name,
-                          style: Theme.of(context).textTheme.headline5,
+                          style: Theme.of(context).textTheme.headline4,
                         ),
                       ),
                       const Icon(
@@ -81,90 +122,21 @@ class EnemyCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          // .. and if its the players turn
-                          if (enemy.openGame!.isPlayersTurn() &&
-                              enemy.openGame!.playerAnswers.isNotEmpty)
-                            Flexible(
-                              child: ElevatedButton.icon(
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      DesignColors.pink),
-                                ),
-                                onPressed: () {
-                                  appState.currentEnemy = enemy;
-                                  appState.route = Routes.gameReadyToStart;
-                                },
-                                icon: const Icon(
-                                    Icons.play_circle_outline_rounded),
-                                label: const Text("weiterspielen"),
+                          Flexible(
+                            child: ElevatedButton.icon(
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    DesignColors.pink),
                               ),
-                            )
-                          else if (enemy.openGame!.isPlayersTurn() &&
-                              enemy.openGame!.playerAnswers.isEmpty)
-                            Flexible(
-                              child: ElevatedButton.icon(
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      DesignColors.pink),
-                                ),
-                                onPressed: () {
-                                  appState.currentEnemy = enemy;
-                                  appState.route = Routes.gameReadyToStart;
-                                },
-                                icon: const Icon(
-                                    Icons.play_circle_outline_rounded),
-                                label: const Text("Spielen"),
-                              ),
-                            )
-                          else if (enemy.openGame!.gameFinished() &&
-                              enemy.openGame!.requestingPlayerIndex !=
-                                  enemy.openGame!.playerIndex)
-                            // if player can access its points
-                            Flexible(
-                              child: ElevatedButton.icon(
-                                onPressed: () {
-                                  appState.currentEnemy = enemy;
-                                  appState.route = Routes.gameReadyToStart;
-                                },
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      DesignColors.backgroundBlue),
-                                ),
-                                icon: const Icon(Icons.stop_circle),
-                                label: const Text("Punkte abholen."),
-                              ),
-                            )
-                          else if (enemy.openGame!.gameFinished() &&
-                              enemy.openGame!.requestingPlayerIndex ==
-                                  enemy.openGame!.playerIndex)
-                            // if enemy has to access its points
-                            Flexible(
-                              child: ElevatedButton.icon(
-                                onPressed: () {
-                                  appState.currentEnemy = enemy;
-                                  appState.route = Routes.gameReadyToStart;
-                                },
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      DesignColors.backgroundBlue),
-                                ),
-                                icon: const Icon(Icons.stop_circle),
-                                label: const Text("Ergebnisse ansehen."),
-                              ),
-                            )
-                          else
-                            // if player has to wait for the enemy to play.
-                            Flexible(
-                              child: ElevatedButton.icon(
-                                onPressed: () {
-                                  appState.currentEnemy = enemy;
-                                  appState.route = Routes.gameReadyToStart;
-                                },
-                                icon: const Icon(
-                                    Icons.pause_circle_outline_rounded),
-                                label: Text("${enemy.name} spielt..."),
-                              ),
+                              onPressed: () {
+                                appState.currentEnemy = enemy;
+                                appState.route = Routes.gameReadyToStart;
+                              },
+                              icon:
+                                  const Icon(Icons.play_circle_outline_rounded),
+                              label: label,
                             ),
+                          ),
                           if (enemy.openGame!.withTimer)
                             const Padding(
                                 padding: EdgeInsets.only(left: 10),
