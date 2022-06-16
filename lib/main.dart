@@ -45,51 +45,56 @@ class _QuellenreiterAppState extends State<QuellenreiterApp> {
                 TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
               },
             ),
-            brightness: Brightness.dark,
-            primarySwatch: Colors.deepPurple,
+            brightness: Brightness.light,
+            primarySwatch: DesignColors.pinkSwatch,
             bottomAppBarColor: DesignColors.pink,
-            // textTheme: TextTheme(
+            bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+              elevation: 20,
+              unselectedLabelStyle: TextStyle(
+                color: DesignColors.backgroundBlue,
+                fontFamily: 'Bangers',
+                fontSize: 15,
+              ),
+              selectedLabelStyle: TextStyle(
+                color: DesignColors.pink,
+                fontFamily: 'Bangers',
+                fontSize: 18,
+              ),
+            ),
+            textTheme: const TextTheme(
+              // Small text for light backgrounds.
+              headline2: TextStyle(
+                color: DesignColors.backgroundBlue,
+                fontFamily: 'Bangers',
+                fontSize: 30,
+              ),
+              headline4: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Bangers',
+                fontSize: 25,
+              ),
+              headline1: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Bangers',
+                fontSize: 40,
+              ),
+              subtitle1: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Oswald',
+                fontSize: 20,
+              ),
+              bodyText1: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Oswald',
+                fontSize: 16,
+              ),
+              bodyText2: TextStyle(
+                color: DesignColors.black,
+                fontFamily: 'Oswald',
+                fontSize: 12,
+              ),
+            ),
 
-            //     // Small text for light backgrounds.
-            //     bodyText2: TextStyle(
-            //       color: DesignColors.black,
-            //       fontFamily: 'Oswald',
-            //     ),
-
-            //     // Small text for blue backgrounds.
-            //     bodyText1: TextStyle(
-            //       // default all text widget
-            //       fontFamily: 'Oswald',
-            //       color: DesignColors.lightBlue,
-            //     ),
-
-            //     // Title in for appBar.
-            //     headline1: TextStyle(
-            //       fontFamily: 'Bangers',
-            //       color: DesignColors.lightBlue,
-            //     ),
-
-            //     // Huge text in bangers font.
-            //     headline3: TextStyle(
-            //       fontFamily: 'Bangers',
-            //       color: DesignColors.lightGrey,
-            //     ),
-
-            //     // Large font for subtitles on blue backgrounds.
-            //     subtitle1: TextStyle(
-            //       fontFamily: 'Oswald',
-            //       color: DesignColors.lightBlue,
-            //     ),
-
-            //     // X-Large font for subtitles on light backgrounds.
-            //     subtitle2: TextStyle(
-            //       fontFamily: 'Oswald',
-            //     ),
-
-            //     // Large font for subtitles on light backgrounds.
-            //     headline2: TextStyle(
-            //       fontFamily: 'Oswald',
-            //     )),
             // fill back inside all TextFormField
             inputDecorationTheme: const InputDecorationTheme(
               isDense: true,
