@@ -123,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         body = StartScreen(
           appState: widget.appState,
         );
-        title = "Büro";
+        title = "start";
         break;
       case 1:
         body = FriendsScreen(
@@ -135,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         body = ArchiveScreen(
           appState: widget.appState,
         );
-        title = "Archiv";
+        title = "Gespeichert";
         break;
       case 3:
         body = SettingsScreen(
@@ -147,18 +147,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         body = StartScreen(
           appState: widget.appState,
         );
-        title = "Büro";
+        title = "Start";
     }
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         bottomNavigationBar: BottomNavigationBar(
-          selectedItemColor: Colors.purple[100],
+          selectedItemColor: DesignColors.pink,
+          unselectedItemColor: DesignColors.backgroundBlue,
           items: [
             const BottomNavigationBarItem(
-              activeIcon: Icon(Icons.rocket_launch),
-              icon: Icon(Icons.rocket_outlined),
-              label: 'Büro',
+              activeIcon: Icon(Icons.home_filled),
+              icon: Icon(Icons.home_outlined),
+              label: 'Start',
             ),
             BottomNavigationBarItem(
               icon: Stack(
@@ -224,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             const BottomNavigationBarItem(
               icon: Icon(Icons.archive_outlined),
               activeIcon: Icon(Icons.archive),
-              label: 'Archiv',
+              label: 'Gespeichert',
             ),
             const BottomNavigationBarItem(
               icon: Icon(Icons.settings_outlined),
