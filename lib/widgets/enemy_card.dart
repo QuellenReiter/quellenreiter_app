@@ -25,35 +25,115 @@ class EnemyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     dynamic onClickFunk;
-    Widget label;
-    if (enemy.openGame!.isPlayersTurn() &&
+    String label = "";
+    if (enemy.openGame == null) {
+      if (enemy.acceptedByPlayer && enemy.acceptedByOther) {
+        label = "Spiel starten";
+        onClickFunk = () => showModalBottomSheet<void>(
+              context: context,
+              backgroundColor: Colors.transparent,
+              isDismissible: true,
+              builder: (BuildContext context) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[800],
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15),
+                    ),
+                  ),
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Container(
+                      padding: const EdgeInsets.only(
+                          bottom: 20, left: 20, right: 20),
+                      constraints: const BoxConstraints(
+                        maxWidth: 700,
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: IconButton(
+                              icon: const Icon(Icons.close),
+                              iconSize: 20,
+                              onPressed: () =>
+                                  Navigator.of(context).pop(context),
+                            ),
+                          ),
+                          SelectableText("Wie möchtest du spielen?",
+                              style: Theme.of(context).textTheme.subtitle1),
+                          Flexible(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () =>
+                                      appState.startNewGame(enemy, true),
+                                  child: Text(
+                                    "Mit Timer",
+                                    style:
+                                        Theme.of(context).textTheme.subtitle1,
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () =>
+                                      appState.startNewGame(enemy, false),
+                                  child: Text(
+                                    "ohne Timer",
+                                    style:
+                                        Theme.of(context).textTheme.subtitle1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+      } else if (!enemy.acceptedByOther && !enemy.acceptedByPlayer) {
+        onClickFunk = () => onTapped(enemy);
+        label = "Anfragen";
+      } else if (enemy.acceptedByOther && !enemy.acceptedByPlayer) {
+        onClickFunk = () => onTapped(enemy);
+        label = "Annehmen";
+      }
+    } else if (enemy.openGame!.isPlayersTurn() &&
         enemy.openGame!.playerAnswers.isNotEmpty) {
       onClickFunk = () {
         appState.currentEnemy = enemy;
         appState.route = Routes.gameReadyToStart;
       };
-      label = Text("Du bist dran");
+      label = "Du bist dran";
     } else if (enemy.openGame!.isPlayersTurn() &&
         enemy.openGame!.playerAnswers.isEmpty) {
       onClickFunk = () {
         appState.currentEnemy = enemy;
         appState.route = Routes.gameReadyToStart;
       };
-      label = Text("Du bist dran");
+      label = "Du bist dran";
     } else if (enemy.openGame!.gameFinished() &&
         enemy.openGame!.requestingPlayerIndex != enemy.openGame!.playerIndex) {
       onClickFunk = () {
         appState.currentEnemy = enemy;
         appState.route = Routes.gameReadyToStart;
       };
-      label = Text("Punkte abholen");
+      label = "Punkte abholen";
     } else if (enemy.openGame!.gameFinished() &&
         enemy.openGame!.requestingPlayerIndex == enemy.openGame!.playerIndex) {
       onClickFunk = () {
         appState.currentEnemy = enemy;
         appState.route = Routes.gameReadyToStart;
       };
-      label = Text("Ergebnisse ansehen.");
+      label = "Ergebnisse ansehen.";
     }
     // if enemy has to access its points
 
@@ -62,119 +142,84 @@ class EnemyCard extends StatelessWidget {
         appState.currentEnemy = enemy;
         appState.route = Routes.gameReadyToStart;
       };
-      label = Text("${enemy.name} spielt...");
+      label = "${enemy.name} spielt...";
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      padding: const EdgeInsets.only(top: 10, bottom: 10, left: 30, right: 10),
       child: Material(
         borderRadius: const BorderRadius.all(Radius.circular(15)),
         color: DesignColors.pink,
         // Make it clickable.
-        child: InkWell(
-          hoverColor: DesignColors.lightBlue,
-          highlightColor: DesignColors.lightBlue,
-          splashColor: DesignColors.backgroundBlue,
-          onTap: onClickFunk,
-          borderRadius: const BorderRadius.all(Radius.circular(15)),
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Flexible(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+        child: Stack(
+          children: [
+            FractionallySizedBox(
+              widthFactor: 1.1,
+              child: Text(
+                enemy.emoji,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline1!
+                    .copyWith(fontSize: 60),
+              ),
+            ),
+            InkWell(
+              hoverColor: DesignColors.lightBlue,
+              highlightColor: DesignColors.lightBlue,
+              splashColor: DesignColors.backgroundBlue,
+              onTap: onClickFunk,
+              borderRadius: const BorderRadius.all(Radius.circular(15)),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    top: 10, bottom: 10, left: 70, right: 20),
+                child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        enemy.emoji,
-                        style: Theme.of(context).textTheme.headline3,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: Text(
-                          enemy.name,
-                          style: Theme.of(context).textTheme.headline4,
-                        ),
-                      ),
-                      const Icon(
-                        Icons.monetization_on,
-                        color: DesignColors.yellow,
-                        size: 16,
-                      ),
-                      Countup(
-                        begin: 0,
-                        end: enemy.getXp().toDouble(),
-                        duration: const Duration(milliseconds: 500),
-                        style: Theme.of(context).textTheme.subtitle1,
-                      )
-                    ],
-                  ),
-                ),
-                // if an open Game exists.
-
-                if (enemy.openGame != null)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Flexible(
-                            child: ElevatedButton.icon(
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                    DesignColors.pink),
-                              ),
-                              onPressed: () {
-                                appState.currentEnemy = enemy;
-                                appState.route = Routes.gameReadyToStart;
-                              },
-                              icon:
-                                  const Icon(Icons.play_circle_outline_rounded),
-                              label: label,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  enemy.name,
+                                  style: Theme.of(context).textTheme.headline4,
+                                ),
+                                const Icon(
+                                  Icons.monetization_on,
+                                  color: DesignColors.yellow,
+                                  size: 16,
+                                ),
+                                Countup(
+                                  begin: 0,
+                                  end: enemy.getXp().toDouble(),
+                                  duration: const Duration(milliseconds: 500),
+                                  style: Theme.of(context).textTheme.subtitle1,
+                                ),
+                              ],
                             ),
                           ),
-                          if (enemy.openGame!.withTimer)
-                            const Padding(
-                                padding: EdgeInsets.only(left: 10),
-                                child: Icon(Icons.timer))
-                          else
-                            const Padding(
-                                padding: EdgeInsets.only(left: 10),
-                                child: Icon(Icons.timer_off)),
-                          Text(
-                              "${enemy.openGame!.playerAnswers.length.toString()} von 9 Fragen")
+                          Flexible(
+                              child: Text(
+                            label,
+                            style: Theme.of(context).textTheme.subtitle1,
+                          ))
                         ],
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        size: 50,
+                        color: Colors.white,
                       )
-                    ],
-                  )
-                else if (enemy.acceptedByPlayer && enemy.acceptedByOther)
-                  // if there is no open game.
-                  StartGameButton(appState: appState, enemy: enemy)
-                else if (!enemy.acceptedByOther && !enemy.acceptedByPlayer)
-                  // if the enemy has not accepted, we can send a request.
-                  Flexible(
-                    child: ElevatedButton.icon(
-                      onPressed: () => onTapped(enemy),
-                      icon: const Icon(Icons.check_circle),
-                      label: const Text("Anfragen"),
-                    ),
-                  )
-                else if (enemy.acceptedByOther && !enemy.acceptedByPlayer)
-                  // else it is a request which we can accept.
-                  Flexible(
-                    child: ElevatedButton.icon(
-                      onPressed: () => onTapped(enemy),
-                      icon: const Icon(Icons.check_circle),
-                      label: const Text("Annehmen"),
-                    ),
-                  )
-              ],
+                    ]),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
