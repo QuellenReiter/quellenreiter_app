@@ -99,7 +99,21 @@ class _QuellenreiterAppState extends State<QuellenreiterApp> {
                 fontSize: 12,
               ),
             ),
-
+            floatingActionButtonTheme: const FloatingActionButtonThemeData(
+              backgroundColor: DesignColors.backgroundBlue,
+            ),
+            appBarTheme: const AppBarTheme(
+              backgroundColor: DesignColors.backgroundBlue,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(15),
+                ),
+              ),
+              titleTextStyle: TextStyle(
+                fontFamily: 'Bangers',
+                fontSize: 30,
+              ),
+            ),
             // fill back inside all TextFormField
             inputDecorationTheme: const InputDecorationTheme(
               isDense: true,
