@@ -58,6 +58,40 @@ class _FriendsScreenState extends State<FriendsScreen> {
                   child: ListView.builder(
                     itemCount: widget.appState.player!.friends!.enemies.length,
                     itemBuilder: (BuildContext context, int index) {
+                      if (index == 0) {
+                        // Display all open Requests
+                        if (widget.appState.enemyRequests != null &&
+                            widget.appState.enemyRequests!.enemies.isNotEmpty)
+                          return Column(
+                            children: [
+                              Text(
+                                "Neue Anfragen",
+                                style: Theme.of(context).textTheme.headline2,
+                              ),
+                              Flexible(
+                                child: ListView.builder(
+                                  itemCount: widget
+                                      .appState.enemyRequests!.enemies.length,
+                                  itemBuilder: (BuildContext context, int i) {
+                                    return EnemyCard(
+                                      appState: widget.appState,
+                                      enemy: widget
+                                          .appState.enemyRequests!.enemies[i],
+                                      onTapped: (enemy) =>
+                                          widget.appState.acceptRequest(enemy),
+                                    );
+                                  },
+                                ),
+                              ),
+                              EnemyCard(
+                                appState: widget.appState,
+                                enemy: widget
+                                    .appState.player!.friends!.enemies[index],
+                                onTapped: (enemy) => {},
+                              ),
+                            ],
+                          );
+                      }
                       return EnemyCard(
                         appState: widget.appState,
                         enemy: widget.appState.player!.friends!.enemies[index],
@@ -69,62 +103,6 @@ class _FriendsScreenState extends State<FriendsScreen> {
             ],
           ),
         ),
-        // Display all open Requests
-        if (widget.appState.enemyRequests != null &&
-            widget.appState.enemyRequests!.enemies.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.all(15),
-            child: Align(
-              alignment: Alignment.bottomLeft,
-              child: FloatingActionButton.extended(
-                onPressed: () => {
-                  showModalBottomSheet(
-                    context: context,
-                    backgroundColor: Colors.transparent,
-                    builder: (BuildContext context) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[800],
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(15),
-                            topRight: Radius.circular(15),
-                          ),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.all(10),
-                              child: Text("Offene Anfragen:"),
-                            ),
-                            Flexible(
-                              child: ListView.builder(
-                                itemCount: widget
-                                    .appState.enemyRequests!.enemies.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return EnemyCard(
-                                    appState: widget.appState,
-                                    enemy: widget
-                                        .appState.enemyRequests!.enemies[index],
-                                    onTapped: (enemy) =>
-                                        widget.appState.acceptRequest(enemy),
-                                  );
-                                },
-                              ),
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                },
-                icon: const Icon(Icons.group_add),
-                label: const Text("Offene Anfragen"),
-              ),
-            ),
-          ),
-
         Padding(
           padding: const EdgeInsets.all(10),
           child: Align(
