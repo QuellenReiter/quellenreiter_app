@@ -103,8 +103,47 @@ class EnemyCard extends StatelessWidget {
         onClickFunk = () => onTapped(enemy);
         label = "Anfragen";
       } else if (enemy.acceptedByOther && !enemy.acceptedByPlayer) {
-        onClickFunk = () => onTapped(enemy);
-        label = "Annehmen";
+        onClickFunk = () => {
+              showModalBottomSheet(
+                context: context,
+                backgroundColor: Colors.transparent,
+                builder: (BuildContext context) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[800],
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        topRight: Radius.circular(15),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Text("Offene Anfragen:"),
+                        ),
+                        Flexible(
+                          child: ListView.builder(
+                            itemCount: appState.enemyRequests!.enemies.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return EnemyCard(
+                                appState: appState,
+                                enemy: appState.enemyRequests!.enemies[index],
+                                onTapped: (enemy) =>
+                                    appState.acceptRequest(enemy),
+                              );
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                },
+              ),
+            };
+        label = "Anfrage annehmen";
       }
     } else if (enemy.openGame!.isPlayersTurn() &&
         enemy.openGame!.playerAnswers.isNotEmpty) {
