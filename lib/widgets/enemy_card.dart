@@ -150,26 +150,27 @@ class EnemyCard extends StatelessWidget {
       child: Material(
         borderRadius: const BorderRadius.all(Radius.circular(15)),
         color: DesignColors.pink,
+
         // Make it clickable.
         child: Stack(
+          clipBehavior: Clip.none,
           children: [
-            FractionallySizedBox(
-              widthFactor: 1.1,
-              child: Text(
-                enemy.emoji,
-                style: Theme.of(context)
-                    .textTheme
-                    .headline1!
-                    .copyWith(fontSize: 60),
-              ),
-            ),
             InkWell(
               hoverColor: DesignColors.lightBlue,
               highlightColor: DesignColors.lightBlue,
               splashColor: DesignColors.backgroundBlue,
               onTap: onClickFunk,
               borderRadius: const BorderRadius.all(Radius.circular(15)),
-              child: Padding(
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(15)),
+                    border: Border.all(
+                      color: label == "Du bist dran"
+                          ? DesignColors.yellow
+                          : DesignColors.pink,
+                      width: 3,
+                      style: BorderStyle.solid,
+                    )),
                 padding: const EdgeInsets.only(
                     top: 10, bottom: 10, left: 70, right: 20),
                 child: Row(
@@ -211,12 +212,49 @@ class EnemyCard extends StatelessWidget {
                           ))
                         ],
                       ),
-                      Icon(
+                      const Icon(
                         Icons.arrow_forward_ios,
                         size: 50,
                         color: Colors.white,
                       )
                     ]),
+              ),
+            ),
+            if (label == "Punkte abholen")
+              // show open points badge
+              Positioned(
+                top: -10,
+                right: -5,
+                child: Container(
+                  clipBehavior: Clip.none,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    color: DesignColors.yellow,
+                  ),
+                  padding: const EdgeInsets.all(2),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.monetization_on_rounded,
+                          color: DesignColors.pink),
+                      Text(
+                        "+${enemy.openGame!.getPlayerXp()}",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline5!
+                            .copyWith(color: DesignColors.pink),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            FractionallySizedBox(
+              widthFactor: 1.1,
+              child: Text(
+                enemy.emoji,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline1!
+                    .copyWith(fontSize: 60),
               ),
             ),
           ],
