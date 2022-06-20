@@ -247,14 +247,16 @@ class EnemyCard extends StatelessWidget {
                   ),
                 ),
               ),
-            FractionallySizedBox(
-              widthFactor: 1.1,
-              child: Text(
-                enemy.emoji,
-                style: Theme.of(context)
-                    .textTheme
-                    .headline1!
-                    .copyWith(fontSize: 60),
+            IgnorePointer(
+              child: FractionallySizedBox(
+                widthFactor: 1.1,
+                child: Text(
+                  enemy.emoji,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline1!
+                      .copyWith(fontSize: 60),
+                ),
               ),
             ),
           ],
