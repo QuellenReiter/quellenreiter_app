@@ -30,243 +30,203 @@ class _StartScreenState extends State<StartScreen> {
               : p + (e.openGame!.isPlayersTurn() ? 1 : 0));
     }
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Flexible(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.trending_up,
-                  color: DesignColors.backgroundBlue,
-                  size: Theme.of(context).textTheme.headline2!.fontSize! + 10,
-                ),
-                Text(
-                  "Deine Skills",
-                  style: Theme.of(context).textTheme.headline2,
-                ),
-              ],
-            ),
-          ),
-          Flexible(
-            child: Row(
-              children: [
-                SizedBox(
-                  width: (MediaQuery.of(context).size.width / 2) - 15,
-                  child: SfRadialGauge(
-                    animationDuration: 0.4,
-                    enableLoadingAnimation: true,
-                    axes: [
-                      RadialAxis(
-                        startAngle: 90,
-                        endAngle: 90,
-                        minimum: 0,
-                        maximum: 1,
-                        ranges: [
-                          GaugeRange(
-                            startValue: 0,
-                            endValue: 1,
-                            sizeUnit: GaugeSizeUnit.factor,
-                            startWidth: 0.3,
-                            endWidth: 0.3,
-                            color: DesignColors.lightGrey,
-                            // gradient: const SweepGradient(
-                            //   colors: [
-                            //     DesignColors.red,
-                            //     DesignColors.yellow,
-                            //     DesignColors.green,
-                            //   ],
-                            //   stops: [0.0, 0.5, 1],
-                            // ),
-                          ),
-                        ],
-                        showTicks: false,
-                        showLabels: false,
-                        pointers: [
-                          RangePointer(
-                            value: widget.appState.player!.trueFakeAnswers /
-                                (widget.appState.player!.trueFakeAnswers +
-                                    widget.appState.player!.falseFakeAnswers),
-                            enableAnimation: true,
-                            width: 20,
-                            gradient: const SweepGradient(
-                              colors: [
-                                DesignColors.red,
-                                DesignColors.yellow,
-                                Color.fromARGB(255, 219, 245, 91),
-                                DesignColors.green,
-                              ],
-                              stops: [0.0, 0.3, 0.7, 1],
-                            ),
-                          ),
-                          // NeedlePointer(
-                          //     enableAnimation: true,
-                          //     value: widget.appState.player!.trueFakeAnswers /
-                          //         (widget.appState.player!.trueFakeAnswers +
-                          //             widget.appState.player!.falseFakeAnswers))
-                        ],
-                        annotations: [
-                          GaugeAnnotation(
-                              widget: Container(
-                                child: Text(
-                                  'Fakes \nentlarven',
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle1!
-                                      .copyWith(
-                                          color: DesignColors.backgroundBlue),
-                                ),
-                              ),
-                              angle: 90,
-                              positionFactor: 0)
-                        ],
-                      ),
-                    ],
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(15),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height / 1.4,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Flexible(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.trending_up,
+                    color: DesignColors.backgroundBlue,
+                    size: Theme.of(context).textTheme.headline2!.fontSize! + 10,
                   ),
-                ),
-                SizedBox(
-                  width: (MediaQuery.of(context).size.width / 2) - 15,
-                  child: SfRadialGauge(
-                    animationDuration: 0.4,
-                    enableLoadingAnimation: true,
-                    axes: [
-                      RadialAxis(
-                        startAngle: 90,
-                        endAngle: 90,
-                        minimum: 0,
-                        maximum: 1,
-                        ranges: [
-                          GaugeRange(
-                            startValue: 0,
-                            endValue: 1,
-                            sizeUnit: GaugeSizeUnit.factor,
-                            startWidth: 0.3,
-                            endWidth: 0.3,
-                            color: DesignColors.lightGrey,
-                            // gradient: const SweepGradient(
-                            //   colors: [
-                            //     DesignColors.red,
-                            //     DesignColors.yellow,
-                            //     DesignColors.green,
-                            //   ],
-                            //   stops: [0.0, 0.5, 1],
-                            // ),
-                          ),
-                        ],
-                        showTicks: false,
-                        showLabels: false,
-                        pointers: [
-                          RangePointer(
-                            value: widget.appState.player!.trueCorrectAnswers /
-                                (widget.appState.player!.trueCorrectAnswers +
-                                    widget
-                                        .appState.player!.falseCorrectAnswers),
-                            enableAnimation: true,
-                            width: 20,
-                            gradient: const SweepGradient(
-                              colors: [
-                                DesignColors.red,
-                                DesignColors.yellow,
-                                Color.fromARGB(255, 219, 245, 91),
-                                DesignColors.green,
-                              ],
-                              stops: [0.0, 0.3, 0.7, 1],
-                            ),
-                          ),
-                          // NeedlePointer(
-                          //     enableAnimation: true,
-                          //     value: widget.appState.player!.trueFakeAnswers /
-                          //         (widget.appState.player!.trueFakeAnswers +
-                          //             widget.appState.player!.falseFakeAnswers))
-                        ],
-                        annotations: [
-                          GaugeAnnotation(
-                              widget: Container(
-                                child: Text(
-                                  'Fakten \nerkennen',
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle1!
-                                      .copyWith(
-                                          color: DesignColors.backgroundBlue),
-                                ),
-                              ),
-                              angle: 90,
-                              positionFactor: 0)
-                        ],
-                      ),
-                    ],
+                  Text(
+                    "Deine Skills",
+                    style: Theme.of(context).textTheme.headline2,
                   ),
-                ),
-              ],
-            ),
-          ),
-          Flexible(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.monetization_on,
-                  color: DesignColors.yellow,
-                  size: 40,
-                ),
-                Countup(
-                  begin: 0,
-                  end: widget.appState.player!.getXp().toDouble(),
-                  duration: const Duration(milliseconds: 500),
-                  style: Theme.of(context).textTheme.headline4,
-                )
-              ],
-            ),
-          ),
-          ElevatedButton.icon(
-            onPressed: () =>
-                widget.appState.handleNavigationChange(Routes.startGame),
-            icon: const Icon(Icons.gamepad_outlined),
-            label: const Text("Neues Spiel starten"),
-          ),
-          Stack(
-            clipBehavior: Clip.none,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () => widget.appState.route = Routes.openGames,
-                icon: const Icon(Icons.playlist_play_outlined),
-                label: const Text("Offene Spiele"),
+                ],
               ),
-              if (playableGames > 0)
-                Positioned(
-                  right: -6,
-                  top: -2,
-                  child: Container(
-                    padding: const EdgeInsets.all(1),
-                    decoration: const BoxDecoration(
-                        color: Colors.red, shape: BoxShape.circle),
-                    constraints: const BoxConstraints(
-                      minWidth: 16,
-                      minHeight: 16,
-                    ),
-                    child: Center(
-                      child: Text(
-                        playableGames.toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
+            ),
+            Flexible(
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: (MediaQuery.of(context).size.width / 2) - 15,
+                    child: SfRadialGauge(
+                      backgroundColor: Colors.transparent,
+                      animationDuration: 0.4,
+                      enableLoadingAnimation: true,
+                      axes: [
+                        RadialAxis(
+                          useRangeColorForAxis: false,
+                          startAngle: 90,
+                          endAngle: 90,
+                          minimum: 0,
+                          maximum: 1,
+                          ranges: [
+                            GaugeRange(
+                              startValue: 0,
+                              endValue: 1,
+                              sizeUnit: GaugeSizeUnit.factor,
+                              startWidth: 0.1,
+                              endWidth: 0.1,
+                              color: Colors.transparent,
+                              // gradient: const SweepGradient(
+                              //   colors: [
+                              //     DesignColors.red,
+                              //     DesignColors.yellow,
+                              //     DesignColors.green,
+                              //   ],
+                              //   stops: [0.0, 0.5, 1],
+                              // ),
+                            ),
+                          ],
+                          showTicks: false,
+                          showLabels: false,
+                          pointers: [
+                            RangePointer(
+                              value: widget.appState.player!.trueFakeAnswers /
+                                  (widget.appState.player!.trueFakeAnswers +
+                                      widget.appState.player!.falseFakeAnswers),
+                              enableAnimation: true,
+                              width: 20,
+                              gradient: const SweepGradient(
+                                colors: [
+                                  DesignColors.red,
+                                  DesignColors.yellow,
+                                  Color.fromARGB(255, 219, 245, 91),
+                                  DesignColors.green,
+                                ],
+                                stops: [0.0, 0.3, 0.7, 1],
+                              ),
+                            ),
+                            // NeedlePointer(
+                            //     enableAnimation: true,
+                            //     value: widget.appState.player!.trueFakeAnswers /
+                            //         (widget.appState.player!.trueFakeAnswers +
+                            //             widget.appState.player!.falseFakeAnswers))
+                          ],
+                          annotations: [
+                            GaugeAnnotation(
+                                widget: Container(
+                                  child: Text(
+                                    'Fakes \nentlarven',
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1!
+                                        .copyWith(
+                                            color: DesignColors.backgroundBlue),
+                                  ),
+                                ),
+                                angle: 90,
+                                positionFactor: 0)
+                          ],
                         ),
-                        textAlign: TextAlign.center,
-                      ),
+                      ],
                     ),
                   ),
-                )
-            ],
-          ),
-        ],
+                  SizedBox(
+                    width: (MediaQuery.of(context).size.width / 2) - 15,
+                    child: SfRadialGauge(
+                      animationDuration: 0.4,
+                      enableLoadingAnimation: true,
+                      axes: [
+                        RadialAxis(
+                          startAngle: 90,
+                          endAngle: 90,
+                          minimum: 0,
+                          maximum: 1,
+                          ranges: [
+                            GaugeRange(
+                              startValue: 0,
+                              endValue: 1,
+                              sizeUnit: GaugeSizeUnit.factor,
+                              startWidth: 0.3,
+                              endWidth: 0.3,
+                              color: DesignColors.lightGrey,
+                              // gradient: const SweepGradient(
+                              //   colors: [
+                              //     DesignColors.red,
+                              //     DesignColors.yellow,
+                              //     DesignColors.green,
+                              //   ],
+                              //   stops: [0.0, 0.5, 1],
+                              // ),
+                            ),
+                          ],
+                          showTicks: false,
+                          showLabels: false,
+                          pointers: [
+                            RangePointer(
+                              value: widget
+                                      .appState.player!.trueCorrectAnswers /
+                                  (widget.appState.player!.trueCorrectAnswers +
+                                      widget.appState.player!
+                                          .falseCorrectAnswers),
+                              enableAnimation: true,
+                              width: 20,
+                              gradient: const SweepGradient(
+                                colors: [
+                                  DesignColors.red,
+                                  DesignColors.yellow,
+                                  Color.fromARGB(255, 219, 245, 91),
+                                  DesignColors.green,
+                                ],
+                                stops: [0.0, 0.3, 0.7, 1],
+                              ),
+                            ),
+                            // NeedlePointer(
+                            //     enableAnimation: true,
+                            //     value: widget.appState.player!.trueFakeAnswers /
+                            //         (widget.appState.player!.trueFakeAnswers +
+                            //             widget.appState.player!.falseFakeAnswers))
+                          ],
+                          annotations: [
+                            GaugeAnnotation(
+                                widget: Container(
+                                  child: Text(
+                                    'Fakten \nerkennen',
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1!
+                                        .copyWith(
+                                            color: DesignColors.backgroundBlue),
+                                  ),
+                                ),
+                                angle: 90,
+                                positionFactor: 0)
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Flexible(
+              child: ElevatedButton(
+                onPressed: () =>
+                    widget.appState.handleNavigationChange(Routes.startGame),
+                child: Text(
+                  "Neues Spiel",
+                  style: Theme.of(context).textTheme.headline1,
+                ),
+              ),
+            ),
+            const Divider(
+              color: DesignColors.backgroundBlue,
+            )
+          ],
+        ),
       ),
     );
   }
