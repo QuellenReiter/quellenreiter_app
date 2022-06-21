@@ -103,46 +103,9 @@ class EnemyCard extends StatelessWidget {
         onClickFunk = () => onTapped(enemy);
         label = "Anfragen";
       } else if (enemy.acceptedByOther && !enemy.acceptedByPlayer) {
-        onClickFunk = () => {
-              showModalBottomSheet(
-                context: context,
-                backgroundColor: Colors.transparent,
-                builder: (BuildContext context) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[800],
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        topRight: Radius.circular(15),
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Text("Offene Anfragen:"),
-                        ),
-                        Flexible(
-                          child: ListView.builder(
-                            itemCount: appState.enemyRequests!.enemies.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return EnemyCard(
-                                appState: appState,
-                                enemy: appState.enemyRequests!.enemies[index],
-                                onTapped: (enemy) =>
-                                    appState.acceptRequest(enemy),
-                              );
-                            },
-                          ),
-                        )
-                      ],
-                    ),
-                  );
-                },
-              ),
-            };
+        onClickFunk = () {
+          appState.acceptRequest(enemy);
+        };
         label = "Anfrage annehmen";
       }
     } else if (enemy.openGame!.isPlayersTurn() &&
@@ -277,6 +240,33 @@ class EnemyCard extends StatelessWidget {
                           color: DesignColors.pink),
                       Text(
                         "+${enemy.openGame!.getPlayerXp()}",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline5!
+                            .copyWith(color: DesignColors.pink),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            if (label == "Anfrage annehmen")
+              // show open points badge
+              Positioned(
+                top: -10,
+                right: -5,
+                child: Container(
+                  clipBehavior: Clip.none,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    color: DesignColors.yellow,
+                  ),
+                  padding: const EdgeInsets.all(2),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.monetization_on_rounded,
+                          color: DesignColors.pink),
+                      Text(
+                        "+10",
                         style: Theme.of(context)
                             .textTheme
                             .headline5!
