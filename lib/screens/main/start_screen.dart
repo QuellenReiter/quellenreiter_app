@@ -63,8 +63,8 @@ class _StartScreenState extends State<StartScreen> {
                     enableLoadingAnimation: true,
                     axes: [
                       RadialAxis(
-                        startAngle: 180,
-                        endAngle: 0,
+                        startAngle: 90,
+                        endAngle: 90,
                         minimum: 0,
                         maximum: 1,
                         ranges: [
@@ -72,32 +72,50 @@ class _StartScreenState extends State<StartScreen> {
                             startValue: 0,
                             endValue: 1,
                             sizeUnit: GaugeSizeUnit.factor,
-                            startWidth: 0.1,
-                            endWidth: 0.2,
-                            gradient: const SweepGradient(
-                              colors: [
-                                DesignColors.red,
-                                DesignColors.yellow,
-                                DesignColors.green,
-                              ],
-                              stops: [0.0, 0.5, 1],
-                            ),
+                            startWidth: 0.3,
+                            endWidth: 0.3,
+                            color: DesignColors.lightGrey,
+                            // gradient: const SweepGradient(
+                            //   colors: [
+                            //     DesignColors.red,
+                            //     DesignColors.yellow,
+                            //     DesignColors.green,
+                            //   ],
+                            //   stops: [0.0, 0.5, 1],
+                            // ),
                           ),
                         ],
                         showTicks: false,
                         showLabels: false,
                         pointers: [
-                          NeedlePointer(
-                              enableAnimation: true,
-                              value: widget.appState.player!.trueFakeAnswers /
-                                  (widget.appState.player!.trueFakeAnswers +
-                                      widget.appState.player!.falseFakeAnswers))
+                          RangePointer(
+                            value: widget.appState.player!.trueFakeAnswers /
+                                (widget.appState.player!.trueFakeAnswers +
+                                    widget.appState.player!.falseFakeAnswers),
+                            enableAnimation: true,
+                            width: 20,
+                            gradient: const SweepGradient(
+                              colors: [
+                                DesignColors.red,
+                                DesignColors.yellow,
+                                Color.fromARGB(255, 219, 245, 91),
+                                DesignColors.green,
+                              ],
+                              stops: [0.0, 0.3, 0.7, 1],
+                            ),
+                          ),
+                          // NeedlePointer(
+                          //     enableAnimation: true,
+                          //     value: widget.appState.player!.trueFakeAnswers /
+                          //         (widget.appState.player!.trueFakeAnswers +
+                          //             widget.appState.player!.falseFakeAnswers))
                         ],
                         annotations: [
                           GaugeAnnotation(
                               widget: Container(
                                 child: Text(
-                                  'Fakes entlarven',
+                                  'Fakes \nentlarven',
+                                  textAlign: TextAlign.center,
                                   style: Theme.of(context)
                                       .textTheme
                                       .subtitle1!
@@ -106,7 +124,7 @@ class _StartScreenState extends State<StartScreen> {
                                 ),
                               ),
                               angle: 90,
-                              positionFactor: 0.5)
+                              positionFactor: 0)
                         ],
                       ),
                     ],
@@ -119,8 +137,8 @@ class _StartScreenState extends State<StartScreen> {
                     enableLoadingAnimation: true,
                     axes: [
                       RadialAxis(
-                        startAngle: 180,
-                        endAngle: 0,
+                        startAngle: 90,
+                        endAngle: 90,
                         minimum: 0,
                         maximum: 1,
                         ranges: [
@@ -128,34 +146,51 @@ class _StartScreenState extends State<StartScreen> {
                             startValue: 0,
                             endValue: 1,
                             sizeUnit: GaugeSizeUnit.factor,
-                            startWidth: 0.1,
-                            endWidth: 0.2,
-                            gradient: const SweepGradient(
-                              colors: [
-                                DesignColors.red,
-                                DesignColors.yellow,
-                                DesignColors.green,
-                              ],
-                              stops: [0.0, 0.5, 1],
-                            ),
+                            startWidth: 0.3,
+                            endWidth: 0.3,
+                            color: DesignColors.lightGrey,
+                            // gradient: const SweepGradient(
+                            //   colors: [
+                            //     DesignColors.red,
+                            //     DesignColors.yellow,
+                            //     DesignColors.green,
+                            //   ],
+                            //   stops: [0.0, 0.5, 1],
+                            // ),
                           ),
                         ],
                         showTicks: false,
                         showLabels: false,
                         pointers: [
-                          NeedlePointer(
-                              enableAnimation: true,
-                              value: widget
-                                      .appState.player!.trueCorrectAnswers /
-                                  (widget.appState.player!.trueCorrectAnswers +
-                                      widget.appState.player!
-                                          .falseCorrectAnswers))
+                          RangePointer(
+                            value: widget.appState.player!.trueCorrectAnswers /
+                                (widget.appState.player!.trueCorrectAnswers +
+                                    widget
+                                        .appState.player!.falseCorrectAnswers),
+                            enableAnimation: true,
+                            width: 20,
+                            gradient: const SweepGradient(
+                              colors: [
+                                DesignColors.red,
+                                DesignColors.yellow,
+                                Color.fromARGB(255, 219, 245, 91),
+                                DesignColors.green,
+                              ],
+                              stops: [0.0, 0.3, 0.7, 1],
+                            ),
+                          ),
+                          // NeedlePointer(
+                          //     enableAnimation: true,
+                          //     value: widget.appState.player!.trueFakeAnswers /
+                          //         (widget.appState.player!.trueFakeAnswers +
+                          //             widget.appState.player!.falseFakeAnswers))
                         ],
                         annotations: [
                           GaugeAnnotation(
                               widget: Container(
                                 child: Text(
-                                  'Fakten erkennen',
+                                  'Fakten \nerkennen',
+                                  textAlign: TextAlign.center,
                                   style: Theme.of(context)
                                       .textTheme
                                       .subtitle1!
@@ -164,7 +199,7 @@ class _StartScreenState extends State<StartScreen> {
                                 ),
                               ),
                               angle: 90,
-                              positionFactor: 0.5)
+                              positionFactor: 0)
                         ],
                       ),
                     ],
