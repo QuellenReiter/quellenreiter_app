@@ -49,17 +49,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
           child: Padding(
             padding: const EdgeInsets.all(15),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(
-                  height: 50,
+                const SizedBox(
+                  height: 20,
                 ),
                 ValueListenableBuilder(
                   valueListenable: usernameController,
                   builder: (context, TextEditingValue value, __) {
                     return Row(
                       children: [
-                        Expanded(
+                        Flexible(
                           child: TextField(
                             style: Theme.of(context).textTheme.bodyText2,
                             inputFormatters: [
@@ -85,27 +85,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ),
                         ),
-                        ElevatedButton.icon(
-                          onPressed: usernameController.text !=
-                                      widget.appState.player!.name &&
-                                  usernameController.text.length >=
-                                      Utils.usernameMinLength
-                              ? () {
-                                  HapticFeedback.selectionClick();
-                                  FocusManager.instance.primaryFocus?.unfocus();
-                                  widget.appState.player?.name =
-                                      usernameController.text;
-                                  widget.appState.updateUser();
-                                }
-                              : null,
-                          icon: const Icon(Icons.switch_access_shortcut),
-                          label: const Text("Username ändern."),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: ElevatedButton.icon(
+                            onPressed: usernameController.text !=
+                                        widget.appState.player!.name &&
+                                    usernameController.text.length >=
+                                        Utils.usernameMinLength
+                                ? () {
+                                    HapticFeedback.selectionClick();
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus();
+                                    widget.appState.player?.name =
+                                        usernameController.text;
+                                    widget.appState.updateUser();
+                                  }
+                                : null,
+                            icon: const Icon(Icons.switch_access_shortcut),
+                            label: const Text("Username ändern."),
+                          ),
                         ),
                       ],
                     );
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 ValueListenableBuilder(
@@ -115,7 +119,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(
+                        Flexible(
                           child: TextField(
                             style: Theme.of(context).textTheme.bodyText2,
                             controller: emojiController,
@@ -139,21 +143,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                         ),
                         Flexible(
-                          child: ElevatedButton.icon(
-                            onPressed: emojiController.text !=
-                                        widget.appState.player!.emoji &&
-                                    emojiController.text.isNotEmpty
-                                ? () {
-                                    HapticFeedback.selectionClick();
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus();
-                                    widget.appState.player?.emoji =
-                                        emojiController.text;
-                                    widget.appState.updateUserData();
-                                  }
-                                : null,
-                            icon: const Icon(Icons.emoji_emotions),
-                            label: const Text("Emoji ändern"),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: ElevatedButton.icon(
+                              onPressed: emojiController.text !=
+                                          widget.appState.player!.emoji &&
+                                      emojiController.text.isNotEmpty
+                                  ? () {
+                                      HapticFeedback.selectionClick();
+                                      FocusManager.instance.primaryFocus
+                                          ?.unfocus();
+                                      widget.appState.player?.emoji =
+                                          emojiController.text;
+                                      widget.appState.updateUserData();
+                                    }
+                                  : null,
+                              icon: const Icon(Icons.emoji_emotions),
+                              label: const Text("Emoji ändern"),
+                            ),
                           ),
                         ),
                       ],
