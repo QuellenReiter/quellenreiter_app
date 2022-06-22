@@ -101,7 +101,7 @@ class EnemyCard extends StatelessWidget {
             );
       } else if (!enemy.acceptedByOther && !enemy.acceptedByPlayer) {
         onClickFunk = () => onTapped(enemy);
-        label = "Anfragen";
+        label = "Anfrage senden";
       } else if (enemy.acceptedByOther && !enemy.acceptedByPlayer) {
         onClickFunk = () {
           appState.acceptRequest(enemy);
@@ -240,6 +240,33 @@ class EnemyCard extends StatelessWidget {
                           color: DesignColors.pink),
                       Text(
                         "+${enemy.openGame!.getPlayerXp()}",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline5!
+                            .copyWith(color: DesignColors.pink),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            if (label == "Anfrage senden")
+              // show open points badge
+              Positioned(
+                top: -10,
+                right: -5,
+                child: Container(
+                  clipBehavior: Clip.none,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    color: DesignColors.yellow,
+                  ),
+                  padding: const EdgeInsets.all(2),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.monetization_on_rounded,
+                          color: DesignColors.pink),
+                      Text(
+                        "+10",
                         style: Theme.of(context)
                             .textTheme
                             .headline5!
