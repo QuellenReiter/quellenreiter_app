@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/enemy_card.dart';
 import 'package:share_plus/share_plus.dart';
@@ -40,7 +41,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
     });
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Freund:in hinzufügen"),
+        title: const Text("Freund:innen finden"),
       ),
       body: Center(
         child: Stack(
@@ -48,22 +49,22 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
             Column(
               mainAxisSize: MainAxisSize.max,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Flexible(
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Flexible(
                         child: TextField(
                           textInputAction: TextInputAction.search,
                           onSubmitted: (query) =>
                               {widget.appState.friendsQuery = query.trim()},
                           controller: searchController,
                           decoration: const InputDecoration(
-                            hintText: "Gebe den exakten Namen ein.",
-                            border: UnderlineInputBorder(
+                            hintText: "Username eingeben...",
+                            border: OutlineInputBorder(
                               borderRadius: BorderRadius.all(
-                                Radius.circular(10),
+                                Radius.circular(20),
                               ),
                             ),
                             filled: true,
@@ -72,14 +73,18 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                           ),
                         ),
                       ),
-                    ),
-                    // IconButton(
-                    //   onPressed: () => {
-                    //     widget.appState.friendsQuery = searchController.text
-                    //   },
-                    //   icon: const Icon(Icons.search),
-                    // ),
-                  ],
+                      IconButton(
+                        color: DesignColors.backgroundBlue,
+                        onPressed: () => {
+                          widget.appState.friendsQuery =
+                              searchController.text.trim()
+                        },
+                        icon: const Icon(
+                          Icons.search,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 if (widget.appState.friendsSearchResult != null)
                   Flexible(
@@ -116,7 +121,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
               ],
             ),
             Align(
-              alignment: Alignment.bottomRight,
+              alignment: Alignment.bottomCenter,
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 40),
                 child: FloatingActionButton.extended(
@@ -125,7 +130,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                         subject: "Teile die app mit deinen Freund:innen."),
                   },
                   icon: const Icon(Icons.share),
-                  label: const Text("Teilen"),
+                  label: const Text("Freund:innen einladen"),
                 ),
               ),
             ),
