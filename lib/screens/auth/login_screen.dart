@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/error_banner.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../utilities/utilities.dart';
 
@@ -45,20 +47,11 @@ class _LoginScreenState extends State<LoginScreen> {
         appBar: AppBar(
           title: const Text("Einloggen"),
         ),
-        body: ListView(
+        body: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           // padding: const EdgeInsets.all(40),
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           children: [
-            Hero(
-              tag: "authLogo",
-              child: FractionallySizedBox(
-                widthFactor: 0.5,
-                child: Image.asset(
-                  'assets/logo-pink.png',
-                  width: 200,
-                ),
-              ),
-            ),
             FractionallySizedBox(
               widthFactor: 0.8,
               child: AutofillGroup(
@@ -151,6 +144,99 @@ class _LoginScreenState extends State<LoginScreen> {
               child: TextButton(
                 onPressed: () => widget.appState.route = Routes.signUp,
                 child: const Text("Anmelden"),
+              ),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height / 3,
+              child: Stack(
+                alignment: Alignment.bottomCenter,
+                clipBehavior: Clip.none,
+                children: [
+                  RotatedBox(
+                    quarterTurns: 2,
+                    child: ClipPath(
+                      clipper: DiagonalPathClipperTwo(),
+                      child: Container(
+                        color: DesignColors.pink,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height / 4,
+                      width: MediaQuery.of(context).size.width,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Image(
+                              image: AssetImage("assets/branding_low.png"),
+                            ),
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                TextButton(
+                                  onPressed: () async {
+                                    HapticFeedback.mediumImpact();
+                                    if (!await launch(
+                                        "https://quellenreiter.app")) {
+                                      throw 'could not launch';
+                                    }
+                                  },
+                                  child: Text(
+                                    "QuellenReiter.app",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1!
+                                        .copyWith(color: Colors.white),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    HapticFeedback.mediumImpact();
+                                    if (!await launch(
+                                        "https://quellenreiter.app/Impressum/")) {
+                                      throw 'could not launch';
+                                    }
+                                  },
+                                  child: Text(
+                                    "Impressum",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1!
+                                        .copyWith(
+                                            color: DesignColors.lightGrey),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    HapticFeedback.mediumImpact();
+                                    if (!await launch(
+                                        "https://quellenreiter.app/Datenschutz/")) {
+                                      throw 'could not launch';
+                                    }
+                                  },
+                                  child: Text(
+                                    "Datenschutz",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1!
+                                        .copyWith(
+                                            color: DesignColors.lightGrey),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
