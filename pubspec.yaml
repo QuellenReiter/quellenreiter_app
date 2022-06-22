@@ -40,6 +40,7 @@ dependencies:
   simple_timer: ^2.0.0
   syncfusion_flutter_gauges: ^20.1.61
   countup: ^0.1.4
+  flutter_custom_clippers: ^2.0.0
 
 
   # The following adds the Cupertino Icons font to your application.

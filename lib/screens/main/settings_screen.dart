@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
@@ -40,187 +40,279 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(10),
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ValueListenableBuilder(
-          valueListenable: emojiController,
-          builder: (context, TextEditingValue value, __) {
-            return Row(
+        Flexible(
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
               children: [
-                Expanded(
-                  child: TextField(
-                    controller: emojiController,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(Utils.regexEmoji),
-                    ],
-                    maxLength: 1,
-                    decoration: const InputDecoration(
-                      hintText: "Gebe einen neuen Emoji ein.",
-                      border: UnderlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                      ),
-                      filled: true,
-                      fillColor: Colors.transparent,
-                      contentPadding: EdgeInsets.all(10),
-                    ),
-                  ),
+                SizedBox(
+                  height: 50,
                 ),
-                Flexible(
-                  child: ElevatedButton.icon(
-                    onPressed:
-                        emojiController.text != widget.appState.player!.emoji &&
-                                emojiController.text.isNotEmpty
-                            ? () {
-                                HapticFeedback.selectionClick();
-                                FocusManager.instance.primaryFocus?.unfocus();
-                                widget.appState.player?.emoji =
-                                    emojiController.text;
-                                widget.appState.updateUserData();
-                              }
-                            : null,
-                    icon: const Icon(Icons.emoji_emotions),
-                    label: const Text("Emoji ändern"),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-        ValueListenableBuilder(
-          valueListenable: usernameController,
-          builder: (context, TextEditingValue value, __) {
-            return Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    inputFormatters: [
-                      UsernameTextFormatter(),
-                      FilteringTextInputFormatter.allow(Utils.regexUsername),
-                    ],
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    textCapitalization: TextCapitalization.none,
-                    controller: usernameController,
-                    autofillHints: const [AutofillHints.newUsername],
-                    decoration: const InputDecoration(
-                      hintText: "Gebe einen neuen Username ein.",
-                      border: UnderlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                      ),
-                      filled: true,
-                      fillColor: Colors.transparent,
-                      contentPadding: EdgeInsets.all(10),
-                    ),
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed:
-                      usernameController.text != widget.appState.player!.name &&
-                              usernameController.text.length >=
-                                  Utils.usernameMinLength
-                          ? () {
-                              HapticFeedback.selectionClick();
-                              FocusManager.instance.primaryFocus?.unfocus();
-                              widget.appState.player?.name =
-                                  usernameController.text;
-                              widget.appState.updateUser();
-                            }
-                          : null,
-                  icon: const Icon(Icons.switch_access_shortcut),
-                  label: const Text("Username ändern."),
-                ),
-              ],
-            );
-          },
-        ),
-        ElevatedButton.icon(
-          onPressed: () {
-            HapticFeedback.heavyImpact();
-            widget.appState.logout();
-          },
-          icon: const Icon(Icons.logout),
-          label: const Text("Abmelden"),
-        ),
-        ElevatedButton.icon(
-          onPressed: () {
-            HapticFeedback.heavyImpact();
-            showModalBottomSheet(
-                backgroundColor: Colors.transparent,
-                context: context,
-                builder: (BuildContext context) {
-                  return Container(
-                    padding: const EdgeInsets.only(top: 50),
-                    height: MediaQuery.of(context).size.height * 0.75,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[800],
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        topRight: Radius.circular(15),
-                      ),
-                    ),
-                    child: Column(
+                ValueListenableBuilder(
+                  valueListenable: emojiController,
+                  builder: (context, TextEditingValue value, __) {
+                    return Row(
                       children: [
-                        const Icon(
-                          Icons.warning_amber_rounded,
-                          color: DesignColors.red,
-                          size: 200,
-                        ),
-                        Text(
-                          "Willst du deinen Account wirklich für immer löschen?",
-                          style: Theme.of(context).textTheme.subtitle1,
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                DesignColors.red),
+                        Expanded(
+                          child: TextField(
+                            controller: emojiController,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  Utils.regexEmoji),
+                            ],
+                            maxLength: 1,
+                            decoration: const InputDecoration(
+                              hintText: "Gebe einen neuen Emoji ein.",
+                              border: UnderlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              filled: true,
+                              fillColor: Colors.transparent,
+                              contentPadding: EdgeInsets.all(10),
+                            ),
                           ),
-                          onPressed: () {
-                            widget.appState.db.deleteAccount(widget.appState);
-                          },
-                          child: Text("Ich bin sicher."),
+                        ),
+                        Flexible(
+                          child: ElevatedButton.icon(
+                            onPressed: emojiController.text !=
+                                        widget.appState.player!.emoji &&
+                                    emojiController.text.isNotEmpty
+                                ? () {
+                                    HapticFeedback.selectionClick();
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus();
+                                    widget.appState.player?.emoji =
+                                        emojiController.text;
+                                    widget.appState.updateUserData();
+                                  }
+                                : null,
+                            icon: const Icon(Icons.emoji_emotions),
+                            label: const Text("Emoji ändern"),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                ValueListenableBuilder(
+                  valueListenable: usernameController,
+                  builder: (context, TextEditingValue value, __) {
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            inputFormatters: [
+                              UsernameTextFormatter(),
+                              FilteringTextInputFormatter.allow(
+                                  Utils.regexUsername),
+                            ],
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            textCapitalization: TextCapitalization.none,
+                            controller: usernameController,
+                            autofillHints: const [AutofillHints.newUsername],
+                            decoration: const InputDecoration(
+                              hintText: "Gebe einen neuen Username ein.",
+                              border: UnderlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              filled: true,
+                              fillColor: Colors.transparent,
+                              contentPadding: EdgeInsets.all(10),
+                            ),
+                          ),
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: usernameController.text !=
+                                      widget.appState.player!.name &&
+                                  usernameController.text.length >=
+                                      Utils.usernameMinLength
+                              ? () {
+                                  HapticFeedback.selectionClick();
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                  widget.appState.player?.name =
+                                      usernameController.text;
+                                  widget.appState.updateUser();
+                                }
+                              : null,
+                          icon: const Icon(Icons.switch_access_shortcut),
+                          label: const Text("Username ändern."),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          HapticFeedback.heavyImpact();
+                          widget.appState.logout();
+                        },
+                        icon: const Icon(Icons.logout),
+                        label: const Text("Abmelden"),
+                      ),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          HapticFeedback.heavyImpact();
+                          showModalBottomSheet(
+                              backgroundColor: Colors.transparent,
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Container(
+                                  padding: const EdgeInsets.only(top: 50),
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.75,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[800],
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(15),
+                                      topRight: Radius.circular(15),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      const Icon(
+                                        Icons.warning_amber_rounded,
+                                        color: DesignColors.red,
+                                        size: 200,
+                                      ),
+                                      Text(
+                                        "Willst du deinen Account wirklich für immer löschen?",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1,
+                                      ),
+                                      ElevatedButton(
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  DesignColors.red),
+                                        ),
+                                        onPressed: () {
+                                          widget.appState.db
+                                              .deleteAccount(widget.appState);
+                                        },
+                                        child: Text("Ich bin sicher."),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              });
+                        },
+                        icon: const Icon(Icons.delete_forever),
+                        label: const Text("Account löschen"),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              DesignColors.red),
+                        ),
+                      ),
+                    ]),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(
+          height: MediaQuery.of(context).size.height / 3.5,
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            clipBehavior: Clip.none,
+            children: [
+              RotatedBox(
+                quarterTurns: 2,
+                child: ClipPath(
+                  clipper: DiagonalPathClipperTwo(),
+                  child: Container(
+                    color: DesignColors.pink,
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 0,
+                child: RotationTransition(
+                  turns: AlwaysStoppedAnimation(-8 / 360),
+                  child: Center(
+                    child: Text(
+                      "Made in Berlin with ❤️ and ☕ and Steuergeld.",
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height / 4,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Image(
+                          image: AssetImage("assets/branding_low.png"),
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton(
+                              onPressed: () async {
+                                HapticFeedback.mediumImpact();
+                                if (!await launch(
+                                    "https://quellenreiter.app")) {
+                                  throw 'could not launch';
+                                }
+                              },
+                              child: Text(
+                                "QuellenReiter.app",
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                HapticFeedback.mediumImpact();
+                                if (!await launch(
+                                    "https://quellenreiter.app/Impressum/")) {
+                                  throw 'could not launch';
+                                }
+                              },
+                              child: Text(
+                                "Impressum",
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                HapticFeedback.mediumImpact();
+                                if (!await launch(
+                                    "https://quellenreiter.app/Datenschutz/")) {
+                                  throw 'could not launch';
+                                }
+                              },
+                              child: Text(
+                                "Datenschutz",
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  );
-                });
-          },
-          icon: const Icon(Icons.delete_forever),
-          label: const Text("Account löschen"),
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(DesignColors.red),
-          ),
-        ),
-        Padding(padding: const EdgeInsets.only(top: 30), child: Divider()),
-        Padding(
-          padding: const EdgeInsets.all(30),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Image(
-                image: AssetImage("assets/branding_low.png"),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Text(
-                  "Made in Berlin with ❤️ and ☕ and Steuergeld.",
-                  style: Theme.of(context).textTheme.subtitle1,
+                  ),
                 ),
-              ),
-              TextButton(
-                onPressed: () async {
-                  HapticFeedback.mediumImpact();
-                  if (!await launch("https://quellenreiter.app")) {
-                    throw 'could not launch';
-                  }
-                },
-                child: Text("QuellenReiter.app"),
               ),
             ],
           ),
