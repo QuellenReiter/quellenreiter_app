@@ -6,6 +6,7 @@ import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/screens/main/friends_screen.dart';
 import 'package:quellenreiter_app/screens/main/settings_screen.dart';
 import 'package:quellenreiter_app/screens/main/start_screen.dart';
+import 'package:quellenreiter_app/widgets/main_app_bar.dart';
 
 import '../../constants/constants.dart';
 import '../../widgets/error_banner.dart';
@@ -236,11 +237,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           currentIndex: index,
           onTap: onTap,
         ),
-        appBar: AppBar(
-          title: Text(title),
-        ),
+        appBar: getAppBar(),
         body: body,
       ),
     );
+  }
+
+  PreferredSizeWidget getAppBar() {
+    if (widget.appState!.route != Routes.settings) {
+      return AppBar(
+        title: Text(title),
+      );
+    } else {
+      return MainAppBar();
+    }
   }
 }

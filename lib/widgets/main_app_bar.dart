@@ -5,14 +5,13 @@ import '../constants/constants.dart';
 
 /// The AppBar (top of the App) that contains searchbar and links to impressum, datenschutz and
 /// login/logout.
-/// TODO: Remove large if statement and do condition: popupmenu or row.
 class MainAppBar extends StatefulWidget with PreferredSizeWidget {
   MainAppBar({
     Key? key,
   }) : super(key: key);
 
   /// The height of the appBar.
-  double barHeight = 150;
+  final double barHeight = 150;
 
   @override
   State<MainAppBar> createState() => _MainAppBarState();
@@ -29,26 +28,37 @@ class _MainAppBarState extends State<MainAppBar> {
   Widget build(BuildContext context) {
     // If mobile or narrow desktop browser. Main difference:
     // Narrow windows show a dropdown for login/impressum/datenschutz.
-    return SizedBox(
-      child: Stack(children: [
-        Container(
-          height: 120,
+    return Stack(children: [
+      Container(
+        height: AppBar().preferredSize.height,
+        color: DesignColors.backgroundBlue,
+      ),
+      SafeArea(
+        child: Container(
+          height: AppBar().preferredSize.height,
           clipBehavior: Clip.none,
           // Set background color and rounded bottom corners.
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
             color: DesignColors.backgroundBlue,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 4,
+                offset: Offset(0, 4),
+              ),
+            ],
           ),
         ),
-        SafeArea(
-          child: Center(
-            child: Image(
-              height: 500,
-              image: AssetImage('assets/logo-pink.png'),
-            ),
+      ),
+      SafeArea(
+        child: Center(
+          child: Image(
+            height: 500,
+            image: AssetImage('assets/logo-pink.png'),
           ),
         ),
-      ]),
-    );
+      ),
+    ]);
   }
 }
