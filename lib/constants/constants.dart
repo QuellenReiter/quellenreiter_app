@@ -137,10 +137,47 @@ class CorrectnessCategory {
 }
 
 class GameRules {
+  /// The number of statements that are shown in a round.
   static const int statementsPerRound = 3;
+
+  /// The number of rounds that are played in a game.
   static const int roundsPerGame = 3;
+
+  /// The number of statements that are shown in a game.
   static const int statementsPerGame = statementsPerRound * roundsPerGame;
+
+  /// The number of Point that are given for a won game.
   static const int pointsPerWonGame = 20;
+
+  /// The number of points a player gets for a tied game.
   static const int pointsPerTiedGame = 5;
+
+  /// The number of points a player gets for answering a statement correctly.
   static const int pointsPerCorrectAnswer = 12;
+
+  static int currentLevel(int xp) {
+    int level = 0;
+    while (xp >= (5 * (level + 1) * (9 + (level + 1)))) {
+      level++;
+    }
+    return level;
+  }
+
+  /// Returns the amount of XP needed to reach the next level.
+  static int xpForNextLevel(int xp) {
+    int level = 0;
+    while (xp >= (5 * (level + 1) * (9 + (level + 1)))) {
+      level++;
+    }
+    return (5 * (level + 1) * (9 + (level + 1)));
+  }
+
+  /// Returns the amount of XP needed to reach the next next level.
+  static int xpForNextNextLevel(int xp) {
+    int level = 0;
+    while (xp >= (5 * (level + 1) * (9 + (level + 1)))) {
+      level++;
+    }
+    return (5 * (level + 2) * (9 + (level + 2)));
+  }
 }
