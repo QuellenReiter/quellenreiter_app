@@ -7,6 +7,7 @@ import 'package:quellenreiter_app/screens/main/friends_screen.dart';
 import 'package:quellenreiter_app/screens/main/settings_screen.dart';
 import 'package:quellenreiter_app/screens/main/start_screen.dart';
 import 'package:quellenreiter_app/widgets/main_app_bar.dart';
+import 'package:quellenreiter_app/widgets/stats_app_bar.dart';
 
 import '../../constants/constants.dart';
 import '../../widgets/error_banner.dart';
@@ -153,6 +154,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         bottomNavigationBar: BottomNavigationBar(
           selectedItemColor: DesignColors.pink,
           unselectedItemColor: DesignColors.backgroundBlue,
@@ -245,8 +247,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   PreferredSizeWidget getAppBar() {
     if (widget.appState!.route != Routes.settings) {
-      return AppBar(
-        title: Text(title),
+      return StatsAppBar(
+        appState: widget.appState,
       );
     } else {
       return MainAppBar();

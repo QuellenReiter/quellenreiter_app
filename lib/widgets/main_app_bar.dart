@@ -35,7 +35,7 @@ class _MainAppBarState extends State<MainAppBar> {
       ),
       SafeArea(
         child: Container(
-          height: AppBar().preferredSize.height,
+          height: AppBar().preferredSize.height * 1.5,
           clipBehavior: Clip.none,
           // Set background color and rounded bottom corners.
           decoration: BoxDecoration(
