@@ -44,6 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: MainAppBar(),
         body: Column(
           mainAxisSize: MainAxisSize.max,
