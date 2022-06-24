@@ -158,14 +158,6 @@ class _StartScreenState extends State<StartScreen> {
                               startWidth: 0.1,
                               endWidth: 0.1,
                               color: Colors.transparent,
-                              // gradient: const SweepGradient(
-                              //   colors: [
-                              //     DesignColors.red,
-                              //     DesignColors.yellow,
-                              //     DesignColors.green,
-                              //   ],
-                              //   stops: [0.0, 0.5, 1],
-                              // ),
                             ),
                           ],
                           showTicks: false,
@@ -179,21 +171,7 @@ class _StartScreenState extends State<StartScreen> {
                               enableAnimation: true,
                               width: 20,
                               color: DesignColors.green,
-                              // gradient: const SweepGradient(
-                              //   colors: [
-                              //     DesignColors.red,
-                              //     DesignColors.yellow,
-                              //     Color.fromARGB(255, 219, 245, 91),
-                              //     DesignColors.green,
-                              //   ],
-                              //   stops: [0.0, 0.3, 0.7, 1],
-                              // ),
                             ),
-                            // NeedlePointer(
-                            //     enableAnimation: true,
-                            //     value: widget.appState.player!.trueFakeAnswers /
-                            //         (widget.appState.player!.trueFakeAnswers +
-                            //             widget.appState.player!.falseFakeAnswers))
                           ],
                           annotations: [
                             GaugeAnnotation(

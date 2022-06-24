@@ -384,7 +384,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     //   db.error = "Statements konnten nicht geladen werden.";
     //   return;
     // }
-    route = Routes.gameResults;
+    route = Routes.gameReadyToStart;
     return;
   }
 
