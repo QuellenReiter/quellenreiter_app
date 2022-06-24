@@ -33,7 +33,7 @@ class StatementCard extends StatelessWidget {
         children: [
           const Icon(
             Icons.fact_check,
-            color: DesignColors.lightGrey,
+            color: DesignColors.black,
           ),
           Padding(
             padding: const EdgeInsets.only(right: 20, left: 3),
@@ -50,7 +50,7 @@ class StatementCard extends StatelessWidget {
       // The grey background box.
       child: Material(
         borderRadius: const BorderRadius.all(Radius.circular(15)),
-        color: DesignColors.black,
+        color: DesignColors.lightGrey,
         // Make it clickable.
         child: InkWell(
           hoverColor: Colors.black54,
@@ -69,40 +69,70 @@ class StatementCard extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 10),
                   child: Row(
                       mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.2,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: AspectRatio(
+                                aspectRatio: 4 / 3,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: FadeInImage.memoryNetwork(
+                                    fadeInDuration:
+                                        const Duration(milliseconds: 400),
+                                    fadeInCurve: Curves.easeInOut,
+                                    fit: BoxFit.cover,
+                                    placeholder: kTransparentImage,
+                                    image: statement.statementPictureURL != null
+                                        ? statement.statementPictureURL!.replaceAll(
+                                            "https%3A%2F%2Fparsefiles.back4app.com%2FFeP6gb7k9R2K9OztjKWA1DgYhubqhW0yJMyrHbxH%2F",
+                                            "")
+                                        : "https://quellenreiter.app/assets/logo-pink.png",
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                         Flexible(
                           child: Text(
                             statement.statementText,
-                            style: Theme.of(context).textTheme.subtitle1,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText1!
+                                .copyWith(color: DesignColors.black),
                           ),
                         ),
-                        if (appState.player!.safedStatementsIds!
-                            .contains(statement.objectId))
-                          IconButton(
-                            padding: const EdgeInsets.only(
-                                top: 0, right: 0, left: 10, bottom: 10),
-                            onPressed: () {
-                              HapticFeedback.selectionClick();
-                              appState.player!.safedStatementsIds!
-                                  .remove(statement.objectId!);
-                              appState.updateUserData();
-                            },
-                            icon: const Icon(Icons.delete),
-                          )
-                        else
-                          IconButton(
-                            padding: const EdgeInsets.only(
-                                top: 0, right: 0, left: 10, bottom: 10),
-                            onPressed: () {
-                              HapticFeedback.selectionClick();
-                              appState.player!.safedStatementsIds!
-                                  .add(statement.objectId!);
-                              appState.updateUserData();
-                            },
-                            icon: const Icon(Icons.archive_outlined),
-                          ),
+                        // if (appState.player!.safedStatementsIds!
+                        //     .contains(statement.objectId))
+                        //   IconButton(
+                        //     padding: const EdgeInsets.only(
+                        //         top: 0, right: 0, left: 10, bottom: 10),
+                        //     onPressed: () {
+                        //       HapticFeedback.selectionClick();
+                        //       appState.player!.safedStatementsIds!
+                        //           .remove(statement.objectId!);
+                        //       appState.updateUserData();
+                        //     },
+                        //     icon: const Icon(Icons.delete),
+                        //   )
+                        // else
+                        //   IconButton(
+                        //     padding: const EdgeInsets.only(
+                        //         top: 0, right: 0, left: 10, bottom: 10),
+                        //     onPressed: () {
+                        //       HapticFeedback.selectionClick();
+                        //       appState.player!.safedStatementsIds!
+                        //           .add(statement.objectId!);
+                        //       appState.updateUserData();
+                        //     },
+                        //     icon: const Icon(Icons.archive_outlined),
+                        //   ),
                       ]),
                 ),
 
@@ -128,7 +158,7 @@ class StatementCard extends StatelessWidget {
                           statement.statementCorrectness,
                           style: Theme.of(context)
                               .textTheme
-                              .subtitle1
+                              .headline5
                               ?.copyWith(color: DesignColors.lightGrey),
                         ),
                       ),
@@ -138,7 +168,10 @@ class StatementCard extends StatelessWidget {
                         statement.statementMedia +
                             ', ' +
                             statement.dateAsString(),
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText1!
+                            .copyWith(color: DesignColors.black),
                       ),
                     ],
                   ),
@@ -168,7 +201,10 @@ class StatementCard extends StatelessWidget {
                     alignment: Alignment.center,
                     child: Text(
                       "Faktenchecks zur Aussage von:",
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(color: DesignColors.black),
                     ),
                   ),
                   Expanded(
