@@ -174,7 +174,7 @@ class GameRules {
     while (xp >= levelUpperBoundary(level)) {
       level++;
     }
-    return levelUpperBoundary(level + 1);
+    return levelUpperBoundary(level);
   }
 
   /// Return the amount of XP needed for current level.
@@ -192,6 +192,6 @@ class GameRules {
     while (xp >= levelUpperBoundary(level)) {
       level++;
     }
-    return levelUpperBoundary(level + 2);
+    return levelUpperBoundary(level + 1);
   }
 }
