@@ -1,4 +1,3 @@
-import 'dart:html';
 import 'dart:math';
 
 import 'package:countup/countup.dart';
@@ -262,57 +261,67 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
           else if (widget.appState.currentEnemy!.openGame!.isPlayersTurn())
             // if not played any quests
             if (widget.appState.currentEnemy!.openGame!.playerAnswers.isEmpty)
-              Flexible(
-                child: FloatingActionButton.extended(
-                  backgroundColor: DesignColors.pink,
-                  label: Text("Spielen",
-                      style: Theme.of(context).textTheme.headline4),
-                  onPressed: () => {widget.appState.playGame()},
+              SafeArea(
+                child: Flexible(
+                  child: FloatingActionButton.extended(
+                    backgroundColor: DesignColors.pink,
+                    label: Text("Spielen",
+                        style: Theme.of(context).textTheme.headline4),
+                    onPressed: () => {widget.appState.playGame()},
+                  ),
                 ),
               )
             // if already played in this game
             else
-              Flexible(
-                child: FloatingActionButton.extended(
-                  backgroundColor: DesignColors.pink,
-                  label: Text("Weiter spielen",
-                      style: Theme.of(context).textTheme.headline4),
-                  onPressed: () => {widget.appState.playGame()},
+              SafeArea(
+                child: Flexible(
+                  child: FloatingActionButton.extended(
+                    backgroundColor: DesignColors.pink,
+                    label: Text("Weiter spielen",
+                        style: Theme.of(context).textTheme.headline4),
+                    onPressed: () => {widget.appState.playGame()},
+                  ),
                 ),
               )
           else if (widget.appState.currentEnemy!.openGame!.gameFinished() &&
               widget.appState.currentEnemy!.openGame!.requestingPlayerIndex ==
                   widget.appState.currentEnemy!.openGame!.playerIndex)
-            Flexible(
-              child: FloatingActionButton.extended(
-                backgroundColor: DesignColors.lightGrey,
-                label: Text("Warten...",
-                    style: Theme.of(context).textTheme.headline4),
-                onPressed: null,
+            SafeArea(
+              child: Flexible(
+                child: FloatingActionButton.extended(
+                  backgroundColor: DesignColors.lightGrey,
+                  label: Text("Warten...",
+                      style: Theme.of(context).textTheme.headline4),
+                  onPressed: null,
+                ),
               ),
             )
           else if (widget.appState.currentEnemy!.openGame!.gameFinished())
-            Flexible(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text("Das spiel ist beendet."),
-                  Flexible(
-                    child: StartGameButton(
-                      appState: widget.appState,
-                      enemy: widget.appState.currentEnemy!,
-                    ),
-                  )
-                ],
+            SafeArea(
+              child: Flexible(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text("Das spiel ist beendet."),
+                    Flexible(
+                      child: StartGameButton(
+                        appState: widget.appState,
+                        enemy: widget.appState.currentEnemy!,
+                      ),
+                    )
+                  ],
+                ),
               ),
             )
           else
-            Flexible(
-              child: FloatingActionButton.extended(
-                backgroundColor: DesignColors.lightGrey,
-                label: Text("Warten...",
-                    style: Theme.of(context).textTheme.headline4),
-                onPressed: null,
+            SafeArea(
+              child: Flexible(
+                child: FloatingActionButton.extended(
+                  backgroundColor: DesignColors.lightGrey,
+                  label: Text("Warten...",
+                      style: Theme.of(context).textTheme.headline4),
+                  onPressed: null,
+                ),
               ),
             ),
         ],
