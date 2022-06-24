@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
@@ -8,9 +7,7 @@ import 'package:quellenreiter_app/screens/main/settings_screen.dart';
 import 'package:quellenreiter_app/screens/main/start_screen.dart';
 import 'package:quellenreiter_app/widgets/main_app_bar.dart';
 import 'package:quellenreiter_app/widgets/stats_app_bar.dart';
-
 import '../../constants/constants.dart';
-import '../../widgets/error_banner.dart';
 import 'archive_screen.dart';
 
 class HomeScreen extends StatefulWidget {

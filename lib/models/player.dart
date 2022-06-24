@@ -179,4 +179,20 @@ class Player {
         numGamesTied * GameRules.pointsPerTiedGame; // tied games give 5 xp
     return xp;
   }
+
+  int getLevel() {
+    return GameRules.currentLevel(getXp());
+  }
+
+  int getPreviousLevelXp() {
+    return GameRules.xpForCurrentLevel(getXp());
+  }
+
+  int getNextLevelXp() {
+    return GameRules.xpForNextLevel(getXp());
+  }
+
+  int getNexNexttLevelXp() {
+    return GameRules.xpForNextNextLevel(getXp());
+  }
 }

@@ -59,39 +59,95 @@ class _StatsAppBarState extends State<StatsAppBar> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(
-                widget.appState.player!.emoji,
-                style: TextStyle(fontSize: 50),
+              Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: Text(
+                  widget.appState.player!.emoji,
+                  style: TextStyle(fontSize: 50),
+                ),
               ),
-              Flexible(
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.appState.player!.name,
-                    style: Theme.of(context).textTheme.headline1,
-                  ),
-                  SfLinearGauge(
-                    animateAxis: true,
-                    axisTrackStyle: LinearAxisTrackStyle(
-                      thickness: 20,
-                      edgeStyle: LinearEdgeStyle.bothCurve,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.appState.player!.name,
+                      style: Theme.of(context).textTheme.headline1,
                     ),
-                    animateRange: true,
-                    animationDuration: 400,
-                    showTicks: false,
-                    showLabels: false,
-                    barPointers: [
-                      LinearBarPointer(
-                        edgeStyle: LinearEdgeStyle.bothCurve,
-                        thickness: 20,
-                        value: 40,
-                        color: DesignColors.pink,
+                    Stack(alignment: Alignment.center, children: [
+                      SfLinearGauge(
+                        minimum: widget.appState.player!
+                            .getPreviousLevelXp()
+                            .toDouble(),
+                        maximum:
+                            widget.appState.player!.getNextLevelXp().toDouble(),
+                        animateAxis: true,
+                        axisTrackStyle: LinearAxisTrackStyle(
+                          thickness: 20,
+                          edgeStyle: LinearEdgeStyle.bothCurve,
+                        ),
+                        animateRange: true,
+                        animationDuration: 400,
+                        showTicks: false,
+                        showLabels: false,
+                        barPointers: [
+                          LinearBarPointer(
+                            edgeStyle: LinearEdgeStyle.bothCurve,
+                            thickness: 20,
+                            value: widget.appState.player!.getXp().toDouble(),
+                            color: DesignColors.pink,
+                          )
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              widget.appState.player!.getLevel().toString(),
+                              style: Theme.of(context).textTheme.headline5,
+                            ),
+                            Text(
+                              widget.appState.player!.getXp().toString() +
+                                  "/" +
+                                  widget.appState.player!
+                                      .getNextLevelXp()
+                                      .toString() +
+                                  " XP",
+                              style: Theme.of(context).textTheme.headline5,
+                            ),
+                            Text(
+                              (widget.appState.player!.getLevel() + 1)
+                                  .toString(),
+                              style: Theme.of(context).textTheme.headline5,
+                            ),
+                          ],
+                        ),
                       )
-                    ],
+                    ]),
+                  ],
+                ),
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.workspace_premium_rounded,
+                    size: 40,
+                    color: DesignColors.yellow,
+                  ),
+                  Text(
+                    '${widget.appState.player!.getLevel()}',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline1!
+                        .copyWith(color: DesignColors.yellow),
                   ),
                 ],
-              ))
+              )
             ],
           ),
         ),
