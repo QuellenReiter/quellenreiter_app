@@ -269,6 +269,10 @@ class Enemy {
         numGamesTiedOther * GameRules.pointsPerTiedGame; // tied games give 5 xp
     return xp;
   }
+
+  int getLevel() {
+    return GameRules.currentLevel(getXp());
+  }
 }
 
 class Enemies {

@@ -193,16 +193,22 @@ class EnemyCard extends StatelessWidget {
                                   enemy.name,
                                   style: Theme.of(context).textTheme.headline4,
                                 ),
-                                const Icon(
-                                  Icons.monetization_on,
-                                  color: DesignColors.yellow,
-                                  size: 16,
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 10),
+                                  child: Icon(
+                                    Icons.workspace_premium_rounded,
+                                    color: DesignColors.yellow,
+                                    size: 24,
+                                  ),
                                 ),
                                 Countup(
                                   begin: 0,
-                                  end: enemy.getXp().toDouble(),
+                                  end: enemy.getLevel().toDouble(),
                                   duration: const Duration(milliseconds: 500),
-                                  style: Theme.of(context).textTheme.subtitle1,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline4!
+                                      .copyWith(color: DesignColors.yellow),
                                 ),
                               ],
                             ),

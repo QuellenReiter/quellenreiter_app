@@ -155,9 +155,14 @@ class GameRules {
   /// The number of points a player gets for answering a statement correctly.
   static const int pointsPerCorrectAnswer = 12;
 
+  /// Returns the upper xp boundary of a given level.
+  static int levelUpperBoundary(int level) {
+    return 5 * (level + 1) * (9 + (level + 1));
+  }
+
   static int currentLevel(int xp) {
     int level = 0;
-    while (xp >= (5 * (level + 1) * (9 + (level + 1)))) {
+    while (xp >= levelUpperBoundary(level)) {
       level++;
     }
     return level;
@@ -166,18 +171,27 @@ class GameRules {
   /// Returns the amount of XP needed to reach the next level.
   static int xpForNextLevel(int xp) {
     int level = 0;
-    while (xp >= (5 * (level + 1) * (9 + (level + 1)))) {
+    while (xp >= levelUpperBoundary(level)) {
       level++;
     }
-    return (5 * (level + 1) * (9 + (level + 1)));
+    return levelUpperBoundary(level + 1);
+  }
+
+  /// Return the amount of XP needed for current level.
+  static int xpForCurrentLevel(int xp) {
+    int level = 0;
+    while (xp >= levelUpperBoundary(level)) {
+      level++;
+    }
+    return levelUpperBoundary(level - 1);
   }
 
   /// Returns the amount of XP needed to reach the next next level.
   static int xpForNextNextLevel(int xp) {
     int level = 0;
-    while (xp >= (5 * (level + 1) * (9 + (level + 1)))) {
+    while (xp >= levelUpperBoundary(level)) {
       level++;
     }
-    return (5 * (level + 2) * (9 + (level + 2)));
+    return levelUpperBoundary(level + 2);
   }
 }
