@@ -81,7 +81,7 @@ class _StartScreenState extends State<StartScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Icon(
-                Icons.not_started,
+                Icons.sports_esports,
                 color: DesignColors.backgroundBlue,
                 size: Theme.of(context).textTheme.headline2!.fontSize! + 10,
               ),
@@ -172,6 +172,7 @@ class _StartScreenState extends State<StartScreen> {
                           showLabels: false,
                           pointers: [
                             RangePointer(
+                              cornerStyle: CornerStyle.bothCurve,
                               value: widget.appState.player!.trueFakeAnswers /
                                   (widget.appState.player!.trueFakeAnswers +
                                       widget.appState.player!.falseFakeAnswers),
@@ -197,15 +198,40 @@ class _StartScreenState extends State<StartScreen> {
                           annotations: [
                             GaugeAnnotation(
                                 widget: Container(
-                                  child: Text(
-                                    'Fakes \nentlarven',
-                                    textAlign: TextAlign.center,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle1!
-                                        .copyWith(
-                                            color: DesignColors.backgroundBlue),
-                                  ),
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          (widget.appState.player!
+                                                          .trueFakeAnswers /
+                                                      (widget.appState.player!
+                                                              .trueFakeAnswers +
+                                                          widget
+                                                              .appState
+                                                              .player!
+                                                              .falseFakeAnswers) *
+                                                      100)
+                                                  .toString()
+                                                  .substring(0, 4) +
+                                              "%",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline1!
+                                              .copyWith(
+                                                  color: DesignColors.green),
+                                        ),
+                                        Text(
+                                          'Fakes entlarvt',
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline4!
+                                              .copyWith(
+                                                  color: DesignColors
+                                                      .backgroundBlue),
+                                        ),
+                                      ]),
                                 ),
                                 angle: 90,
                                 positionFactor: 0)
@@ -230,23 +256,14 @@ class _StartScreenState extends State<StartScreen> {
                               startValue: 0,
                               endValue: 1,
                               sizeUnit: GaugeSizeUnit.factor,
-                              startWidth: 0.3,
-                              endWidth: 0.3,
-                              color: DesignColors.lightGrey,
-                              // gradient: const SweepGradient(
-                              //   colors: [
-                              //     DesignColors.red,
-                              //     DesignColors.yellow,
-                              //     DesignColors.green,
-                              //   ],
-                              //   stops: [0.0, 0.5, 1],
-                              // ),
+                              color: Colors.transparent,
                             ),
                           ],
                           showTicks: false,
                           showLabels: false,
                           pointers: [
                             RangePointer(
+                              cornerStyle: CornerStyle.bothCurve,
                               value: widget
                                       .appState.player!.trueCorrectAnswers /
                                   (widget.appState.player!.trueCorrectAnswers +
@@ -255,34 +272,45 @@ class _StartScreenState extends State<StartScreen> {
                               enableAnimation: true,
                               width: 20,
                               color: DesignColors.green,
-                              // gradient: const SweepGradient(
-                              //   colors: [
-                              //     DesignColors.red,
-                              //     DesignColors.yellow,
-                              //     Color.fromARGB(255, 219, 245, 91),
-                              //     DesignColors.green,
-                              //   ],
-                              //   stops: [0.0, 0.3, 0.7, 1],
-                              // ),
                             ),
-                            // NeedlePointer(
-                            //     enableAnimation: true,
-                            //     value: widget.appState.player!.trueFakeAnswers /
-                            //         (widget.appState.player!.trueFakeAnswers +
-                            //             widget.appState.player!.falseFakeAnswers))
                           ],
                           annotations: [
                             GaugeAnnotation(
                                 widget: Container(
-                                  child: Text(
-                                    'Fakten \nerkennen',
-                                    textAlign: TextAlign.center,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle1!
-                                        .copyWith(
-                                            color: DesignColors.backgroundBlue),
-                                  ),
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          (widget.appState.player!
+                                                          .trueCorrectAnswers /
+                                                      (widget.appState.player!
+                                                              .trueCorrectAnswers +
+                                                          widget
+                                                              .appState
+                                                              .player!
+                                                              .falseCorrectAnswers) *
+                                                      100)
+                                                  .toString()
+                                                  .substring(0, 4) +
+                                              "%",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline1!
+                                              .copyWith(
+                                                  color: DesignColors.green),
+                                        ),
+                                        Text(
+                                          'Fakten erkannt',
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline4!
+                                              .copyWith(
+                                                  color: DesignColors
+                                                      .backgroundBlue),
+                                        ),
+                                      ]),
                                 ),
                                 angle: 90,
                                 positionFactor: 0)
