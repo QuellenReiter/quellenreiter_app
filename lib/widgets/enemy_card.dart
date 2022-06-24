@@ -174,7 +174,7 @@ class EnemyCard extends StatelessWidget {
                       style: BorderStyle.solid,
                     )),
                 padding: const EdgeInsets.only(
-                    top: 10, bottom: 10, left: 70, right: 20),
+                    top: 10, bottom: 10, left: 50, right: 20),
                 child: Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
