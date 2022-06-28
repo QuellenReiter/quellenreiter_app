@@ -155,9 +155,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
               key: const ValueKey('GameResultsScreen'),
               child: ReadyToStartScreen(
                 appState: appState,
-
-                /// ToDo: Show only factchecks from routes
-                // showAll: false,
+                showOnlyLast: true,
               ),
             ),
           ];

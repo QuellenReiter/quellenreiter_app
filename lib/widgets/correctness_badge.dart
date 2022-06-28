@@ -37,7 +37,7 @@ class CorrectnessBadge extends StatelessWidget {
             builder: (BuildContext context) {
               return Container(
                 decoration: BoxDecoration(
-                  color: Colors.grey[800],
+                  color: Colors.white,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(15),
                     topRight: Radius.circular(15),
@@ -68,7 +68,7 @@ class CorrectnessBadge extends StatelessWidget {
                                     "Unsere Bewertungsskala",
                                     style: Theme.of(context)
                                         .textTheme
-                                        .subtitle1!
+                                        .headline2!
                                         .copyWith(color: DesignColors.green),
                                   ),
                                   Row(
@@ -88,7 +88,7 @@ class CorrectnessBadge extends StatelessWidget {
                                           child: SelectableText("Richtig",
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .subtitle1),
+                                                  .headline4),
                                         ),
                                       ),
                                       Flexible(
@@ -96,7 +96,7 @@ class CorrectnessBadge extends StatelessWidget {
                                           "Die Behauptung oder Aussage ist richtig.",
                                           style: Theme.of(context)
                                               .textTheme
-                                              .subtitle2,
+                                              .bodyText2,
                                         ),
                                       )
                                     ],
@@ -123,7 +123,7 @@ class CorrectnessBadge extends StatelessWidget {
                                             "Unbelegt",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .subtitle1,
+                                                .headline4,
                                           ),
                                         ),
                                       ),
@@ -132,7 +132,7 @@ class CorrectnessBadge extends StatelessWidget {
                                           "Es gibt keine Belege für die Richtigkeit dieser Behauptung oder Aussage.",
                                           style: Theme.of(context)
                                               .textTheme
-                                              .subtitle2,
+                                              .bodyText2,
                                         ),
                                       )
                                     ],
@@ -159,7 +159,7 @@ class CorrectnessBadge extends StatelessWidget {
                                             "Falscher Kontext",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .subtitle1,
+                                                .headline4,
                                           ),
                                         ),
                                       ),
@@ -168,7 +168,7 @@ class CorrectnessBadge extends StatelessWidget {
                                           "Die Aussage wird in einem falschen Kontext dargestellt.",
                                           style: Theme.of(context)
                                               .textTheme
-                                              .subtitle2,
+                                              .bodyText2,
                                         ),
                                       )
                                     ],
@@ -195,7 +195,7 @@ class CorrectnessBadge extends StatelessWidget {
                                             "Manipuliert",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .subtitle1,
+                                                .headline4,
                                           ),
                                         ),
                                       ),
@@ -204,7 +204,7 @@ class CorrectnessBadge extends StatelessWidget {
                                           "Das Video oder Bild wurde manipuliert, z.B. durch Fotoshop.",
                                           style: Theme.of(context)
                                               .textTheme
-                                              .subtitle2,
+                                              .bodyText2,
                                         ),
                                       )
                                     ],
@@ -231,7 +231,7 @@ class CorrectnessBadge extends StatelessWidget {
                                             "Irreführend",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .subtitle1,
+                                                .headline4,
                                           ),
                                         ),
                                       ),
@@ -240,7 +240,7 @@ class CorrectnessBadge extends StatelessWidget {
                                           "Etwas wird falsch interpretiert oder ein Ereignis hat sich nicht so zugetragen, wie behauptet wird - dadurch werden Menschen in die Irre geführt.",
                                           style: Theme.of(context)
                                               .textTheme
-                                              .subtitle2,
+                                              .bodyText2,
                                         ),
                                       )
                                     ],
@@ -267,7 +267,7 @@ class CorrectnessBadge extends StatelessWidget {
                                             "Frei erfunden",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .subtitle1,
+                                                .headline4,
                                           ),
                                         ),
                                       ),
@@ -276,7 +276,7 @@ class CorrectnessBadge extends StatelessWidget {
                                           "Zitate, Behauptungen, Zahlen, Geschehnisse oder Personen sind erfunden.",
                                           style: Theme.of(context)
                                               .textTheme
-                                              .subtitle2,
+                                              .bodyText2,
                                         ),
                                       )
                                     ],
@@ -303,7 +303,7 @@ class CorrectnessBadge extends StatelessWidget {
                                             "Fehlinformation",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .subtitle1,
+                                                .headline4,
                                           ),
                                         ),
                                       ),
@@ -312,7 +312,7 @@ class CorrectnessBadge extends StatelessWidget {
                                           "Die Aussage beinhaltet Informationen, die versehentlich falsch wiedergegeben wurden. Die Fehler wurden daraufhin vom Medium korrigiert.",
                                           style: Theme.of(context)
                                               .textTheme
-                                              .subtitle2,
+                                              .bodyText2,
                                         ),
                                       )
                                     ],
@@ -339,7 +339,7 @@ class CorrectnessBadge extends StatelessWidget {
                                             "Satire",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .subtitle1,
+                                                .headline4,
                                           ),
                                         ),
                                       ),
@@ -348,7 +348,7 @@ class CorrectnessBadge extends StatelessWidget {
                                           "Es handelt sich um Satire, die jedoch nicht als solche zu erkennen ist.",
                                           style: Theme.of(context)
                                               .textTheme
-                                              .subtitle2,
+                                              .bodyText2,
                                         ),
                                       )
                                     ],

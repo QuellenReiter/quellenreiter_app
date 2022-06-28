@@ -59,7 +59,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
       );
     }
     // add all current friends
-    if (widget.appState.player!.friends!.enemies.isNotEmpty) {
+    if (widget.appState.player!.friends != null &&
+        widget.appState.player!.friends!.enemies.isNotEmpty) {
       for (Enemy e in widget.appState.player!.friends!.enemies) {
         enemyCards.add(
           EnemyCard(

@@ -85,11 +85,11 @@ class _ResultsAppBarState extends State<ResultsAppBar> {
                     ),
                   ),
                   Text(
-                    widget.appState.currentEnemy!.openGame!.enemyAnswers
+                    widget.appState.currentEnemy!.openGame!.playerAnswers
                             .fold<int>(0, (p, c) => p + (c ? 1 : 0))
                             .toString() +
                         " : " +
-                        widget.appState.currentEnemy!.openGame!.playerAnswers
+                        widget.appState.currentEnemy!.openGame!.enemyAnswers
                             .fold<int>(0, (p, c) => p + (c ? 1 : 0))
                             .toString(),
                     style: Theme.of(context).textTheme.headline1,
