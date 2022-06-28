@@ -57,6 +57,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                     children: [
                       Flexible(
                         child: TextField(
+                          style: Theme.of(context).textTheme.bodyText2,
                           textInputAction: TextInputAction.search,
                           onSubmitted: (query) =>
                               {widget.appState.friendsQuery = query.trim()},
@@ -65,7 +66,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                             hintText: "Username eingeben...",
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.all(
-                                Radius.circular(20),
+                                Radius.circular(10),
                               ),
                             ),
                             filled: true,

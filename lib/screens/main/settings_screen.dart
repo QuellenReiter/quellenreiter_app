@@ -76,7 +76,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               hintText: "Gebe einen neuen Username ein.",
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.all(
-                                  Radius.circular(20),
+                                  Radius.circular(10),
                                 ),
                               ),
                               filled: true,
@@ -133,7 +133,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               counterText: "",
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.all(
-                                  Radius.circular(20),
+                                  Radius.circular(10),
                                 ),
                               ),
                               filled: true,
