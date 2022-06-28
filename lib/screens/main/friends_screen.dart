@@ -61,14 +61,69 @@ class _FriendsScreenState extends State<FriendsScreen> {
     // add all current friends
     if (widget.appState.player!.friends != null &&
         widget.appState.player!.friends!.enemies.isNotEmpty) {
-      for (Enemy e in widget.appState.player!.friends!.enemies) {
+      int i = 1;
+      bool playerAdded = false;
+      for (Enemy e in widget.appState.player!.friends!.enemies
+        ..sort((a, b) => b.getXp().compareTo(a.getXp()))) {
+        if (!playerAdded && widget.appState.player!.getXp() > e.getXp()) {
+          enemyCards.add(
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Text("$i.",
+                        style: Theme.of(context).textTheme.headline2)),
+                Flexible(
+                  child: EnemyCard(
+                    appState: widget.appState,
+                    enemy: widget.appState.player!,
+                    onTapped: (enemy) => {},
+                  ),
+                ),
+              ],
+            ),
+          );
+          i++;
+          playerAdded = true;
+        }
         enemyCards.add(
-          EnemyCard(
-            appState: widget.appState,
-            enemy: e,
-            onTapped: (enemy) => {},
+          Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child:
+                    Text("$i.", style: Theme.of(context).textTheme.headline2)),
+            Flexible(
+              child: EnemyCard(
+                appState: widget.appState,
+                enemy: e,
+                onTapped: (enemy) => {},
+              ),
+            ),
+          ]),
+        );
+        i++;
+      }
+      if (!playerAdded) {
+        enemyCards.add(
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Text("$i.",
+                      style: Theme.of(context).textTheme.headline2)),
+              Flexible(
+                child: EnemyCard(
+                  appState: widget.appState,
+                  enemy: widget.appState.player!,
+                  onTapped: (enemy) => {},
+                ),
+              ),
+            ],
           ),
         );
+        playerAdded = true;
       }
     }
 

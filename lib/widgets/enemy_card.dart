@@ -5,6 +5,7 @@ import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/start_game_button.dart';
 
 import '../constants/constants.dart';
+import '../models/player.dart';
 import '../models/statement.dart';
 
 /// Brief information display of a single [Statement].
@@ -17,7 +18,7 @@ class EnemyCard extends StatelessWidget {
       : super(key: key);
 
   /// The [Enemy] to be displayed.
-  final Enemy enemy;
+  final dynamic enemy;
   final QuellenreiterAppState appState;
 
   /// Stores if user tapped on this [EnemyCard] and notifies the navigation.
@@ -26,6 +27,68 @@ class EnemyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     dynamic onClickFunk;
     String label = "";
+
+    if (enemy.runtimeType == Player) {
+      return Padding(
+        padding:
+            const EdgeInsets.only(top: 10, bottom: 10, left: 30, right: 10),
+        child: Material(
+          borderRadius: const BorderRadius.all(Radius.circular(15)),
+          elevation: 5,
+          color: DesignColors.lightBlue,
+
+          // Make it clickable.
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(15)),
+                ),
+                padding: const EdgeInsets.only(
+                    top: 10, bottom: 10, left: 50, right: 20),
+                child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  enemy.name,
+                                  style: Theme.of(context).textTheme.headline4,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ]),
+              ),
+              IgnorePointer(
+                child: FractionallySizedBox(
+                  widthFactor: 1.1,
+                  child: Text(
+                    enemy.emoji,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline1!
+                        .copyWith(fontSize: 60),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     if (enemy.openGame == null) {
       if (enemy.acceptedByPlayer && enemy.acceptedByOther) {
         label = "Spiel starten";
