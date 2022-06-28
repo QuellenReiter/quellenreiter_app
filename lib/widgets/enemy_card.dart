@@ -36,7 +36,7 @@ class EnemyCard extends StatelessWidget {
               builder: (BuildContext context) {
                 return Container(
                   decoration: BoxDecoration(
-                    color: Colors.grey[800],
+                    color: Colors.white,
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(15),
                       topRight: Radius.circular(15),
@@ -65,7 +65,7 @@ class EnemyCard extends StatelessWidget {
                             ),
                           ),
                           SelectableText("Wie möchtest du spielen?",
-                              style: Theme.of(context).textTheme.subtitle1),
+                              style: Theme.of(context).textTheme.headline2),
                           Flexible(
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
@@ -77,7 +77,7 @@ class EnemyCard extends StatelessWidget {
                                   child: Text(
                                     "Mit Timer",
                                     style:
-                                        Theme.of(context).textTheme.subtitle1,
+                                        Theme.of(context).textTheme.headline4,
                                   ),
                                 ),
                                 ElevatedButton(
@@ -86,7 +86,7 @@ class EnemyCard extends StatelessWidget {
                                   child: Text(
                                     "ohne Timer",
                                     style:
-                                        Theme.of(context).textTheme.subtitle1,
+                                        Theme.of(context).textTheme.headline4,
                                   ),
                                 ),
                               ],
