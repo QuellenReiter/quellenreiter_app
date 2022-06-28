@@ -27,6 +27,7 @@ class _StartScreenState extends State<StartScreen> {
     List<Widget> finishedGames = [];
     // if any open game is finished and points are not accessed yet.
     if (widget.appState.player!.friends == null) {
+      widget.appState.getFriends();
       return const Center(child: CircularProgressIndicator());
     } else if (widget.appState.player!.friends!.enemies.any((element) =>
         (element.openGame != null
