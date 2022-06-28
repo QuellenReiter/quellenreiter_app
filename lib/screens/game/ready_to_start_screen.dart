@@ -5,11 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
-import 'package:quellenreiter_app/models/statement.dart';
 import 'package:quellenreiter_app/widgets/results_app_bar.dart';
 import 'package:quellenreiter_app/widgets/start_game_button.dart';
 
-import '../../widgets/error_banner.dart';
 import '../../widgets/statement_card.dart';
 
 class ReadyToStartScreen extends StatefulWidget {

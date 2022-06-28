@@ -96,7 +96,7 @@ class _QuellenreiterAppState extends State<QuellenreiterApp> {
               bodyText2: TextStyle(
                 color: DesignColors.black,
                 fontFamily: 'Oswald',
-                fontSize: 12,
+                fontSize: 14,
               ),
             ),
             floatingActionButtonTheme: const FloatingActionButtonThemeData(
