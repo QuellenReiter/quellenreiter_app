@@ -55,7 +55,8 @@ class _StartScreenState extends State<StartScreen> {
         ),
       );
       for (Enemy e in widget.appState.player!.friends!.enemies) {
-        if (e.openGame!.gameFinished() &&
+        if (e.openGame != null &&
+            e.openGame!.gameFinished() &&
             e.openGame!.requestingPlayerIndex != e.openGame!.playerIndex) {
           finishedGames.add(EnemyCard(
             appState: widget.appState,
@@ -165,9 +166,12 @@ class _StartScreenState extends State<StartScreen> {
                           pointers: [
                             RangePointer(
                               cornerStyle: CornerStyle.bothCurve,
-                              value: widget.appState.player!.trueFakeAnswers /
-                                  (widget.appState.player!.trueFakeAnswers +
-                                      widget.appState.player!.falseFakeAnswers),
+                              value: widget.appState.player!.numPlayedGames == 0
+                                  ? 0
+                                  : widget.appState.player!.trueFakeAnswers /
+                                      (widget.appState.player!.trueFakeAnswers +
+                                          widget.appState.player!
+                                              .falseFakeAnswers),
                               enableAnimation: true,
                               width: 20,
                               color: DesignColors.green,
@@ -181,18 +185,24 @@ class _StartScreenState extends State<StartScreen> {
                                           MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          (widget.appState.player!
-                                                          .trueFakeAnswers /
-                                                      (widget.appState.player!
-                                                              .trueFakeAnswers +
-                                                          widget
-                                                              .appState
-                                                              .player!
-                                                              .falseFakeAnswers) *
-                                                      100)
-                                                  .toString()
-                                                  .substring(0, 4) +
-                                              "%",
+                                          widget.appState.player!
+                                                      .numPlayedGames ==
+                                                  0
+                                              ? "0%"
+                                              : (widget.appState.player!
+                                                              .trueFakeAnswers /
+                                                          (widget
+                                                                  .appState
+                                                                  .player!
+                                                                  .trueFakeAnswers +
+                                                              widget
+                                                                  .appState
+                                                                  .player!
+                                                                  .falseFakeAnswers) *
+                                                          100)
+                                                      .toString()
+                                                      .substring(0, 4) +
+                                                  "%",
                                           style: Theme.of(context)
                                               .textTheme
                                               .headline1!
@@ -242,11 +252,13 @@ class _StartScreenState extends State<StartScreen> {
                           pointers: [
                             RangePointer(
                               cornerStyle: CornerStyle.bothCurve,
-                              value: widget
-                                      .appState.player!.trueCorrectAnswers /
-                                  (widget.appState.player!.trueCorrectAnswers +
-                                      widget.appState.player!
-                                          .falseCorrectAnswers),
+                              value: widget.appState.player!.numPlayedGames == 0
+                                  ? 0
+                                  : widget.appState.player!.trueCorrectAnswers /
+                                      (widget.appState.player!
+                                              .trueCorrectAnswers +
+                                          widget.appState.player!
+                                              .falseCorrectAnswers),
                               enableAnimation: true,
                               width: 20,
                               color: DesignColors.green,
@@ -260,18 +272,24 @@ class _StartScreenState extends State<StartScreen> {
                                           MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          (widget.appState.player!
-                                                          .trueCorrectAnswers /
-                                                      (widget.appState.player!
-                                                              .trueCorrectAnswers +
-                                                          widget
-                                                              .appState
-                                                              .player!
-                                                              .falseCorrectAnswers) *
-                                                      100)
-                                                  .toString()
-                                                  .substring(0, 4) +
-                                              "%",
+                                          widget.appState.player!
+                                                      .numPlayedGames ==
+                                                  0
+                                              ? "0%"
+                                              : (widget.appState.player!
+                                                              .trueCorrectAnswers /
+                                                          (widget
+                                                                  .appState
+                                                                  .player!
+                                                                  .trueCorrectAnswers +
+                                                              widget
+                                                                  .appState
+                                                                  .player!
+                                                                  .falseCorrectAnswers) *
+                                                          100)
+                                                      .toString()
+                                                      .substring(0, 4) +
+                                                  "%",
                                           style: Theme.of(context)
                                               .textTheme
                                               .headline1!

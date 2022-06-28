@@ -13,9 +13,11 @@ import '../../widgets/error_banner.dart';
 import '../../widgets/statement_card.dart';
 
 class ReadyToStartScreen extends StatefulWidget {
-  const ReadyToStartScreen({Key? key, required this.appState})
+  const ReadyToStartScreen(
+      {Key? key, required this.appState, this.showOnlyLast = false})
       : super(key: key);
   final QuellenreiterAppState appState;
+  final bool showOnlyLast;
   @override
   State<ReadyToStartScreen> createState() => _ReadyToStartScreenState();
 }
@@ -29,17 +31,6 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
   );
   List<Widget> statementCardsWithAnswers = [];
   int commonLength = 0;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    statementCardsWithAnswers = [];
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +73,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                   if (widget
                           .appState.currentEnemy!.openGame!.playerAnswers[i] ==
                       true)
-                    CircleAvatar(
+                    const CircleAvatar(
                       backgroundColor: DesignColors.green,
                       child: Icon(
                         Icons.check,
@@ -90,7 +81,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                       ),
                     )
                   else
-                    CircleAvatar(
+                    const CircleAvatar(
                       backgroundColor: DesignColors.red,
                       child: Icon(
                         Icons.not_interested,
@@ -98,14 +89,14 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                       ),
                     ),
                   if (commonLength <= i)
-                    CircleAvatar(
+                    const CircleAvatar(
                       backgroundColor: DesignColors.lightGrey,
                       child: Icon(Icons.watch_later_outlined),
                     )
                   else if (widget
                           .appState.currentEnemy!.openGame!.enemyAnswers[i] ==
                       true)
-                    CircleAvatar(
+                    const CircleAvatar(
                       backgroundColor: DesignColors.green,
                       child: Icon(
                         Icons.check,
@@ -113,12 +104,13 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                       ),
                     )
                   else
-                    CircleAvatar(
-                        backgroundColor: DesignColors.red,
-                        child: Icon(
-                          Icons.not_interested,
-                          color: Colors.white,
-                        )),
+                    const CircleAvatar(
+                      backgroundColor: DesignColors.red,
+                      child: Icon(
+                        Icons.not_interested,
+                        color: Colors.white,
+                      ),
+                    ),
                 ],
               ),
             ],
@@ -142,61 +134,70 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
             padding: const EdgeInsets.all(10),
             children: [
               if (widget.appState.currentEnemy!.openGame!.gameFinished())
-                Flexible(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      if (widget.appState.currentEnemy!.openGame!
-                              .getGameResult() ==
-                          GameResult.playerWon)
-                        Text("Gewonnen",
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if (widget.appState.currentEnemy!.openGame!
+                            .getGameResult() ==
+                        GameResult.playerWon)
+                      Text("Gewonnen",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline1!
+                              .copyWith(color: DesignColors.green))
+                    else if (widget.appState.currentEnemy!.openGame!
+                            .getGameResult() ==
+                        GameResult.tied)
+                      Text("Unentschieden",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline1!
+                              .copyWith(color: DesignColors.green))
+                    else
+                      Text("Verloren",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline1!
+                              .copyWith(color: DesignColors.red)),
+                    Flexible(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "+",
                             style: Theme.of(context)
                                 .textTheme
-                                .headline2!
-                                .copyWith(color: DesignColors.green))
-                      else if (widget.appState.currentEnemy!.openGame!
-                              .getGameResult() ==
-                          GameResult.tied)
-                        Text("Unentschieden",
+                                .headline4!
+                                .copyWith(color: DesignColors.yellow),
+                          ),
+                          const Icon(
+                            Icons.monetization_on,
+                            color: DesignColors.yellow,
+                            size: 24,
+                          ),
+                          Countup(
+                            begin: 0,
+                            end: widget.appState.currentEnemy!.openGame!
+                                .getPlayerXp()
+                                .toDouble(),
+                            duration: const Duration(seconds: 1),
                             style: Theme.of(context)
                                 .textTheme
-                                .headline2!
-                                .copyWith(color: DesignColors.green))
-                      else
-                        Text("Verloren",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: DesignColors.red)),
-                      Flexible(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text("+ "),
-                            const Icon(
-                              Icons.monetization_on,
-                              color: DesignColors.yellow,
-                              size: 24,
-                            ),
-                            Countup(
-                              begin: 0,
-                              end: widget.appState.currentEnemy!.openGame!
-                                  .getPlayerXp()
-                                  .toDouble(),
-                              duration: const Duration(seconds: 1),
-                              style: Theme.of(context).textTheme.subtitle1,
-                            )
-                          ],
-                        ),
+                                .headline4!
+                                .copyWith(color: DesignColors.yellow),
+                          )
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               // display the statementcards
               if (statementCardsWithAnswers.isNotEmpty)
                 ExpansionTile(
-                  initiallyExpanded: true,
+                  initiallyExpanded: !widget.showOnlyLast ||
+                      (widget.showOnlyLast &&
+                          statementCardsWithAnswers.length < 4),
                   title: Padding(
                     padding: const EdgeInsets.only(left: 10),
                     child: Text(
@@ -209,7 +210,9 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                 ),
               if (statementCardsWithAnswers.length > 3)
                 ExpansionTile(
-                  initiallyExpanded: true,
+                  initiallyExpanded: !widget.showOnlyLast ||
+                      (widget.showOnlyLast &&
+                          statementCardsWithAnswers.length < 7),
                   title: Padding(
                     padding: const EdgeInsets.only(left: 10),
                     child: Text(
@@ -222,7 +225,9 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                 ),
               if (statementCardsWithAnswers.length > 6)
                 ExpansionTile(
-                  initiallyExpanded: true,
+                  initiallyExpanded: !widget.showOnlyLast ||
+                      (widget.showOnlyLast &&
+                          6 < statementCardsWithAnswers.length),
                   title: Padding(
                     padding: const EdgeInsets.only(left: 10),
                     child: Text(
@@ -244,66 +249,54 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
             // if not played any quests
             if (widget.appState.currentEnemy!.openGame!.playerAnswers.isEmpty)
               SafeArea(
-                child: Flexible(
-                  child: FloatingActionButton.extended(
-                    backgroundColor: DesignColors.pink,
-                    label: Text("Spielen",
-                        style: Theme.of(context).textTheme.headline4),
-                    onPressed: () => {widget.appState.playGame()},
-                  ),
+                child: FloatingActionButton.extended(
+                  backgroundColor: DesignColors.pink,
+                  label: Text("Spielen",
+                      style: Theme.of(context).textTheme.headline4),
+                  onPressed: () => {widget.appState.playGame()},
                 ),
               )
             // if already played in this game
             else
               SafeArea(
-                child: Flexible(
-                  child: FloatingActionButton.extended(
-                    backgroundColor: DesignColors.pink,
-                    label: Text("Weiter spielen",
-                        style: Theme.of(context).textTheme.headline4),
-                    onPressed: () => {widget.appState.playGame()},
-                  ),
+                child: FloatingActionButton.extended(
+                  backgroundColor: DesignColors.pink,
+                  label: Text("Weiter spielen",
+                      style: Theme.of(context).textTheme.headline4),
+                  onPressed: () => {widget.appState.playGame()},
                 ),
               )
           else if (widget.appState.currentEnemy!.openGame!.gameFinished() &&
               widget.appState.currentEnemy!.openGame!.requestingPlayerIndex ==
                   widget.appState.currentEnemy!.openGame!.playerIndex)
             SafeArea(
-              child: Flexible(
-                child: FloatingActionButton.extended(
-                  backgroundColor: DesignColors.lightGrey,
-                  label: Text("Warten...",
-                      style: Theme.of(context).textTheme.headline4),
-                  onPressed: null,
-                ),
+              child: FloatingActionButton.extended(
+                backgroundColor: DesignColors.lightGrey,
+                label: Text("Warten...",
+                    style: Theme.of(context).textTheme.headline4),
+                onPressed: null,
               ),
             )
           else if (widget.appState.currentEnemy!.openGame!.gameFinished())
             SafeArea(
-              child: Flexible(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text("Das spiel ist beendet."),
-                    Flexible(
-                      child: StartGameButton(
-                        appState: widget.appState,
-                        enemy: widget.appState.currentEnemy!,
-                      ),
-                    )
-                  ],
-                ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text("Das spiel ist beendet."),
+                  StartGameButton(
+                    appState: widget.appState,
+                    enemy: widget.appState.currentEnemy!,
+                  )
+                ],
               ),
             )
           else
             SafeArea(
-              child: Flexible(
-                child: FloatingActionButton.extended(
-                  backgroundColor: DesignColors.lightGrey,
-                  label: Text("Warten...",
-                      style: Theme.of(context).textTheme.headline4),
-                  onPressed: null,
-                ),
+              child: FloatingActionButton.extended(
+                backgroundColor: DesignColors.lightGrey,
+                label: Text("Warten...",
+                    style: Theme.of(context).textTheme.headline4),
+                onPressed: null,
               ),
             ),
         ],
