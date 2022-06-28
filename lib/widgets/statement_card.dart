@@ -12,7 +12,7 @@ import 'fact_display_container.dart';
 import 'link_alert.dart';
 
 /// Brief information display of a single [Statement].
-class StatementCard extends StatelessWidget {
+class StatementCard extends StatefulWidget {
   const StatementCard(
       {Key? key, required this.appState, required this.statement})
       : super(key: key);
@@ -24,10 +24,15 @@ class StatementCard extends StatelessWidget {
   final Statement statement;
 
   @override
+  State<StatementCard> createState() => _StatementCardState();
+}
+
+class _StatementCardState extends State<StatementCard> {
+  @override
   Widget build(BuildContext context) {
     // List of the Media publishing the [Facts] of this [Statement].
     List<Widget> factcheckMediaList = List.generate(
-      statement.statementFactchecks.facts.length,
+      widget.statement.statementFactchecks.facts.length,
       (int i) => Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -38,7 +43,7 @@ class StatementCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(right: 20, left: 3),
             child: Text(
-              statement.statementFactchecks.facts[i].factMedia,
+              widget.statement.statementFactchecks.facts[i].factMedia,
               style: Theme.of(context).textTheme.bodyText2,
             ),
           ),
@@ -57,7 +62,7 @@ class StatementCard extends StatelessWidget {
           hoverColor: Colors.black54,
           highlightColor: Colors.black45,
           splashColor: Colors.black38,
-          onTap: () => _showStatementDetail(statement, context),
+          onTap: () => _showStatementDetail(widget.statement, context),
           borderRadius: const BorderRadius.all(Radius.circular(15)),
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -89,10 +94,13 @@ class StatementCard extends StatelessWidget {
                                     fadeInCurve: Curves.easeInOut,
                                     fit: BoxFit.cover,
                                     placeholder: kTransparentImage,
-                                    image: statement.statementPictureURL != null
-                                        ? statement.statementPictureURL!.replaceAll(
-                                            "https%3A%2F%2Fparsefiles.back4app.com%2FFeP6gb7k9R2K9OztjKWA1DgYhubqhW0yJMyrHbxH%2F",
-                                            "")
+                                    image: widget.statement
+                                                .statementPictureURL !=
+                                            null
+                                        ? widget.statement.statementPictureURL!
+                                            .replaceAll(
+                                                "https%3A%2F%2Fparsefiles.back4app.com%2FFeP6gb7k9R2K9OztjKWA1DgYhubqhW0yJMyrHbxH%2F",
+                                                "")
                                         : "https://quellenreiter.app/assets/logo-pink.png",
                                   ),
                                 ),
@@ -102,7 +110,7 @@ class StatementCard extends StatelessWidget {
                         ),
                         Flexible(
                           child: Text(
-                            statement.statementText,
+                            widget.statement.statementText,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText1!
@@ -121,7 +129,7 @@ class StatementCard extends StatelessWidget {
                       // Display correctness.
                       Container(
                         decoration: BoxDecoration(
-                          color: statement.statementCorrectness ==
+                          color: widget.statement.statementCorrectness ==
                                   CorrectnessCategory.correct
                               ? DesignColors.green
                               : DesignColors.red,
@@ -131,7 +139,7 @@ class StatementCard extends StatelessWidget {
                         ),
                         padding: const EdgeInsets.all(4),
                         child: Text(
-                          statement.statementCorrectness,
+                          widget.statement.statementCorrectness,
                           style: Theme.of(context)
                               .textTheme
                               .headline5
@@ -141,9 +149,9 @@ class StatementCard extends StatelessWidget {
 
                       // Display Media and date.
                       Text(
-                        statement.statementMedia +
+                        widget.statement.statementMedia +
                             ', ' +
-                            statement.dateAsString(),
+                            widget.statement.dateAsString(),
                         style: Theme.of(context)
                             .textTheme
                             .bodyText1!
@@ -195,6 +203,8 @@ class StatementCard extends StatelessWidget {
   }
 
   void _showStatementDetail(Statement statement, BuildContext context) {
+    bool isArchived = widget.appState.player!.safedStatementsIds!
+        .contains(statement.objectId);
     showModalBottomSheet(
       backgroundColor: Colors.transparent,
       clipBehavior: Clip.none,
@@ -230,24 +240,30 @@ class StatementCard extends StatelessWidget {
                       onPressed: () => Share.share(
                           "https://quellenreiter.github.io/fact-browser-deployment/#/statement/${statement.objectId}"),
                     ),
-                    if (appState.player!.safedStatementsIds!
-                        .contains(statement.objectId))
+                    if (isArchived)
                       IconButton(
                         onPressed: () {
-                          HapticFeedback.selectionClick();
-                          appState.player!.safedStatementsIds!
+                          setState(() {
+                            isArchived = false;
+                          });
+                          HapticFeedback.mediumImpact();
+                          widget.appState.player!.safedStatementsIds!
                               .remove(statement.objectId!);
-                          appState.updateUserData();
+                          widget.appState.updateUserData();
+                          Navigator.of(context).pop();
                         },
                         icon: const Icon(Icons.delete),
                       )
                     else
                       IconButton(
                         onPressed: () {
-                          HapticFeedback.selectionClick();
-                          appState.player!.safedStatementsIds!
+                          setState(() {
+                            isArchived = true;
+                          });
+                          HapticFeedback.mediumImpact();
+                          widget.appState.player!.safedStatementsIds!
                               .add(statement.objectId!);
-                          appState.updateUserData();
+                          widget.appState.updateUserData();
                         },
                         icon: const Icon(Icons.archive_outlined),
                       ),
@@ -607,8 +623,8 @@ class StatementCard extends StatelessWidget {
               fadeInCurve: Curves.easeInOut,
               fit: BoxFit.cover,
               placeholder: kTransparentImage,
-              image: statement.statementPictureURL != null
-                  ? statement.statementPictureURL!.replaceAll(
+              image: widget.statement.statementPictureURL != null
+                  ? widget.statement.statementPictureURL!.replaceAll(
                       "https%3A%2F%2Fparsefiles.back4app.com%2FFeP6gb7k9R2K9OztjKWA1DgYhubqhW0yJMyrHbxH%2F",
                       "")
                   : "https://quellenreiter.app/assets/logo-pink.png",
@@ -620,7 +636,7 @@ class StatementCard extends StatelessWidget {
                 padding: const EdgeInsets.all(2),
                 color: Color.fromARGB(138, 0, 0, 0),
                 child: SelectableText(
-                  statement.samplePictureCopyright.trim(),
+                  widget.statement.samplePictureCopyright.trim(),
                   style: Theme.of(context)
                       .textTheme
                       .bodyText2!
