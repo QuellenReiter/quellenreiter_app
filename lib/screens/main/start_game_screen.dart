@@ -45,13 +45,34 @@ class _StartGameScreenState extends State<StartGameScreen> {
                 },
               ),
             )
-          else
+          else if (widget.appState.player!.friends!.enemies.isEmpty)
             Center(
               child: ElevatedButton.icon(
                 onPressed: () => {widget.appState.route = Routes.addFriends},
-                icon: const Icon(Icons.gamepad_outlined),
-                label: const Text("Freund:innen einladen"),
+                icon: const Icon(Icons.sports_esports),
+                label: Text(
+                  "Freund:innen einladen",
+                  style: Theme.of(context).textTheme.headline1,
+                ),
               ),
+            )
+          else
+            Center(
+              child: Column(children: [
+                Text(
+                  "Du spielst aktuell gegen alle deine Freundinnen!",
+                  style: Theme.of(context).textTheme.headline2,
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton.icon(
+                  onPressed: () => {widget.appState.route = Routes.addFriends},
+                  icon: const Icon(Icons.person_add),
+                  label: Text(
+                    "Freund:innen einladen",
+                    style: Theme.of(context).textTheme.headline1,
+                  ),
+                ),
+              ]),
             )
         ],
       ),
