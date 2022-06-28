@@ -194,7 +194,45 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                   ),
                 ),
               // display the statementcards
-              ...statementCardsWithAnswers,
+              if (statementCardsWithAnswers.isNotEmpty)
+                ExpansionTile(
+                  initiallyExpanded: true,
+                  title: Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Text(
+                      "1. Runde",
+                      style: Theme.of(context).textTheme.headline2,
+                    ),
+                  ),
+                  children: statementCardsWithAnswers.sublist(
+                      0, max(3, statementCardsWithAnswers.length)),
+                ),
+              if (statementCardsWithAnswers.length > 3)
+                ExpansionTile(
+                  initiallyExpanded: true,
+                  title: Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Text(
+                      "2. Runde",
+                      style: Theme.of(context).textTheme.headline2,
+                    ),
+                  ),
+                  children: statementCardsWithAnswers.sublist(
+                      3, min(6, statementCardsWithAnswers.length)),
+                ),
+              if (statementCardsWithAnswers.length > 6)
+                ExpansionTile(
+                  initiallyExpanded: true,
+                  title: Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Text(
+                      "3. Runde",
+                      style: Theme.of(context).textTheme.headline2,
+                    ),
+                  ),
+                  children: statementCardsWithAnswers.sublist(
+                      6, statementCardsWithAnswers.length),
+                ),
               // if error
             ],
           ),
