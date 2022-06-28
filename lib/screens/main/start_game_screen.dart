@@ -31,6 +31,8 @@ class _StartGameScreenState extends State<StartGameScreen> {
         title: "Neues Spiel",
       ),
       body: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           if (enemiesWithNoGame.isNotEmpty)
             Flexible(
@@ -57,11 +59,21 @@ class _StartGameScreenState extends State<StartGameScreen> {
               ),
             )
           else
-            Center(
-              child: Column(children: [
-                Text(
-                  "Du spielst aktuell gegen alle deine Freundinnen!",
-                  style: Theme.of(context).textTheme.headline2,
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(
+                  height: 100,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Text(
+                    "Du spielst aktuell gegen alle deine Freund:innen!",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline2,
+                  ),
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton.icon(
@@ -72,7 +84,7 @@ class _StartGameScreenState extends State<StartGameScreen> {
                     style: Theme.of(context).textTheme.headline1,
                   ),
                 ),
-              ]),
+              ],
             )
         ],
       ),
