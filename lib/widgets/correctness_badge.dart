@@ -27,7 +27,7 @@ class CorrectnessBadge extends StatelessWidget {
             ),
             child: Text(
               correctnessValue,
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.headline4,
             ),
           ),
           onTap: () => showModalBottomSheet<void>(
@@ -81,9 +81,8 @@ class CorrectnessBadge extends StatelessWidget {
                                               top: 10, bottom: 10),
                                           padding: const EdgeInsets.all(10),
                                           decoration: const BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.all(
-                                                    Radius.circular(10)),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)),
                                             color: DesignColors.green,
                                           ),
                                           child: SelectableText("Richtig",
@@ -116,9 +115,8 @@ class CorrectnessBadge extends StatelessWidget {
                                               top: 10, bottom: 10),
                                           padding: const EdgeInsets.all(10),
                                           decoration: const BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.all(
-                                                    Radius.circular(10)),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)),
                                             color: DesignColors.red,
                                           ),
                                           child: SelectableText(
@@ -153,9 +151,8 @@ class CorrectnessBadge extends StatelessWidget {
                                               top: 10, bottom: 10),
                                           padding: const EdgeInsets.all(10),
                                           decoration: const BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.all(
-                                                    Radius.circular(10)),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)),
                                             color: DesignColors.red,
                                           ),
                                           child: SelectableText(
@@ -190,9 +187,8 @@ class CorrectnessBadge extends StatelessWidget {
                                               top: 10, bottom: 10),
                                           padding: const EdgeInsets.all(10),
                                           decoration: const BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.all(
-                                                    Radius.circular(10)),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)),
                                             color: DesignColors.red,
                                           ),
                                           child: SelectableText(
@@ -227,9 +223,8 @@ class CorrectnessBadge extends StatelessWidget {
                                               top: 10, bottom: 10),
                                           padding: const EdgeInsets.all(10),
                                           decoration: const BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.all(
-                                                    Radius.circular(10)),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)),
                                             color: DesignColors.red,
                                           ),
                                           child: SelectableText(
@@ -264,9 +259,8 @@ class CorrectnessBadge extends StatelessWidget {
                                               top: 10, bottom: 10),
                                           padding: const EdgeInsets.all(10),
                                           decoration: const BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.all(
-                                                    Radius.circular(10)),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)),
                                             color: DesignColors.red,
                                           ),
                                           child: SelectableText(
@@ -301,9 +295,8 @@ class CorrectnessBadge extends StatelessWidget {
                                               top: 10, bottom: 10),
                                           padding: const EdgeInsets.all(10),
                                           decoration: const BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.all(
-                                                    Radius.circular(10)),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)),
                                             color: DesignColors.red,
                                           ),
                                           child: SelectableText(
@@ -338,9 +331,8 @@ class CorrectnessBadge extends StatelessWidget {
                                               top: 10, bottom: 10),
                                           padding: const EdgeInsets.all(10),
                                           decoration: const BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.all(
-                                                    Radius.circular(10)),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)),
                                             color: DesignColors.red,
                                           ),
                                           child: SelectableText(

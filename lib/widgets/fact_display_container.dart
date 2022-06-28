@@ -25,21 +25,26 @@ class FactDisplayContainer extends StatelessWidget {
         clipBehavior: Clip.none,
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(10)),
-          color: DesignColors.black,
+          color: DesignColors.lightGrey,
         ),
         child: Stack(
           children: [
             Align(
               alignment: Alignment.topRight,
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  color: DesignColors.green,
-                ),
-                child: SelectableText(
-                  "Fakt",
-                  style: Theme.of(context).textTheme.subtitle1,
+              child: Material(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(10),
+                elevation: 10.0,
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    color: DesignColors.green,
+                  ),
+                  child: SelectableText(
+                    "Fakt",
+                    style: Theme.of(context).textTheme.headline4,
+                  ),
                 ),
               ),
             ),
@@ -58,16 +63,21 @@ class FactDisplayContainer extends StatelessWidget {
                           widthFactor: 0.7,
                           child: Align(
                             alignment: Alignment.topLeft,
-                            child: Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: const BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                                color: DesignColors.green,
-                              ),
-                              child: SelectableText(
-                                fact.factText,
-                                style: Theme.of(context).textTheme.subtitle1,
+                            child: Material(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(10),
+                              elevation: 10.0,
+                              child: Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: const BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  color: DesignColors.green,
+                                ),
+                                child: SelectableText(
+                                  fact.factText,
+                                  style: Theme.of(context).textTheme.subtitle1,
+                                ),
                               ),
                             ),
                           ),
