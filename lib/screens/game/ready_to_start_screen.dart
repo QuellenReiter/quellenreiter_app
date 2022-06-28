@@ -6,6 +6,7 @@ import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/models/statement.dart';
+import 'package:quellenreiter_app/widgets/results_app_bar.dart';
 import 'package:quellenreiter_app/widgets/start_game_button.dart';
 
 import '../../widgets/error_banner.dart';
@@ -83,10 +84,18 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                       true)
                     CircleAvatar(
                       backgroundColor: DesignColors.green,
+                      child: Icon(
+                        Icons.check,
+                        color: Colors.white,
+                      ),
                     )
                   else
                     CircleAvatar(
                       backgroundColor: DesignColors.red,
+                      child: Icon(
+                        Icons.not_interested,
+                        color: Colors.white,
+                      ),
                     ),
                   if (commonLength <= i)
                     CircleAvatar(
@@ -98,11 +107,18 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                       true)
                     CircleAvatar(
                       backgroundColor: DesignColors.green,
+                      child: Icon(
+                        Icons.check,
+                        color: Colors.white,
+                      ),
                     )
                   else
                     CircleAvatar(
-                      backgroundColor: DesignColors.red,
-                    ),
+                        backgroundColor: DesignColors.red,
+                        child: Icon(
+                          Icons.not_interested,
+                          color: Colors.white,
+                        )),
                 ],
               ),
             ],
@@ -116,80 +132,8 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
       widget.appState.showError(context);
     });
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Spielen"),
-        actions: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      widget.appState.player!.emoji,
-                      style: Theme.of(context).textTheme.headline1,
-                    ),
-                    Text(
-                      widget.appState.player!.name,
-                      style: Theme.of(context).textTheme.headline4,
-                    ),
-                    Text(
-                      widget.appState.currentEnemy!.openGame!.playerAnswers
-                              .fold<int>(0, (p, c) => p + (c ? 1 : 0))
-                              .toString() +
-                          " Punkte",
-                      style: Theme.of(context).textTheme.subtitle1,
-                    ),
-                  ],
-                ),
-              ),
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      widget.appState.currentEnemy!.emoji,
-                      style: Theme.of(context).textTheme.headline1,
-                    ),
-                    Text(
-                      widget.appState.currentEnemy!.name,
-                      style: Theme.of(context).textTheme.headline4,
-                    ),
-                    Text(
-                      widget.appState.currentEnemy!.openGame!.enemyAnswers
-                              .sublist(0, commonLength)
-                              .fold<int>(0, (p, c) => p + (c ? 1 : 0))
-                              .toString() +
-                          " Punkte",
-                      style: Theme.of(context).textTheme.subtitle1,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const Icon(
-            Icons.monetization_on,
-            color: DesignColors.yellow,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: Center(
-                child: Countup(
-              begin: 0,
-              end: widget.appState.player!.getXp().toDouble(),
-              duration: const Duration(milliseconds: 500),
-              style: Theme.of(context).textTheme.headline6,
-            )),
-          ),
-        ],
+      appBar: ResultsAppBar(
+        appState: widget.appState,
       ),
       body: Stack(
         alignment: Alignment.bottomCenter,
