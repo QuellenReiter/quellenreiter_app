@@ -74,7 +74,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                     controller: usernameController,
                                     decoration: const InputDecoration(
                                       labelText: "Nutzername",
-                                      border: OutlineInputBorder(),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.transparent,
+                                      contentPadding: EdgeInsets.all(10),
                                     ),
                                     autofillHints: const [
                                       AutofillHints.username
@@ -106,7 +113,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                     controller: passwordController,
                                     decoration: const InputDecoration(
                                       labelText: "Passwort",
-                                      border: OutlineInputBorder(),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.transparent,
+                                      contentPadding: EdgeInsets.all(10),
                                     ),
                                     autofillHints: const [
                                       AutofillHints.password

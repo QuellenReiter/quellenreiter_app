@@ -83,7 +83,14 @@ class _SignupScreenState extends State<SignupScreen> {
                               controller: usernameController,
                               decoration: const InputDecoration(
                                 labelText: "Nutzername",
-                                border: OutlineInputBorder(),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                filled: true,
+                                fillColor: Colors.transparent,
+                                contentPadding: EdgeInsets.all(10),
                               ),
                               keyboardType: TextInputType.visiblePassword,
                             ),
@@ -113,7 +120,14 @@ class _SignupScreenState extends State<SignupScreen> {
                               decoration: const InputDecoration(
                                 counterText: "",
                                 labelText: "Wähle einen Emoji",
-                                border: OutlineInputBorder(),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                filled: true,
+                                fillColor: Colors.transparent,
+                                contentPadding: EdgeInsets.all(10),
                               ),
                             ),
                           );
@@ -134,7 +148,14 @@ class _SignupScreenState extends State<SignupScreen> {
                               controller: passwordController,
                               decoration: const InputDecoration(
                                 labelText: "Passwort",
-                                border: OutlineInputBorder(),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                filled: true,
+                                fillColor: Colors.transparent,
+                                contentPadding: EdgeInsets.all(10),
                               ),
                             ),
                           );
@@ -155,7 +176,14 @@ class _SignupScreenState extends State<SignupScreen> {
                               controller: password2Controller,
                               decoration: const InputDecoration(
                                 labelText: "Passwort wiederholen",
-                                border: OutlineInputBorder(),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                filled: true,
+                                fillColor: Colors.transparent,
+                                contentPadding: EdgeInsets.all(10),
                               ),
                             ),
                           );
