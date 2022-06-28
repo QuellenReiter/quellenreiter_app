@@ -3,6 +3,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/enemy_card.dart';
+import 'package:quellenreiter_app/widgets/title_app_bar.dart';
 import 'package:share_plus/share_plus.dart';
 
 class AddFriendScreen extends StatefulWidget {
@@ -40,8 +41,8 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
       widget.appState.showError(context);
     });
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Freund:innen finden"),
+      appBar: TitleAppBar(
+        title: "Freund:innen finden",
       ),
       body: Center(
         child: Stack(

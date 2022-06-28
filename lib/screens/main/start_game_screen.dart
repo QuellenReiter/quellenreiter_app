@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/models/enemy.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
+import 'package:quellenreiter_app/widgets/title_app_bar.dart';
 
 import '../../constants/constants.dart';
 import '../../widgets/enemy_card.dart';
@@ -26,8 +27,8 @@ class _StartGameScreenState extends State<StartGameScreen> {
         .where((e) => e.openGame == null)
         .toList();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Neues Spiel"),
+      appBar: TitleAppBar(
+        title: "Neues Spiel",
       ),
       body: Column(
         children: [
