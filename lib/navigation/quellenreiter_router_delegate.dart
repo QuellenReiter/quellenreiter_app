@@ -153,9 +153,11 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
           return [
             MaterialPage(
               key: const ValueKey('GameResultsScreen'),
-              child: GameResultsScreen(
+              child: ReadyToStartScreen(
                 appState: appState,
-                showAll: false,
+
+                /// ToDo: Show only factchecks from routes
+                // showAll: false,
               ),
             ),
           ];

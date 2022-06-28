@@ -289,12 +289,14 @@ class StatementCard extends StatelessWidget {
                                         BorderRadius.all(Radius.circular(10)),
                                     color: DesignColors.lightGrey,
                                   ),
-                                  child: FractionallySizedBox(
-                                    widthFactor: 1.15,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Stack(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      FractionallySizedBox(
+                                        widthFactor: 1.15,
+                                        child: Stack(
                                           clipBehavior: Clip.none,
                                           children: [
                                             Align(
@@ -481,81 +483,80 @@ class StatementCard extends StatelessWidget {
                                             )
                                           ],
                                         ),
-                                        // Display more information.
-                                        Padding(
-                                          padding: const EdgeInsets.all(20),
-                                          child: Wrap(
-                                            direction: Axis.horizontal,
-                                            alignment: WrapAlignment.start,
-                                            runAlignment: WrapAlignment.start,
-                                            runSpacing: 10,
-                                            spacing: 10,
-                                            children: [
-                                              Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  const Icon(Icons.person),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 3),
-                                                    child: Text(statement
-                                                        .statementAuthor),
-                                                  ),
-                                                ],
-                                              ),
-                                              // Media and Mediatype
-                                              Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  const Icon(Icons.newspaper),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 3),
-                                                    child: Text(statement
-                                                            .statementMedia +
-                                                        ' | ' +
-                                                        statement
-                                                            .statementMediatype),
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  const Icon(
-                                                      Icons.calendar_month),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 3),
-                                                    child: SelectableText(
-                                                        statement
-                                                            .dateAsString()),
-                                                  ),
-                                                ],
-                                              ),
-                                              // Language
-                                              Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  const Icon(Icons.language),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 3),
-                                                    child: SelectableText(
-                                                        statement
-                                                            .statementLanguage),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
+                                      ),
+                                      // Display more information.
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 10),
+                                        child: Wrap(
+                                          direction: Axis.horizontal,
+                                          alignment: WrapAlignment.start,
+                                          runAlignment: WrapAlignment.start,
+                                          runSpacing: 10,
+                                          spacing: 10,
+                                          children: [
+                                            Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                const Icon(Icons.person),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 3),
+                                                  child: Text(statement
+                                                      .statementAuthor),
+                                                ),
+                                              ],
+                                            ),
+                                            // Media and Mediatype
+                                            Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                const Icon(Icons.newspaper),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 3),
+                                                  child: Text(statement
+                                                          .statementMedia +
+                                                      ' | ' +
+                                                      statement
+                                                          .statementMediatype),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                const Icon(
+                                                    Icons.calendar_month),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 3),
+                                                  child: SelectableText(
+                                                      statement.dateAsString()),
+                                                ),
+                                              ],
+                                            ),
+                                            // Language
+                                            Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                const Icon(Icons.language),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 3),
+                                                  child: SelectableText(
+                                                      statement
+                                                          .statementLanguage),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    ],
                                   ),
                                 ),
                               ),
