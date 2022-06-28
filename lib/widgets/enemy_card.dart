@@ -151,6 +151,7 @@ class EnemyCard extends StatelessWidget {
       padding: const EdgeInsets.only(top: 10, bottom: 10, left: 30, right: 10),
       child: Material(
         borderRadius: const BorderRadius.all(Radius.circular(15)),
+        elevation: 5,
         color: DesignColors.pink,
 
         // Make it clickable.

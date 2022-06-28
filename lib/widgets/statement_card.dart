@@ -51,6 +51,7 @@ class StatementCard extends StatelessWidget {
       child: Material(
         borderRadius: const BorderRadius.all(Radius.circular(15)),
         color: DesignColors.lightGrey,
+        elevation: 5,
         // Make it clickable.
         child: InkWell(
           hoverColor: Colors.black54,
@@ -108,31 +109,6 @@ class StatementCard extends StatelessWidget {
                                 .copyWith(color: DesignColors.black),
                           ),
                         ),
-                        // if (appState.player!.safedStatementsIds!
-                        //     .contains(statement.objectId))
-                        //   IconButton(
-                        //     padding: const EdgeInsets.only(
-                        //         top: 0, right: 0, left: 10, bottom: 10),
-                        //     onPressed: () {
-                        //       HapticFeedback.selectionClick();
-                        //       appState.player!.safedStatementsIds!
-                        //           .remove(statement.objectId!);
-                        //       appState.updateUserData();
-                        //     },
-                        //     icon: const Icon(Icons.delete),
-                        //   )
-                        // else
-                        //   IconButton(
-                        //     padding: const EdgeInsets.only(
-                        //         top: 0, right: 0, left: 10, bottom: 10),
-                        //     onPressed: () {
-                        //       HapticFeedback.selectionClick();
-                        //       appState.player!.safedStatementsIds!
-                        //           .add(statement.objectId!);
-                        //       appState.updateUserData();
-                        //     },
-                        //     icon: const Icon(Icons.archive_outlined),
-                        //   ),
                       ]),
                 ),
 
@@ -176,17 +152,6 @@ class StatementCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                // Row(
-                //   mainAxisSize: MainAxisSize.max,
-                //   mainAxisAlignment: MainAxisAlignment.end,
-                //   children: [
-                //     TextButton.icon(
-                //       onPressed: null,
-                //       icon: const Icon(Icons.archive_outlined),
-                //       label: const Text("merken"),
-                //     ),
-                //   ],
-                // ),
                 Row(children: [
                   Expanded(
                     child: Container(
@@ -245,7 +210,7 @@ class StatementCard extends StatelessWidget {
         return Container(
           height: MediaQuery.of(context).size.height * 0.75,
           decoration: BoxDecoration(
-            color: Colors.grey[800],
+            color: Colors.white,
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(15),
               topRight: Radius.circular(15),
@@ -255,18 +220,38 @@ class StatementCard extends StatelessWidget {
             alignment: Alignment.topCenter,
             child: Column(
               children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Row(
-                    children: [
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.share),
+                      iconSize: 20,
+                      onPressed: () => Share.share(
+                          "https://quellenreiter.github.io/fact-browser-deployment/#/statement/${statement.objectId}"),
+                    ),
+                    if (appState.player!.safedStatementsIds!
+                        .contains(statement.objectId))
                       IconButton(
-                        icon: const Icon(Icons.share),
-                        iconSize: 20,
-                        onPressed: () => Share.share(
-                            "https://quellenreiter.github.io/fact-browser-deployment/#/statement/${statement.objectId}"),
+                        onPressed: () {
+                          HapticFeedback.selectionClick();
+                          appState.player!.safedStatementsIds!
+                              .remove(statement.objectId!);
+                          appState.updateUserData();
+                        },
+                        icon: const Icon(Icons.delete),
+                      )
+                    else
+                      IconButton(
+                        onPressed: () {
+                          HapticFeedback.selectionClick();
+                          appState.player!.safedStatementsIds!
+                              .add(statement.objectId!);
+                          appState.updateUserData();
+                        },
+                        icon: const Icon(Icons.archive_outlined),
                       ),
-                    ],
-                  ),
+                  ],
                 ),
                 Flexible(
                   child: ScrollConfiguration(
@@ -302,7 +287,7 @@ class StatementCard extends StatelessWidget {
                                   decoration: const BoxDecoration(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10)),
-                                    color: DesignColors.black,
+                                    color: DesignColors.lightGrey,
                                   ),
                                   child: FractionallySizedBox(
                                     widthFactor: 1.15,
@@ -325,44 +310,54 @@ class StatementCard extends StatelessWidget {
                                                     Tooltip(
                                                       message:
                                                           "Klicken zum Vergrößern.",
-                                                      child: InkWell(
+                                                      child: Material(
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10),
-                                                        onTap: () =>
-                                                            showImage(context),
-                                                        child: ClipRRect(
+                                                        elevation: 10.0,
+                                                        child: InkWell(
                                                           borderRadius:
                                                               BorderRadius
                                                                   .circular(10),
-                                                          child: AspectRatio(
-                                                            aspectRatio: 4 / 3,
-                                                            child: ClipRRect(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10),
-                                                              child: FadeInImage
-                                                                  .memoryNetwork(
-                                                                fadeInDuration:
-                                                                    const Duration(
-                                                                        milliseconds:
-                                                                            400),
-                                                                fadeInCurve: Curves
-                                                                    .easeInOut,
-                                                                fit: BoxFit
-                                                                    .cover,
-                                                                placeholder:
-                                                                    kTransparentImage,
-                                                                image: statement
-                                                                            .statementPictureURL !=
-                                                                        null
-                                                                    ? statement
-                                                                        .statementPictureURL!
-                                                                        .replaceAll(
-                                                                            "https%3A%2F%2Fparsefiles.back4app.com%2FFeP6gb7k9R2K9OztjKWA1DgYhubqhW0yJMyrHbxH%2F",
-                                                                            "")
-                                                                    : "https://quellenreiter.app/assets/logo-pink.png",
+                                                          onTap: () =>
+                                                              showImage(
+                                                                  context),
+                                                          child: ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            child: AspectRatio(
+                                                              aspectRatio:
+                                                                  4 / 3,
+                                                              child: ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                                child: FadeInImage
+                                                                    .memoryNetwork(
+                                                                  fadeInDuration:
+                                                                      const Duration(
+                                                                          milliseconds:
+                                                                              400),
+                                                                  fadeInCurve:
+                                                                      Curves
+                                                                          .easeInOut,
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                  placeholder:
+                                                                      kTransparentImage,
+                                                                  image: statement
+                                                                              .statementPictureURL !=
+                                                                          null
+                                                                      ? statement
+                                                                          .statementPictureURL!
+                                                                          .replaceAll(
+                                                                              "https%3A%2F%2Fparsefiles.back4app.com%2FFeP6gb7k9R2K9OztjKWA1DgYhubqhW0yJMyrHbxH%2F",
+                                                                              "")
+                                                                      : "https://quellenreiter.app/assets/logo-pink.png",
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
@@ -376,16 +371,19 @@ class StatementCard extends StatelessWidget {
                                                         padding:
                                                             const EdgeInsets
                                                                 .all(2),
-                                                        color:
-                                                            Colors.transparent,
+                                                        color: Color.fromARGB(
+                                                            138, 0, 0, 0),
                                                         child: SelectableText(
                                                           statement
                                                               .samplePictureCopyright
                                                               .trim(),
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .bodyText1,
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .bodyText2!
+                                                              .copyWith(
+                                                                  color: Colors
+                                                                      .white),
                                                         ),
                                                       ),
                                                     ),
@@ -411,52 +409,70 @@ class StatementCard extends StatelessWidget {
                                                     mainAxisSize:
                                                         MainAxisSize.min,
                                                     children: [
-                                                      Container(
-                                                        margin: const EdgeInsets
-                                                            .only(top: 10),
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(10),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              const BorderRadius
-                                                                      .all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          10)),
-                                                          color: statement
-                                                                      .statementCorrectness ==
-                                                                  CorrectnessCategory
-                                                                      .correct
-                                                              ? DesignColors
-                                                                  .green
-                                                              : DesignColors
-                                                                  .red,
-                                                        ),
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                                statement
-                                                                    .statementText,
-                                                                style: Theme.of(
-                                                                        context)
-                                                                    .textTheme
-                                                                    .subtitle1),
-                                                            LinkAlert(
-                                                                link: statement
-                                                                    .statementLink,
-                                                                msg:
-                                                                    "Vorsicht! Du verlässt diese Seite und wirst zu einer archivierten vollständigen Version dieser Aussage weitergeleitet. Die Inhalte können möglicherweise verstörend oder diskriminierend sein. Inhalte, die mit dem Label “Unbelegt”, “Falscher Kontext”, “Manipuliert”, “Irreführend” oder “Frei erfunden” gekennzeichnet wurden, enthalten Desinformationen und sind keine verlässliche Quelle. Vollständiger Link:"),
-                                                          ],
+                                                      Material(
+                                                        color:
+                                                            Colors.transparent,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        elevation: 10.0,
+                                                        child: Container(
+                                                          margin:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  top: 10),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(10),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                const BorderRadius
+                                                                        .all(
+                                                                    Radius
+                                                                        .circular(
+                                                                            10)),
+                                                            color: statement.statementCorrectness ==
+                                                                    CorrectnessCategory
+                                                                        .correct
+                                                                ? DesignColors
+                                                                    .green
+                                                                : DesignColors
+                                                                    .red,
+                                                          ),
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                  statement
+                                                                      .statementText,
+                                                                  style: Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .subtitle1),
+                                                              LinkAlert(
+                                                                  link: statement
+                                                                      .statementLink,
+                                                                  msg:
+                                                                      "Vorsicht! Du verlässt diese Seite und wirst zu einer archivierten vollständigen Version dieser Aussage weitergeleitet. Die Inhalte können möglicherweise verstörend oder diskriminierend sein. Inhalte, die mit dem Label “Unbelegt”, “Falscher Kontext”, “Manipuliert”, “Irreführend” oder “Frei erfunden” gekennzeichnet wurden, enthalten Desinformationen und sind keine verlässliche Quelle. Vollständiger Link:"),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
-                                                      CorrectnessBadge(
-                                                        correctnessValue: statement
-                                                            .statementCorrectness,
+                                                      Material(
+                                                        color:
+                                                            Colors.transparent,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        elevation: 10.0,
+                                                        child: CorrectnessBadge(
+                                                          correctnessValue:
+                                                              statement
+                                                                  .statementCorrectness,
+                                                        ),
                                                       ),
                                                     ],
                                                   ),
@@ -547,7 +563,10 @@ class StatementCard extends StatelessWidget {
                                 padding: const EdgeInsets.only(top: 40),
                                 child: Text(
                                   "Warum ist diese Aussage \"${statement.statementCorrectness}\"?",
-                                  style: Theme.of(context).textTheme.subtitle1,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle1!
+                                      .copyWith(color: DesignColors.black),
                                 ),
                               ),
                               // Display all [statement.factChecks]
@@ -598,10 +617,13 @@ class StatementCard extends StatelessWidget {
               quarterTurns: 1,
               child: Container(
                 padding: const EdgeInsets.all(2),
-                color: const Color.fromARGB(61, 0, 0, 0),
+                color: Color.fromARGB(138, 0, 0, 0),
                 child: SelectableText(
                   statement.samplePictureCopyright.trim(),
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText2!
+                      .copyWith(color: Colors.white),
                 ),
               ),
             ),
