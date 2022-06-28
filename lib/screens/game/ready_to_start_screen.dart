@@ -205,7 +205,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                     ),
                   ),
                   children: statementCardsWithAnswers.sublist(
-                      0, max(3, statementCardsWithAnswers.length)),
+                      0, min(3, statementCardsWithAnswers.length)),
                 ),
               if (statementCardsWithAnswers.length > 3)
                 ExpansionTile(

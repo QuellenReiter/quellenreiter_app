@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
+import 'package:quellenreiter_app/widgets/main_app_bar.dart';
 import 'package:simple_timer/simple_timer.dart';
+import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class QuestScreen extends StatefulWidget {
@@ -16,6 +18,7 @@ class QuestScreen extends StatefulWidget {
 class _QuestScreenState extends State<QuestScreen>
     with SingleTickerProviderStateMixin {
   late TimerController timerController;
+  int animationLength = 40000;
 
   @override
   void initState() {
@@ -48,115 +51,262 @@ class _QuestScreenState extends State<QuestScreen>
     }
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // image
-              ConstrainedBox(
-                constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 0.5),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: ClipRRect(
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                // image
+                Expanded(
+                  flex: 8,
+                  child: Material(
+                    color: Colors.transparent,
                     borderRadius: BorderRadius.circular(10),
-                    child: FadeInImage.memoryNetwork(
-                      fadeInDuration: const Duration(milliseconds: 400),
-                      fadeInCurve: Curves.easeInOut,
-                      fit: BoxFit.cover,
-                      placeholder: kTransparentImage,
-                      image: widget
+                    elevation: 10.0,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: FadeInImage.memoryNetwork(
+                          fadeInDuration: const Duration(milliseconds: 200),
+                          fadeInCurve: Curves.easeInOut,
+                          fit: BoxFit.cover,
+                          placeholder: kTransparentImage,
+                          image: widget
+                                      .appState
+                                      .currentEnemy!
+                                      .openGame!
+                                      .statements!
+                                      .statements[statementIndex]
+                                      .statementPictureURL !=
+                                  null
+                              ? widget
                                   .appState
                                   .currentEnemy!
                                   .openGame!
                                   .statements!
                                   .statements[statementIndex]
-                                  .statementPictureURL !=
-                              null
-                          ? widget.appState.currentEnemy!.openGame!.statements!
-                              .statements[statementIndex].statementPictureURL!
-                              .replaceAll(
-                                  "https%3A%2F%2Fparsefiles.back4app.com%2FFeP6gb7k9R2K9OztjKWA1DgYhubqhW0yJMyrHbxH%2F",
-                                  "")
-                          : "https://quellenreiter.app/assets/logo-pink.png",
+                                  .statementPictureURL!
+                                  .replaceAll(
+                                      "https%3A%2F%2Fparsefiles.back4app.com%2FFeP6gb7k9R2K9OztjKWA1DgYhubqhW0yJMyrHbxH%2F",
+                                      "")
+                              : "https://quellenreiter.app/assets/logo-pink.png",
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              // text
-              Flexible(
-                child: Text(
-                  widget.appState.currentEnemy!.openGame!.statements!
-                      .statements[statementIndex].statementText,
-                  style: Theme.of(context).textTheme.subtitle1,
-                ),
-              ),
-              // detail
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Text(
-                    widget.appState.currentEnemy!.openGame!.statements!
-                        .statements[statementIndex]
-                        .dateAsString(),
+                // text
+                Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  padding:
+                      const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                  alignment: Alignment.topLeft,
+                  clipBehavior: Clip.none,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    color: DesignColors.lightGrey,
                   ),
-                  Text(
-                    widget.appState.currentEnemy!.openGame!.statements!
-                        .statements[statementIndex].statementMedia,
-                  ),
-                ],
-              ),
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: DesignColors.red,
-                            minimumSize: Size(100, 70),
+                      FractionallySizedBox(
+                        widthFactor: 1.1,
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Material(
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(10),
+                                elevation: 10.0,
+                                child: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: const BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                    color: DesignColors.backgroundBlue,
+                                  ),
+                                  child: Text(
+                                      widget
+                                          .appState
+                                          .currentEnemy!
+                                          .openGame!
+                                          .statements!
+                                          .statements[statementIndex]
+                                          .statementText,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1),
+                                ),
+                              ),
+                            ],
                           ),
-                          onPressed: () =>
-                              registerAnswer(statementIndex, false),
-                          child: const Text("Fake"),
                         ),
                       ),
-                      // Timer
-                      if (widget.appState.currentEnemy!.openGame!.withTimer)
-                        Expanded(
-                          child: SimpleTimer(
-                            controller: timerController,
-                            duration: const Duration(seconds: 40),
-                            onEnd: () => registerAnswer(statementIndex, false,
-                                timeOver: true),
-                            timerStyle: TimerStyle.expanding_sector,
+                      // Display more information.
+                      Wrap(
+                        direction: Axis.horizontal,
+                        alignment: WrapAlignment.start,
+                        runAlignment: WrapAlignment.start,
+                        runSpacing: 10,
+                        spacing: 10,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.person),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 3),
+                                child: Text(widget
+                                    .appState
+                                    .currentEnemy!
+                                    .openGame!
+                                    .statements!
+                                    .statements[statementIndex]
+                                    .statementAuthor),
+                              ),
+                            ],
                           ),
-                        ),
-                      Expanded(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: DesignColors.green,
-                            minimumSize: Size(100, 70),
+                          // Media and Mediatype
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.newspaper),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 3),
+                                child: Text(widget
+                                        .appState
+                                        .currentEnemy!
+                                        .openGame!
+                                        .statements!
+                                        .statements[statementIndex]
+                                        .statementMedia +
+                                    ' | ' +
+                                    widget
+                                        .appState
+                                        .currentEnemy!
+                                        .openGame!
+                                        .statements!
+                                        .statements[statementIndex]
+                                        .statementMediatype),
+                              ),
+                            ],
                           ),
-                          onPressed: () => registerAnswer(statementIndex, true),
-                          child: const Text("Fakt"),
-                        ),
-                      ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.calendar_month),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 3),
+                                child: SelectableText(widget
+                                    .appState
+                                    .currentEnemy!
+                                    .openGame!
+                                    .statements!
+                                    .statements[statementIndex]
+                                    .dateAsString()),
+                              ),
+                            ],
+                          ),
+                          // Language
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.language),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 3),
+                                child: SelectableText(widget
+                                    .appState
+                                    .currentEnemy!
+                                    .openGame!
+                                    .statements!
+                                    .statements[statementIndex]
+                                    .statementLanguage),
+                              ),
+                            ],
+                          )
+                        ],
+                      )
                     ],
                   ),
                 ),
-              )
-            ],
+                Flexible(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: DesignColors.red,
+                              minimumSize: Size(100, 70),
+                            ),
+                            onPressed: () =>
+                                registerAnswer(statementIndex, false),
+                            child: Text("Fake",
+                                style: Theme.of(context).textTheme.headline4),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: DesignColors.green,
+                              minimumSize: Size(100, 70),
+                            ),
+                            onPressed: () =>
+                                registerAnswer(statementIndex, true),
+                            child: Text(
+                              "Fakt",
+                              style: Theme.of(context).textTheme.headline4,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                // Timer
+                if (widget.appState.currentEnemy!.openGame!.withTimer)
+                  SfLinearGauge(
+                    minimum: 0,
+                    maximum: 1,
+                    animateAxis: true,
+                    axisTrackStyle: const LinearAxisTrackStyle(
+                      thickness: 20,
+                      edgeStyle: LinearEdgeStyle.bothCurve,
+                    ),
+                    showTicks: false,
+                    showLabels: false,
+                    barPointers: [
+                      LinearBarPointer(
+                        enableAnimation: true,
+                        animationDuration: animationLength,
+                        edgeStyle: LinearEdgeStyle.bothCurve,
+                        thickness: 20,
+                        value: 1,
+                        color: DesignColors.pink,
+                        onAnimationCompleted: () => registerAnswer(
+                            statementIndex, false,
+                            timeOver: true),
+                      )
+                    ],
+                  ),
+              ],
+            ),
           ),
         ),
       ),
@@ -268,12 +418,14 @@ class _QuestScreenState extends State<QuestScreen>
     // push to DB
     await widget.appState.db.updateGame(widget.appState);
 
-    // restart timer
-    if (widget.appState.currentEnemy!.openGame!.withTimer) {
-      timerController.restart();
-    }
+    // // restart timer
+    // if (widget.appState.currentEnemy!.openGame!.withTimer) {
+    //   timerController.restart();
+    // }
     Navigator.of(context).pop();
-    widget.appState.route = Routes.quest;
+    setState(() {
+      animationLength = 40000;
+    });
     HapticFeedback.mediumImpact();
   }
 }
