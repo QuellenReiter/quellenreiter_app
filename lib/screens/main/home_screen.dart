@@ -242,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   PreferredSizeWidget getAppBar() {
-    if (widget.appState!.route != Routes.settings) {
+    if (widget.appState.route != Routes.settings) {
       return StatsAppBar(
         appState: widget.appState,
       );
