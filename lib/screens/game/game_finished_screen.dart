@@ -2,6 +2,8 @@ import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
+import 'package:quellenreiter_app/widgets/stats_app_bar.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../constants/constants.dart';
 import '../../models/game.dart';
@@ -37,113 +39,215 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
     tempPlayerXp.value = widget.appState.currentEnemy!.openGame!.getPlayerXp();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Spielen"),
-        actions: [
-          const Icon(
-            Icons.monetization_on,
-            color: DesignColors.yellow,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: Center(
-              // counts up
-              child: ValueListenableBuilder<int>(
-                valueListenable: tempPlayerXp,
-                builder: (BuildContext context, val, child) {
-                  if (countupStartValue == 0) {
-                    return Countup(
-                      begin: widget.appState.player!.getXp().toDouble(),
-                      end: widget.appState.player!.getXp().toDouble(),
-                      duration: const Duration(seconds: 3),
-                      style: Theme.of(context).textTheme.headline6,
-                    );
-                  } else {
-                    return Countup(
-                      begin: widget.appState.player!.getXp().toDouble(),
-                      end: widget.appState.player!.getXp().toDouble() +
-                          countupStartValue,
-                      duration: const Duration(seconds: 3),
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline2!
-                          .copyWith(color: DesignColors.pink),
-                    );
-                  }
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
+      // appBar: AppBar(
+      //   title: const Text("Spielen"),
+      //   actions: [
+      //     const Icon(
+      //       Icons.monetization_on,
+      //       color: DesignColors.yellow,
+      //     ),
+      //     Padding(
+      //       padding: const EdgeInsets.only(right: 20),
+      //       child: Center(
+      //         // counts up
+      //         child: ValueListenableBuilder<int>(
+      //           valueListenable: tempPlayerXp,
+      //           builder: (BuildContext context, val, child) {
+      //             if (countupStartValue == 0) {
+      //               return Countup(
+      //                 begin: widget.appState.player!.getXp().toDouble(),
+      //                 end: widget.appState.player!.getXp().toDouble(),
+      //                 duration: const Duration(seconds: 3),
+      //                 style: Theme.of(context).textTheme.headline6,
+      //               );
+      //             } else {
+      //               return Countup(
+      //                 begin: widget.appState.player!.getXp().toDouble(),
+      //                 end: widget.appState.player!.getXp().toDouble() +
+      //                     countupStartValue,
+      //                 duration: const Duration(seconds: 3),
+      //                 style: Theme.of(context)
+      //                     .textTheme
+      //                     .headline2!
+      //                     .copyWith(color: DesignColors.pink),
+      //               );
+      //             }
+      //           },
+      //         ),
+      //       ),
+      //     ),
+      //   ],
+      // ),
+      appBar: StatsAppBar(appState: widget.appState),
       body: Center(
         // if updates done, show final screen
         child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              // animate ANIMATE
-              // make clickable and only then go to next screen
-              Text(
-                playerWon
-                    ? "DU HAST GEWONNEN"
-                    : enemyWon
-                        ? "Du hast verloren."
-                        : "Unentschieden",
-                style: Theme.of(context).textTheme.headline3!.copyWith(
-                    color: playerWon
-                        ? DesignColors.green
-                        : enemyWon
-                            ? DesignColors.red
-                            : DesignColors.backgroundBlue),
-              ),
-              Center(
-                child: Material(
-                  color: DesignColors.pink,
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  child: InkWell(
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    onTap: onTapGetPoints,
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "+ ",
-                            style: Theme.of(context).textTheme.headline3,
-                          ),
-                          const Icon(
-                            Icons.monetization_on,
-                            color: DesignColors.yellow,
-                            size: 40,
-                          ),
-                          ValueListenableBuilder<int>(
-                            valueListenable: tempPlayerXp,
-                            builder: (BuildContext context, val, child) {
-                              return Countup(
-                                begin: countupStartValue.toDouble(),
-                                end: val.toDouble(),
-                                duration: const Duration(seconds: 3),
-                                style: Theme.of(context).textTheme.headline3,
-                              );
-                            },
-                          ),
-                          Text(
-                            " abholen.",
-                            style: Theme.of(context).textTheme.headline3,
-                          ),
-                        ],
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.topCenter,
+              children: [
+                Positioned(
+                  top: 70,
+                  child: Container(
+                    padding: const EdgeInsets.all(30),
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: DesignColors.lightBlue,
+                    ),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        playerWon
+                            ? "Du hast\ngewonnen"
+                            : enemyWon
+                                ? "du hast\nverloren"
+                                : "Unentschieden",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline1!
+                            .copyWith(color: DesignColors.pink, fontSize: 60),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ]),
+                Text(
+                  playerWon
+                      ? "🏆"
+                      : enemyWon
+                          ? "🤦"
+                          : "🪢",
+                  style: const TextStyle(fontSize: 100),
+                ),
+              ],
+            ),
+            const SizedBox(height: 0),
+            Column(
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("+ ",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline1!
+                            .copyWith(color: DesignColors.yellow)),
+                    const Icon(
+                      Icons.monetization_on,
+                      color: DesignColors.yellow,
+                      size: 30,
+                    ),
+                    ValueListenableBuilder<int>(
+                      valueListenable: tempPlayerXp,
+                      builder: (BuildContext context, val, child) {
+                        return Countup(
+                          begin: countupStartValue.toDouble(),
+                          end: val.toDouble(),
+                          duration: const Duration(seconds: 3),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: DesignColors.yellow),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: onTapGetPoints,
+                  child: Text(
+                    "Punkte einsammeln",
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline1!
+                        .copyWith(fontSize: 50),
+                  ),
+                ),
+              ],
+            ),
+            ElevatedButton.icon(
+              onPressed: () => {
+                Share.share("https://quellenreiter.app",
+                    subject: "Teile die app mit deinen Freund:innen."),
+              },
+              icon: Icon(Icons.share),
+              label: Text("Mit Freund:innen teilen",
+                  style: Theme.of(context).textTheme.headline4),
+            )
+          ],
+        ),
+
+        // Column(
+        //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //     mainAxisSize: MainAxisSize.max,
+        //     children: [
+        //       // animate ANIMATE
+        //       // make clickable and only then go to next screen
+        //       Text(
+        //         playerWon
+        //             ? "DU HAST GEWONNEN"
+        //             : enemyWon
+        //                 ? "Du hast verloren."
+        //                 : "Unentschieden",
+        //         style: Theme.of(context).textTheme.headline3!.copyWith(
+        //             color: playerWon
+        //                 ? DesignColors.green
+        //                 : enemyWon
+        //                     ? DesignColors.red
+        //                     : DesignColors.backgroundBlue),
+        //       ),
+        //       Center(
+        //         child: Material(
+        //           color: DesignColors.pink,
+        //           borderRadius: const BorderRadius.all(Radius.circular(10)),
+        //           child: InkWell(
+        //             borderRadius: const BorderRadius.all(Radius.circular(10)),
+        //             onTap: onTapGetPoints,
+        //             child: Container(
+        //               padding: const EdgeInsets.all(10),
+        //               decoration: const BoxDecoration(
+        //                 borderRadius: BorderRadius.all(Radius.circular(10)),
+        //               ),
+        //               child: Row(
+        //                 mainAxisSize: MainAxisSize.min,
+        //                 mainAxisAlignment: MainAxisAlignment.center,
+        //                 children: [
+        //                   Text(
+        //                     "+ ",
+        //                     style: Theme.of(context).textTheme.headline3,
+        //                   ),
+        //                   const Icon(
+        //                     Icons.monetization_on,
+        //                     color: DesignColors.yellow,
+        //                     size: 40,
+        //                   ),
+        //                   ValueListenableBuilder<int>(
+        //                     valueListenable: tempPlayerXp,
+        //                     builder: (BuildContext context, val, child) {
+        //                       return Countup(
+        //                         begin: countupStartValue.toDouble(),
+        //                         end: val.toDouble(),
+        //                         duration: const Duration(seconds: 3),
+        //                         style: Theme.of(context).textTheme.headline3,
+        //                       );
+        //                     },
+        //                   ),
+        //                   Text(
+        //                     "Punkte einsammeln.",
+        //                     style: Theme.of(context).textTheme.headline1,
+        //                   ),
+        //                 ],
+        //               ),
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //     ]),
       ),
     );
   }
