@@ -1,19 +1,23 @@
-import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
-
 import '../constants/constants.dart';
 
 /// Class defining all Routes (Pages) in the Fact Browser app.
 class QuellenreiterRoutePath {
-  /// The [QuellenreiterAppState] to define the routes.
+  /// The [QuellenreiterRoutePath] to define the routes.
   final Routes route;
 
-  QuellenreiterRoutePath(this.route);
+  /// the friends query
+  final String? friendsQuery;
+
+  QuellenreiterRoutePath(this.route, {this.friendsQuery});
 
   /// Currently on Home Page?
   bool get isHomePage => route == Routes.home;
 
   /// Currently on Friends Page?
   bool get isFriendsPage => route == Routes.friends;
+
+  /// Currently on Friends Page?
+  bool get isAddFriendsPage => route == Routes.addFriends;
 
   /// Currently on Settings Page?
   bool get isSettingsPage => route == Routes.settings;

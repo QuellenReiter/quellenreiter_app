@@ -32,6 +32,10 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
   }
   @override
   QuellenreiterRoutePath get currentConfiguration {
+    if (appState.route == Routes.addFriends && appState.friendsQuery != null) {
+      return QuellenreiterRoutePath(appState.route,
+          friendsQuery: appState.friendsQuery);
+    }
     return QuellenreiterRoutePath(appState.route);
   }
 
@@ -45,9 +49,10 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         if (!route.didPop(result)) {
           return false;
         }
+        appState.friendsQuery = null;
         if (appState.route == Routes.signUp) {
           appState.route = Routes.login;
-        } else if (appState.route != Routes.home) {
+        } else {
           appState.route = Routes.home;
         }
         HapticFeedback.mediumImpact();
@@ -91,6 +96,19 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
           ),
         ];
       case Routes.home:
+        if (appState.friendsQuery != null) {
+          return [
+            home,
+            MaterialPage(
+              key: const ValueKey('AddFriendsPage'),
+              child: AddFriendScreen(
+                appState: appState,
+              ),
+            ),
+          ];
+        } else {
+          return [home];
+        }
         return [home];
       case Routes.openGames:
         return [
@@ -198,6 +216,9 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
     if (configuration.route == Routes.settings) {
       // get user, if not existing.
       appState.player ?? await appState.db.authenticate();
+    } else if (configuration.isAddFriendsPage &&
+        configuration.friendsQuery != null) {
+      appState.friendsQuery = configuration.friendsQuery;
     }
   }
 }
