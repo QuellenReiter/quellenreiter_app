@@ -19,7 +19,6 @@ class QuestScreen extends StatefulWidget {
 class _QuestScreenState extends State<QuestScreen>
     with SingleTickerProviderStateMixin {
   int animationLength = 40000;
-  Widget loadingBar = const SizedBox.shrink();
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +32,6 @@ class _QuestScreenState extends State<QuestScreen>
     // set answer to false, incase user breaks the round.
     // But only if withTimer. Else doing research and closing the app is welcome.
     if (widget.appState.currentEnemy!.openGame!.withTimer) {
-      loadingBar = getLoadingBar(statementIndex);
       widget.appState.currentEnemy!.openGame!.playerAnswers.add(false);
     }
     // show error if statements not downloaded.
@@ -443,40 +441,9 @@ class _QuestScreenState extends State<QuestScreen>
     // push to DB
     await widget.appState.db.updateGame(widget.appState);
 
-    Navigator.of(context).pop();
-
-    // loadingBar = getLoadingBar(statementIndex);
-
     widget.appState.route = Routes.loading;
     await HapticFeedback.heavyImpact().then((value) async =>
         await Future.delayed(const Duration(milliseconds: 500), () {}));
     widget.appState.route = Routes.quest;
-  }
-
-  Widget getLoadingBar(int statementIndex) {
-    return SfLinearGauge(
-      minimum: 0,
-      maximum: 1,
-      animateAxis: true,
-      axisTrackStyle: const LinearAxisTrackStyle(
-        thickness: 20,
-        edgeStyle: LinearEdgeStyle.bothCurve,
-      ),
-      showTicks: false,
-      showLabels: false,
-      barPointers: [
-        LinearBarPointer(
-          animationType: LinearAnimationType.linear,
-          enableAnimation: true,
-          animationDuration: animationLength,
-          edgeStyle: LinearEdgeStyle.bothCurve,
-          thickness: 20,
-          value: 1,
-          color: DesignColors.pink,
-          onAnimationCompleted: () =>
-              registerAnswer(statementIndex, false, timeOver: true),
-        )
-      ],
-    );
   }
 }

@@ -191,7 +191,18 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                   ],
                 ),
               // display the statementcards
-              if (statementCardsWithAnswers.isNotEmpty)
+              if (statementCardsWithAnswers.isEmpty)
+                Center(
+                    child: Padding(
+                  padding: const EdgeInsets.only(top: 200, left: 20, right: 20),
+                  child: Text("Du hast noch keine Statements gespielt.",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline1!
+                          .copyWith(color: DesignColors.lightBlue)),
+                ))
+              else if (statementCardsWithAnswers.isNotEmpty)
                 ExpansionTile(
                   initiallyExpanded: !widget.showOnlyLast ||
                       (widget.showOnlyLast &&

@@ -17,15 +17,17 @@ class QuellenreiterRouteInformationParser
       // check if logged in somehow.
       return QuellenreiterRoutePath(Routes.login);
     }
-
+    print(uri.pathSegments.length);
     // Handle '/user/:id'
     if (uri.pathSegments.length == 2) {
-      if (uri.pathSegments[0] != 'user') {
+      if (uri.pathSegments[0] != 'addFriends') {
         return QuellenreiterRoutePath(Routes.home);
       }
       var remaining = uri.pathSegments[1];
       // check if logged in
-      return QuellenreiterRoutePath(Routes.friends); // add the query somehow!!
+
+      return QuellenreiterRoutePath(Routes.addFriends,
+          friendsQuery: remaining); // add the query somehow!!
     }
     // Handle unknown routes
     return QuellenreiterRoutePath(Routes.home);
@@ -46,9 +48,11 @@ class QuellenreiterRouteInformationParser
     // if (configuration.isSignUpPage) {
     //   return const RouteInformation(location: '/signup/');
     // }
-    // if (configuration.isArchivePage) {
-    //   return const RouteInformation(location: '/archive/');
-    // }
+    // if we have a queryin the url, we need to add it to the route.
+    if (configuration.isAddFriendsPage && configuration.friendsQuery != null) {
+      return RouteInformation(
+          location: '/addFriends/' + configuration.friendsQuery!);
+    }
     return RouteInformation(
         location:
             '/${configuration.route.toString().replaceAll('Routes.', '')}');
