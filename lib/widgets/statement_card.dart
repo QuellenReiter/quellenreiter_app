@@ -311,7 +311,12 @@ class _StatementCardState extends State<StatementCard> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       FractionallySizedBox(
-                                        widthFactor: 1.15,
+                                        widthFactor: MediaQuery.of(context)
+                                                    .size
+                                                    .aspectRatio >
+                                                (9 / 16)
+                                            ? 1.08
+                                            : 1.15,
                                         child: Stack(
                                           clipBehavior: Clip.none,
                                           children: [

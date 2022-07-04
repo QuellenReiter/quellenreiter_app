@@ -1,10 +1,8 @@
-import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/utilities/utilities.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../constants/constants.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -292,6 +290,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Image(
+                          height:
+                              MediaQuery.of(context).size.aspectRatio > (9 / 16)
+                                  ? 100
+                                  : null,
                           image: AssetImage("assets/branding_low.png"),
                         ),
                         Row(

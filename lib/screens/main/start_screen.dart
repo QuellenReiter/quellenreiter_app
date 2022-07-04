@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
@@ -289,7 +291,25 @@ class _StartScreenState extends State<StartScreen> {
                                                                   .falseCorrectAnswers) *
                                                           100)
                                                       .toString()
-                                                      .substring(0, 4) +
+                                                      .substring(
+                                                          0,
+                                                          min(
+                                                              (widget
+                                                                          .appState
+                                                                          .player!
+                                                                          .trueCorrectAnswers /
+                                                                      (widget
+                                                                              .appState
+                                                                              .player!
+                                                                              .trueCorrectAnswers +
+                                                                          widget
+                                                                              .appState
+                                                                              .player!
+                                                                              .falseCorrectAnswers) *
+                                                                      100)
+                                                                  .toString()
+                                                                  .length,
+                                                              4)) +
                                                   "%",
                                           style: Theme.of(context)
                                               .textTheme
