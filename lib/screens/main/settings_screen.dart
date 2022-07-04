@@ -259,17 +259,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             alignment: Alignment.bottomCenter,
             clipBehavior: Clip.none,
             children: [
-              RotatedBox(
-                quarterTurns: 2,
-                child: ClipPath(
-                  clipper: DiagonalPathClipperTwo(),
-                  child: Container(
-                    color: DesignColors.pink,
-                  ),
+              ClipPath(
+                clipper: DiagonalClipper(),
+                child: Container(
+                  color: DesignColors.pink,
                 ),
               ),
               Positioned(
-                top: -5,
+                top: 10,
                 child: RotationTransition(
                   turns: AlwaysStoppedAnimation(-8 / 360),
                   child: Center(
