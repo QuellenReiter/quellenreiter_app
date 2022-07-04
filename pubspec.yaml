@@ -31,6 +31,7 @@ dependencies:
     sdk: flutter
   graphql_flutter:  ^5.0.1
   flutter_secure_storage: ^5.0.2
+  simple_animations: ^4.2.0
   url_launcher: ^6.0.20
   image: ^3.1.3
   flutter_native_splash: ^2.1.5
@@ -41,6 +42,7 @@ dependencies:
   syncfusion_flutter_gauges: ^20.1.61
   countup: ^0.1.4
   flutter_custom_clippers: ^2.0.0
+
 
 
   # The following adds the Cupertino Icons font to your application.
