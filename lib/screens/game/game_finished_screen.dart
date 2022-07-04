@@ -323,6 +323,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                       .copyWith(
                                           color: DesignColors.pink,
                                           fontSize: 60 * value),
+                                  textAlign: TextAlign.center,
                                 ),
                               ),
                             ),

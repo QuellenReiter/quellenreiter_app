@@ -51,7 +51,9 @@ class FactDisplayContainer extends StatelessWidget {
                 ),
               ),
               FractionallySizedBox(
-                widthFactor: 1.1,
+                widthFactor: MediaQuery.of(context).size.aspectRatio > (9 / 16)
+                    ? 1.05
+                    : 1.1,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [

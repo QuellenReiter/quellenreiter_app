@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../utilities/utilities.dart';
-import '../../widgets/error_banner.dart';
 import '../../widgets/main_app_bar.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -373,6 +370,11 @@ class _SignupScreenState extends State<SignupScreen> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Image(
+                                height:
+                                    MediaQuery.of(context).size.aspectRatio >
+                                            (9 / 16)
+                                        ? 100
+                                        : null,
                                 image: AssetImage("assets/branding_low.png"),
                               ),
                               TextButton(

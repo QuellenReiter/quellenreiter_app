@@ -125,7 +125,11 @@ class _QuestScreenState extends State<QuestScreen>
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               FractionallySizedBox(
-                                widthFactor: 1.1,
+                                widthFactor:
+                                    MediaQuery.of(context).size.aspectRatio >
+                                            (9 / 16)
+                                        ? 1.06
+                                        : 1.1,
                                 child: Align(
                                   alignment: Alignment.topCenter,
                                   child: Column(

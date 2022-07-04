@@ -74,7 +74,10 @@ class EnemyCard extends StatelessWidget {
               ),
               IgnorePointer(
                 child: FractionallySizedBox(
-                  widthFactor: 1.1,
+                  widthFactor:
+                      MediaQuery.of(context).size.aspectRatio > (9 / 16)
+                          ? 1.06
+                          : 1.1,
                   child: Text(
                     enemy.emoji,
                     style: Theme.of(context)
@@ -375,7 +378,9 @@ class EnemyCard extends StatelessWidget {
               ),
             IgnorePointer(
               child: FractionallySizedBox(
-                widthFactor: 1.1,
+                widthFactor: MediaQuery.of(context).size.aspectRatio > (9 / 16)
+                    ? 1.06
+                    : 1.1,
                 child: Text(
                   enemy.emoji,
                   style: Theme.of(context)
