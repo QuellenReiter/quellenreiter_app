@@ -355,13 +355,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   alignment: Alignment.bottomCenter,
                   clipBehavior: Clip.none,
                   children: [
-                    RotatedBox(
-                      quarterTurns: 2,
-                      child: ClipPath(
-                        clipper: DiagonalPathClipperTwo(),
-                        child: Container(
-                          color: DesignColors.pink,
-                        ),
+                    ClipPath(
+                      clipper: DiagonalClipper(),
+                      child: Container(
+                        color: DesignColors.pink,
                       ),
                     ),
                     Positioned(
