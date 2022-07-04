@@ -294,7 +294,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               MediaQuery.of(context).size.aspectRatio > (9 / 16)
                                   ? 100
                                   : null,
-                          image: AssetImage("assets/branding_low.png"),
+                          image: const AssetImage("assets/branding_low.png"),
                         ),
                         Row(
                           mainAxisSize: MainAxisSize.max,

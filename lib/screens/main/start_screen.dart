@@ -357,7 +357,19 @@ class _StartScreenState extends State<StartScreen> {
             ),
           ),
           ...finishedGames,
-          ...playersTurn
+          if (playersTurn.isEmpty)
+            Center(
+                child: Padding(
+              padding: const EdgeInsets.only(top: 200, left: 20, right: 20),
+              child: Text("Du hast keine offenen Spiele.",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline1!
+                      .copyWith(color: DesignColors.lightBlue)),
+            ))
+          else
+            ...playersTurn
         ],
       ),
     );
