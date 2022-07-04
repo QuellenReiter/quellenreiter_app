@@ -1,12 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
-import 'package:quellenreiter_app/widgets/main_app_bar.dart';
-import 'package:simple_timer/simple_timer.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -261,48 +258,46 @@ class _QuestScreenState extends State<QuestScreen>
                           ),
                         ),
 
-                        Flexible(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      primary: DesignColors.red,
-                                      minimumSize: Size(100, 70),
-                                    ),
-                                    onPressed: () =>
-                                        registerAnswer(statementIndex, false),
-                                    child: Text("Fake",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline4),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: DesignColors.red,
+                                    minimumSize: Size(100, 70),
+                                  ),
+                                  onPressed: () =>
+                                      registerAnswer(statementIndex, false),
+                                  child: Text("Fake",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline4),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              Expanded(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: DesignColors.green,
+                                    minimumSize: Size(100, 70),
+                                  ),
+                                  onPressed: () =>
+                                      registerAnswer(statementIndex, true),
+                                  child: Text(
+                                    "Fakt",
+                                    style:
+                                        Theme.of(context).textTheme.headline4,
                                   ),
                                 ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                Expanded(
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      primary: DesignColors.green,
-                                      minimumSize: Size(100, 70),
-                                    ),
-                                    onPressed: () =>
-                                        registerAnswer(statementIndex, true),
-                                    child: Text(
-                                      "Fakt",
-                                      style:
-                                          Theme.of(context).textTheme.headline4,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                         // Timer

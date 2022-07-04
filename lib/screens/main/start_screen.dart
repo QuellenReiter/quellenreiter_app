@@ -217,7 +217,7 @@ class _StartScreenState extends State<StartScreen> {
                                           textAlign: TextAlign.center,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline4!
+                                              .headline5!
                                               .copyWith(
                                                   color: DesignColors
                                                       .backgroundBlue),
@@ -322,7 +322,7 @@ class _StartScreenState extends State<StartScreen> {
                                           textAlign: TextAlign.center,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline4!
+                                              .headline5!
                                               .copyWith(
                                                   color: DesignColors
                                                       .backgroundBlue),

@@ -264,7 +264,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
               Positioned(
-                top: 10,
+                top: 5,
                 child: RotationTransition(
                   turns: AlwaysStoppedAnimation(-8 / 360),
                   child: Center(
