@@ -432,44 +432,40 @@ class QuellenreiterAppState extends ChangeNotifier {
   void showMessage(BuildContext context,
       {String message = "", IconData icon = Icons.info_outline}) {
     if (message != "" || msg != null) {
-      showDialog(
+      showModalBottomSheet(
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
           context: context,
           builder: (BuildContext context) {
-            return Dialog(
-                backgroundColor: Colors.white,
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(icon, color: DesignColors.green, size: 50),
-                        Text(
-                            message == ""
-                                ? msg != null
-                                    ? msg!
-                                    : message
-                                : message,
-                            style: TextStyle(
-                                color: DesignColors.green,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold)),
-                        ElevatedButton(
-                          onPressed: () {
-                            HapticFeedback.mediumImpact();
-
-                            Navigator.of(context).pop();
-                            msg = null;
-                          },
-                          child: const Text("ok"),
-                        ),
-                      ],
-                    ),
-                  ),
-                ));
+            return Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(icon, color: DesignColors.green, size: 50),
+                  Text(
+                      message == ""
+                          ? msg != null
+                              ? msg!
+                              : message
+                          : "fehler",
+                      style: TextStyle(
+                          color: DesignColors.green,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold)),
+                ],
+              ),
+            );
           });
+      // reset messages
+      msg = null;
+      message = "";
     }
   }
 
