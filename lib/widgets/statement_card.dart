@@ -202,6 +202,16 @@ class _StatementCardState extends State<StatementCard> {
     );
   }
 
+  Widget makeSheetDismissable({required Widget child}) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        Navigator.of(context).pop();
+      },
+      child: GestureDetector(onTap: () {}, child: child),
+    );
+  }
+
   void _showStatementDetail(Statement statement, BuildContext context) {
     bool isArchived = widget.appState.player!.safedStatementsIds!
         .contains(statement.objectId);
@@ -223,311 +233,317 @@ class _StatementCardState extends State<StatementCard> {
             fact: statement.statementFactchecks.facts[i],
           ),
         );
-        return DraggableScrollableSheet(
-          minChildSize: 0.6,
-          maxChildSize: 1,
-          initialChildSize: 0.9,
-          builder: (_, controller) => Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(15),
-                topRight: Radius.circular(15),
-              ),
-            ),
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              controller: controller,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.share),
-                      iconSize: 20,
-                      onPressed: () => Share.share(
-                          "https://quellenreiter.github.io/fact-browser-deployment/#/statement/${statement.objectId}"),
-                    ),
-                    if (isArchived)
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            isArchived = false;
-                          });
-                          HapticFeedback.mediumImpact();
-                          widget.appState.player!.safedStatementsIds!
-                              .remove(statement.objectId!);
-                          widget.appState.updateUserData();
-                          Navigator.of(context).pop();
-                        },
-                        icon: const Icon(Icons.delete),
-                      )
-                    else
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            isArchived = true;
-                          });
-                          HapticFeedback.mediumImpact();
-                          widget.appState.player!.safedStatementsIds!
-                              .add(statement.objectId!);
-                          widget.appState.updateUserData();
-                        },
-                        icon: const Icon(Icons.archive_outlined),
-                      ),
-                  ],
+        return makeSheetDismissable(
+          child: DraggableScrollableSheet(
+            minChildSize: 0.4,
+            maxChildSize: 1,
+            initialChildSize: 0.9,
+            builder: (_, controller) => Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(15),
+                  topRight: Radius.circular(15),
                 ),
+              ),
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                controller: controller,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.share),
+                        iconSize: 20,
+                        onPressed: () => Share.share(
+                            "https://quellenreiter.github.io/fact-browser-deployment/#/statement/${statement.objectId}"),
+                      ),
+                      if (isArchived)
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isArchived = false;
+                            });
+                            HapticFeedback.mediumImpact();
+                            widget.appState.player!.safedStatementsIds!
+                                .remove(statement.objectId!);
+                            widget.appState.updateUserData();
+                            Navigator.of(context).pop();
+                          },
+                          icon: const Icon(Icons.delete),
+                        )
+                      else
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isArchived = true;
+                            });
+                            HapticFeedback.mediumImpact();
+                            widget.appState.player!.safedStatementsIds!
+                                .add(statement.objectId!);
+                            widget.appState.updateUserData();
+                          },
+                          icon: const Icon(Icons.archive_outlined),
+                        ),
+                    ],
+                  ),
 
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  // Grey background box.
-                  child: Container(
-                    padding:
-                        const EdgeInsets.only(bottom: 10, left: 10, right: 10),
-                    alignment: Alignment.topLeft,
-                    clipBehavior: Clip.none,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: DesignColors.lightGrey,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        FractionallySizedBox(
-                          widthFactor:
-                              MediaQuery.of(context).size.aspectRatio > (9 / 16)
-                                  ? 1.08
-                                  : 1.15,
-                          child: Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                              Align(
-                                alignment: Alignment.topLeft,
-                                child: FractionallySizedBox(
-                                  widthFactor: 0.8,
-                                  child: Stack(
-                                    alignment: Alignment.centerLeft,
-                                    children: [
-                                      // The image with rounded edges and cropped
-                                      // to 4:3 ratio.
-                                      Tooltip(
-                                        message: "Klicken zum Vergrößern.",
-                                        child: Material(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          elevation: 10.0,
-                                          child: InkWell(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    // Grey background box.
+                    child: Container(
+                      padding: const EdgeInsets.only(
+                          bottom: 10, left: 10, right: 10),
+                      alignment: Alignment.topLeft,
+                      clipBehavior: Clip.none,
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        color: DesignColors.lightGrey,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          FractionallySizedBox(
+                            widthFactor:
+                                MediaQuery.of(context).size.aspectRatio >
+                                        (9 / 16)
+                                    ? 1.08
+                                    : 1.15,
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                Align(
+                                  alignment: Alignment.topLeft,
+                                  child: FractionallySizedBox(
+                                    widthFactor: 0.8,
+                                    child: Stack(
+                                      alignment: Alignment.centerLeft,
+                                      children: [
+                                        // The image with rounded edges and cropped
+                                        // to 4:3 ratio.
+                                        Tooltip(
+                                          message: "Klicken zum Vergrößern.",
+                                          child: Material(
                                             borderRadius:
                                                 BorderRadius.circular(10),
-                                            onTap: () => showImage(context),
-                                            child: ClipRRect(
+                                            elevation: 10.0,
+                                            child: InkWell(
                                               borderRadius:
                                                   BorderRadius.circular(10),
-                                              child: AspectRatio(
-                                                aspectRatio: 4 / 3,
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  child:
-                                                      FadeInImage.memoryNetwork(
-                                                    fadeInDuration:
-                                                        const Duration(
-                                                            milliseconds: 400),
-                                                    fadeInCurve:
-                                                        Curves.easeInOut,
-                                                    fit: BoxFit.cover,
-                                                    placeholder:
-                                                        kTransparentImage,
-                                                    image: statement
-                                                                .statementPictureURL !=
-                                                            null
-                                                        ? statement
-                                                            .statementPictureURL!
-                                                            .replaceAll(
-                                                                "https%3A%2F%2Fparsefiles.back4app.com%2FFeP6gb7k9R2K9OztjKWA1DgYhubqhW0yJMyrHbxH%2F",
-                                                                "")
-                                                        : "https://quellenreiter.app/assets/logo-pink.png",
+                                              onTap: () => showImage(context),
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                child: AspectRatio(
+                                                  aspectRatio: 4 / 3,
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    child: FadeInImage
+                                                        .memoryNetwork(
+                                                      fadeInDuration:
+                                                          const Duration(
+                                                              milliseconds:
+                                                                  400),
+                                                      fadeInCurve:
+                                                          Curves.easeInOut,
+                                                      fit: BoxFit.cover,
+                                                      placeholder:
+                                                          kTransparentImage,
+                                                      image: statement
+                                                                  .statementPictureURL !=
+                                                              null
+                                                          ? statement
+                                                              .statementPictureURL!
+                                                              .replaceAll(
+                                                                  "https%3A%2F%2Fparsefiles.back4app.com%2FFeP6gb7k9R2K9OztjKWA1DgYhubqhW0yJMyrHbxH%2F",
+                                                                  "")
+                                                          : "https://quellenreiter.app/assets/logo-pink.png",
+                                                    ),
                                                   ),
                                                 ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      // Display [statement.samplePictureCopyright]
-                                      RotatedBox(
-                                        quarterTurns: 1,
-                                        child: Container(
-                                          padding: const EdgeInsets.all(2),
-                                          color: Color.fromARGB(138, 0, 0, 0),
-                                          child: SelectableText(
-                                            statement.samplePictureCopyright
-                                                .trim(),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText2!
-                                                .copyWith(color: Colors.white),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              // Display [statement.statementText] and
-                              // [statement.statementCorrectness]
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: FractionallySizedBox(
-                                  widthFactor: 0.6,
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Material(
-                                          color: Colors.transparent,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          elevation: 10.0,
+                                        // Display [statement.samplePictureCopyright]
+                                        RotatedBox(
+                                          quarterTurns: 1,
                                           child: Container(
-                                            margin:
-                                                const EdgeInsets.only(top: 10),
-                                            padding: const EdgeInsets.all(10),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(10)),
-                                              color: statement
-                                                          .statementCorrectness ==
-                                                      CorrectnessCategory
-                                                          .correct
-                                                  ? DesignColors.green
-                                                  : DesignColors.red,
+                                            padding: const EdgeInsets.all(2),
+                                            color: Color.fromARGB(138, 0, 0, 0),
+                                            child: SelectableText(
+                                              statement.samplePictureCopyright
+                                                  .trim(),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText2!
+                                                  .copyWith(
+                                                      color: Colors.white),
                                             ),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(statement.statementText,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .subtitle1),
-                                                LinkAlert(
-                                                    link:
-                                                        statement.statementLink,
-                                                    msg:
-                                                        "Vorsicht! Du verlässt diese Seite und wirst zu einer archivierten vollständigen Version dieser Aussage weitergeleitet. Die Inhalte können möglicherweise verstörend oder diskriminierend sein. Inhalte, die mit dem Label “Unbelegt”, “Falscher Kontext”, “Manipuliert”, “Irreführend” oder “Frei erfunden” gekennzeichnet wurden, enthalten Desinformationen und sind keine verlässliche Quelle. Vollständiger Link:"),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        Material(
-                                          color: Colors.transparent,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          elevation: 10.0,
-                                          child: CorrectnessBadge(
-                                            correctnessValue:
-                                                statement.statementCorrectness,
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
                                 ),
-                              )
-                            ],
+                                // Display [statement.statementText] and
+                                // [statement.statementCorrectness]
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: FractionallySizedBox(
+                                    widthFactor: 0.6,
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Material(
+                                            color: Colors.transparent,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            elevation: 10.0,
+                                            child: Container(
+                                              margin: const EdgeInsets.only(
+                                                  top: 10),
+                                              padding: const EdgeInsets.all(10),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(10)),
+                                                color: statement
+                                                            .statementCorrectness ==
+                                                        CorrectnessCategory
+                                                            .correct
+                                                    ? DesignColors.green
+                                                    : DesignColors.red,
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(statement.statementText,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .subtitle1),
+                                                  LinkAlert(
+                                                      link: statement
+                                                          .statementLink,
+                                                      msg:
+                                                          "Vorsicht! Du verlässt diese Seite und wirst zu einer archivierten vollständigen Version dieser Aussage weitergeleitet. Die Inhalte können möglicherweise verstörend oder diskriminierend sein. Inhalte, die mit dem Label “Unbelegt”, “Falscher Kontext”, “Manipuliert”, “Irreführend” oder “Frei erfunden” gekennzeichnet wurden, enthalten Desinformationen und sind keine verlässliche Quelle. Vollständiger Link:"),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Material(
+                                            color: Colors.transparent,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            elevation: 10.0,
+                                            child: CorrectnessBadge(
+                                              correctnessValue: statement
+                                                  .statementCorrectness,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                        // Display more information.
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Wrap(
-                            direction: Axis.horizontal,
-                            alignment: WrapAlignment.start,
-                            runAlignment: WrapAlignment.start,
-                            runSpacing: 10,
-                            spacing: 10,
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(Icons.person),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 3),
-                                    child: Text(statement.statementAuthor),
-                                  ),
-                                ],
-                              ),
-                              // Media and Mediatype
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(Icons.newspaper),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 3),
-                                    child: Text(statement.statementMedia +
-                                        ' | ' +
-                                        statement.statementMediatype),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(Icons.calendar_month),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 3),
-                                    child: SelectableText(
-                                        statement.dateAsString()),
-                                  ),
-                                ],
-                              ),
-                              // Language
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(Icons.language),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 3),
-                                    child: SelectableText(
-                                        statement.statementLanguage),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        )
-                      ],
+                          // Display more information.
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Wrap(
+                              direction: Axis.horizontal,
+                              alignment: WrapAlignment.start,
+                              runAlignment: WrapAlignment.start,
+                              runSpacing: 10,
+                              spacing: 10,
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.person),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 3),
+                                      child: Text(statement.statementAuthor),
+                                    ),
+                                  ],
+                                ),
+                                // Media and Mediatype
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.newspaper),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 3),
+                                      child: Text(statement.statementMedia +
+                                          ' | ' +
+                                          statement.statementMediatype),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.calendar_month),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 3),
+                                      child: SelectableText(
+                                          statement.dateAsString()),
+                                    ),
+                                  ],
+                                ),
+                                // Language
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.language),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 3),
+                                      child: SelectableText(
+                                          statement.statementLanguage),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 40),
-                  child: Text(
-                    "Warum ist diese Aussage \"${statement.statementCorrectness}\"?",
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1!
-                        .copyWith(color: DesignColors.black),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 40),
+                    child: Text(
+                      "Warum ist diese Aussage \"${statement.statementCorrectness}\"?",
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle1!
+                          .copyWith(color: DesignColors.black),
+                    ),
                   ),
-                ),
-                // Display all [statement.factChecks]
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 40),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: factContainers,
+                  // Display all [statement.factChecks]
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 40),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: factContainers,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
