@@ -106,9 +106,6 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                       Stack(
                                           alignment: Alignment.center,
                                           children: [
-                                            // if (widget.appState.player!.getXp().toDouble() +
-                                            //         countupStartValue >
-                                            //     widget.appState.player!.getNextLevelXp())
                                             SfLinearGauge(
                                               minimum:
                                                   GameRules.xpForCurrentLevel(
@@ -132,7 +129,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                               animateRange: true,
                                               animationDuration:
                                                   countupStartValue > 0
-                                                      ? 3000
+                                                      ? 1000
                                                       : 400,
                                               showTicks: false,
                                               showLabels: false,
@@ -218,6 +215,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                     ],
                                   ),
                                 ),
+                                // if player did not reach new Level.
                                 if (widget.appState.player!.getXp().toDouble() +
                                         countupStartValue <
                                     widget.appState.player!.getNextLevelXp())
@@ -254,6 +252,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                       ),
                                     ),
                                   )
+                                // if player reached new Level.
                                 else
                                   PlayAnimation(
                                     duration: const Duration(milliseconds: 500),
@@ -336,6 +335,45 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                     : "🪢",
                             style: TextStyle(fontSize: 100 * value),
                           ),
+                          if (widget.appState.player!.getXp().toDouble() +
+                                  countupStartValue >=
+                              widget.appState.player!.getNextLevelXp())
+                            PlayAnimation(
+                              duration: const Duration(milliseconds: 1000),
+                              tween: Tween<double>(
+                                begin: 2,
+                                end: 1,
+                              ),
+                              curve: Curves.elasticOut,
+                              builder: (context, child, double value) => Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    'LevelUp: ',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline1!
+                                        .copyWith(
+                                            color: DesignColors.yellow,
+                                            fontSize: 40 * value),
+                                  ),
+                                  Icon(
+                                    Icons.workspace_premium_rounded,
+                                    size: 40 * value,
+                                    color: DesignColors.yellow,
+                                  ),
+                                  Text(
+                                    '${GameRules.currentLevel(widget.appState.player!.getXp() + countupStartValue)}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline1!
+                                        .copyWith(
+                                            color: DesignColors.yellow,
+                                            fontSize: 40 * value),
+                                  ),
+                                ],
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -362,7 +400,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                 return Countup(
                                   begin: countupStartValue.toDouble(),
                                   end: val.toDouble(),
-                                  duration: const Duration(seconds: 3),
+                                  duration: const Duration(seconds: 1),
                                   style: Theme.of(context)
                                       .textTheme
                                       .headline2!
@@ -389,7 +427,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline1!
-                                    .copyWith(fontSize: 50 * value),
+                                    .copyWith(fontSize: 35 * value),
                               ),
                             ),
                           )
@@ -401,7 +439,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                               style: Theme.of(context)
                                   .textTheme
                                   .headline1!
-                                  .copyWith(fontSize: 50),
+                                  .copyWith(fontSize: 35),
                             ),
                           ),
                       ],
@@ -419,73 +457,6 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                 ),
               ),
             ),
-
-            // Column(
-            //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //     mainAxisSize: MainAxisSize.max,
-            //     children: [
-            //       // animate ANIMATE
-            //       // make clickable and only then go to next screen
-            //       Text(
-            //         playerWon
-            //             ? "DU HAST GEWONNEN"
-            //             : enemyWon
-            //                 ? "Du hast verloren."
-            //                 : "Unentschieden",
-            //         style: Theme.of(context).textTheme.headline3!.copyWith(
-            //             color: playerWon
-            //                 ? DesignColors.green
-            //                 : enemyWon
-            //                     ? DesignColors.red
-            //                     : DesignColors.backgroundBlue),
-            //       ),
-            //       Center(
-            //         child: Material(
-            //           color: DesignColors.pink,
-            //           borderRadius: const BorderRadius.all(Radius.circular(10)),
-            //           child: InkWell(
-            //             borderRadius: const BorderRadius.all(Radius.circular(10)),
-            //             onTap: onTapGetPoints,
-            //             child: Container(
-            //               padding: const EdgeInsets.all(10),
-            //               decoration: const BoxDecoration(
-            //                 borderRadius: BorderRadius.all(Radius.circular(10)),
-            //               ),
-            //               child: Row(
-            //                 mainAxisSize: MainAxisSize.min,
-            //                 mainAxisAlignment: MainAxisAlignment.center,
-            //                 children: [
-            //                   Text(
-            //                     "+ ",
-            //                     style: Theme.of(context).textTheme.headline3,
-            //                   ),
-            //                   const Icon(
-            //                     Icons.monetization_on,
-            //                     color: DesignColors.yellow,
-            //                     size: 40,
-            //                   ),
-            //                   ValueListenableBuilder<int>(
-            //                     valueListenable: tempPlayerXp,
-            //                     builder: (BuildContext context, val, child) {
-            //                       return Countup(
-            //                         begin: countupStartValue.toDouble(),
-            //                         end: val.toDouble(),
-            //                         duration: const Duration(seconds: 3),
-            //                         style: Theme.of(context).textTheme.headline3,
-            //                       );
-            //                     },
-            //                   ),
-            //                   Text(
-            //                     "Punkte einsammeln.",
-            //                     style: Theme.of(context).textTheme.headline1,
-            //                   ),
-            //                 ],
-            //               ),
-            //             ),
-            //           ),
-            //         ),
-            //       ),
-            //     ]),
           ),
         ),
       ),
@@ -497,93 +468,6 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
     pointButtonTapped = true;
     countupStartValue = tempPlayerXp.value;
     tempPlayerXp.value = 0;
-
-    // await showDialog(
-    //     context: context,
-    //     builder: (context) {
-    //       // show for 3 seconds
-    //       // Future.delayed(const Duration(seconds: 3))
-    //       //     .then((value) => Navigator.of(context).pop());
-    //       return Dialog(
-    //         insetPadding:
-    //             const EdgeInsets.symmetric(horizontal: 40, vertical: 100),
-    //         child: Center(
-    //           child: Column(
-    //             mainAxisSize: MainAxisSize.min,
-    //             mainAxisAlignment: MainAxisAlignment.center,
-    //             crossAxisAlignment: CrossAxisAlignment.center,
-    //             children: [
-    //               Row(
-    //                 children: [
-    //                   Padding(
-    //                     padding: const EdgeInsets.only(right: 20),
-    //                     child: Center(
-    //                       // counts up
-    //                       child: ValueListenableBuilder<int>(
-    //                         valueListenable: tempPlayerXp,
-    //                         builder: (BuildContext context, val, child) {
-    //                           return Countup(
-    //                             begin:
-    //                                 widget.appState.player!.getXp().toDouble(),
-    //                             end:
-    //                                 widget.appState.player!.getXp().toDouble() +
-    //                                     countupStartValue,
-    //                             duration: const Duration(seconds: 3),
-    //                             style: Theme.of(context)
-    //                                 .textTheme
-    //                                 .headline2!
-    //                                 .copyWith(color: DesignColors.yellow),
-    //                           );
-    //                         },
-    //                       ),
-    //                     ),
-    //                   ),
-    //                   Text(
-    //                     "XP",
-    //                     style: Theme.of(context)
-    //                         .textTheme
-    //                         .headline1!
-    //                         .copyWith(color: DesignColors.yellow),
-    //                   ),
-    //                 ],
-    //               ),
-    //               // if reached new level
-    //               if (widget.appState.player!.getXp() + countupStartValue >=
-    //                   widget.appState.player!.getNextLevelXp())
-    //                 AnimationLimiter(
-    //                   child: Row(
-    //                     mainAxisSize: MainAxisSize.min,
-    //                     children: AnimationConfiguration.toStaggeredList(
-    //                       duration: const Duration(milliseconds: 3000),
-    //                       childAnimationBuilder: (widget) => SlideAnimation(
-    //                         horizontalOffset: 50.0,
-    //                         curve: Curves.bounceOut,
-    //                         child: FadeInAnimation(
-    //                           child: widget,
-    //                         ),
-    //                       ),
-    //                       children: [
-    //                         const Icon(
-    //                           Icons.workspace_premium_rounded,
-    //                           size: 50,
-    //                           color: DesignColors.yellow,
-    //                         ),
-    //                         Text(
-    //                           '${GameRules.currentLevel(widget.appState.player!.getXp() + countupStartValue)}',
-    //                           style: Theme.of(context)
-    //                               .textTheme
-    //                               .headline1!
-    //                               .copyWith(color: DesignColors.yellow),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                   ),
-    //                 )
-    //             ],
-    //           ),
-    //         ),
-    //       );
-    //     });
 
     // count down the xp
     // count up the players xp by amount.
@@ -647,6 +531,8 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
               widget.appState.currentEnemy!.openGame!.playerIndex) {
         await widget.appState.db
             .deleteGame(widget.appState.currentEnemy!.openGame!);
+        // remove game locally
+        widget.appState.currentEnemy!.openGame = null;
       }
 
       return;

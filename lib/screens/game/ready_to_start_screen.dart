@@ -129,6 +129,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
         alignment: Alignment.bottomCenter,
         children: [
           ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.all(10),
             children: [
               if (widget.appState.currentEnemy!.openGame!.gameFinished())
