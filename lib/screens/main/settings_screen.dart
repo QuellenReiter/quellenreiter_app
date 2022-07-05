@@ -191,15 +191,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           onPressed: () {
                             HapticFeedback.heavyImpact();
                             showModalBottomSheet(
+                                isScrollControlled: true,
                                 backgroundColor: Colors.transparent,
                                 context: context,
                                 builder: (BuildContext context) {
                                   return Container(
                                     padding: const EdgeInsets.only(top: 50),
                                     height: MediaQuery.of(context).size.height *
-                                        0.75,
+                                        0.8,
                                     decoration: BoxDecoration(
-                                      color: Colors.grey[800],
+                                      color: Colors.white,
                                       borderRadius: const BorderRadius.only(
                                         topLeft: Radius.circular(15),
                                         topRight: Radius.circular(15),
@@ -216,20 +217,43 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           "Willst du deinen Account wirklich für immer löschen?",
                                           style: Theme.of(context)
                                               .textTheme
-                                              .subtitle1,
+                                              .subtitle2,
                                         ),
-                                        ElevatedButton(
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all<
-                                                    Color>(DesignColors.red),
-                                          ),
-                                          onPressed: () {
-                                            widget.appState.db
-                                                .deleteAccount(widget.appState);
-                                          },
-                                          child: Text("Ich bin sicher."),
+                                        SizedBox(
+                                          height: 30,
                                         ),
+                                        Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              ElevatedButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all<
+                                                              Color>(
+                                                          DesignColors.red),
+                                                ),
+                                                onPressed: () {
+                                                  widget.appState.db
+                                                      .deleteAccount(
+                                                          widget.appState);
+                                                },
+                                                child: Text("Ich bin sicher."),
+                                              ),
+                                              ElevatedButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all<
+                                                              Color>(
+                                                          DesignColors.green),
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text("doch nicht."),
+                                              ),
+                                            ]),
                                       ],
                                     ),
                                   );
