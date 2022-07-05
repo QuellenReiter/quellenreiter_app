@@ -21,20 +21,20 @@ class LinkAlert extends StatelessWidget {
     return TextButton.icon(
       onPressed: msg != ""
           ? () => showModalBottomSheet<void>(
+                isScrollControlled: true,
                 context: context,
                 backgroundColor: Colors.transparent,
                 isDismissible: true,
                 builder: (BuildContext context) {
                   return Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey[800],
+                      color: Colors.white,
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(15),
                         topRight: Radius.circular(15),
                       ),
                     ),
-                    child: Align(
-                      alignment: Alignment.topCenter,
+                    child: SafeArea(
                       child: Container(
                         padding: const EdgeInsets.only(
                             bottom: 20, left: 20, right: 20),
@@ -44,19 +44,15 @@ class LinkAlert extends StatelessWidget {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Align(
-                              alignment: Alignment.topRight,
-                              child: IconButton(
-                                icon: const Icon(Icons.close),
-                                iconSize: 20,
-                                onPressed: () =>
-                                    Navigator.of(context).pop(context),
-                              ),
+                            const Icon(
+                              Icons.dangerous,
+                              size: 100,
+                              color: DesignColors.red,
                             ),
                             SelectableText(
-                              "Du verlässt diese Website!",
+                              "Du verlässt diese APP!",
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle1!

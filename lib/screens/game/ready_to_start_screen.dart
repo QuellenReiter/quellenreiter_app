@@ -6,7 +6,6 @@ import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/results_app_bar.dart';
-import 'package:quellenreiter_app/widgets/start_game_button.dart';
 
 import '../../widgets/statement_card.dart';
 
@@ -285,19 +284,6 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                 label: Text("Warten...",
                     style: Theme.of(context).textTheme.headline4),
                 onPressed: null,
-              ),
-            )
-          else if (widget.appState.currentEnemy!.openGame!.gameFinished())
-            SafeArea(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text("Das spiel ist beendet."),
-                  StartGameButton(
-                    appState: widget.appState,
-                    enemy: widget.appState.currentEnemy!,
-                  )
-                ],
               ),
             )
           else

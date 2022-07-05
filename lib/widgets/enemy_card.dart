@@ -2,7 +2,6 @@ import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/models/enemy.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
-import 'package:quellenreiter_app/widgets/start_game_button.dart';
 
 import '../constants/constants.dart';
 import '../models/player.dart';
