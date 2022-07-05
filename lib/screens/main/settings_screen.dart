@@ -249,6 +249,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                                           DesignColors.green),
                                                 ),
                                                 onPressed: () {
+                                                  HapticFeedback
+                                                      .selectionClick();
                                                   Navigator.of(context).pop();
                                                 },
                                                 child: Text("doch nicht."),
