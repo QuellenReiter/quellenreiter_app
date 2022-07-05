@@ -335,45 +335,90 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                     : "🪢",
                             style: TextStyle(fontSize: 100 * value),
                           ),
-                          if (widget.appState.player!.getXp().toDouble() +
-                                  countupStartValue >=
-                              widget.appState.player!.getNextLevelXp())
-                            PlayAnimation(
-                              duration: const Duration(milliseconds: 1000),
-                              tween: Tween<double>(
-                                begin: 2,
-                                end: 1,
-                              ),
-                              curve: Curves.elasticOut,
-                              builder: (context, child, double value) => Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    'LevelUp: ',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline1!
-                                        .copyWith(
-                                            color: DesignColors.yellow,
-                                            fontSize: 40 * value),
-                                  ),
-                                  Icon(
-                                    Icons.workspace_premium_rounded,
-                                    size: 40 * value,
-                                    color: DesignColors.yellow,
-                                  ),
-                                  Text(
-                                    '${GameRules.currentLevel(widget.appState.player!.getXp() + countupStartValue)}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline1!
-                                        .copyWith(
-                                            color: DesignColors.yellow,
-                                            fontSize: 40 * value),
-                                  ),
-                                ],
-                              ),
-                            ),
+                          Positioned(
+                            top: 30,
+                            child: ValueListenableBuilder<int>(
+                                valueListenable: tempPlayerXp,
+                                builder: (BuildContext context, val, child) {
+                                  if (widget.appState.player!
+                                              .getXp()
+                                              .toDouble() +
+                                          countupStartValue <
+                                      widget.appState.player!
+                                          .getNextLevelXp()) {
+                                    return SizedBox.shrink();
+                                  } else {
+                                    HapticFeedback.heavyImpact();
+                                    return PlayAnimation(
+                                      duration:
+                                          const Duration(milliseconds: 1000),
+                                      tween: Tween<double>(
+                                        begin: 2,
+                                        end: 1,
+                                      ),
+                                      curve: Curves.elasticOut,
+                                      builder: (context, child, double value) =>
+                                          Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            'LevelUp: ',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline1!
+                                                .copyWith(
+                                                    color: DesignColors.yellow,
+                                                    fontSize: 50 * value,
+                                                    shadows: [
+                                                  const Shadow(
+                                                    color: DesignColors.black,
+                                                    blurRadius: 10,
+                                                    offset: Offset(
+                                                      3,
+                                                      3,
+                                                    ),
+                                                  ),
+                                                ]),
+                                          ),
+                                          Icon(Icons.workspace_premium_rounded,
+                                              size: 50 * value,
+                                              color: DesignColors.yellow,
+                                              shadows: const [
+                                                Shadow(
+                                                  color: DesignColors.black,
+                                                  blurRadius: 10,
+                                                  offset: Offset(
+                                                    3,
+                                                    3,
+                                                  ),
+                                                ),
+                                              ]),
+                                          Text(
+                                            '${GameRules.currentLevel(widget.appState.player!.getXp() + countupStartValue)}',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline1!
+                                                .copyWith(
+                                              color: DesignColors.yellow,
+                                              fontSize: 50 * value,
+                                              shadows: [
+                                                const Shadow(
+                                                  color: DesignColors.black,
+                                                  blurRadius: 10,
+                                                  offset: Offset(
+                                                    3,
+                                                    3,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                }),
+                          )
                         ],
                       ),
                     ),
@@ -480,9 +525,9 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
       if (p != null) {
         // update current player
         widget.appState.player = p;
-        widget.appState.error = null;
+        widget.appState.msg = null;
       } else {
-        widget.appState.error = "Spieler nicht up to date.";
+        widget.appState.msg = "Spieler nicht up to date.";
         // return to ready to start screen.
         widget.appState.route = Routes.gameReadyToStart;
         return;

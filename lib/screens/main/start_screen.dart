@@ -111,12 +111,12 @@ class _StartScreenState extends State<StartScreen> {
     return RefreshIndicator(
       onRefresh: widget.appState.getFriends,
       child: SingleChildScrollView(
+        clipBehavior: Clip.none,
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            // ListView(),
             const SizedBox(
               height: 30,
             ),
