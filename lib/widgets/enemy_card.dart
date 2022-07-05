@@ -1,5 +1,6 @@
 import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/models/enemy.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 
@@ -100,6 +101,7 @@ class EnemyCard extends StatelessWidget {
               backgroundColor: Colors.transparent,
               isDismissible: true,
               builder: (BuildContext context) {
+                HapticFeedback.mediumImpact();
                 return Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -164,6 +166,8 @@ class EnemyCard extends StatelessWidget {
         label = "Anfrage senden";
       } else if (enemy.acceptedByOther && !enemy.acceptedByPlayer) {
         onClickFunk = () {
+          HapticFeedback.mediumImpact();
+
           appState.acceptRequest(enemy);
         };
         label = "Anfrage annehmen";
@@ -171,6 +175,8 @@ class EnemyCard extends StatelessWidget {
     } else if (enemy.openGame!.isPlayersTurn() &&
         enemy.openGame!.playerAnswers.isNotEmpty) {
       onClickFunk = () {
+        HapticFeedback.mediumImpact();
+
         appState.currentEnemy = enemy;
         appState.route = Routes.gameReadyToStart;
       };
@@ -178,6 +184,8 @@ class EnemyCard extends StatelessWidget {
     } else if (enemy.openGame!.isPlayersTurn() &&
         enemy.openGame!.playerAnswers.isEmpty) {
       onClickFunk = () {
+        HapticFeedback.mediumImpact();
+
         appState.currentEnemy = enemy;
         appState.route = Routes.gameReadyToStart;
       };
@@ -185,6 +193,8 @@ class EnemyCard extends StatelessWidget {
     } else if (enemy.openGame!.gameFinished() &&
         enemy.openGame!.requestingPlayerIndex != enemy.openGame!.playerIndex) {
       onClickFunk = () {
+        HapticFeedback.mediumImpact();
+
         appState.currentEnemy = enemy;
         appState.route = Routes.gameReadyToStart;
       };
@@ -192,6 +202,8 @@ class EnemyCard extends StatelessWidget {
     } else if (enemy.openGame!.gameFinished() &&
         enemy.openGame!.requestingPlayerIndex == enemy.openGame!.playerIndex) {
       onClickFunk = () {
+        HapticFeedback.mediumImpact();
+
         appState.currentEnemy = enemy;
         appState.route = Routes.gameReadyToStart;
       };
@@ -201,6 +213,8 @@ class EnemyCard extends StatelessWidget {
 
     else {
       onClickFunk = () {
+        HapticFeedback.mediumImpact();
+
         appState.currentEnemy = enemy;
         appState.route = Routes.gameReadyToStart;
       };

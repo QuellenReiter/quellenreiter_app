@@ -490,9 +490,10 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                       ],
                     ),
                     ElevatedButton.icon(
-                      onPressed: () => {
+                      onPressed: () {
+                        HapticFeedback.mediumImpact();
                         Share.share("https://quellenreiter.app",
-                            subject: "Teile die app mit deinen Freund:innen."),
+                            subject: "Teile die app mit deinen Freund:innen.");
                       },
                       icon: Icon(Icons.share),
                       label: Text("Mit Freund:innen teilen",

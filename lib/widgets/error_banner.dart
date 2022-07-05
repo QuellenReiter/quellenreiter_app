@@ -26,10 +26,6 @@ class ErrorBanner extends StatelessWidget {
             padding: const EdgeInsets.all(10),
             child: Wrap(alignment: WrapAlignment.center, children: [
               Text(appState.db.error!),
-              // ElevatedButton(
-              //   onPressed: () => appState.db.error = null,
-              //   child: const Text("ok"),
-              // ),
             ]),
           ),
         ),

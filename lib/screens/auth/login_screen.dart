@@ -150,10 +150,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: usernameController.text.length >=
                                               Utils.usernameMinLength &&
                                           passwordController.text.length > 7
-                                      ? () => widget.appState.tryLogin(
+                                      ? () {
+                                          HapticFeedback.mediumImpact();
+                                          widget.appState.tryLogin(
                                             usernameController.text,
                                             passwordController.text,
-                                          )
+                                          );
+                                        }
                                       : null,
                                   child: Text(
                                     "Anmelden",

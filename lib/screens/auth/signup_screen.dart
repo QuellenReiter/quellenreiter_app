@@ -224,6 +224,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                                   context: context,
                                                   builder:
                                                       (BuildContext context) {
+                                                    HapticFeedback
+                                                        .mediumImpact();
+
                                                     return Container(
                                                       padding:
                                                           const EdgeInsets.all(
@@ -275,6 +278,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                                                 ElevatedButton(
                                                                   onPressed:
                                                                       () {
+                                                                    HapticFeedback
+                                                                        .mediumImpact();
+
                                                                     Navigator.of(
                                                                             context)
                                                                         .pop();
@@ -292,6 +298,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                                                 ElevatedButton(
                                                                   onPressed:
                                                                       () {
+                                                                    HapticFeedback
+                                                                        .mediumImpact();
+
                                                                     Navigator.of(
                                                                             context)
                                                                         .pop();

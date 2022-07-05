@@ -235,6 +235,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                                           DesignColors.red),
                                                 ),
                                                 onPressed: () {
+                                                  HapticFeedback.heavyImpact();
+
                                                   widget.appState.db
                                                       .deleteAccount(
                                                           widget.appState);
