@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   void onTap(int indexTapped) {
     HapticFeedback.mediumImpact();
     //reset the error message.
-    widget.appState.error = null;
+    widget.appState.msg = null;
     switch (indexTapped) {
       case 0:
         widget.appState.route = Routes.home;
@@ -115,6 +115,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     // Show error is there is one !
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.appState.showError(context);
+      widget.appState.showMessage(context, icon: Icons.sports_esports);
     });
     switch (index) {
       case 0:

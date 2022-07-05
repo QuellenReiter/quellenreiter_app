@@ -11,6 +11,8 @@ class QuellenreiterAppState extends ChangeNotifier {
   ///  Object to be able to access the database.
   late DatabaseUtils db;
 
+  bool errorBannerActive = false;
+
   Routes _route = Routes.login;
   Routes get route => _route;
   set route(value) {
@@ -19,7 +21,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     if ((_route != Routes.loading && value != Routes.loading ||
             value == Routes.home && _route == Routes.loading) &&
         value != Routes.gameResults) {
-      error = null;
+      msg = null;
     }
 
     //refetch friends everytime we go to friends/startGame/openGames.
@@ -34,8 +36,8 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   /// Holds any error message that might occur.
   String? _error;
-  String? get error => _error;
-  set error(value) {
+  String? get msg => _error;
+  set msg(value) {
     _error = value;
     if (_error != null) {
       print("ERROR: $_error");
@@ -168,10 +170,8 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void _loginCallback(Player? p) {
     if (p == null) {
-      error = "Login fehlgeschlagen. ";
       route = Routes.login;
     } else {
-      error = null;
       player = p;
       isLoggedIn = true;
     }
@@ -179,10 +179,8 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void _signUpCallback(Player? p) {
     if (p == null) {
-      error = "Username schon vergeben.";
       route = Routes.signUp;
     } else {
-      error = null;
       player = p;
       isLoggedIn = true;
     }
@@ -214,11 +212,8 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void _sendFriendRequest(bool success) {
     if (success) {
-      error = null;
       getFriends();
-    } else {
-      error = "Ein Fehler ist aufgetreten.";
-    }
+    } else {}
   }
 
   Future<void> getUserData() async {
@@ -270,9 +265,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   void _acceptRequestCallback(bool success) {
     if (!success) {
       route = Routes.friends;
-      error = "Das hat nicht funktioniert.";
     } else {
-      error = null;
       getFriends();
     }
   }
@@ -289,11 +282,9 @@ class QuellenreiterAppState extends ChangeNotifier {
   void _searchFriendsCallback(Enemies? e) {
     if (e != null) {
       route = Routes.addFriends;
-      error = null;
       friendsSearchResult = e;
     } else {
       route = Routes.addFriends;
-      error = "keine Suchergebnisse";
     }
   }
 
@@ -323,7 +314,6 @@ class QuellenreiterAppState extends ChangeNotifier {
       getArchivedStatements();
       // route = Routes.archive;
     } else {
-      error = null;
       // player should still be the same object so we do not set it again.
       // route = Routes.settings;
     }
@@ -334,15 +324,12 @@ class QuellenreiterAppState extends ChangeNotifier {
       // Change this dummy data
       safedStatements = await db.getStatements(player!.safedStatementsIds!);
 
-      if (safedStatements == null) {
-        error = "Archiv konnte nicht geladen werden.";
-      }
+      if (safedStatements == null) {}
     }
   }
 
   void _getStatementsCallback(Statements? statements) {
     if (statements == null) {
-      error = "Archiv konnte nicht geladen werden.";
     } else {
       safedStatements = statements;
     }
@@ -361,14 +348,14 @@ class QuellenreiterAppState extends ChangeNotifier {
       // reset game because not started
       e.openGame = null;
       route = tempRoute;
-      error =
+      db.error =
           "Spielstarten fehlgeschlagen. ${e.emoji} ${e.name} wurde nicht herausgefordert. Versuche es erneut.";
       return;
     }
     // print(e.openGame!.statementIds.toString());
     // if successfully fetched statements
     route = tempRoute;
-    error =
+    msg =
         "${e.emoji} ${e.name} wurde herausgefordert. Warte, bis ${e.emoji} ${e.name} die erste Runde gespielt hat.";
     return;
   }
@@ -398,7 +385,6 @@ class QuellenreiterAppState extends ChangeNotifier {
       // check if error
       if (currentEnemy!.openGame!.statements == null) {
         route = Routes.home;
-        error = "Spiel konnte nicht gestarted werden.";
         return;
       }
       // set new route
@@ -408,11 +394,11 @@ class QuellenreiterAppState extends ChangeNotifier {
       return;
     }
     route = Routes.home;
-    error = "Spiel konnte nicht gestarted werden.";
   }
 
   void showError(BuildContext context) {
-    if (db.error != null) {
+    if (db.error != null && !errorBannerActive) {
+      errorBannerActive = true;
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -433,9 +419,52 @@ class QuellenreiterAppState extends ChangeNotifier {
             );
           }).then(
         (value) {
+          errorBannerActive = false;
           db.error = null;
         },
       );
+    }
+  }
+
+  void showMessage(BuildContext context,
+      {String message = "", IconData icon = Icons.info_outline}) {
+    if (message != "" || msg != null) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Dialog(
+                backgroundColor: Colors.white,
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(icon, color: DesignColors.green, size: 50),
+                        Text(
+                            message == ""
+                                ? msg != null
+                                    ? msg!
+                                    : message
+                                : message,
+                            style: TextStyle(
+                                color: DesignColors.green,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold)),
+                        ElevatedButton(
+                          onPressed: () {
+                            msg = null;
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text("ok"),
+                        ),
+                      ],
+                    ),
+                  ),
+                ));
+          });
     }
   }
 

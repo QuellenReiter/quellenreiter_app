@@ -493,7 +493,7 @@ class DatabaseUtils {
         if (p != null) {
           appState.player = p;
         } else {
-          appState.error = "Player konnte nicht aktualisiert werden.";
+          appState.msg = "Player konnte nicht aktualisiert werden.";
         }
       });
     }
