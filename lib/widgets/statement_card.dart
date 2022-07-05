@@ -255,11 +255,13 @@ class _StatementCardState extends State<StatementCard> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.share),
-                        iconSize: 20,
-                        onPressed: () => Share.share(
-                            "https://quellenreiter.github.io/fact-browser-deployment/#/statement/${statement.objectId}"),
-                      ),
+                          icon: const Icon(Icons.share),
+                          iconSize: 20,
+                          onPressed: () {
+                            HapticFeedback.selectionClick();
+                            Share.share(
+                                "https://quellenreiter.github.io/fact-browser-deployment/#/statement/${statement.objectId}");
+                          }),
                       if (isArchived)
                         IconButton(
                           onPressed: () {
@@ -592,7 +594,10 @@ class _StatementCardState extends State<StatementCard> {
               child: IconButton(
                 icon: const Icon(Icons.close),
                 iconSize: 50,
-                onPressed: () => Navigator.of(context).pop(context),
+                onPressed: () {
+                  HapticFeedback.selectionClick();
+                  Navigator.of(context).pop(context);
+                },
               ),
             ),
           ]),

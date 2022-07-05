@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -360,8 +361,10 @@ class _StartScreenState extends State<StartScreen> {
             ),
             Flexible(
               child: ElevatedButton(
-                onPressed: () =>
-                    widget.appState.handleNavigationChange(Routes.startGame),
+                onPressed: () {
+                  HapticFeedback.mediumImpact();
+                  widget.appState.handleNavigationChange(Routes.startGame);
+                },
                 child: Text(
                   "Neues Spiel",
                   style: Theme.of(context).textTheme.headline1,

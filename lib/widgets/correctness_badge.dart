@@ -49,14 +49,6 @@ class CorrectnessBadge extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Align(
-                      //   alignment: Alignment.topRight,
-                      //   child: IconButton(
-                      //     icon: const Icon(Icons.close),
-                      //     iconSize: 20,
-                      //     onPressed: () => Navigator.of(context).pop(context),
-                      //   ),
-                      // ),
                       SelectableText(
                         "Unsere Bewertungsskala",
                         style: Theme.of(context)

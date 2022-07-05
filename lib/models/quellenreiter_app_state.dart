@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 
 import '../provider/database_utils.dart';
@@ -411,6 +412,8 @@ class QuellenreiterAppState extends ChangeNotifier {
                 ElevatedButton(
                   onPressed: () {
                     db.error = null;
+                    HapticFeedback.mediumImpact();
+
                     Navigator.of(context).pop();
                   },
                   child: Text("ok"),
@@ -419,8 +422,8 @@ class QuellenreiterAppState extends ChangeNotifier {
             );
           }).then(
         (value) {
-          errorBannerActive = false;
           db.error = null;
+          errorBannerActive = false;
         },
       );
     }
@@ -455,8 +458,10 @@ class QuellenreiterAppState extends ChangeNotifier {
                                 fontWeight: FontWeight.bold)),
                         ElevatedButton(
                           onPressed: () {
-                            msg = null;
+                            HapticFeedback.mediumImpact();
+
                             Navigator.of(context).pop();
+                            msg = null;
                           },
                           child: const Text("ok"),
                         ),

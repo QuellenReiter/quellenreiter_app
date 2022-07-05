@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/models/enemy.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/title_app_bar.dart';
@@ -50,7 +51,10 @@ class _StartGameScreenState extends State<StartGameScreen> {
           else if (widget.appState.player!.friends!.enemies.isEmpty)
             Center(
               child: ElevatedButton.icon(
-                onPressed: () => {widget.appState.route = Routes.addFriends},
+                onPressed: () {
+                  HapticFeedback.mediumImpact();
+                  widget.appState.route = Routes.addFriends;
+                },
                 icon: const Icon(Icons.sports_esports),
                 label: Text(
                   "Freund:innen einladen",
@@ -77,7 +81,10 @@ class _StartGameScreenState extends State<StartGameScreen> {
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton.icon(
-                  onPressed: () => {widget.appState.route = Routes.addFriends},
+                  onPressed: () {
+                    HapticFeedback.mediumImpact();
+                    widget.appState.route = Routes.addFriends;
+                  },
                   icon: const Icon(Icons.person_add),
                   label: Text(
                     "Freund:innen einladen",

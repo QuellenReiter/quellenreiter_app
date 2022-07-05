@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
@@ -77,9 +78,10 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                       ),
                       IconButton(
                         color: DesignColors.backgroundBlue,
-                        onPressed: () => {
+                        onPressed: () {
+                          HapticFeedback.selectionClick();
                           widget.appState.friendsQuery =
-                              searchController.text.trim()
+                              searchController.text.trim();
                         },
                         icon: const Icon(
                           Icons.search,
