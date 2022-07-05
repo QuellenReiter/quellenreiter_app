@@ -96,6 +96,7 @@ class EnemyCard extends StatelessWidget {
       if (enemy.acceptedByPlayer && enemy.acceptedByOther) {
         label = "Spiel starten";
         onClickFunk = () => showModalBottomSheet<void>(
+              isScrollControlled: true,
               context: context,
               backgroundColor: Colors.transparent,
               isDismissible: true,
@@ -108,28 +109,20 @@ class EnemyCard extends StatelessWidget {
                       topRight: Radius.circular(15),
                     ),
                   ),
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: Container(
-                      padding: const EdgeInsets.only(
-                          bottom: 20, left: 20, right: 20),
-                      constraints: const BoxConstraints(
-                        maxWidth: 700,
-                      ),
+                  child: Container(
+                    padding:
+                        const EdgeInsets.only(bottom: 20, left: 20, right: 20),
+                    constraints: const BoxConstraints(
+                      maxWidth: 700,
+                    ),
+                    child: SafeArea(
                       child: Column(
-                        mainAxisSize: MainAxisSize.max,
+                        mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: IconButton(
-                              icon: const Icon(Icons.close),
-                              iconSize: 20,
-                              onPressed: () =>
-                                  Navigator.of(context).pop(context),
-                            ),
-                          ),
+                          const Icon(Icons.sports_esports,
+                              size: 100, color: DesignColors.pink),
                           SelectableText("Wie möchtest du spielen?",
                               style: Theme.of(context).textTheme.headline2),
                           Flexible(
@@ -137,19 +130,21 @@ class EnemyCard extends StatelessWidget {
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                ElevatedButton(
+                                ElevatedButton.icon(
                                   onPressed: () =>
                                       appState.startNewGame(enemy, true),
-                                  child: Text(
+                                  icon: Icon(Icons.alarm),
+                                  label: Text(
                                     "Mit Timer",
                                     style:
                                         Theme.of(context).textTheme.headline4,
                                   ),
                                 ),
-                                ElevatedButton(
+                                ElevatedButton.icon(
                                   onPressed: () =>
                                       appState.startNewGame(enemy, false),
-                                  child: Text(
+                                  icon: Icon(Icons.alarm_off),
+                                  label: Text(
                                     "ohne Timer",
                                     style:
                                         Theme.of(context).textTheme.headline4,
