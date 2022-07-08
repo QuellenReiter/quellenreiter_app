@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/models/enemy.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/title_app_bar.dart';
@@ -37,15 +38,27 @@ class _StartGameScreenState extends State<StartGameScreen> {
         children: [
           if (enemiesWithNoGame.isNotEmpty)
             Flexible(
-              child: ListView.builder(
-                itemCount: enemiesWithNoGame.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return EnemyCard(
-                    appState: widget.appState,
-                    enemy: enemiesWithNoGame[index],
-                    onTapped: (enemy) => {},
-                  );
-                },
+              child: AnimationLimiter(
+                child: ListView.builder(
+                  itemCount: enemiesWithNoGame.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return AnimationConfiguration.staggeredList(
+                      position: index,
+                      duration: const Duration(milliseconds: 500),
+                      child: SlideAnimation(
+                        horizontalOffset: 20.0,
+                        curve: Curves.elasticOut,
+                        child: FadeInAnimation(
+                          child: EnemyCard(
+                            appState: widget.appState,
+                            enemy: enemiesWithNoGame[index],
+                            onTapped: (enemy) => {},
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             )
           else if (widget.appState.player!.friends!.enemies.isEmpty)

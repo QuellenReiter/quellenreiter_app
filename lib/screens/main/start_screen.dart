@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -114,70 +115,78 @@ class _StartScreenState extends State<StartScreen> {
       child: SingleChildScrollView(
         clipBehavior: Clip.none,
         physics: const AlwaysScrollableScrollPhysics(),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 30,
-            ),
-            Flexible(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.trending_up,
-                      color: DesignColors.backgroundBlue,
-                      size:
-                          Theme.of(context).textTheme.headline2!.fontSize! + 10,
-                    ),
-                    Text(
-                      "Deine Skills",
-                      style: Theme.of(context).textTheme.headline2,
-                    ),
-                  ],
+        child: AnimationLimiter(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: AnimationConfiguration.toStaggeredList(
+              duration: const Duration(milliseconds: 300),
+              childAnimationBuilder: (widget) => SlideAnimation(
+                horizontalOffset: 20.0,
+                curve: Curves.elasticOut,
+                child: FadeInAnimation(
+                  child: widget,
                 ),
               ),
-            ),
-            IgnorePointer(
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height / 4,
-                child: Padding(
+              children: [
+                const SizedBox(
+                  height: 30,
+                ),
+                Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width / 2) - 15,
-                        child: SfRadialGauge(
-                          backgroundColor: Colors.transparent,
-                          animationDuration: 0.4,
-                          enableLoadingAnimation: true,
-                          axes: [
-                            RadialAxis(
-                              useRangeColorForAxis: false,
-                              startAngle: 90,
-                              endAngle: 90,
-                              minimum: 0,
-                              maximum: 1,
-                              ranges: [
-                                GaugeRange(
-                                  startValue: 0,
-                                  endValue: 1,
-                                  sizeUnit: GaugeSizeUnit.factor,
-                                  startWidth: 0.1,
-                                  endWidth: 0.1,
-                                  color: Colors.transparent,
-                                ),
-                              ],
-                              showTicks: false,
-                              showLabels: false,
-                              pointers: [
-                                RangePointer(
-                                  cornerStyle: CornerStyle.bothCurve,
-                                  value:
-                                      widget.appState.player!.numPlayedGames ==
+                      Icon(
+                        Icons.trending_up,
+                        color: DesignColors.backgroundBlue,
+                        size: Theme.of(context).textTheme.headline2!.fontSize! +
+                            10,
+                      ),
+                      Text(
+                        "Deine Skills",
+                        style: Theme.of(context).textTheme.headline2,
+                      ),
+                    ],
+                  ),
+                ),
+                IgnorePointer(
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height / 4,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: (MediaQuery.of(context).size.width / 2) - 15,
+                            child: SfRadialGauge(
+                              backgroundColor: Colors.transparent,
+                              animationDuration: 0.4,
+                              enableLoadingAnimation: true,
+                              axes: [
+                                RadialAxis(
+                                  useRangeColorForAxis: false,
+                                  startAngle: 90,
+                                  endAngle: 90,
+                                  minimum: 0,
+                                  maximum: 1,
+                                  ranges: [
+                                    GaugeRange(
+                                      startValue: 0,
+                                      endValue: 1,
+                                      sizeUnit: GaugeSizeUnit.factor,
+                                      startWidth: 0.1,
+                                      endWidth: 0.1,
+                                      color: Colors.transparent,
+                                    ),
+                                  ],
+                                  showTicks: false,
+                                  showLabels: false,
+                                  pointers: [
+                                    RangePointer(
+                                      cornerStyle: CornerStyle.bothCurve,
+                                      value: widget.appState.player!
+                                                  .numPlayedGames ==
                                               0
                                           ? 0
                                           : widget.appState.player!
@@ -186,99 +195,97 @@ class _StartScreenState extends State<StartScreen> {
                                                       .trueFakeAnswers +
                                                   widget.appState.player!
                                                       .falseFakeAnswers),
-                                  enableAnimation: true,
-                                  width: 20,
-                                  color: DesignColors.green,
-                                ),
-                              ],
-                              annotations: [
-                                GaugeAnnotation(
-                                    widget: Container(
-                                      child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              widget.appState.player!
-                                                          .numPlayedGames ==
-                                                      0
-                                                  ? "0%"
-                                                  : (widget.appState.player!
-                                                                  .trueFakeAnswers /
-                                                              (widget
-                                                                      .appState
-                                                                      .player!
-                                                                      .trueFakeAnswers +
-                                                                  widget
-                                                                      .appState
-                                                                      .player!
-                                                                      .falseFakeAnswers) *
-                                                              100)
-                                                          .toString()
-                                                          .substring(
-                                                              0,
-                                                              min(
-                                                                  (widget.appState.player!
-                                                                              .trueFakeAnswers /
-                                                                          (widget.appState.player!.trueFakeAnswers +
-                                                                              widget.appState.player!.falseFakeAnswers) *
-                                                                          100)
-                                                                      .toString()
-                                                                      .length,
-                                                                  4)) +
-                                                      "%",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline1!
-                                                  .copyWith(
-                                                      color:
-                                                          DesignColors.green),
-                                            ),
-                                            Text(
-                                              'Fakes entlarvt',
-                                              textAlign: TextAlign.center,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline5!
-                                                  .copyWith(
-                                                      color: DesignColors
-                                                          .backgroundBlue),
-                                            ),
-                                          ]),
+                                      enableAnimation: true,
+                                      width: 20,
+                                      color: DesignColors.green,
                                     ),
-                                    angle: 90,
-                                    positionFactor: 0)
+                                  ],
+                                  annotations: [
+                                    GaugeAnnotation(
+                                        widget: Container(
+                                          child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  widget.appState.player!
+                                                              .numPlayedGames ==
+                                                          0
+                                                      ? "0%"
+                                                      : (widget.appState.player!
+                                                                      .trueFakeAnswers /
+                                                                  (widget
+                                                                          .appState
+                                                                          .player!
+                                                                          .trueFakeAnswers +
+                                                                      widget
+                                                                          .appState
+                                                                          .player!
+                                                                          .falseFakeAnswers) *
+                                                                  100)
+                                                              .toString()
+                                                              .substring(
+                                                                  0,
+                                                                  min(
+                                                                      (widget.appState.player!.trueFakeAnswers /
+                                                                              (widget.appState.player!.trueFakeAnswers + widget.appState.player!.falseFakeAnswers) *
+                                                                              100)
+                                                                          .toString()
+                                                                          .length,
+                                                                      4)) +
+                                                          "%",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline1!
+                                                      .copyWith(
+                                                          color: DesignColors
+                                                              .green),
+                                                ),
+                                                Text(
+                                                  'Fakes entlarvt',
+                                                  textAlign: TextAlign.center,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline5!
+                                                      .copyWith(
+                                                          color: DesignColors
+                                                              .backgroundBlue),
+                                                ),
+                                              ]),
+                                        ),
+                                        angle: 90,
+                                        positionFactor: 0)
+                                  ],
+                                ),
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width / 2) - 15,
-                        child: SfRadialGauge(
-                          animationDuration: 0.4,
-                          enableLoadingAnimation: true,
-                          axes: [
-                            RadialAxis(
-                              startAngle: 90,
-                              endAngle: 90,
-                              minimum: 0,
-                              maximum: 1,
-                              ranges: [
-                                GaugeRange(
-                                  startValue: 0,
-                                  endValue: 1,
-                                  sizeUnit: GaugeSizeUnit.factor,
-                                  color: Colors.transparent,
-                                ),
-                              ],
-                              showTicks: false,
-                              showLabels: false,
-                              pointers: [
-                                RangePointer(
-                                  cornerStyle: CornerStyle.bothCurve,
-                                  value:
-                                      widget.appState.player!.numPlayedGames ==
+                          ),
+                          SizedBox(
+                            width: (MediaQuery.of(context).size.width / 2) - 15,
+                            child: SfRadialGauge(
+                              animationDuration: 0.4,
+                              enableLoadingAnimation: true,
+                              axes: [
+                                RadialAxis(
+                                  startAngle: 90,
+                                  endAngle: 90,
+                                  minimum: 0,
+                                  maximum: 1,
+                                  ranges: [
+                                    GaugeRange(
+                                      startValue: 0,
+                                      endValue: 1,
+                                      sizeUnit: GaugeSizeUnit.factor,
+                                      color: Colors.transparent,
+                                    ),
+                                  ],
+                                  showTicks: false,
+                                  showLabels: false,
+                                  pointers: [
+                                    RangePointer(
+                                      cornerStyle: CornerStyle.bothCurve,
+                                      value: widget.appState.player!
+                                                  .numPlayedGames ==
                                               0
                                           ? 0
                                           : widget.appState.player!
@@ -287,113 +294,113 @@ class _StartScreenState extends State<StartScreen> {
                                                       .trueCorrectAnswers +
                                                   widget.appState.player!
                                                       .falseCorrectAnswers),
-                                  enableAnimation: true,
-                                  width: 20,
-                                  color: DesignColors.green,
+                                      enableAnimation: true,
+                                      width: 20,
+                                      color: DesignColors.green,
+                                    ),
+                                  ],
+                                  annotations: [
+                                    GaugeAnnotation(
+                                        widget: Container(
+                                          child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  widget.appState.player!
+                                                              .numPlayedGames ==
+                                                          0
+                                                      ? "0%"
+                                                      : (widget.appState.player!
+                                                                      .trueCorrectAnswers /
+                                                                  (widget
+                                                                          .appState
+                                                                          .player!
+                                                                          .trueCorrectAnswers +
+                                                                      widget
+                                                                          .appState
+                                                                          .player!
+                                                                          .falseCorrectAnswers) *
+                                                                  100)
+                                                              .toString()
+                                                              .substring(
+                                                                  0,
+                                                                  min(
+                                                                      (widget.appState.player!.trueCorrectAnswers /
+                                                                              (widget.appState.player!.trueCorrectAnswers + widget.appState.player!.falseCorrectAnswers) *
+                                                                              100)
+                                                                          .toString()
+                                                                          .length,
+                                                                      4)) +
+                                                          "%",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline1!
+                                                      .copyWith(
+                                                          color: DesignColors
+                                                              .green),
+                                                ),
+                                                Text(
+                                                  'Fakten erkannt',
+                                                  textAlign: TextAlign.center,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline5!
+                                                      .copyWith(
+                                                          color: DesignColors
+                                                              .backgroundBlue),
+                                                ),
+                                              ]),
+                                        ),
+                                        angle: 90,
+                                        positionFactor: 0)
+                                  ],
                                 ),
                               ],
-                              annotations: [
-                                GaugeAnnotation(
-                                    widget: Container(
-                                      child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              widget.appState.player!
-                                                          .numPlayedGames ==
-                                                      0
-                                                  ? "0%"
-                                                  : (widget.appState.player!
-                                                                  .trueCorrectAnswers /
-                                                              (widget
-                                                                      .appState
-                                                                      .player!
-                                                                      .trueCorrectAnswers +
-                                                                  widget
-                                                                      .appState
-                                                                      .player!
-                                                                      .falseCorrectAnswers) *
-                                                              100)
-                                                          .toString()
-                                                          .substring(
-                                                              0,
-                                                              min(
-                                                                  (widget.appState.player!
-                                                                              .trueCorrectAnswers /
-                                                                          (widget.appState.player!.trueCorrectAnswers +
-                                                                              widget.appState.player!.falseCorrectAnswers) *
-                                                                          100)
-                                                                      .toString()
-                                                                      .length,
-                                                                  4)) +
-                                                      "%",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline1!
-                                                  .copyWith(
-                                                      color:
-                                                          DesignColors.green),
-                                            ),
-                                            Text(
-                                              'Fakten erkannt',
-                                              textAlign: TextAlign.center,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline5!
-                                                  .copyWith(
-                                                      color: DesignColors
-                                                          .backgroundBlue),
-                                            ),
-                                          ]),
-                                    ),
-                                    angle: 90,
-                                    positionFactor: 0)
-                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    HapticFeedback.mediumImpact();
+                    widget.appState.handleNavigationChange(Routes.startGame);
+                  },
+                  icon: Icon(
+                    Icons.sports_esports,
+                  ),
+                  label: Text(
+                    "Neues Spiel",
+                    style: Theme.of(context).textTheme.headline1,
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  child: Divider(
+                    color: DesignColors.backgroundBlue,
+                  ),
+                ),
+                ...finishedGames,
+                if (playersTurn.isEmpty && finishedGames.isEmpty)
+                  Center(
+                      child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 50, left: 20, right: 20, bottom: 50),
+                    child: Text("Du hast keine offenen Spiele.",
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline1!
+                            .copyWith(color: DesignColors.lightBlue)),
+                  ))
+                else
+                  ...playersTurn
+              ],
             ),
-            ElevatedButton.icon(
-              onPressed: () {
-                HapticFeedback.mediumImpact();
-                widget.appState.handleNavigationChange(Routes.startGame);
-              },
-              icon: Icon(
-                Icons.sports_esports,
-              ),
-              label: Text(
-                "Neues Spiel",
-                style: Theme.of(context).textTheme.headline1,
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Divider(
-                color: DesignColors.backgroundBlue,
-              ),
-            ),
-            ...finishedGames,
-            if (playersTurn.isEmpty && finishedGames.isEmpty)
-              Center(
-                  child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 50, left: 20, right: 20, bottom: 50),
-                child: Text("Du hast keine offenen Spiele.",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline1!
-                        .copyWith(color: DesignColors.lightBlue)),
-              ))
-            else
-              ...playersTurn
-          ],
+          ),
         ),
       ),
     );
