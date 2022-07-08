@@ -844,12 +844,17 @@ class DatabaseUtils {
   }
 
   Future<void> deleteAccount(QuellenreiterAppState appState) async {
+    appState.route = Routes.loading;
     if (appState.player == null) {
+          appState.route = Routes.login;
+
       return;
     }
     String? token = await safeStorage.read(key: "token");
     // If token is not null, check if it is valid.
     if (token == null) {
+          appState.route = Routes.login;
+
       return;
     }
     // Link to the database.
@@ -877,6 +882,8 @@ class DatabaseUtils {
     );
     if (mutationResult.hasException) {
       handleException(mutationResult.exception!);
+          appState.route = Routes.settings;
+
       return;
     }
     appState.route = Routes.login;
