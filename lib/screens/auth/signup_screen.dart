@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -229,8 +230,17 @@ class _SignupScreenState extends State<SignupScreen> {
                                                     password2Controller.value ==
                                                         passwordController.value
                                                 ? () => showModalBottomSheet(
-                                                    backgroundColor:
-                                                        Colors.transparent,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                        topLeft:
+                                                            Radius.circular(10),
+                                                        topRight:
+                                                            Radius.circular(10),
+                                                      ),
+                                                    ),
+                                                    isScrollControlled: true,
                                                     isDismissible: true,
                                                     context: context,
                                                     builder:
@@ -238,91 +248,110 @@ class _SignupScreenState extends State<SignupScreen> {
                                                       HapticFeedback
                                                           .mediumImpact();
 
-                                                      return Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(20),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: DesignColors
-                                                              .lightBlue,
-                                                          borderRadius:
-                                                              const BorderRadius
-                                                                  .only(
-                                                            topLeft:
-                                                                Radius.circular(
-                                                                    15),
-                                                            topRight:
-                                                                Radius.circular(
-                                                                    15),
-                                                          ),
-                                                        ),
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .height *
-                                                            0.8,
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              "Hast du dir dein Passwort gemerkt? Du kannst es nicht zurücksetzen, wenn du es vergisst.",
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .headline4!
-                                                                  .copyWith(
-                                                                      color: DesignColors
-                                                                          .red),
-                                                            ),
-                                                            Flexible(
-                                                              child: Row(
-                                                                mainAxisSize:
-                                                                    MainAxisSize
-                                                                        .max,
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceEvenly,
-                                                                children: [
-                                                                  ElevatedButton(
-                                                                    onPressed:
-                                                                        () {
-                                                                      HapticFeedback
-                                                                          .mediumImpact();
-
-                                                                      Navigator.of(
-                                                                              context)
-                                                                          .pop();
-                                                                      widget.appState.trySignUp(
-                                                                          usernameController
-                                                                              .text,
-                                                                          passwordController
-                                                                              .text,
-                                                                          emojiController
-                                                                              .text);
-                                                                    },
-                                                                    child: Text(
-                                                                        "Ja, weiter."),
+                                                      return SafeArea(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(20),
+                                                          child:
+                                                              AnimationLimiter(
+                                                            child: Column(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .center,
+                                                              children:
+                                                                  AnimationConfiguration
+                                                                      .toStaggeredList(
+                                                                duration:
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            800),
+                                                                childAnimationBuilder:
+                                                                    (widget) =>
+                                                                        SlideAnimation(
+                                                                  horizontalOffset:
+                                                                      20.0,
+                                                                  curve: Curves
+                                                                      .elasticOut,
+                                                                  child:
+                                                                      FadeInAnimation(
+                                                                    child:
+                                                                        widget,
                                                                   ),
-                                                                  ElevatedButton(
-                                                                    onPressed:
-                                                                        () {
-                                                                      HapticFeedback
-                                                                          .mediumImpact();
+                                                                ),
+                                                                children: [
+                                                                  const Text(
+                                                                    "🧠",
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            100),
+                                                                  ),
+                                                                  Text(
+                                                                    "Hast du dir dein Passwort gemerkt?",
+                                                                    style: Theme.of(
+                                                                            context)
+                                                                        .textTheme
+                                                                        .headline2!
+                                                                        .copyWith(
+                                                                            color:
+                                                                                DesignColors.backgroundBlue),
+                                                                  ),
+                                                                  Text(
+                                                                    "Du kannst es nicht zurücksetzen, wenn du es vergisst.",
+                                                                    style: Theme.of(
+                                                                            context)
+                                                                        .textTheme
+                                                                        .subtitle1!
+                                                                        .copyWith(
+                                                                            color:
+                                                                                DesignColors.backgroundBlue),
+                                                                  ),
+                                                                  Flexible(
+                                                                    child: Row(
+                                                                      mainAxisSize:
+                                                                          MainAxisSize
+                                                                              .max,
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      children: [
+                                                                        ElevatedButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            HapticFeedback.mediumImpact();
 
-                                                                      Navigator.of(
-                                                                              context)
-                                                                          .pop();
-                                                                    },
-                                                                    child: Text(
-                                                                        "Nein, zurück."),
+                                                                            Navigator.of(context).pop();
+                                                                            widget.appState.trySignUp(
+                                                                                usernameController.text,
+                                                                                passwordController.text,
+                                                                                emojiController.text);
+                                                                          },
+                                                                          child:
+                                                                              Text("Ja, weiter."),
+                                                                        ),
+                                                                        ElevatedButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            HapticFeedback.mediumImpact();
+
+                                                                            Navigator.of(context).pop();
+                                                                          },
+                                                                          child:
+                                                                              Text("Nein, zurück."),
+                                                                        ),
+                                                                      ],
+                                                                    ),
                                                                   ),
                                                                 ],
                                                               ),
                                                             ),
-                                                          ],
+                                                          ),
                                                         ),
                                                       );
                                                     })
