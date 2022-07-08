@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import '../../widgets/statement_card.dart';
 
@@ -19,14 +20,26 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
       );
     }
 
-    return ListView.builder(
-      itemCount: widget.appState.safedStatements!.statements.length,
-      itemBuilder: (BuildContext context, int index) {
-        return StatementCard(
-          statement: widget.appState.safedStatements!.statements[index],
-          appState: widget.appState,
-        );
-      },
+    return AnimationLimiter(
+      child: ListView.builder(
+        itemCount: widget.appState.safedStatements!.statements.length,
+        itemBuilder: (BuildContext context, int index) {
+          return AnimationConfiguration.staggeredList(
+            position: index,
+            duration: const Duration(milliseconds: 500),
+            child: SlideAnimation(
+              horizontalOffset: 20.0,
+              curve: Curves.elasticOut,
+              child: FadeInAnimation(
+                child: StatementCard(
+                  statement: widget.appState.safedStatements!.statements[index],
+                  appState: widget.appState,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

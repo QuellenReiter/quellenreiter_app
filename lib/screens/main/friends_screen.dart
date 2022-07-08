@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/models/enemy.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/enemy_card.dart';
@@ -128,77 +129,103 @@ class _FriendsScreenState extends State<FriendsScreen> {
       }
     }
 
-    return Stack(
-      alignment: Alignment.topCenter,
-      children: [
-        RefreshIndicator(
-          onRefresh: widget.appState.getFriends,
-          child: Column(
-            children: [
-              if (widget.appState.player?.friends == null)
-                const Center(child: CircularProgressIndicator())
-              // display button if user has no friends yet.
-              else if (widget.appState.player!.friends!.enemies.isEmpty)
-                Flexible(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: 50,
-                      ),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          HapticFeedback.mediumImpact();
-
-                          Share.share(
-                            'Quiz-Duell nur mit "Fake News":\nhttps://quellenreiter.app',
-                            subject: "Teile die app mit deinen Freund:innen.",
-                          );
-                        },
-                        icon: const Icon(Icons.send_rounded),
-                        label: Text(
-                          "Freund:innen einladen",
-                          style: Theme.of(context).textTheme.headline4,
-                        ),
-                      ),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          HapticFeedback.mediumImpact();
-                          widget.appState.route = Routes.addFriends;
-                        },
-                        icon: const Icon(Icons.search),
-                        label: Text(
-                          "Freunde finden",
-                          style: Theme.of(context).textTheme.headline4,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              else
-                // display current friends
-                Flexible(
-                  child: ListView(
-                    children: enemyCards,
-                  ),
-                ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(10),
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: FloatingActionButton(
-              onPressed: () =>
-                  {widget.appState.handleNavigationChange(Routes.addFriends)},
-              child: const Icon(Icons.group_add),
+    return AnimationLimiter(
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: AnimationConfiguration.toStaggeredList(
+          duration: const Duration(milliseconds: 400),
+          childAnimationBuilder: (widget) => SlideAnimation(
+            horizontalOffset: 20.0,
+            curve: Curves.elasticOut,
+            child: FadeInAnimation(
+              child: widget,
             ),
           ),
+          children: [
+            RefreshIndicator(
+              onRefresh: widget.appState.getFriends,
+              child: Column(
+                children: [
+                  if (widget.appState.player?.friends == null)
+                    const Center(child: CircularProgressIndicator())
+                  // display button if user has no friends yet.
+                  else if (widget.appState.player!.friends!.enemies.isEmpty)
+                    Flexible(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: 50,
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              HapticFeedback.mediumImpact();
+
+                              Share.share(
+                                'Quiz-Duell nur mit "Fake News":\nhttps://quellenreiter.app',
+                                subject:
+                                    "Teile die app mit deinen Freund:innen.",
+                              );
+                            },
+                            icon: const Icon(Icons.send_rounded),
+                            label: Text(
+                              "Freund:innen einladen",
+                              style: Theme.of(context).textTheme.headline4,
+                            ),
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              HapticFeedback.mediumImpact();
+                              widget.appState.route = Routes.addFriends;
+                            },
+                            icon: const Icon(Icons.search),
+                            label: Text(
+                              "Freunde finden",
+                              style: Theme.of(context).textTheme.headline4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  else
+                    // display current friends
+                    Flexible(
+                      child: AnimationLimiter(
+                        child: ListView(
+                          children: AnimationConfiguration.toStaggeredList(
+                            duration: const Duration(milliseconds: 300),
+                            childAnimationBuilder: (widget) => SlideAnimation(
+                              horizontalOffset: 20.0,
+                              curve: Curves.elasticOut,
+                              child: FadeInAnimation(
+                                child: widget,
+                              ),
+                            ),
+                            children: enemyCards,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: FloatingActionButton(
+                  onPressed: () => {
+                    widget.appState.handleNavigationChange(Routes.addFriends)
+                  },
+                  child: const Icon(Icons.group_add),
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
