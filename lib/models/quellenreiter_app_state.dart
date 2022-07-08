@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 
 import '../provider/database_utils.dart';
@@ -13,6 +14,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   late DatabaseUtils db;
 
   bool errorBannerActive = false;
+  bool msgBannerActive = false;
 
   Routes _route = Routes.login;
   Routes get route => _route;
@@ -356,8 +358,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     // print(e.openGame!.statementIds.toString());
     // if successfully fetched statements
     route = tempRoute;
-    msg =
-        "${e.emoji} ${e.name} wurde herausgefordert. Warte, bis ${e.emoji} ${e.name} die erste Runde gespielt hat.";
+    msg = "${e.emoji} ${e.name} wurde herausgefordert.";
     return;
   }
 
@@ -429,9 +430,9 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
   }
 
-  void showMessage(BuildContext context,
-      {String message = "", IconData icon = Icons.info_outline}) {
-    if (message != "" || msg != null) {
+  void showMessage(BuildContext context, {IconData icon = Icons.info_outline}) {
+    if (msg != null && !msgBannerActive) {
+      msgBannerActive = true;
       showModalBottomSheet(
           isScrollControlled: true,
           shape: const RoundedRectangleBorder(
@@ -442,30 +443,42 @@ class QuellenreiterAppState extends ChangeNotifier {
           ),
           context: context,
           builder: (BuildContext context) {
-            return Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(icon, color: DesignColors.green, size: 50),
-                  Text(
-                      message == ""
-                          ? msg != null
-                              ? msg!
-                              : message
-                          : "fehler",
-                      style: TextStyle(
-                          color: DesignColors.green,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold)),
-                ],
+            return SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: AnimationLimiter(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: AnimationConfiguration.toStaggeredList(
+                      duration: const Duration(milliseconds: 500),
+                      childAnimationBuilder: (widget) => SlideAnimation(
+                        horizontalOffset: 20.0,
+                        curve: Curves.elasticOut,
+                        child: FadeInAnimation(
+                          child: widget,
+                        ),
+                      ),
+                      children: [
+                        Icon(icon, color: DesignColors.green, size: 50),
+                        Text(msg!,
+                            style: const TextStyle(
+                                color: DesignColors.green,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             );
-          });
-      // reset messages
-      msg = null;
-      message = "";
+          }).then((value) => msgBannerActive = false);
+      Future.delayed(const Duration(seconds: 3)).then((value) {
+        if (msgBannerActive || msg != null) {
+          Navigator.pop(context);
+          msgBannerActive = false;
+        }
+      });
     }
   }
 

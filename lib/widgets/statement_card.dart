@@ -74,50 +74,58 @@ class _StatementCardState extends State<StatementCard> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.2,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: AspectRatio(
-                                aspectRatio: 4 / 3,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: FadeInImage.memoryNetwork(
-                                    fadeInDuration:
-                                        const Duration(milliseconds: 400),
-                                    fadeInCurve: Curves.easeInOut,
-                                    fit: BoxFit.cover,
-                                    placeholder: kTransparentImage,
-                                    image: widget.statement
-                                                .statementPictureURL !=
-                                            null
-                                        ? widget.statement.statementPictureURL!
-                                            .replaceAll(
-                                                "https%3A%2F%2Fparsefiles.back4app.com%2FFeP6gb7k9R2K9OztjKWA1DgYhubqhW0yJMyrHbxH%2F",
-                                                "")
-                                        : "https://quellenreiter.app/assets/logo-pink.png",
-                                  ),
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: AspectRatio(
+                              aspectRatio: 4 / 3,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: FadeInImage.memoryNetwork(
+                                  fadeInDuration:
+                                      const Duration(milliseconds: 400),
+                                  fadeInCurve: Curves.easeInOut,
+                                  fit: BoxFit.cover,
+                                  placeholder: kTransparentImage,
+                                  image: widget.statement.statementPictureURL !=
+                                          null
+                                      ? widget.statement.statementPictureURL!
+                                          .replaceAll(
+                                              "https%3A%2F%2Fparsefiles.back4app.com%2FFeP6gb7k9R2K9OztjKWA1DgYhubqhW0yJMyrHbxH%2F",
+                                              "")
+                                      : "https://quellenreiter.app/assets/logo-pink.png",
                                 ),
                               ),
                             ),
                           ),
                         ),
-                        Flexible(
-                          child: Text(
-                            widget.statement.statementText,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText1!
-                                .copyWith(color: DesignColors.black),
-                          ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          widget.statement.statementText,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1!
+                              .copyWith(color: DesignColors.black),
                         ),
-                      ]),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 5),
+                        child: Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          color: DesignColors.black,
+                          size: 30,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
 
                 Padding(

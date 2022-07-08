@@ -1,6 +1,7 @@
 import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/models/enemy.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 
@@ -117,44 +118,59 @@ class EnemyCard extends StatelessWidget {
                       maxWidth: 700,
                     ),
                     child: SafeArea(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.sports_esports,
-                              size: 100, color: DesignColors.pink),
-                          SelectableText("Wie möchtest du spielen?",
-                              style: Theme.of(context).textTheme.headline2),
-                          Flexible(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                ElevatedButton.icon(
-                                  onPressed: () =>
-                                      appState.startNewGame(enemy, true),
-                                  icon: Icon(Icons.alarm),
-                                  label: Text(
-                                    "Mit Timer",
-                                    style:
-                                        Theme.of(context).textTheme.headline4,
-                                  ),
-                                ),
-                                ElevatedButton.icon(
-                                  onPressed: () =>
-                                      appState.startNewGame(enemy, false),
-                                  icon: Icon(Icons.alarm_off),
-                                  label: Text(
-                                    "ohne Timer",
-                                    style:
-                                        Theme.of(context).textTheme.headline4,
-                                  ),
-                                ),
-                              ],
+                      child: AnimationLimiter(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: AnimationConfiguration.toStaggeredList(
+                            duration: const Duration(milliseconds: 500),
+                            childAnimationBuilder: (widget) => SlideAnimation(
+                              horizontalOffset: 20.0,
+                              curve: Curves.elasticOut,
+                              child: FadeInAnimation(
+                                child: widget,
+                              ),
                             ),
+                            children: [
+                              const Icon(Icons.sports_esports,
+                                  size: 100, color: DesignColors.pink),
+                              SelectableText("Wie möchtest du spielen?",
+                                  style: Theme.of(context).textTheme.headline2),
+                              Flexible(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    ElevatedButton.icon(
+                                      onPressed: () =>
+                                          appState.startNewGame(enemy, true),
+                                      icon: Icon(Icons.alarm),
+                                      label: Text(
+                                        "Mit Timer",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline4,
+                                      ),
+                                    ),
+                                    ElevatedButton.icon(
+                                      onPressed: () =>
+                                          appState.startNewGame(enemy, false),
+                                      icon: Icon(Icons.alarm_off),
+                                      label: Text(
+                                        "ohne Timer",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline4,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
