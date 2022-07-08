@@ -106,6 +106,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 return Container(
                                   padding: const EdgeInsets.all(5),
                                   child: TextField(
+                                    onEditingComplete: () =>
+                                        TextInput.finishAutofillContext(),
                                     style:
                                         Theme.of(context).textTheme.bodyText2,
                                     obscureText: true,
@@ -124,8 +126,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                     autofillHints: const [
                                       AutofillHints.password
                                     ],
-                                    onEditingComplete: () =>
-                                        TextInput.finishAutofillContext(),
                                   ),
                                 );
                               },
