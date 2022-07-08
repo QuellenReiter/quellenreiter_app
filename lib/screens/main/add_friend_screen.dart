@@ -7,6 +7,8 @@ import 'package:quellenreiter_app/widgets/enemy_card.dart';
 import 'package:quellenreiter_app/widgets/title_app_bar.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../utilities/utilities.dart';
+
 class AddFriendScreen extends StatefulWidget {
   const AddFriendScreen({Key? key, required this.appState}) : super(key: key);
   final QuellenreiterAppState appState;
@@ -60,6 +62,11 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                         child: TextField(
                           style: Theme.of(context).textTheme.bodyText2,
                           textInputAction: TextInputAction.search,
+                          inputFormatters: [
+                            UsernameTextFormatter(),
+                            FilteringTextInputFormatter.allow(
+                                Utils.regexUsername),
+                          ],
                           onSubmitted: (query) =>
                               {widget.appState.friendsQuery = query.trim()},
                           controller: searchController,
