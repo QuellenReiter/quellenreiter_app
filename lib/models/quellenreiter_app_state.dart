@@ -302,9 +302,10 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   /// for updating any other user trait.
-  void updateUserData() {
+  Future<void> updateUserData() async {
     // route = Routes.loading;
-    db.updateUserData(player!, _updateUserCallback);
+    await db.updateUserData(player!, _updateUserCallback);
+    return;
   }
 
   void _updateUserCallback(Player? p) {

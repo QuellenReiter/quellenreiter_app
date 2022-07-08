@@ -145,16 +145,23 @@ class _FriendsScreenState extends State<FriendsScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      SizedBox(
+                        height: 50,
+                      ),
                       ElevatedButton.icon(
                         onPressed: () {
                           HapticFeedback.mediumImpact();
 
-                          Share.share("https://quellenreiter.app",
-                              subject:
-                                  "Teile die app mit deinen Freund:innen.");
+                          Share.share(
+                            'Quiz-Duell nur mit "Fake News":\nhttps://quellenreiter.app',
+                            subject: "Teile die app mit deinen Freund:innen.",
+                          );
                         },
                         icon: const Icon(Icons.send_rounded),
-                        label: const Text("Freunde einladen"),
+                        label: Text(
+                          "Freund:innen einladen",
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
                       ),
                       ElevatedButton.icon(
                         onPressed: () {
@@ -162,7 +169,10 @@ class _FriendsScreenState extends State<FriendsScreen> {
                           widget.appState.route = Routes.addFriends;
                         },
                         icon: const Icon(Icons.search),
-                        label: const Text("Freunde finden"),
+                        label: Text(
+                          "Freunde finden",
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
                       ),
                     ],
                   ),
