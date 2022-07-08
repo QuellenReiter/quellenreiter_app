@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -28,6 +29,8 @@ class StatementCard extends StatefulWidget {
 }
 
 class _StatementCardState extends State<StatementCard> {
+  ValueNotifier<bool> archiveIsLoading = ValueNotifier<bool>(false);
+  ValueNotifier<bool> isArchived = ValueNotifier<bool>(false);
   @override
   Widget build(BuildContext context) {
     // List of the Media publishing the [Facts] of this [Statement].
@@ -221,7 +224,7 @@ class _StatementCardState extends State<StatementCard> {
   }
 
   void _showStatementDetail(Statement statement, BuildContext context) {
-    bool isArchived = widget.appState.player!.safedStatementsIds!
+    isArchived.value = widget.appState.player!.safedStatementsIds!
         .contains(statement.objectId);
     showModalBottomSheet(
       backgroundColor: Colors.transparent,
@@ -270,33 +273,55 @@ class _StatementCardState extends State<StatementCard> {
                             Share.share(
                                 "https://quellenreiter.github.io/fact-browser-deployment/#/statement/${statement.objectId}");
                           }),
-                      if (isArchived)
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              isArchived = false;
-                            });
-                            HapticFeedback.mediumImpact();
-                            widget.appState.player!.safedStatementsIds!
-                                .remove(statement.objectId!);
-                            widget.appState.updateUserData();
-                            Navigator.of(context).pop();
-                          },
-                          icon: const Icon(Icons.delete),
-                        )
-                      else
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              isArchived = true;
-                            });
-                            HapticFeedback.mediumImpact();
-                            widget.appState.player!.safedStatementsIds!
-                                .add(statement.objectId!);
-                            widget.appState.updateUserData();
-                          },
-                          icon: const Icon(Icons.archive_outlined),
-                        ),
+                      ValueListenableBuilder(
+                        valueListenable: archiveIsLoading,
+                        builder: (context, bool loading, child) {
+                          return ValueListenableBuilder(
+                              valueListenable: isArchived,
+                              builder: (context, bool archived, child) {
+                                if (loading) {
+                                  return const IconButton(
+                                    onPressed: null,
+                                    icon: Padding(
+                                        padding: EdgeInsets.all(6),
+                                        child: CircularProgressIndicator()),
+                                  );
+                                } else if (isArchived.value) {
+                                  return IconButton(
+                                    onPressed: () async {
+                                      archiveIsLoading.value = true;
+
+                                      HapticFeedback.mediumImpact();
+
+                                      widget
+                                          .appState.player!.safedStatementsIds!
+                                          .remove(statement.objectId!);
+
+                                      await widget.appState.updateUserData();
+                                      archiveIsLoading.value = false;
+                                      isArchived.value = false;
+                                    },
+                                    icon: const Icon(Icons.delete),
+                                  );
+                                } else {
+                                  return IconButton(
+                                    onPressed: () async {
+                                      archiveIsLoading.value = true;
+                                      HapticFeedback.mediumImpact();
+                                      widget
+                                          .appState.player!.safedStatementsIds!
+                                          .add(statement.objectId!);
+                                      await widget.appState.updateUserData();
+
+                                      isArchived.value = true;
+                                      archiveIsLoading.value = false;
+                                    },
+                                    icon: const Icon(Icons.archive_outlined),
+                                  );
+                                }
+                              });
+                        },
+                      )
                     ],
                   ),
 
