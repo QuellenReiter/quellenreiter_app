@@ -752,7 +752,7 @@ mutation removeGame(\$game:DeleteOpenGameInput!){
     if (player.friends != null) {
       for (Enemy e in player.friends!.enemies) {
         deleteFriendships += '''
-deleteFriendship(
+${e.name}Friendship: deleteFriendship(
   input: {
     id: "${e.friendshipId}"
   }
@@ -764,7 +764,7 @@ deleteFriendship(
 ''';
         if (e.openGame != null) {
           deleteOpenGames += '''
-deleteOpenGame(
+${e.name}Game: deleteOpenGame(
   input: {
     id: "${e.openGame!.id}"
   }

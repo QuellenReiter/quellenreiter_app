@@ -359,16 +359,17 @@ class _StartScreenState extends State<StartScreen> {
                 ),
               ),
             ),
-            Flexible(
-              child: ElevatedButton(
-                onPressed: () {
-                  HapticFeedback.mediumImpact();
-                  widget.appState.handleNavigationChange(Routes.startGame);
-                },
-                child: Text(
-                  "Neues Spiel",
-                  style: Theme.of(context).textTheme.headline1,
-                ),
+            ElevatedButton.icon(
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                widget.appState.handleNavigationChange(Routes.startGame);
+              },
+              icon: Icon(
+                Icons.sports_esports,
+              ),
+              label: Text(
+                "Neues Spiel",
+                style: Theme.of(context).textTheme.headline1,
               ),
             ),
             const Padding(
