@@ -66,6 +66,23 @@ class EnemyCard extends StatelessWidget {
                                   enemy.name,
                                   style: Theme.of(context).textTheme.headline4,
                                 ),
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 10),
+                                  child: Icon(
+                                    Icons.workspace_premium_rounded,
+                                    color: DesignColors.yellow,
+                                    size: 24,
+                                  ),
+                                ),
+                                Countup(
+                                  begin: 0,
+                                  end: enemy.getLevel().toDouble(),
+                                  duration: const Duration(milliseconds: 500),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline4!
+                                      .copyWith(color: DesignColors.yellow),
+                                ),
                               ],
                             ),
                           ),
@@ -137,36 +154,32 @@ class EnemyCard extends StatelessWidget {
                                   size: 100, color: DesignColors.pink),
                               SelectableText("Wie möchtest du spielen?",
                                   style: Theme.of(context).textTheme.headline2),
-                              Flexible(
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    ElevatedButton.icon(
-                                      onPressed: () =>
-                                          appState.startNewGame(enemy, true),
-                                      icon: Icon(Icons.alarm),
-                                      label: Text(
-                                        "Mit Timer",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline4,
-                                      ),
+                              Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  ElevatedButton.icon(
+                                    onPressed: () =>
+                                        appState.startNewGame(enemy, true),
+                                    icon: Icon(Icons.alarm),
+                                    label: Text(
+                                      "Mit Timer",
+                                      style:
+                                          Theme.of(context).textTheme.headline4,
                                     ),
-                                    ElevatedButton.icon(
-                                      onPressed: () =>
-                                          appState.startNewGame(enemy, false),
-                                      icon: Icon(Icons.alarm_off),
-                                      label: Text(
-                                        "ohne Timer",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline4,
-                                      ),
+                                  ),
+                                  ElevatedButton.icon(
+                                    onPressed: () =>
+                                        appState.startNewGame(enemy, false),
+                                    icon: Icon(Icons.alarm_off),
+                                    label: Text(
+                                      "ohne Timer",
+                                      style:
+                                          Theme.of(context).textTheme.headline4,
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),

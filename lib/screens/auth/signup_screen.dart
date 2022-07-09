@@ -219,7 +219,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                         (context, TextEditingValue value, __) {
                                       return ElevatedButton(
                                         onPressed:
-                                            (usernameController.text.length >=
+                                            (usernameController
+                                                                .text.length >=
                                                             Utils
                                                                 .usernameMinLength &&
                                                         passwordController
@@ -312,41 +313,43 @@ class _SignupScreenState extends State<SignupScreen> {
                                                                             color:
                                                                                 DesignColors.backgroundBlue),
                                                                   ),
-                                                                  Flexible(
-                                                                    child: Row(
-                                                                      mainAxisSize:
-                                                                          MainAxisSize
-                                                                              .max,
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .spaceEvenly,
-                                                                      children: [
-                                                                        ElevatedButton(
-                                                                          onPressed:
-                                                                              () {
-                                                                            HapticFeedback.mediumImpact();
+                                                                  Row(
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .max,
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceEvenly,
+                                                                    children: [
+                                                                      ElevatedButton(
+                                                                        onPressed:
+                                                                            () {
+                                                                          HapticFeedback
+                                                                              .mediumImpact();
 
-                                                                            Navigator.of(context).pop();
-                                                                            widget.appState.trySignUp(
-                                                                                usernameController.text,
-                                                                                passwordController.text,
-                                                                                emojiController.text);
-                                                                          },
-                                                                          child:
-                                                                              Text("Ja, weiter."),
-                                                                        ),
-                                                                        ElevatedButton(
-                                                                          onPressed:
-                                                                              () {
-                                                                            HapticFeedback.mediumImpact();
+                                                                          Navigator.of(context)
+                                                                              .pop();
+                                                                          widget.appState.trySignUp(
+                                                                              usernameController.text,
+                                                                              passwordController.text,
+                                                                              emojiController.text);
+                                                                        },
+                                                                        child: Text(
+                                                                            "Ja, weiter."),
+                                                                      ),
+                                                                      ElevatedButton(
+                                                                        onPressed:
+                                                                            () {
+                                                                          HapticFeedback
+                                                                              .mediumImpact();
 
-                                                                            Navigator.of(context).pop();
-                                                                          },
-                                                                          child:
-                                                                              Text("Nein, zurück."),
-                                                                        ),
-                                                                      ],
-                                                                    ),
+                                                                          Navigator.of(context)
+                                                                              .pop();
+                                                                        },
+                                                                        child: Text(
+                                                                            "Nein, zurück."),
+                                                                      ),
+                                                                    ],
                                                                   ),
                                                                 ],
                                                               ),
