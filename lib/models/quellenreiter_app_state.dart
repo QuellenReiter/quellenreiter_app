@@ -248,6 +248,12 @@ class QuellenreiterAppState extends ChangeNotifier {
       ..enemies = enemies.enemies
           .where((enemy) => !enemy.acceptedByOther && enemy.acceptedByPlayer)
           .toList();
+
+    // redo current enemy
+    if (currentEnemy != null) {
+      currentEnemy = player!.friends!.enemies
+          .firstWhere((enemy) => enemy.userId == currentEnemy!.userId);
+    }
     // if current rouete is loading, go to freinds screen
     // becuase in other cases, this clal will happen in the background.
     if (route == Routes.loading) {
