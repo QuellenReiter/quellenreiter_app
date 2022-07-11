@@ -226,6 +226,8 @@ class _StatementCardState extends State<StatementCard> {
   void _showStatementDetail(Statement statement, BuildContext context) {
     isArchived.value = widget.appState.player!.safedStatementsIds!
         .contains(statement.objectId);
+
+    HapticFeedback.mediumImpact();
     showModalBottomSheet(
       backgroundColor: Colors.transparent,
       isScrollControlled: true,

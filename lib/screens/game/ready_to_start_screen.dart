@@ -138,129 +138,132 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
               ),
             ),
             children: [
-              ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(10),
-                children: [
-                  if (widget.appState.currentEnemy!.openGame!.gameFinished())
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        if (widget.appState.currentEnemy!.openGame!
-                                .getGameResult() ==
-                            GameResult.playerWon)
-                          Text("Gewonnen",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline1!
-                                  .copyWith(color: DesignColors.green))
-                        else if (widget.appState.currentEnemy!.openGame!
-                                .getGameResult() ==
-                            GameResult.tied)
-                          Text("Unentschieden",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline1!
-                                  .copyWith(color: DesignColors.green))
-                        else
-                          Text("Verloren",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline1!
-                                  .copyWith(color: DesignColors.red)),
-                        Flexible(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "+",
+              RefreshIndicator(
+                onRefresh: widget.appState.getFriends,
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(10),
+                  children: [
+                    if (widget.appState.currentEnemy!.openGame!.gameFinished())
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          if (widget.appState.currentEnemy!.openGame!
+                                  .getGameResult() ==
+                              GameResult.playerWon)
+                            Text("Gewonnen",
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline4!
-                                    .copyWith(color: DesignColors.yellow),
-                              ),
-                              const Icon(
-                                Icons.monetization_on,
-                                color: DesignColors.yellow,
-                                size: 24,
-                              ),
-                              Countup(
-                                begin: 0,
-                                end: widget.appState.currentEnemy!.openGame!
-                                    .getPlayerXp()
-                                    .toDouble(),
-                                duration: const Duration(seconds: 1),
+                                    .headline1!
+                                    .copyWith(color: DesignColors.green))
+                          else if (widget.appState.currentEnemy!.openGame!
+                                  .getGameResult() ==
+                              GameResult.tied)
+                            Text("Unentschieden",
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline4!
-                                    .copyWith(color: DesignColors.yellow),
-                              )
-                            ],
+                                    .headline1!
+                                    .copyWith(color: DesignColors.green))
+                          else
+                            Text("Verloren",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline1!
+                                    .copyWith(color: DesignColors.red)),
+                          Flexible(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "+",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline4!
+                                      .copyWith(color: DesignColors.yellow),
+                                ),
+                                const Icon(
+                                  Icons.monetization_on,
+                                  color: DesignColors.yellow,
+                                  size: 24,
+                                ),
+                                Countup(
+                                  begin: 0,
+                                  end: widget.appState.currentEnemy!.openGame!
+                                      .getPlayerXp()
+                                      .toDouble(),
+                                  duration: const Duration(seconds: 1),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline4!
+                                      .copyWith(color: DesignColors.yellow),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    // display the statementcards
+                    if (statementCardsWithAnswers.isEmpty)
+                      Center(
+                          child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 200, left: 20, right: 20),
+                        child: Text("Du hast noch keine Statements gespielt.",
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline1!
+                                .copyWith(color: DesignColors.lightBlue)),
+                      ))
+                    else if (statementCardsWithAnswers.isNotEmpty)
+                      ExpansionTile(
+                        initiallyExpanded: !widget.showOnlyLast ||
+                            (widget.showOnlyLast &&
+                                statementCardsWithAnswers.length < 4),
+                        title: Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Text(
+                            "1. Runde",
+                            style: Theme.of(context).textTheme.headline2,
                           ),
                         ),
-                      ],
-                    ),
-                  // display the statementcards
-                  if (statementCardsWithAnswers.isEmpty)
-                    Center(
-                        child: Padding(
-                      padding:
-                          const EdgeInsets.only(top: 200, left: 20, right: 20),
-                      child: Text("Du hast noch keine Statements gespielt.",
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline1!
-                              .copyWith(color: DesignColors.lightBlue)),
-                    ))
-                  else if (statementCardsWithAnswers.isNotEmpty)
-                    ExpansionTile(
-                      initiallyExpanded: !widget.showOnlyLast ||
-                          (widget.showOnlyLast &&
-                              statementCardsWithAnswers.length < 4),
-                      title: Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Text(
-                          "1. Runde",
-                          style: Theme.of(context).textTheme.headline2,
-                        ),
+                        children: statementCardsWithAnswers.sublist(
+                            0, min(3, statementCardsWithAnswers.length)),
                       ),
-                      children: statementCardsWithAnswers.sublist(
-                          0, min(3, statementCardsWithAnswers.length)),
-                    ),
-                  if (statementCardsWithAnswers.length > 3)
-                    ExpansionTile(
-                      initiallyExpanded: !widget.showOnlyLast ||
-                          (widget.showOnlyLast &&
-                              statementCardsWithAnswers.length < 7),
-                      title: Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Text(
-                          "2. Runde",
-                          style: Theme.of(context).textTheme.headline2,
+                    if (statementCardsWithAnswers.length > 3)
+                      ExpansionTile(
+                        initiallyExpanded: !widget.showOnlyLast ||
+                            (widget.showOnlyLast &&
+                                statementCardsWithAnswers.length < 7),
+                        title: Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Text(
+                            "2. Runde",
+                            style: Theme.of(context).textTheme.headline2,
+                          ),
                         ),
+                        children: statementCardsWithAnswers.sublist(
+                            3, min(6, statementCardsWithAnswers.length)),
                       ),
-                      children: statementCardsWithAnswers.sublist(
-                          3, min(6, statementCardsWithAnswers.length)),
-                    ),
-                  if (statementCardsWithAnswers.length > 6)
-                    ExpansionTile(
-                      initiallyExpanded: !widget.showOnlyLast ||
-                          (widget.showOnlyLast &&
-                              6 < statementCardsWithAnswers.length),
-                      title: Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Text(
-                          "3. Runde",
-                          style: Theme.of(context).textTheme.headline2,
+                    if (statementCardsWithAnswers.length > 6)
+                      ExpansionTile(
+                        initiallyExpanded: !widget.showOnlyLast ||
+                            (widget.showOnlyLast &&
+                                6 < statementCardsWithAnswers.length),
+                        title: Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Text(
+                            "3. Runde",
+                            style: Theme.of(context).textTheme.headline2,
+                          ),
                         ),
+                        children: statementCardsWithAnswers.sublist(
+                            6, statementCardsWithAnswers.length),
                       ),
-                      children: statementCardsWithAnswers.sublist(
-                          6, statementCardsWithAnswers.length),
-                    ),
-                  // if error
-                ],
+                    // if error
+                  ],
+                ),
               ),
               if (widget.appState.currentEnemy == null ||
                   widget.appState.currentEnemy!.openGame == null)
