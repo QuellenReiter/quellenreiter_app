@@ -1,5 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart' as parse;
 import 'package:quellenreiter_app/models/enemy.dart';
 import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/player.dart';
@@ -846,14 +847,14 @@ class DatabaseUtils {
   Future<void> deleteAccount(QuellenreiterAppState appState) async {
     appState.route = Routes.loading;
     if (appState.player == null) {
-          appState.route = Routes.login;
+      appState.route = Routes.login;
 
       return;
     }
     String? token = await safeStorage.read(key: "token");
     // If token is not null, check if it is valid.
     if (token == null) {
-          appState.route = Routes.login;
+      appState.route = Routes.login;
 
       return;
     }
@@ -882,12 +883,42 @@ class DatabaseUtils {
     );
     if (mutationResult.hasException) {
       handleException(mutationResult.exception!);
-          appState.route = Routes.settings;
+      appState.route = Routes.settings;
 
       return;
     }
     appState.route = Routes.login;
     return;
+  }
+
+  void startLiveQueryForFriends(QuellenreiterAppState appState) async {
+    await parse.Parse().initialize(userDatabaseApplicationID, userDatabaseUrl,
+        clientKey: userDatabaseClientKey,
+        debug: true,
+        liveQueryUrl: userLiveQueryUrl,
+        autoSendSessionId: true);
+
+    final parse.LiveQuery liveQuery = parse.LiveQuery();
+
+    // is user player 1?
+    parse.QueryBuilder<parse.ParseObject> query1 =
+        parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Friendship'))
+          ..whereRelatedTo('player1', "User", appState.player!.id);
+    // is user player 2?
+    parse.QueryBuilder<parse.ParseObject> query2 =
+        parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Friendship'))
+          ..whereRelatedTo('player2', "User", appState.player!.id);
+
+    parse.QueryBuilder<parse.ParseObject> mainQuery = parse.QueryBuilder.or(
+      parse.ParseObject("Friendship"),
+      [query1, query2],
+    );
+    parse.Subscription subscription =
+        await liveQuery.client.subscribe(mainQuery);
+
+    subscription.on(parse.LiveQueryEvent.create, (parse.ParseObject object) {
+      print('LiveQuery event called:\n ${object.toJson()}');
+    });
   }
 
   void handleException(OperationException e) {

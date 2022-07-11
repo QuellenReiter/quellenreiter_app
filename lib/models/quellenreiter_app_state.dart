@@ -147,6 +147,8 @@ class QuellenreiterAppState extends ChangeNotifier {
       route = Routes.home;
       getFriends();
       getArchivedStatements();
+      // start live query for friends.
+      startLiveQueryForFriends();
     } else if (!value) {
       route = Routes.login;
     }
@@ -495,5 +497,9 @@ class QuellenreiterAppState extends ChangeNotifier {
     ret.addAll(enemyRequests!.getNames());
     ret.addAll(pendingRequests!.getNames());
     return ret;
+  }
+
+  void startLiveQueryForFriends() {
+    db.startLiveQueryForFriends(this);
   }
 }

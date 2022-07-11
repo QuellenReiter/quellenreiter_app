@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       print("timer called");
       // check if app is in foreground
       if (_notification == AppLifecycleState.resumed) {
-        widget.appState.getFriends();
+        // widget.appState.getFriends();
       }
     });
 
