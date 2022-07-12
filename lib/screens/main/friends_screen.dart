@@ -60,6 +60,45 @@ class _FriendsScreenState extends State<FriendsScreen> {
         ),
       );
     }
+    // list of sent and pending requests
+    List<Widget> pendingRequests = [];
+    if (widget.appState.pendingRequests != null &&
+        widget.appState.pendingRequests!.enemies.isNotEmpty) {
+      pendingRequests.add(
+        const Divider(
+          indent: 15,
+          endIndent: 15,
+          color: DesignColors.backgroundBlue,
+        ),
+      );
+      // add the heading
+      pendingRequests.add(
+        Padding(
+          padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.watch_later_outlined,
+                color: DesignColors.backgroundBlue,
+                size: Theme.of(context).textTheme.headline2!.fontSize! + 10,
+              ),
+              Text(
+                "Versendete anfragen",
+                style: Theme.of(context).textTheme.headline2,
+              ),
+            ],
+          ),
+        ),
+      );
+      for (Enemy e in widget.appState.enemyRequests!.enemies) {
+        pendingRequests.add(EnemyCard(
+          appState: widget.appState,
+          enemy: e,
+          onTapped: (e) {},
+        ));
+      }
+    }
     // add all current friends
     if (widget.appState.player!.friends != null &&
         widget.appState.player!.friends!.enemies.isNotEmpty) {
@@ -205,7 +244,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                 child: widget,
                               ),
                             ),
-                            children: enemyCards,
+                            children: [...enemyCards, ...pendingRequests],
                           ),
                         ),
                       ),

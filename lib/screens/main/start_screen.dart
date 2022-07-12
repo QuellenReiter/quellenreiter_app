@@ -463,7 +463,8 @@ class _StartScreenState extends State<StartScreen> {
                           child: ElevatedButton.icon(
                             onPressed: () {
                               HapticFeedback.mediumImpact();
-                              Share.share("https://quellenreiter.app",
+                              Share.share(
+                                  'Quiz-Duell nur mit "Fake News":\nhttps://quellenreiter.app',
                                   subject:
                                       "Teile die app mit deinen Freund:innen.");
                             },
