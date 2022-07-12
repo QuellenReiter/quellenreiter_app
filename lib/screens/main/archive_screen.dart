@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
+import '../../constants/constants.dart';
 import '../../widgets/statement_card.dart';
 
 class ArchiveScreen extends StatefulWidget {
@@ -14,9 +15,16 @@ class ArchiveScreen extends StatefulWidget {
 class _ArchiveScreenState extends State<ArchiveScreen> {
   @override
   Widget build(BuildContext context) {
-    if (widget.appState.safedStatements == null) {
-      return const Center(
-        child: Text("Keine gespeicherten Fakten oder Fakes."),
+    if (widget.appState.safedStatements == null ||
+        widget.appState.safedStatements!.statements.isEmpty) {
+      return Center(
+        child: Text(
+            "Hier kannst du Faktenchecks speichern, die du interessant findest.",
+            textAlign: TextAlign.center,
+            style: Theme.of(context)
+                .textTheme
+                .headline1!
+                .copyWith(color: DesignColors.lightBlue)),
       );
     }
 

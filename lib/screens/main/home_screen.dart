@@ -156,15 +156,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           selectedItemColor: DesignColors.pink,
           unselectedItemColor: DesignColors.backgroundBlue,
           items: [
-            const BottomNavigationBarItem(
-              activeIcon: Icon(Icons.home_filled),
-              icon: Icon(Icons.home_outlined),
-              label: 'Start',
-            ),
             BottomNavigationBarItem(
               icon: Stack(
                 children: [
-                  const Icon(Icons.group_outlined),
+                  const Icon(Icons.home_outlined),
                   if (widget.appState.enemyRequests != null &&
                       widget.appState.enemyRequests!.enemies.isNotEmpty)
                     Positioned(
@@ -193,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               ),
               activeIcon: Stack(
                 children: [
-                  const Icon(Icons.group),
+                  const Icon(Icons.home_filled),
                   if (widget.appState.enemyRequests != null &&
                       widget.appState.enemyRequests!.enemies.isNotEmpty)
                     Positioned(
@@ -220,6 +215,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     )
                 ],
               ),
+              label: 'Start',
+            ),
+            const BottomNavigationBarItem(
+              activeIcon: Icon(Icons.group_rounded),
+              icon: Icon(Icons.group_outlined),
               label: 'Freund:innen',
             ),
             const BottomNavigationBarItem(
