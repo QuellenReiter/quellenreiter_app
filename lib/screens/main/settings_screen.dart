@@ -259,8 +259,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                                           .deleteAccount(
                                                               widget.appState);
                                                     },
-                                                    child:
-                                                        Text("Ich bin sicher."),
+                                                    child: Text("Ja",
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .headline5),
                                                   ),
                                                   ElevatedButton(
                                                     style: ButtonStyle(
@@ -277,7 +279,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                                       Navigator.of(context)
                                                           .pop();
                                                     },
-                                                    child: Text("doch nicht."),
+                                                    child: Text("nein",
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .headline5),
                                                   ),
                                                 ]),
                                           ],
