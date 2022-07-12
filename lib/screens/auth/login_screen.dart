@@ -177,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () => widget.appState.route = Routes.signUp,
                       child: Text("Konto erstellen",
                           style:
-                              Theme.of(context).textTheme.headline1!.copyWith(
+                              Theme.of(context).textTheme.headline4!.copyWith(
                                     color: DesignColors.pink,
                                   )),
                     ),
