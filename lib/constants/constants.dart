@@ -11,6 +11,9 @@ class DesignColors {
   /// Color used in the logo. Use for strong highlighting.
   static const Color pink = Color(0xFFff3a93);
 
+  /// A lighter pink used for inactive cards.
+  static const Color lightPink = Color.fromARGB(255, 255, 200, 225);
+
   /// Color used in the logo.
   static const Color yellow = Color(0xFFf5df5b);
 

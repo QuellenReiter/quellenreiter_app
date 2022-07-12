@@ -29,14 +29,19 @@ class EnemyCard extends StatelessWidget {
     dynamic onClickFunk;
     String label = "";
 
-    if (enemy.runtimeType == Player) {
+    if (enemy.runtimeType == Player ||
+        (enemy.runtimeType == Enemy) &&
+            (enemy.acceptedByOther == false &&
+                enemy.acceptedByPlayer == true)) {
       return Padding(
         padding:
             const EdgeInsets.only(top: 10, bottom: 10, left: 30, right: 10),
         child: Material(
           borderRadius: const BorderRadius.all(Radius.circular(15)),
           elevation: 5,
-          color: DesignColors.lightBlue,
+          color: enemy.runtimeType == Enemy
+              ? DesignColors.lightPink
+              : DesignColors.lightBlue,
 
           // Make it clickable.
           child: Stack(
