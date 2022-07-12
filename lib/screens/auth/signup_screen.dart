@@ -178,7 +178,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                 child: TextField(
                                   keyboardType: TextInputType.visiblePassword,
                                   style: Theme.of(context).textTheme.bodyText2,
-                                  autofillHints: const [AutofillHints.password],
+                                  autofillHints: const [
+                                    AutofillHints.newPassword
+                                  ],
                                   obscureText: true,
                                   controller: password2Controller,
                                   decoration: const InputDecoration(
