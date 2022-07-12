@@ -386,7 +386,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           "Anmelden",
                           style: Theme.of(context)
                               .textTheme
-                              .headline1!
+                              .headline4!
                               .copyWith(color: DesignColors.pink),
                         ),
                       ),
