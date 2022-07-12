@@ -23,43 +23,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
     List<Widget> enemyCards = [];
     // create list of enemy cards
     // if requests exist
-    if (widget.appState.enemyRequests != null &&
-        widget.appState.enemyRequests!.enemies.isNotEmpty) {
-      // add the heading
-      enemyCards.add(
-        Padding(
-          padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.person_add_alt_rounded,
-                color: DesignColors.backgroundBlue,
-                size: Theme.of(context).textTheme.headline2!.fontSize! + 10,
-              ),
-              Text(
-                "Neue Anfragen",
-                style: Theme.of(context).textTheme.headline2,
-              ),
-            ],
-          ),
-        ),
-      );
-      for (Enemy e in widget.appState.enemyRequests!.enemies) {
-        enemyCards.add(EnemyCard(
-          appState: widget.appState,
-          enemy: e,
-          onTapped: (enemy) => widget.appState.acceptRequest(enemy),
-        ));
-      }
-      enemyCards.add(
-        const Divider(
-          indent: 15,
-          endIndent: 15,
-          color: DesignColors.backgroundBlue,
-        ),
-      );
-    }
+
     // list of sent and pending requests
     List<Widget> pendingRequests = [];
     if (widget.appState.pendingRequests != null &&
@@ -91,7 +55,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
           ),
         ),
       );
-      for (Enemy e in widget.appState.enemyRequests!.enemies) {
+      for (Enemy e in widget.appState.pendingRequests!.enemies) {
         pendingRequests.add(EnemyCard(
           appState: widget.appState,
           enemy: e,
@@ -102,6 +66,25 @@ class _FriendsScreenState extends State<FriendsScreen> {
     // add all current friends
     if (widget.appState.player!.friends != null &&
         widget.appState.player!.friends!.enemies.isNotEmpty) {
+      enemyCards.addAll([
+        Padding(
+          padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.insights_rounded,
+                color: DesignColors.backgroundBlue,
+                size: Theme.of(context).textTheme.headline2!.fontSize! + 10,
+              ),
+              Text(
+                "Bestenliste",
+                style: Theme.of(context).textTheme.headline2,
+              ),
+            ],
+          ),
+        ),
+      ]);
       int i = 1;
       bool playerAdded = false;
       for (Enemy e in widget.appState.player!.friends!.enemies
@@ -244,7 +227,10 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                 child: widget,
                               ),
                             ),
-                            children: [...enemyCards, ...pendingRequests],
+                            children: [
+                              ...enemyCards,
+                              ...pendingRequests,
+                            ],
                           ),
                         ),
                       ),
