@@ -43,6 +43,16 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
           appBar: AppBar(),
           body: const Center(child: CircularProgressIndicator()));
     }
+
+    // if player has not playerd, jump straight into the first round
+    if (widget.appState.currentEnemy!.openGame!.playerAnswers.isEmpty &&
+        widget.appState.currentEnemy!.openGame!.isPlayersTurn()) {
+      widget.appState.playGame();
+      return Scaffold(
+          appBar: AppBar(),
+          body: const Center(child: CircularProgressIndicator()));
+    }
+
     // build the list of statementcards
     statementCardsWithAnswers = [];
     for (int i = 0;
