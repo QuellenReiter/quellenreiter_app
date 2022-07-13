@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
@@ -368,11 +367,11 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                                 .headline1!
                                                 .copyWith(
                                                     color: DesignColors.yellow,
-                                                    fontSize: 50 * value,
+                                                    fontSize: 55 * value,
                                                     shadows: [
                                                   const Shadow(
                                                     color: DesignColors.black,
-                                                    blurRadius: 10,
+                                                    blurRadius: 15,
                                                     offset: Offset(
                                                       3,
                                                       3,
@@ -489,16 +488,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                           ),
                       ],
                     ),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        HapticFeedback.mediumImpact();
-                        Share.share("https://quellenreiter.app",
-                            subject: "Teile die app mit deinen Freund:innen.");
-                      },
-                      icon: Icon(Icons.share),
-                      label: Text("Mit Freund:innen teilen",
-                          style: Theme.of(context).textTheme.headline4),
-                    )
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
@@ -569,25 +559,24 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
       if (widget.appState.currentEnemy!.openGame!.playerIndex == 0) {
         widget.appState.currentEnemy!.numGamesPlayed += 1;
       }
+      // if the last player accessed the points
+      if (widget.appState.currentEnemy!.openGame!.requestingPlayerIndex !=
+          widget.appState.currentEnemy!.openGame!.playerIndex) {
+        // both player have accessed their points
+        widget.appState.currentEnemy!.openGame!.pointsAccessed = true;
+      }
       bool success = await widget.appState.db.updateGame(widget.appState);
 
-      // delete the game if last player has got its points.
-      if (success &&
-          widget.appState.currentEnemy!.openGame!.requestingPlayerIndex !=
-              widget.appState.currentEnemy!.openGame!.playerIndex) {
-        await widget.appState.db
-            .deleteGame(widget.appState.currentEnemy!.openGame!);
-        // remove game locally
-        widget.appState.currentEnemy!.openGame = null;
-      }
+      HapticFeedback.heavyImpact();
 
+      widget.appState.route = Routes.gameReadyToStart;
       return;
     });
     HapticFeedback.heavyImpact();
     await widget.appState.getFriends();
     HapticFeedback.heavyImpact();
     // pop the dialog and go to next screen.
-    Navigator.of(context).pop();
-    widget.appState.route = Routes.home;
+    // Navigator.of(context).pop();
+    widget.appState.route = Routes.gameReadyToStart;
   }
 }
