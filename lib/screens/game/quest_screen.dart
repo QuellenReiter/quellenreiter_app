@@ -466,15 +466,15 @@ class _QuestScreenState extends State<QuestScreen>
     // delay 3 seconds
     await Future.delayed(const Duration(seconds: 2), () {});
 
+    // push to DB
+    await widget.appState.db.updateGame(widget.appState);
+
     // if game is finished
     if (widget.appState.currentEnemy!.openGame!.gameFinished()) {
       // show game finished screen
       widget.appState.route = Routes.gameFinishedScreen;
       return;
     } // if game is finished
-
-    // push to DB
-    await widget.appState.db.updateGame(widget.appState);
 
     widget.appState.route = Routes.loading;
     await HapticFeedback.heavyImpact().then((value) async =>

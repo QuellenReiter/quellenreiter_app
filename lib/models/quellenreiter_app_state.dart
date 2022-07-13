@@ -385,7 +385,9 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   void playGame() async {
-    route = Routes.loading;
+    if (route != Routes.loading) {
+      route = Routes.loading;
+    }
     if (currentEnemy!.openGame != null &&
         currentEnemy!.openGame!.isPlayersTurn()) {
       // download statements

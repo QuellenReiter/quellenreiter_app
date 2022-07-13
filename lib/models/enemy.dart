@@ -128,7 +128,8 @@ class Enemy {
               .cast<String>(),
           map?[DbFields.friendshipOpenGame][DbFields.gameWithTimer],
           map?[DbFields.friendshipOpenGame][DbFields.gameRequestingPlayerIndex],
-          null);
+          null,
+          map?[DbFields.friendshipOpenGame][DbFields.gamePointsAccessed]);
     } else {
       openGame = null;
     }

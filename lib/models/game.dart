@@ -12,6 +12,7 @@ class Game {
   late int requestingPlayerIndex;
   bool withTimer = false;
   late int playerIndex;
+  late bool pointsAccessed;
 
   // Game.fromMap(Map<String, dynamic>? map) {
 
@@ -24,7 +25,8 @@ class Game {
       this.statementIds,
       this.withTimer,
       this.requestingPlayerIndex,
-      this.statements);
+      this.statements,
+      this.pointsAccessed);
 
   Game.empty(bool timer, int pIndex) {
     // where to get statement ids? download all possible and pickRandom on device.
@@ -44,6 +46,7 @@ class Game {
     statements = null;
     round = 0;
     playerIndex = 0;
+    pointsAccessed = false;
   }
 
   /// Returns true if the player is the next one to play.
@@ -86,6 +89,7 @@ class Game {
           DbFields.gameAnswersPlayer2: enemyAnswers,
           DbFields.gameWithTimer: withTimer,
           DbFields.gameRequestingPlayerIndex: requestingPlayerIndex,
+          DbFields.gamePointsAccessed: pointsAccessed,
         }
       };
     } else {
@@ -97,6 +101,7 @@ class Game {
           DbFields.gameAnswersPlayer2: playerAnswers,
           DbFields.gameWithTimer: withTimer,
           DbFields.gameRequestingPlayerIndex: requestingPlayerIndex,
+          DbFields.gamePointsAccessed: pointsAccessed,
         }
       };
     }

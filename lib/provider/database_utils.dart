@@ -538,18 +538,16 @@ class DatabaseUtils {
           mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
               ["objectId"],
           // enemyAnswers
-          mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame][
-                  enemy.playerIndex == 0
-                      ? DbFields.gameAnswersPlayer2
-                      : DbFields.gameAnswersPlayer1]
+          mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame][enemy.playerIndex == 0
+                  ? DbFields.gameAnswersPlayer2
+                  : DbFields.gameAnswersPlayer1]
               .map((x) => x["value"])
               .toList()
               .cast<bool>(),
           // player answers
-          mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame][
-                  enemy.playerIndex == 0
-                      ? DbFields.gameAnswersPlayer1
-                      : DbFields.gameAnswersPlayer2]
+          mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame][enemy.playerIndex == 0
+                  ? DbFields.gameAnswersPlayer1
+                  : DbFields.gameAnswersPlayer2]
               .map((x) => x["value"])
               .toList()
               .cast<bool>(),
@@ -563,7 +561,9 @@ class DatabaseUtils {
               [DbFields.gameWithTimer],
           mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
               [DbFields.gameRequestingPlayerIndex],
-          null);
+          null,
+          mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
+              [DbFields.gamePointsAccessed]);
     }
   }
 
@@ -806,6 +806,7 @@ class DatabaseUtils {
     return ids.take(9).toList();
   }
 
+  /// Function to delete a game in the database.
   Future<void> deleteGame(Game game) async {
     String? token = await safeStorage.read(key: "token");
     // If token is not null, check if it is valid.
@@ -846,14 +847,14 @@ class DatabaseUtils {
   Future<void> deleteAccount(QuellenreiterAppState appState) async {
     appState.route = Routes.loading;
     if (appState.player == null) {
-          appState.route = Routes.login;
+      appState.route = Routes.login;
 
       return;
     }
     String? token = await safeStorage.read(key: "token");
     // If token is not null, check if it is valid.
     if (token == null) {
-          appState.route = Routes.login;
+      appState.route = Routes.login;
 
       return;
     }
@@ -882,7 +883,7 @@ class DatabaseUtils {
     );
     if (mutationResult.hasException) {
       handleException(mutationResult.exception!);
-          appState.route = Routes.settings;
+      appState.route = Routes.settings;
 
       return;
     }

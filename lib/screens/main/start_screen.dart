@@ -36,7 +36,8 @@ class _StartScreenState extends State<StartScreen> {
       return const Center(child: CircularProgressIndicator());
     } else if (widget.appState.player!.friends!.enemies.any((element) =>
         (element.openGame != null
-            ? element.openGame!.gameFinished() &&
+            ? (element.openGame!.gameFinished() &&
+                    !element.openGame!.pointsAccessed) &&
                 element.openGame!.requestingPlayerIndex !=
                     element.openGame!.playerIndex
             : false))) {

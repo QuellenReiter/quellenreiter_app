@@ -458,6 +458,7 @@ query GetOpenFriendRequests{
                 value
             } 
           }
+          ${DbFields.gamePointsAccessed}
         }
         ${DbFields.friendshipWonGamesPlayer1}
         ${DbFields.friendshipWonGamesPlayer2}
@@ -640,6 +641,7 @@ mutation updateGame(\$openGame: UpdateOpenGameInput!){
             value
         } 
       }
+      ${DbFields.gamePointsAccessed}
     }
   }
 }
@@ -674,6 +676,7 @@ mutation uploadGame(\$openGame: CreateOpenGameInput!){
             value
         } 
       }
+      ${DbFields.gamePointsAccessed}
     }
   }
 }
