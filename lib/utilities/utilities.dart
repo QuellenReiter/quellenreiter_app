@@ -119,7 +119,7 @@ class UsernameTextFormatter extends TextInputFormatter {
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
     return TextEditingValue(
-      text: newValue.text.toLowerCase(),
+      text: newValue.text.toLowerCase().characters.take(12).toString(),
       selection: newValue.selection,
     );
   }
