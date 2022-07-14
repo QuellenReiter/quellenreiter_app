@@ -150,7 +150,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
                     appState.currentEnemy!.openGame!.playerIndex)) {
           return [
             MaterialPage(
-              key: const ValueKey('GameResultsScreen'),
+              key: const ValueKey('GameFinishedScreen'),
               child: GameFinishedScreen(
                 appState: appState,
               ),
