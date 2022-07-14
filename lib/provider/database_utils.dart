@@ -191,9 +191,8 @@ class DatabaseUtils {
   }
 
   /// Get all friend requests.
-  Future<void> getFriends(Player player, Function friendRequestCallback) async {
+  Future<Enemies?> getFriends(Player player) async {
     // The session token.
-    // WHY IS SOMETIMES NO TOKEN PRESENT?
     String? token = await safeStorage.read(key: "token");
     // If token is not null, check if it is valid.
     if (token != null) {
@@ -221,18 +220,15 @@ class DatabaseUtils {
       if (queryResult.hasException) {
         handleException(queryResult.exception!);
 
-        friendRequestCallback(null);
-        return;
+        return null;
       } else {
-        friendRequestCallback(Enemies.fromFriendshipMap(
-            queryResult.data?["friendships"], player));
-        return;
+        return Enemies.fromFriendshipMap(
+            queryResult.data?["friendships"], player);
       }
     }
     // print("token is null in getFriends()");
     // no token, return false
-    friendRequestCallback(null);
-    return;
+    return null;
   }
 
   /// Accept a friend request

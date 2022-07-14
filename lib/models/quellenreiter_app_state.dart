@@ -205,7 +205,10 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   Future<void> getFriends() async {
     print("get friends called");
-    db.getFriends(player!, _getFriendsCallback);
+    Enemies? enemies = await db.getFriends(player!);
+
+    _getFriendsCallback(enemies);
+    return;
   }
 
   void sendFriendRequest(Enemy e) {
@@ -223,7 +226,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     await db.getUserData(player!);
   }
 
-  void _getFriendsCallback(Enemies? enemies) {
+  bool _getFriendsCallback(Enemies? enemies) {
     // if no friends were returned
     if (enemies == null) {
       // if no friends are currently downloaded
@@ -231,7 +234,7 @@ class QuellenreiterAppState extends ChangeNotifier {
         player?.friends = Enemies.empty();
       }
       // else, just keep the downloaded friends.
-      return;
+      return false;
     }
     // set friends
     player?.friends = Enemies.empty()
@@ -259,6 +262,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     if (route == Routes.loading) {
       route = Routes.friends;
     }
+    return true;
   }
 
   void logout() async {

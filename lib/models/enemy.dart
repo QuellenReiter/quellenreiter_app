@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../constants/constants.dart';
 import 'game.dart';
 import 'player.dart';
@@ -29,6 +31,10 @@ class Enemy {
   /// player1 and player2 is
   /// the player and which is the enemy.
   Enemy.fromFriendshipMap(Map<String, dynamic>? map, Player p) {
+    if (map?[DbFields.friendshipPlayer2] == null ||
+        map?[DbFields.friendshipPlayer1] == null) {
+      throw Exception('Invalid friendship map');
+    }
     if (map?[DbFields.friendshipPlayer1]["objectId"] == p.id) {
       // The player corresponds to player1 in the database friendship.
       playerIndex = 0;
@@ -284,7 +290,11 @@ class Enemies {
       return;
     }
     for (Map<String, dynamic>? enemy in map?["edges"]) {
-      enemies.add(Enemy.fromFriendshipMap(enemy?["node"], p));
+      try {
+        enemies.add(Enemy.fromFriendshipMap(enemy?["node"], p));
+      } catch (e) {
+        debugPrint("invalid Freindship with ID:" + enemy?["node"]["objectId"]);
+      }
     }
   }
 

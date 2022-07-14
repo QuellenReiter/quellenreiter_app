@@ -508,7 +508,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
     // count down the xp
     // count up the players xp by amount.
     HapticFeedback.heavyImpact();
-    await Future.delayed(const Duration(seconds: 3), () {});
+    await Future.delayed(const Duration(seconds: 2), () {});
     HapticFeedback.mediumImpact();
     // updating all stats, takes a while.
     await widget.appState.db.checkToken((p) async {
@@ -573,10 +573,13 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
       return;
     });
     HapticFeedback.heavyImpact();
+
     await widget.appState.getFriends();
+    widget.appState.currentEnemy!.openGame!.pointsAccessed = true;
+    // wait for 1 secons
     HapticFeedback.heavyImpact();
     // pop the dialog and go to next screen.
-    // Navigator.of(context).pop();
+    Navigator.of(context).pop();
     widget.appState.route = Routes.gameReadyToStart;
   }
 }
