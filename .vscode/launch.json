@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "name": "Flutter (CLT L09)",
+            "program": "lib/main.dart",
+            "deviceId": "LCL0218821000716",
+            "request": "launch",
+            "type": "dart"
+        }
+    ]
+}
