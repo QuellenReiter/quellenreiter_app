@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
@@ -46,12 +47,16 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
       pages: buildPages(),
       // Define what happens on Navigator.pop() or back button.
       onPopPage: (route, result) {
+        print('onPopPage called');
         if (!route.didPop(result)) {
           return false;
         }
         appState.friendsQuery = null;
         if (appState.route == Routes.signUp) {
           appState.route = Routes.login;
+        } else if (appState.route == Routes.quest ||
+            appState.route == Routes.gameFinishedScreen) {
+          return false;
         } else {
           appState.route = Routes.home;
         }
@@ -61,6 +66,23 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
       },
     );
   }
+
+  // @override
+  // Future<bool> popRoute() async {
+  //   // final NavigatorState? navigator = navigatorKey.currentState;
+  //   if (appState.route == Routes.home || appState.route == Routes.login) {
+  //     return false;
+  //   }
+  //   // if (appState.route == Routes.signUp) {
+  //   //   appState.route = Routes.login;
+  //   // } else if (appState.route == Routes.quest ||
+  //   //     appState.route == Routes.gameFinishedScreen) {
+  //   //   return true;
+  //   // } else {
+  //   //   appState.route = Routes.home;
+  //   // }
+  //   return true;
+  // }
 
   List<Page> buildPages() {
     Page home = MaterialPage(
@@ -79,7 +101,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
       case Routes.loading:
         return [
           const MaterialPage(
-            key: ValueKey('SignupPage'),
+            key: ValueKey('LoadingPage'),
             child: LoadingScreen(),
           ),
         ];
@@ -109,38 +131,17 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         } else {
           return [home];
         }
-        return [home];
-      case Routes.openGames:
-        return [
-          home,
-          MaterialPage(
-            key: const ValueKey('OpenGamesPage'),
-            child: OpenGamesScreen(
-              appState: appState,
-            ),
-          ),
-        ];
-
       case Routes.addFriends:
         return [
           home,
           MaterialPage(
-            key: const ValueKey('addFriends'),
+            key: const ValueKey('AddFriendsPage'),
             child: AddFriendScreen(
               appState: appState,
             ),
           ),
         ];
-      case Routes.startGame:
-        return [
-          home,
-          MaterialPage(
-            key: const ValueKey('StartGameScreen'),
-            child: StartGameScreen(
-              appState: appState,
-            ),
-          ),
-        ];
+
       case Routes.gameReadyToStart:
         // if player is not last one and game is finished, show points.
         if ((appState.currentEnemy != null &&
@@ -149,6 +150,13 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
                 appState.currentEnemy!.openGame!.requestingPlayerIndex !=
                     appState.currentEnemy!.openGame!.playerIndex)) {
           return [
+            home,
+            MaterialPage(
+              key: const ValueKey('ReadyToStartScreen'),
+              child: ReadyToStartScreen(
+                appState: appState,
+              ),
+            ),
             MaterialPage(
               key: const ValueKey('GameFinishedScreen'),
               child: GameFinishedScreen(
@@ -180,6 +188,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         if (appState.currentEnemy != null &&
             !appState.currentEnemy!.openGame!.isPlayersTurn()) {
           return [
+            home,
             MaterialPage(
               key: const ValueKey('GameResultsScreen'),
               child: ReadyToStartScreen(
@@ -199,8 +208,16 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         ];
       case Routes.gameFinishedScreen:
         return [
+          home,
           MaterialPage(
             key: const ValueKey('GameResultsScreen'),
+            child: GameResultsScreen(
+              appState: appState,
+              showAll: true,
+            ),
+          ),
+          MaterialPage(
+            key: const ValueKey('GameFinishedScreen'),
             child: GameFinishedScreen(
               appState: appState,
             ),
@@ -208,6 +225,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         ];
       case Routes.gameResults:
         return [
+          home,
           MaterialPage(
             key: const ValueKey('GameResultsScreen'),
             child: GameResultsScreen(

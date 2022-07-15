@@ -49,6 +49,10 @@ class QuellenreiterRouteInformationParser
     //   return const RouteInformation(location: '/signup/');
     // }
     // if we have a queryin the url, we need to add it to the route.
+
+    if (configuration.isQuestScreen) {
+      return null;
+    }
     if (configuration.isAddFriendsPage && configuration.friendsQuery != null) {
       return RouteInformation(
           location: '/addFriends/' + configuration.friendsQuery!);
