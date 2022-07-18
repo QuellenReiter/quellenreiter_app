@@ -28,11 +28,13 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
 
     //refetch friends everytime we go to friends/startGame/openGames.
-    if (value == Routes.friends ||
-        value == Routes.startGame ||
-        value == Routes.openGames) {
-      getFriends();
-    }
+    // not needed because of live query in database_utils.dart
+    // if (value == Routes.friends ||
+    //     value == Routes.startGame ||
+    //     value == Routes.openGames) {
+    //   getFriends();
+    // }
+
     _route = value;
     notifyListeners();
   }
@@ -147,6 +149,8 @@ class QuellenreiterAppState extends ChangeNotifier {
       route = Routes.home;
       getFriends();
       getArchivedStatements();
+      // start live query for friends.
+      startLiveQueryForFriends();
     } else if (!value) {
       route = Routes.login;
     }
@@ -218,7 +222,8 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void _sendFriendRequest(bool success) {
     if (success) {
-      getFriends();
+      //  not needed because of live query in database_utils.dart
+      // getFriends();
     } else {}
   }
 
@@ -279,7 +284,8 @@ class QuellenreiterAppState extends ChangeNotifier {
     if (!success) {
       route = Routes.friends;
     } else {
-      getFriends();
+      //  not needed because of live query in database_utils.dart
+      // getFriends();
     }
   }
 
@@ -501,5 +507,10 @@ class QuellenreiterAppState extends ChangeNotifier {
     ret.addAll(enemyRequests!.getNames());
     ret.addAll(pendingRequests!.getNames());
     return ret;
+  }
+
+  void startLiveQueryForFriends() {
+    print("startLveQuery called [appstate].");
+    db.startLiveQueryForFriends(this);
   }
 }

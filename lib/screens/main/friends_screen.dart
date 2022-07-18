@@ -180,7 +180,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 50,
                           ),
                           ElevatedButton.icon(
