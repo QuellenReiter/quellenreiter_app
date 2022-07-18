@@ -34,6 +34,7 @@ class _OpenGamesScreenState extends State<OpenGamesScreen> {
           if (enemiesWithOpenGame.isNotEmpty)
             Flexible(
               child: ListView.builder(
+                physics: const BouncingScrollPhysics(),
                 itemCount: enemiesWithOpenGame.length,
                 itemBuilder: (BuildContext context, int index) {
                   return EnemyCard(

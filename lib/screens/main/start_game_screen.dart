@@ -40,6 +40,7 @@ class _StartGameScreenState extends State<StartGameScreen> {
             Flexible(
               child: AnimationLimiter(
                 child: ListView.builder(
+                  physics: const BouncingScrollPhysics(),
                   itemCount: enemiesWithNoGame.length,
                   itemBuilder: (BuildContext context, int index) {
                     return AnimationConfiguration.staggeredList(

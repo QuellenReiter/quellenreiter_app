@@ -260,6 +260,7 @@ class _StatementCardState extends State<StatementCard> {
                 ),
               ),
               child: ListView(
+                physics: const BouncingScrollPhysics(),
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 controller: controller,
                 children: [
