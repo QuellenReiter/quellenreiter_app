@@ -34,6 +34,7 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
           ? const Center(child: CircularProgressIndicator())
           : AnimationLimiter(
               child: ListView.builder(
+                physics: const BouncingScrollPhysics(),
                 itemCount: widget.showAll
                     ? widget
                         .appState.currentEnemy!.openGame!.playerAnswers.length

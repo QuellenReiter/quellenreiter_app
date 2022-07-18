@@ -104,6 +104,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                           .copyWith(scrollbars: false),
                       child: AnimationLimiter(
                         child: ListView.builder(
+                          physics: const BouncingScrollPhysics(),
                           keyboardDismissBehavior:
                               ScrollViewKeyboardDismissBehavior.onDrag,
                           itemCount: widget

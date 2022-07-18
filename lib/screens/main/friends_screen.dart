@@ -218,6 +218,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                     Flexible(
                       child: AnimationLimiter(
                         child: ListView(
+                          physics: const BouncingScrollPhysics(),
                           children: AnimationConfiguration.toStaggeredList(
                             duration: const Duration(milliseconds: 300),
                             childAnimationBuilder: (widget) => SlideAnimation(

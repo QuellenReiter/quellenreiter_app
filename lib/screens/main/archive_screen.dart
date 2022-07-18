@@ -30,6 +30,7 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
 
     return AnimationLimiter(
       child: ListView.builder(
+        physics: const BouncingScrollPhysics(),
         itemCount: widget.appState.safedStatements!.statements.length,
         itemBuilder: (BuildContext context, int index) {
           return AnimationConfiguration.staggeredList(
