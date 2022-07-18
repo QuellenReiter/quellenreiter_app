@@ -1,5 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart' as parse;
 import 'package:quellenreiter_app/models/enemy.dart';
 import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/player.dart';
@@ -133,7 +134,7 @@ class DatabaseUtils {
       );
 
       // The query result.
-      var queryResult = await client.mutate(MutationOptions(
+      var queryResult = await client.query(QueryOptions(
         document: gql(Queries.getCurrentUser()),
       ));
 
@@ -144,8 +145,8 @@ class DatabaseUtils {
         return;
       } else {
         // Safe the new token.
-        await safeStorage.write(
-            key: "token", value: queryResult.data?["viewer"]["sessionToken"]);
+        // await safeStorage.write(
+        //     key: "token", value: queryResult.data?["viewer"]["sessionToken"]);
         checkTokenCallback(Player.fromMap(queryResult.data?["viewer"]["user"]));
         return;
       }
@@ -885,6 +886,63 @@ class DatabaseUtils {
     }
     appState.route = Routes.login;
     return;
+  }
+
+  void startLiveQueryForFriends(QuellenreiterAppState appState) async {
+    // PArse does not support live queries with relations.
+    // parse does not support graphql subscriptions ..
+    await parse.Parse().initialize(userDatabaseApplicationID, userDatabaseUrl,
+        clientKey: userDatabaseClientKey,
+        debug: true,
+        liveQueryUrl: userLiveQueryUrl,
+        sessionId: await safeStorage.read(key: "token"),
+        autoSendSessionId: true);
+
+    final parse.LiveQuery liveQuery = parse.LiveQuery();
+
+    // // is user player 1?
+    parse.QueryBuilder<parse.ParseObject> queryTest =
+        parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Friendship'))
+          ..whereEqualTo('numPlayedGames', 24);
+
+    // // is user player 1?
+    parse.QueryBuilder<parse.ParseObject> queryTest2 =
+        parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Friendship'))
+          ..whereRelatedTo('openGame', "OpenGame", "lDWNpcz8UI");
+
+    // is user player 1?
+    parse.QueryBuilder<parse.ParseObject> query1 =
+        parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Friendship'))
+          ..whereRelatedTo('player1', "_User", appState.player!.id);
+    // is user player 2?
+    parse.QueryBuilder<parse.ParseObject> query2 =
+        parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Friendship'))
+          ..whereRelatedTo('player2', "_User", appState.player!.id);
+
+    parse.QueryBuilder<parse.ParseObject> mainQuery = parse.QueryBuilder.or(
+      parse.ParseObject("Friendship"),
+      [query1, query2],
+    );
+    parse.Subscription subscription =
+        await liveQuery.client.subscribe(mainQuery);
+
+    subscription.on(parse.LiveQueryEvent.create, (parse.ParseObject object) {
+      print('[CREATE]LiveQuery event called:\n ${object.toJson()}');
+      appState.getFriends();
+    });
+    subscription.on(parse.LiveQueryEvent.enter, (parse.ParseObject object) {
+      print('[ENTER]LiveQuery event called:\n ${object.toJson()}');
+      appState.getFriends();
+    });
+    subscription.on(parse.LiveQueryEvent.update, (parse.ParseObject object) {
+      print('[UPDATE]LiveQuery event called:\n ${object.toJson()}');
+      appState.getFriends();
+    });
+
+    // subscription.on(parse.LiveQueryEvent.delete, (parse.ParseObject object) {
+    //   print('[DELETE]LiveQuery event called:\n ${object.toJson()}');
+    //   appState.getFriends();
+    // });
   }
 
   void handleException(OperationException e) {
