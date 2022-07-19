@@ -499,7 +499,6 @@ class DatabaseUtils {
 
   /// Upload a [Game] into the Database by [String].
   ///
-  /// Can be a new name or emoji.
   Future<Game?> uploadGame(Enemy enemy) async {
     // The session token.
     String? token = await safeStorage.read(key: "token");
@@ -531,36 +530,49 @@ class DatabaseUtils {
       return null;
     } else {
       return Game(
-          //object Id
-          mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
-              ["objectId"],
-          // enemyAnswers
-          mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame][enemy.playerIndex == 0
-                  ? DbFields.gameAnswersPlayer2
-                  : DbFields.gameAnswersPlayer1]
-              .map((x) => x["value"])
-              .toList()
-              .cast<bool>(),
-          // player answers
-          mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame][enemy.playerIndex == 0
-                  ? DbFields.gameAnswersPlayer1
-                  : DbFields.gameAnswersPlayer2]
-              .map((x) => x["value"])
-              .toList()
-              .cast<bool>(),
-          enemy.playerIndex,
-          mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
-                  [DbFields.gameStatementIds]
-              .map((x) => x["value"])
-              .toList()
-              .cast<String>(),
-          mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
-              [DbFields.gameWithTimer],
-          mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
-              [DbFields.gameRequestingPlayerIndex],
-          null,
-          mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
-              [DbFields.gamePointsAccessed]);
+        //object Id
+        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
+            ["objectId"],
+        // enemyAnswers
+        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame][
+                enemy.playerIndex == 0
+                    ? DbFields.gameAnswersPlayer2
+                    : DbFields.gameAnswersPlayer1]
+            .map((x) => x["value"])
+            .toList()
+            .cast<bool>(),
+        // player answers
+        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame][
+                enemy.playerIndex == 0
+                    ? DbFields.gameAnswersPlayer1
+                    : DbFields.gameAnswersPlayer2]
+            .map((x) => x["value"])
+            .toList()
+            .cast<bool>(),
+        enemy.playerIndex,
+        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
+                [DbFields.gameStatementIds]
+            .map((x) => x["value"])
+            .toList()
+            .cast<String>(),
+        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
+            [DbFields.gameWithTimer],
+        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
+            [DbFields.gameRequestingPlayerIndex],
+        null,
+        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
+            [DbFields.gamePointsAccessed],
+        // pplayerID
+        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame][
+            enemy.playerIndex == 0
+                ? DbFields.gamePlayer1Id
+                : DbFields.gamePlayer2Id],
+        // enemyId
+        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame][
+            enemy.playerIndex == 0
+                ? DbFields.gamePlayer2Id
+                : DbFields.gamePlayer1Id],
+      );
     }
   }
 
@@ -898,40 +910,27 @@ class DatabaseUtils {
         sessionId: await safeStorage.read(key: "token"),
         autoSendSessionId: true);
 
-    final parse.LiveQuery liveQuery = parse.LiveQuery();
-
-    // // is user player 1?
-    parse.QueryBuilder<parse.ParseObject> queryTest =
-        parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Friendship'))
-          ..whereEqualTo('numPlayedGames', 24);
-
-    // // is user player 1?
-    parse.QueryBuilder<parse.ParseObject> queryTest2 =
-        parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Friendship'))
-          ..whereRelatedTo('openGame', "OpenGame", "lDWNpcz8UI");
+    final parse.LiveQuery newFriendsLiveQuery = parse.LiveQuery();
 
     // is user player 1?
-    parse.QueryBuilder<parse.ParseObject> query1 =
+    parse.QueryBuilder<parse.ParseObject> isPlayer1Query =
         parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Friendship'))
-          ..whereRelatedTo('player1', "_User", appState.player!.id);
+          ..whereEqualTo(DbFields.friendshipPlayer1Id, appState.player!.id);
     // is user player 2?
-    parse.QueryBuilder<parse.ParseObject> query2 =
+    parse.QueryBuilder<parse.ParseObject> isPlayer2Query =
         parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Friendship'))
-          ..whereRelatedTo('player2', "_User", appState.player!.id);
+          ..whereEqualTo(DbFields.friendshipPlayer1Id, appState.player!.id);
 
-    parse.QueryBuilder<parse.ParseObject> mainQuery = parse.QueryBuilder.or(
+    parse.QueryBuilder<parse.ParseObject> mainQueryFriends =
+        parse.QueryBuilder.or(
       parse.ParseObject("Friendship"),
-      [query1, query2],
+      [isPlayer1Query, isPlayer2Query],
     );
     parse.Subscription subscription =
-        await liveQuery.client.subscribe(mainQuery);
+        await newFriendsLiveQuery.client.subscribe(mainQueryFriends);
 
     subscription.on(parse.LiveQueryEvent.create, (parse.ParseObject object) {
       print('[CREATE]LiveQuery event called:\n ${object.toJson()}');
-      appState.getFriends();
-    });
-    subscription.on(parse.LiveQueryEvent.enter, (parse.ParseObject object) {
-      print('[ENTER]LiveQuery event called:\n ${object.toJson()}');
       appState.getFriends();
     });
     subscription.on(parse.LiveQueryEvent.update, (parse.ParseObject object) {
@@ -939,10 +938,41 @@ class DatabaseUtils {
       appState.getFriends();
     });
 
-    // subscription.on(parse.LiveQueryEvent.delete, (parse.ParseObject object) {
-    //   print('[DELETE]LiveQuery event called:\n ${object.toJson()}');
-    //   appState.getFriends();
-    // });
+    // find games that changed
+
+    final parse.LiveQuery gameChangesLiveQuery = parse.LiveQuery();
+
+    // is user player 1?
+    parse.QueryBuilder<parse.ParseObject> isPlayer1QueryGame =
+        parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Friendship'))
+          ..whereEqualTo(DbFields.gamePlayer1Id, appState.player!.id);
+    // is user player 2?
+    parse.QueryBuilder<parse.ParseObject> isPlayer2QueryGame =
+        parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Friendship'))
+          ..whereEqualTo(DbFields.gamePlayer2Id, appState.player!.id);
+
+    parse.QueryBuilder<parse.ParseObject> gameQuery = parse.QueryBuilder.or(
+      parse.ParseObject("OpenGame"),
+      [isPlayer1QueryGame, isPlayer2QueryGame],
+    );
+    parse.Subscription subscriptionGame =
+        await gameChangesLiveQuery.client.subscribe(gameQuery);
+
+    subscriptionGame.on(parse.LiveQueryEvent.create,
+        (parse.ParseObject object) {
+      print('[CREATE GAME]LiveQuery event called:\n ${object.toJson()}');
+      appState.getFriends();
+    });
+    subscriptionGame.on(parse.LiveQueryEvent.update,
+        (parse.ParseObject object) {
+      print('[UPDATE GAME]LiveQuery event called:\n ${object.toJson()}');
+      appState.getFriends();
+    });
+    subscriptionGame.on(parse.LiveQueryEvent.delete,
+        (parse.ParseObject object) {
+      print('[DELETE GAME]LiveQuery event called:\n ${object.toJson()}');
+      appState.getFriends();
+    });
   }
 
   void handleException(OperationException e) {

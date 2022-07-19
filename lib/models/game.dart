@@ -1,5 +1,8 @@
 import 'package:quellenreiter_app/constants/constants.dart';
+import 'package:quellenreiter_app/models/player.dart';
 import 'package:quellenreiter_app/models/statement.dart';
+
+import 'enemy.dart';
 
 class Game {
   String? id;
@@ -13,6 +16,8 @@ class Game {
   bool withTimer = false;
   late int playerIndex;
   late bool pointsAccessed;
+  late String? playerId;
+  late String? enemyId;
 
   // Game.fromMap(Map<String, dynamic>? map) {
 
@@ -26,17 +31,19 @@ class Game {
       this.withTimer,
       this.requestingPlayerIndex,
       this.statements,
-      this.pointsAccessed);
+      this.pointsAccessed,
+      this.playerId,
+      this.enemyId);
 
-  Game.empty(bool timer, int pIndex) {
+  Game.empty(bool timer, Enemy e, Player p) {
     // where to get statement ids? download all possible and pickRandom on device.
     // not downloading all but only 50 could be the bin approach wanted.
     // sort by object ID should be date and category independent.
 
     // get statements directlly and then safe the ids ! :)
-    requestingPlayerIndex = pIndex;
+    requestingPlayerIndex = e.playerIndex;
     id = null;
-    playerIndex = pIndex;
+    playerIndex = e.playerIndex;
     statements = null;
     playerAnswers = [];
     enemyAnswers = [];
@@ -47,6 +54,8 @@ class Game {
     round = 0;
     playerIndex = 0;
     pointsAccessed = false;
+    playerId = p.id;
+    enemyId = e.userId;
   }
 
   /// Returns true if the player is the next one to play.
@@ -84,6 +93,8 @@ class Game {
       ret = {
         "id": id,
         "fields": {
+          DbFields.gamePlayer1Id: playerId ?? "test1",
+          DbFields.gamePlayer2Id: enemyId ?? "test1",
           DbFields.gameStatementIds: statementIds ?? [],
           DbFields.gameAnswersPlayer1: playerAnswers,
           DbFields.gameAnswersPlayer2: enemyAnswers,
@@ -96,6 +107,8 @@ class Game {
       ret = {
         "id": id,
         "fields": {
+          DbFields.gamePlayer1Id: enemyId ?? "test1",
+          DbFields.gamePlayer2Id: playerId ?? "test2",
           DbFields.gameStatementIds: statementIds ?? [],
           DbFields.gameAnswersPlayer1: enemyAnswers,
           DbFields.gameAnswersPlayer2: playerAnswers,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 
@@ -26,14 +27,6 @@ class QuellenreiterAppState extends ChangeNotifier {
         value != Routes.gameResults) {
       msg = null;
     }
-
-    //refetch friends everytime we go to friends/startGame/openGames.
-    // not needed because of live query in database_utils.dart
-    // if (value == Routes.friends ||
-    //     value == Routes.startGame ||
-    //     value == Routes.openGames) {
-    //   getFriends();
-    // }
 
     _route = value;
     notifyListeners();
@@ -223,7 +216,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   void _sendFriendRequest(bool success) {
     if (success) {
       //  not needed because of live query in database_utils.dart
-      // getFriends();
+      route = Routes.friends;
     } else {}
   }
 
@@ -259,13 +252,31 @@ class QuellenreiterAppState extends ChangeNotifier {
 
     // redo current enemy
     if (currentEnemy != null) {
-      currentEnemy = player!.friends!.enemies
-          .firstWhere((enemy) => enemy.userId == currentEnemy!.userId);
+      try {
+        currentEnemy = player!.friends!.enemies
+            .firstWhere((enemy) => enemy.userId == currentEnemy!.userId);
+      } catch (e) {
+        currentEnemy = null;
+      }
     }
     // if current rouete is loading, go to freinds screen
     // becuase in other cases, this clal will happen in the background.
     if (route == Routes.loading) {
-      route = Routes.friends;
+      route = Routes.home;
+    }
+    // add friend request
+    int notificationCount = enemyRequests!.enemies.length;
+
+    // add num of open games.
+    notificationCount += player!.friends!.enemies
+        .where((element) =>
+            element.openGame != null && element.openGame!.isPlayersTurn())
+        .length;
+
+    if (notificationCount != 0) {
+      FlutterAppBadger.updateBadgeCount(notificationCount);
+    } else {
+      FlutterAppBadger.removeBadge();
     }
     return true;
   }
@@ -282,10 +293,9 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void _acceptRequestCallback(bool success) {
     if (!success) {
-      route = Routes.friends;
+      route = Routes.home;
     } else {
-      //  not needed because of live query in database_utils.dart
-      // getFriends();
+      getFriends();
     }
   }
 
@@ -362,7 +372,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     if (e.openGame != null) {
       db.deleteGame(e.openGame!);
     }
-    e.openGame = Game.empty(withTimer, e.playerIndex);
+    e.openGame = Game.empty(withTimer, e, player!);
     e.openGame!.statementIds = await db.getPlayableStatements(e, player!);
     if (e.openGame!.statementIds == null) {
       // reset game because not started
@@ -372,10 +382,12 @@ class QuellenreiterAppState extends ChangeNotifier {
           "Spielstarten fehlgeschlagen. ${e.emoji} ${e.name} wurde nicht herausgefordert. Versuche es erneut.";
       return;
     }
+    await getFriends();
     // print(e.openGame!.statementIds.toString());
     // if successfully fetched statements
     route = tempRoute;
     msg = "${e.emoji} ${e.name} wurde herausgefordert.";
+
     return;
   }
 
