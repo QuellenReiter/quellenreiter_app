@@ -919,7 +919,7 @@ class DatabaseUtils {
     // is user player 2?
     parse.QueryBuilder<parse.ParseObject> isPlayer2Query =
         parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Friendship'))
-          ..whereEqualTo(DbFields.friendshipPlayer1Id, appState.player!.id);
+          ..whereEqualTo(DbFields.friendshipPlayer2Id, appState.player!.id);
 
     parse.QueryBuilder<parse.ParseObject> mainQueryFriends =
         parse.QueryBuilder.or(
