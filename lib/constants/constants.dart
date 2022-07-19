@@ -94,6 +94,8 @@ class DbFields {
   static const String friendshipPlayer2 = "player2";
   static const String friendshipWonGamesPlayer1 = "wonGamesPlayer1";
   static const String friendshipWonGamesPlayer2 = "wonGamesPlayer2";
+  static const String friendshipPlayer1Id = "player1Id";
+  static const String friendshipPlayer2Id = "player2Id";
 
   static const String friendshipApproved1 = "approvedPlayer1";
   static const String friendshipApproved2 = "approvedPlayer2";
@@ -110,6 +112,8 @@ class DbFields {
   static const String gamePlayer2 = "player2";
   static const String gameRequestingPlayerIndex = "requestingPlayerIndex";
   static const String gamePointsAccessed = "pointsAccessed";
+  static const String gamePlayer1Id = "player1Id";
+  static const String gamePlayer2Id = "player2Id";
 }
 
 enum Routes {

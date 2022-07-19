@@ -574,8 +574,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
     });
     HapticFeedback.heavyImpact();
 
-    // not needed because of live query.
-    // await widget.appState.getFriends();
+    await widget.appState.getFriends();
     widget.appState.currentEnemy!.openGame!.pointsAccessed = true;
     // wait for 1 secons
     HapticFeedback.heavyImpact();

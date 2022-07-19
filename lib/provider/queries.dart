@@ -514,6 +514,7 @@ query GetOpenFriendRequests{
     return ret;
   }
 
+  /// Returns the graphQL query to send a friend requests.
   static String sendFriendRequest(String playerId, String enemyId) {
     String ret = '''
 mutation sendFriendRequest {
@@ -523,9 +524,11 @@ mutation sendFriendRequest {
         ${DbFields.friendshipPlayer1}:{
           link:"$playerId"
         }
+        ${DbFields.friendshipPlayer1Id}: "$playerId"
         ${DbFields.friendshipPlayer2}:{
           link: "$enemyId"
         }
+        ${DbFields.friendshipPlayer2Id}: "$enemyId"
         ${DbFields.friendshipApproved1}: true
         ${DbFields.friendshipApproved2}: false
       }
@@ -626,11 +629,13 @@ mutation updateGame(\$openGame: UpdateOpenGameInput!){
       createdAt
       objectId
       ${DbFields.gameWithTimer}
+      ${DbFields.gamePlayer1Id}
       ${DbFields.gameAnswersPlayer1}{
         ... on Element{
             value
         } 
       }
+      ${DbFields.gamePlayer2Id}
       ${DbFields.gameAnswersPlayer2}{
         ... on Element{
             value
@@ -649,7 +654,7 @@ mutation updateGame(\$openGame: UpdateOpenGameInput!){
     return ret;
   }
 
-  /// Returns the graphQL query to update a game.
+  /// Returns the graphQL query to upload a game.
   static String uploadGame() {
     String ret = '''
 mutation uploadGame(\$openGame: CreateOpenGameInput!){
@@ -661,11 +666,13 @@ mutation uploadGame(\$openGame: CreateOpenGameInput!){
       objectId
       ${DbFields.gameRequestingPlayerIndex}
       ${DbFields.gameWithTimer}
+      ${DbFields.gamePlayer1Id}
       ${DbFields.gameAnswersPlayer1}{
         ... on Element{
             value
         } 
       }
+      ${DbFields.gamePlayer2Id}
       ${DbFields.gameAnswersPlayer2}{
         ... on Element{
             value

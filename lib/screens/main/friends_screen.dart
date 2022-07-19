@@ -166,73 +166,73 @@ class _FriendsScreenState extends State<FriendsScreen> {
           children: [
             RefreshIndicator(
               onRefresh: widget.appState.getFriends,
-              child: Column(
+              child: ListView(
+                primary: false,
+                physics: const BouncingScrollPhysics(),
                 children: [
                   if (widget.appState.player?.friends == null)
                     const Center(child: CircularProgressIndicator())
                   // display button if user has no friends yet.
-                  else if (widget.appState.player!.friends!.enemies.isEmpty &&
-                      (widget.appState.enemyRequests == null ||
-                          widget.appState.enemyRequests!.enemies.isEmpty))
-                    Flexible(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(
-                            height: 50,
-                          ),
-                          ElevatedButton.icon(
-                            onPressed: () {
-                              HapticFeedback.mediumImpact();
+                  else if (widget.appState.player!.friends!.enemies.isEmpty)
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                          height: 50,
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            HapticFeedback.mediumImpact();
 
-                              Share.share(
-                                'Quiz-Duell nur mit "Fake News":\nhttps://quellenreiter.app',
-                                subject:
-                                    "Teile die app mit deinen Freund:innen.",
-                              );
-                            },
-                            icon: const Icon(Icons.send_rounded),
-                            label: Text(
-                              "Freund:innen einladen",
-                              style: Theme.of(context).textTheme.headline4,
-                            ),
+                            Share.share(
+                              'Quiz-Duell nur mit "Fake News":\nhttps://quellenreiter.app',
+                              subject: "Teile die app mit deinen Freund:innen.",
+                            );
+                          },
+                          icon: const Icon(Icons.send_rounded),
+                          label: Text(
+                            "Freund:innen einladen",
+                            style: Theme.of(context).textTheme.headline4,
                           ),
-                          ElevatedButton.icon(
-                            onPressed: () {
-                              HapticFeedback.mediumImpact();
-                              widget.appState.route = Routes.addFriends;
-                            },
-                            icon: const Icon(Icons.search),
-                            label: Text(
-                              "Freunde finden",
-                              style: Theme.of(context).textTheme.headline4,
-                            ),
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            HapticFeedback.mediumImpact();
+                            widget.appState.route = Routes.addFriends;
+                          },
+                          icon: const Icon(Icons.search),
+                          label: Text(
+                            "Freunde finden",
+                            style: Theme.of(context).textTheme.headline4,
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(
+                          height: 50,
+                        ),
+                        if (widget.appState.pendingRequests != null &&
+                            widget.appState.pendingRequests!.enemies.isNotEmpty)
+                          ...pendingRequests
+                      ],
                     )
                   else
                     // display current friends
-                    Flexible(
-                      child: AnimationLimiter(
-                        child: ListView(
-                          physics: const BouncingScrollPhysics(),
-                          children: AnimationConfiguration.toStaggeredList(
-                            duration: const Duration(milliseconds: 300),
-                            childAnimationBuilder: (widget) => SlideAnimation(
-                              horizontalOffset: 20.0,
-                              curve: Curves.elasticOut,
-                              child: FadeInAnimation(
-                                child: widget,
-                              ),
+                    AnimationLimiter(
+                      child: Column(
+                        children: AnimationConfiguration.toStaggeredList(
+                          duration: const Duration(milliseconds: 300),
+                          childAnimationBuilder: (widget) => SlideAnimation(
+                            horizontalOffset: 20.0,
+                            curve: Curves.elasticOut,
+                            child: FadeInAnimation(
+                              child: widget,
                             ),
-                            children: [
-                              ...enemyCards,
-                              ...pendingRequests,
-                            ],
                           ),
+                          children: [
+                            ...enemyCards,
+                            ...pendingRequests,
+                          ],
                         ),
                       ),
                     ),

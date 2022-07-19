@@ -111,31 +111,38 @@ class Enemy {
     // if an open game exists, safe it.
     if (map?[DbFields.friendshipOpenGame] != null) {
       openGame = Game(
-          //object Id
-          map?[DbFields.friendshipOpenGame]["objectId"],
-          // enemyAnswers
-          map?[DbFields.friendshipOpenGame][playerIndex == 0
-                  ? DbFields.gameAnswersPlayer2
-                  : DbFields.gameAnswersPlayer1]
-              .map((x) => x["value"])
-              .toList()
-              .cast<bool>(),
-          // player answers
-          map?[DbFields.friendshipOpenGame][playerIndex == 0
-                  ? DbFields.gameAnswersPlayer1
-                  : DbFields.gameAnswersPlayer2]
-              .map((x) => x["value"])
-              .toList()
-              .cast<bool>(),
-          playerIndex,
-          map?[DbFields.friendshipOpenGame][DbFields.gameStatementIds]
-              .map((x) => x["value"])
-              .toList()
-              .cast<String>(),
-          map?[DbFields.friendshipOpenGame][DbFields.gameWithTimer],
-          map?[DbFields.friendshipOpenGame][DbFields.gameRequestingPlayerIndex],
-          null,
-          map?[DbFields.friendshipOpenGame][DbFields.gamePointsAccessed]);
+        //object Id
+        map?[DbFields.friendshipOpenGame]["objectId"],
+        // enemyAnswers
+        map?[DbFields.friendshipOpenGame][playerIndex == 0
+                ? DbFields.gameAnswersPlayer2
+                : DbFields.gameAnswersPlayer1]
+            .map((x) => x["value"])
+            .toList()
+            .cast<bool>(),
+        // player answers
+        map?[DbFields.friendshipOpenGame][playerIndex == 0
+                ? DbFields.gameAnswersPlayer1
+                : DbFields.gameAnswersPlayer2]
+            .map((x) => x["value"])
+            .toList()
+            .cast<bool>(),
+        playerIndex,
+        map?[DbFields.friendshipOpenGame][DbFields.gameStatementIds]
+            .map((x) => x["value"])
+            .toList()
+            .cast<String>(),
+        map?[DbFields.friendshipOpenGame][DbFields.gameWithTimer],
+        map?[DbFields.friendshipOpenGame][DbFields.gameRequestingPlayerIndex],
+        null,
+        map?[DbFields.friendshipOpenGame][DbFields.gamePointsAccessed],
+        // pplayerID
+        map?[DbFields.friendshipOpenGame][
+            playerIndex == 0 ? DbFields.gamePlayer1Id : DbFields.gamePlayer2Id],
+        // enemyId
+        map?[DbFields.friendshipOpenGame][
+            playerIndex == 0 ? DbFields.gamePlayer2Id : DbFields.gamePlayer1Id],
+      );
     } else {
       openGame = null;
     }
@@ -190,6 +197,8 @@ class Enemy {
       ret = {
         "id": friendshipId,
         "fields": {
+          DbFields.friendshipPlayer1Id: openGame!.playerId,
+          DbFields.friendshipPlayer2Id: userId,
           DbFields.friendshipApproved1: acceptedByPlayer,
           DbFields.friendshipApproved2: acceptedByOther,
           DbFields.friendshipWonGamesPlayer1: wonGamesPlayer,
@@ -204,6 +213,8 @@ class Enemy {
       ret = {
         "id": friendshipId,
         "fields": {
+          DbFields.friendshipPlayer1Id: userId,
+          DbFields.friendshipPlayer2Id: openGame!.playerId,
           DbFields.friendshipApproved2: acceptedByPlayer,
           DbFields.friendshipApproved1: acceptedByOther,
           DbFields.friendshipWonGamesPlayer2: wonGamesPlayer,

@@ -43,14 +43,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       default:
         index = 0;
     }
-    //periodically refetch friends and so on.
-    // timer = Timer.periodic(const Duration(seconds: 60), (Timer t) {
-    //   print("timer called");
-    //   // check if app is in foreground
-    //   if (_notification == AppLifecycleState.resumed) {
-    //     // widget.appState.getFriends();
-    //   }
-    // });
 
     super.initState();
   }
