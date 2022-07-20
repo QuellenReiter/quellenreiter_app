@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
+import 'package:quellenreiter_app/provider/notifications.dart';
 
 import '../provider/database_utils.dart';
 import 'enemy.dart';
@@ -278,6 +279,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     } else {
       FlutterAppBadger.removeBadge();
     }
+    Notifications.showNotification("testitle", "testbody", "123", 12);
     return true;
   }
 
