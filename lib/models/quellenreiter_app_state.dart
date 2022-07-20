@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/provider/notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../provider/database_utils.dart';
 import 'enemy.dart';
@@ -14,6 +14,7 @@ import 'statement.dart';
 class QuellenreiterAppState extends ChangeNotifier {
   ///  Object to be able to access the database.
   late DatabaseUtils db;
+  late SharedPreferences prefs;
 
   bool errorBannerActive = false;
   bool msgBannerActive = false;
@@ -110,6 +111,16 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// True if user wants notifications.
+  bool _notificationsAllowed = false;
+  bool get notificationsAllowed =>
+      prefs.getBool('notificationsAllowed') ?? false;
+  set notificationsAllowed(value) {
+    prefs.setBool('notificationsAllowed', value);
+    _notificationsAllowed = value;
+    notifyListeners();
+  }
+
   /// The [Enemies] (Friends) search result, if [Player] is searching.
   Enemies? _friendsSearchResult;
   Enemies? get friendsSearchResult => _friendsSearchResult;
@@ -164,19 +175,21 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   QuellenreiterAppState() {
     db = DatabaseUtils();
+
     route = Routes.loading;
     game = null;
     _friendsQuery = null;
     db.checkToken(_checkTokenCallback);
   }
 
-  void _checkTokenCallback(Player? p) {
+  void _checkTokenCallback(Player? p) async {
     if (p == null) {
       isLoggedIn = false;
     } else {
       player = p;
       isLoggedIn = true;
     }
+    prefs = await SharedPreferences.getInstance();
   }
 
   void _loginCallback(Player? p) {
@@ -268,14 +281,25 @@ class QuellenreiterAppState extends ChangeNotifier {
           .toList();
 
     // notifications for requests.
-    // if (tempRequests.enemies.length > enemyRequests!.enemies.length) {
-    //   Notifications.showNotification(
-    //     title: "Neue Freundschaftsanfrage",
-    //     body: "Du hast eine neue Freundschaftsanfrage",
-    //     payload: "friendRequest",
-    //   );
-    // }
-    // Notifications.showNotification("testitle", "testbody", "123", 12);
+    if (notificationsAllowed) {
+      if (enemyRequests != null &&
+          tempRequests.enemies.length > enemyRequests!.enemies.length) {
+        Notifications.showNotification("Neue Freundschaftsanfrage",
+            "Jemand will mit dir spielen.", "newFriendRequest", 1);
+      }
+      if (playableEnemies != null &&
+          tempPlayableEnemies.enemies.length >
+              playableEnemies!.enemies.length) {
+        Notifications.showNotification(
+            "Du bist dran.", "weiterspielen", "newPlayable", 1);
+      }
+
+      if (pendingRequests != null &&
+          tempPending.enemies.length < pendingRequests!.enemies.length) {
+        Notifications.showNotification("Neue*r Freund*in",
+            "jemand hat deine Anfrage angenommen", "newPlayable", 1);
+      }
+    }
 
     player?.friends = tempFriends;
     enemyRequests = tempRequests;
@@ -291,26 +315,10 @@ class QuellenreiterAppState extends ChangeNotifier {
       }
     }
 
-    // add friend request
-    int notificationCount = enemyRequests!.enemies.length;
-
-    // add num of open games.
-    notificationCount += player!.friends!.enemies
-        .where((element) =>
-            element.openGame != null && element.openGame!.isPlayersTurn())
-        .length;
-
-    if (notificationCount != 0) {
-      FlutterAppBadger.updateBadgeCount(notificationCount);
-    } else {
-      FlutterAppBadger.removeBadge();
-    }
-
-    // if current rouete is loading, go to freinds screen
-    // becuase in other cases, this clal will happen in the background.
-    if (route == Routes.loading) {
-      route = Routes.home;
-    }
+    // // becuase in other cases, this clal will happen in the background.
+    // if (route == Routes.loading) {
+    //   route = Routes.home;
+    // }
     return true;
   }
 

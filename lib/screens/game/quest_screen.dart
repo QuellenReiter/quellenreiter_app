@@ -35,8 +35,11 @@ class _QuestScreenState extends State<QuestScreen>
     }
     // show error if statements not downloaded.
     if (widget.appState.currentEnemy!.openGame!.statements == null) {
+      widget.appState.getCurrentStatements();
       return const Scaffold(
-        body: Text("Fehler"),
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
       );
     }
 

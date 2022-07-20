@@ -42,8 +42,8 @@ dependencies:
   syncfusion_flutter_gauges: ^20.1.61
   countup: ^0.1.4
   parse_server_sdk_flutter: ^3.1.2
-  flutter_app_badger: ^1.4.0
   flutter_local_notifications: ^9.7.0
+  shared_preferences: ^2.0.15
 
 
 
