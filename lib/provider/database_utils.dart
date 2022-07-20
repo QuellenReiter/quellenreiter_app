@@ -10,6 +10,7 @@ import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import '../consonents.dart';
 import '../constants/constants.dart';
 import '../models/statement.dart';
+import 'notifications.dart';
 import 'queries.dart';
 
 /// This class facilitates the connection to the database and manages its
@@ -788,6 +789,8 @@ class DatabaseUtils {
     }
     // if not enough statements are accessible.
     if (playableStatements.data?["statements"]["edges"].length < 9) {
+      error =
+          "Es gibt nicht mehr genug Statements, die ihr beide noch nicht gespielt habt...";
       return null;
     }
     // choose 9 random statements
@@ -933,10 +936,20 @@ class DatabaseUtils {
 
     subscription.on(parse.LiveQueryEvent.create, (parse.ParseObject object) {
       print('[CREATE]LiveQuery event called:\n ${object.toJson()}');
+      if (appState.gameStarted) {
+        return;
+      }
       appState.getFriends();
+      // check that its not sent by the user
+
+      Notifications.showNotification(
+          "Freundschaftsanfrage", "Jemand möchte mit dir spielen.", "", 1);
     });
     subscription.on(parse.LiveQueryEvent.update, (parse.ParseObject object) {
       print('[UPDATE]LiveQuery event called:\n ${object.toJson()}');
+      if (appState.gameStarted) {
+        return;
+      }
       appState.getFriends();
     });
 
@@ -963,16 +976,18 @@ class DatabaseUtils {
     subscriptionGame.on(parse.LiveQueryEvent.create,
         (parse.ParseObject object) {
       print('[CREATE GAME]LiveQuery event called:\n ${object.toJson()}');
+      // check if its players turn
+
       appState.getFriends();
     });
     subscriptionGame.on(parse.LiveQueryEvent.update,
         (parse.ParseObject object) {
       print('[UPDATE GAME]LiveQuery event called:\n ${object.toJson()}');
-      appState.getFriends();
-    });
-    subscriptionGame.on(parse.LiveQueryEvent.delete,
-        (parse.ParseObject object) {
-      print('[DELETE GAME]LiveQuery event called:\n ${object.toJson()}');
+      // parse game and find if its players turn
+      if (appState.gameStarted) {
+        return;
+      }
+      Notifications.showNotification("Du bist dran.", "weiterspielen", "", 1);
       appState.getFriends();
     });
   }
