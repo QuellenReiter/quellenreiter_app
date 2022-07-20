@@ -119,7 +119,7 @@ class Game {
       };
     }
     // removes null values, important if enemyId and playerId are null.
-    ret.removeWhere((key, value) => value == null);
+    ret["fields"].removeWhere((key, value) => value == null);
 
     // print(ret);
     return ret;

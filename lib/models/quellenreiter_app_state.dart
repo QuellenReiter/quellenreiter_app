@@ -28,7 +28,9 @@ class QuellenreiterAppState extends ChangeNotifier {
         value != Routes.gameResults) {
       msg = null;
     }
-
+    if (value == Routes.gameReadyToStart) {
+      gameStarted = false;
+    }
     _route = value;
     notifyListeners();
   }
@@ -236,21 +238,40 @@ class QuellenreiterAppState extends ChangeNotifier {
       return false;
     }
     // set friends
-    player?.friends = Enemies.empty()
+    var tempFriends = Enemies.empty()
       ..enemies = enemies.enemies
           .where((enemy) => enemy.acceptedByOther && enemy.acceptedByPlayer)
           .toList();
     // set received requests
-    enemyRequests = Enemies.empty()
+    var tempRequests = Enemies.empty()
       ..enemies = enemies.enemies
           .where((enemy) => enemy.acceptedByOther && !enemy.acceptedByPlayer)
           .toList();
     // set pending requests
-    pendingRequests = Enemies.empty()
+    var tempPending = Enemies.empty()
       ..enemies = enemies.enemies
           .where((enemy) => !enemy.acceptedByOther && enemy.acceptedByPlayer)
           .toList();
 
+    // if current rouete is loading, go to freinds screen
+    // becuase in other cases, this clal will happen in the background.
+    if (route == Routes.loading) {
+      route = Routes.home;
+    }
+
+    // notifications for requests.
+    // if (tempRequests.enemies.length > enemyRequests!.enemies.length) {
+    //   Notifications.showNotification(
+    //     title: "Neue Freundschaftsanfrage",
+    //     body: "Du hast eine neue Freundschaftsanfrage",
+    //     payload: "friendRequest",
+    //   );
+    // }
+    // Notifications.showNotification("testitle", "testbody", "123", 12);
+
+    player?.friends = tempFriends;
+    enemyRequests = tempRequests;
+    pendingRequests = tempPending;
     // redo current enemy
     if (currentEnemy != null) {
       try {
@@ -260,11 +281,7 @@ class QuellenreiterAppState extends ChangeNotifier {
         currentEnemy = null;
       }
     }
-    // if current rouete is loading, go to freinds screen
-    // becuase in other cases, this clal will happen in the background.
-    if (route == Routes.loading) {
-      route = Routes.home;
-    }
+
     // add friend request
     int notificationCount = enemyRequests!.enemies.length;
 
@@ -279,7 +296,6 @@ class QuellenreiterAppState extends ChangeNotifier {
     } else {
       FlutterAppBadger.removeBadge();
     }
-    Notifications.showNotification("testitle", "testbody", "123", 12);
     return true;
   }
 
@@ -380,7 +396,7 @@ class QuellenreiterAppState extends ChangeNotifier {
       // reset game because not started
       e.openGame = null;
       route = tempRoute;
-      db.error =
+      db.error ??
           "Spielstarten fehlgeschlagen. ${e.emoji} ${e.name} wurde nicht herausgefordert. Versuche es erneut.";
       return;
     }
@@ -409,6 +425,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   void playGame() async {
+    gameStarted = true;
     if (route != Routes.loading) {
       route = Routes.loading;
     }
@@ -424,7 +441,6 @@ class QuellenreiterAppState extends ChangeNotifier {
       }
       // set new route
       route = Routes.quest;
-      gameStarted = true;
 
       return;
     }
