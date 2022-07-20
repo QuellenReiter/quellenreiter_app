@@ -933,18 +933,15 @@ class DatabaseUtils {
     );
     parse.Subscription subscription =
         await newFriendsLiveQuery.client.subscribe(mainQueryFriends);
-
+    // called if new friendship is created
     subscription.on(parse.LiveQueryEvent.create, (parse.ParseObject object) {
       print('[CREATE]LiveQuery event called:\n ${object.toJson()}');
       if (appState.gameStarted) {
         return;
       }
       appState.getFriends();
-      // check that its not sent by the user
-
-      Notifications.showNotification(
-          "Freundschaftsanfrage", "Jemand möchte mit dir spielen.", "", 1);
     });
+    //called if friendship is updated
     subscription.on(parse.LiveQueryEvent.update, (parse.ParseObject object) {
       print('[UPDATE]LiveQuery event called:\n ${object.toJson()}');
       if (appState.gameStarted) {
@@ -972,14 +969,17 @@ class DatabaseUtils {
     );
     parse.Subscription subscriptionGame =
         await gameChangesLiveQuery.client.subscribe(gameQuery);
-
+    // called if new game is created
     subscriptionGame.on(parse.LiveQueryEvent.create,
         (parse.ParseObject object) {
       print('[CREATE GAME]LiveQuery event called:\n ${object.toJson()}');
       // check if its players turn
-
+      if (appState.gameStarted) {
+        return;
+      }
       appState.getFriends();
     });
+    //called if game is updated
     subscriptionGame.on(parse.LiveQueryEvent.update,
         (parse.ParseObject object) {
       print('[UPDATE GAME]LiveQuery event called:\n ${object.toJson()}');
@@ -987,7 +987,6 @@ class DatabaseUtils {
       if (appState.gameStarted) {
         return;
       }
-      Notifications.showNotification("Du bist dran.", "weiterspielen", "", 1);
       appState.getFriends();
     });
   }

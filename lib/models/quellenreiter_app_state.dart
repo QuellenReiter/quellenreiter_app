@@ -70,6 +70,14 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// enemies that have an open game where its the [Player] turn.
+  Enemies? _playableEnemies;
+  Enemies? get playableEnemies => _playableEnemies;
+  set playableEnemies(value) {
+    _playableEnemies = value;
+    notifyListeners();
+  }
+
   /// The current [Player]. Should be set, if user is logged in.
   Player? _player;
   Player? get player => _player;
@@ -253,11 +261,11 @@ class QuellenreiterAppState extends ChangeNotifier {
           .where((enemy) => !enemy.acceptedByOther && enemy.acceptedByPlayer)
           .toList();
 
-    // if current rouete is loading, go to freinds screen
-    // becuase in other cases, this clal will happen in the background.
-    if (route == Routes.loading) {
-      route = Routes.home;
-    }
+    var tempPlayableEnemies = Enemies.empty()
+      ..enemies = enemies.enemies
+          .where((enemy) =>
+              (enemy.openGame != null && enemy.openGame!.isPlayersTurn()))
+          .toList();
 
     // notifications for requests.
     // if (tempRequests.enemies.length > enemyRequests!.enemies.length) {
@@ -272,6 +280,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     player?.friends = tempFriends;
     enemyRequests = tempRequests;
     pendingRequests = tempPending;
+    playableEnemies = tempPlayableEnemies;
     // redo current enemy
     if (currentEnemy != null) {
       try {
@@ -295,6 +304,12 @@ class QuellenreiterAppState extends ChangeNotifier {
       FlutterAppBadger.updateBadgeCount(notificationCount);
     } else {
       FlutterAppBadger.removeBadge();
+    }
+
+    // if current rouete is loading, go to freinds screen
+    // becuase in other cases, this clal will happen in the background.
+    if (route == Routes.loading) {
+      route = Routes.home;
     }
     return true;
   }

@@ -77,10 +77,8 @@ class _StartScreenState extends State<StartScreen> {
     // create "Its your turn" widgets
     List<Widget> playersTurn = [];
     // if any open game is finished and points are not accessed yet.
-    if (widget.appState.player!.friends!.enemies.any((element) =>
-        (element.openGame != null
-            ? element.openGame!.isPlayersTurn()
-            : false))) {
+    if (widget.appState.playableEnemies != null &&
+        widget.appState.playableEnemies!.enemies.isNotEmpty) {
       // add the heading
       playersTurn.add(
         Padding(
@@ -101,14 +99,12 @@ class _StartScreenState extends State<StartScreen> {
           ),
         ),
       );
-      for (Enemy e in widget.appState.player!.friends!.enemies) {
-        if (e.openGame != null && e.openGame!.isPlayersTurn()) {
-          playersTurn.add(EnemyCard(
-            appState: widget.appState,
-            enemy: e,
-            onTapped: (enemy) => {},
-          ));
-        }
+      for (Enemy e in widget.appState.playableEnemies!.enemies) {
+        playersTurn.add(EnemyCard(
+          appState: widget.appState,
+          enemy: e,
+          onTapped: (enemy) => {},
+        ));
       }
     }
 
