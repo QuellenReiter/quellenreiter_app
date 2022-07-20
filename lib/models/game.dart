@@ -93,8 +93,8 @@ class Game {
       ret = {
         "id": id,
         "fields": {
-          DbFields.gamePlayer1Id: playerId ?? "test1",
-          DbFields.gamePlayer2Id: enemyId ?? "test1",
+          DbFields.gamePlayer1Id: playerId,
+          DbFields.gamePlayer2Id: enemyId,
           DbFields.gameStatementIds: statementIds ?? [],
           DbFields.gameAnswersPlayer1: playerAnswers,
           DbFields.gameAnswersPlayer2: enemyAnswers,
@@ -107,8 +107,8 @@ class Game {
       ret = {
         "id": id,
         "fields": {
-          DbFields.gamePlayer1Id: enemyId ?? "test1",
-          DbFields.gamePlayer2Id: playerId ?? "test2",
+          DbFields.gamePlayer1Id: enemyId,
+          DbFields.gamePlayer2Id: playerId,
           DbFields.gameStatementIds: statementIds ?? [],
           DbFields.gameAnswersPlayer1: enemyAnswers,
           DbFields.gameAnswersPlayer2: playerAnswers,
@@ -118,6 +118,8 @@ class Game {
         }
       };
     }
+    // removes null values, important if enemyId and playerId are null.
+    ret.removeWhere((key, value) => value == null);
 
     // print(ret);
     return ret;
