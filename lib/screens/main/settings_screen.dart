@@ -303,6 +303,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ),
                         ]),
+                    // toggle to allow notifications
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.notifications_active,
+                          color: DesignColors.backgroundBlue,
+                        ),
+                        Text(
+                          " Benachrichtigungen erlauben? ",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline4!
+                              .copyWith(color: DesignColors.backgroundBlue),
+                        ),
+                        Switch(
+                          value: widget.appState.notificationsAllowed,
+                          onChanged: (bool value) {
+                            HapticFeedback.mediumImpact();
+                            widget.appState.notificationsAllowed = value;
+                          },
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),

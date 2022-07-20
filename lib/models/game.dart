@@ -100,7 +100,7 @@ class Game {
           DbFields.gameAnswersPlayer2: enemyAnswers,
           DbFields.gameWithTimer: withTimer,
           DbFields.gameRequestingPlayerIndex: requestingPlayerIndex,
-          DbFields.gamePointsAccessed: pointsAccessed,
+          DbFields.gamePointsAccessed: pointsAccessed == false ? null : true,
         }
       };
     } else {
@@ -114,7 +114,7 @@ class Game {
           DbFields.gameAnswersPlayer2: playerAnswers,
           DbFields.gameWithTimer: withTimer,
           DbFields.gameRequestingPlayerIndex: requestingPlayerIndex,
-          DbFields.gamePointsAccessed: pointsAccessed,
+          DbFields.gamePointsAccessed: pointsAccessed == false ? null : true,
         }
       };
     }
