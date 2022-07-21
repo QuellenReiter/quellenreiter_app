@@ -66,6 +66,7 @@ class _QuellenreiterAppState extends State<QuellenreiterApp> {
         BackgroundFetchConfig(
             minimumFetchInterval: 15,
             stopOnTerminate: false,
+            startOnBoot: true,
             enableHeadless: true,
             requiresBatteryNotLow: false,
             requiresCharging: false,
