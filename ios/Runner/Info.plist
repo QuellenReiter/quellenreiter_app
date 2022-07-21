@@ -35,6 +35,11 @@
 			</array>
 		</dict>
 	</array>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.transistorsoft.fetch</string>
+		<string>com.quellenreiter.backgroundtask</string>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>FlutterDeepLinkingEnabled</key>
