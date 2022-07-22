@@ -22,17 +22,13 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
   BackgroundFetch.finish(taskId);
 }
 
-void main() {
+void main() async {
   // add these lines
   WidgetsFlutterBinding.ensureInitialized();
+
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
-  // Workmanager().registerOneOffTask(
-  //     "com.quellenreiter.backgroundtask", "simpleTask",
-  //     tag: "com.quellenreiter.backgroundtask",
-  //     initialDelay: const Duration(seconds: 5),
-  //     constraints: Constraints(networkType: NetworkType.connected));
   runApp(const QuellenreiterApp());
 
   // Register to receive BackgroundFetch events after app is terminated.
