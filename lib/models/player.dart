@@ -18,6 +18,7 @@ class Player {
   late Enemies? friends;
   late List<String>? safedStatementsIds;
   late List<String>? playedStatements;
+  late String? deviceToken;
 
   Player.fromMap(Map<String, dynamic>? map)
       : name = map?[DbFields.userName],
@@ -87,12 +88,15 @@ class Player {
   }
 
   Map<String, dynamic> toUserMap() {
-    var ret = {
+    Map<String, dynamic> ret = {
       "id": id,
       "fields": {
         DbFields.userName: name,
+        DbFields.userDeviceToken: deviceToken,
       }
     };
+    // remove token if its null
+    ret["fields"].removeWhere((key, value) => value == null);
     return ret;
   }
 

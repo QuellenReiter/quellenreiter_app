@@ -1,10 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:plain_notification_token/plain_notification_token.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/provider/notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../consonents.dart';
 import '../provider/database_utils.dart';
 import 'enemy.dart';
 import 'game.dart';
@@ -113,8 +119,14 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   /// True if user wants notifications.
   bool _notificationsAllowed = false;
-  bool get notificationsAllowed =>
-      prefs.getBool('notificationsAllowed') ?? false;
+  bool get notificationsAllowed {
+    bool value = prefs.getBool('notificationsAllowed') ?? false;
+    if (value) {
+      getDeviceToken();
+    }
+    return value;
+  }
+
   set notificationsAllowed(value) {
     prefs.setBool('notificationsAllowed', value);
     _notificationsAllowed = value;
@@ -182,6 +194,8 @@ class QuellenreiterAppState extends ChangeNotifier {
     db.checkToken(_checkTokenCallback);
   }
 
+  /// Callback for checking if user is logged in.
+  /// Called every time the app is started.
   void _checkTokenCallback(Player? p) async {
     if (p == null) {
       isLoggedIn = false;
@@ -189,6 +203,7 @@ class QuellenreiterAppState extends ChangeNotifier {
       player = p;
       isLoggedIn = true;
     }
+    // initialize stuff that needs to be initialized after login.
     prefs = await SharedPreferences.getInstance();
   }
 
@@ -565,5 +580,18 @@ class QuellenreiterAppState extends ChangeNotifier {
   void startLiveQueryForFriends() {
     print("startLveQuery called [appstate].");
     db.startLiveQueryForFriends(this);
+  }
+
+  void getDeviceToken() async {
+    const platform =
+        MethodChannel('com.quellenreiter.quellenreiterApp/deviceToken');
+    try {
+      final String token = await platform.invokeMethod('getDeviceToken');
+      print("token: $token");
+      player!.deviceToken = token;
+      db.updateUser(player!, () {});
+    } on PlatformException catch (e) {
+      print("error: ${e.message}");
+    }
   }
 }
