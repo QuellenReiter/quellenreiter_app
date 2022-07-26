@@ -328,6 +328,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ],
                     ),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(DesignColors.red),
+                      ),
+                      onPressed: () {
+                        HapticFeedback.heavyImpact();
+
+                        widget.appState.db.sendPushFriendInvitation(
+                            widget.appState,
+                            receiverId: "IdT7cLJEFA");
+                      },
+                      child: Text("Send Push Test",
+                          style: Theme.of(context).textTheme.headline5),
+                    ),
                   ],
                 ),
               ),

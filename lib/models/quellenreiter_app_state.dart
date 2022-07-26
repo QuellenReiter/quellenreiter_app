@@ -118,11 +118,13 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   /// True if user wants notifications.
-  bool _notificationsAllowed = false;
+  bool _notificationsAllowed = true;
   bool get notificationsAllowed {
-    bool value = prefs.getBool('notificationsAllowed') ?? false;
-    if (value) {
-      getDeviceToken();
+    bool? value = prefs.getBool('notificationsAllowed');
+    if (value == null) {
+      value = true;
+      notificationsAllowed = value;
+      updateDeviceTokenForPushNotifications();
     }
     return value;
   }
@@ -130,6 +132,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   set notificationsAllowed(value) {
     prefs.setBool('notificationsAllowed', value);
     _notificationsAllowed = value;
+    updateDeviceTokenForPushNotifications();
     notifyListeners();
   }
 
@@ -213,6 +216,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     } else {
       player = p;
       isLoggedIn = true;
+      updateDeviceTokenForPushNotifications();
     }
   }
 
@@ -249,7 +253,7 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void sendFriendRequest(Enemy e) {
     route = Routes.loading;
-    db.sendFriendRequest(player!.id, e.userId, _sendFriendRequest);
+    db.sendFriendRequest(this, e.userId, _sendFriendRequest);
   }
 
   void _sendFriendRequest(bool success) {
@@ -296,25 +300,25 @@ class QuellenreiterAppState extends ChangeNotifier {
           .toList();
 
     // notifications for requests.
-    if (notificationsAllowed) {
-      if (enemyRequests != null &&
-          tempRequests.enemies.length > enemyRequests!.enemies.length) {
-        Notifications.showNotification("Neue Freundschaftsanfrage",
-            "Jemand will mit dir spielen.", "newFriendRequest", 1);
-      }
-      if (playableEnemies != null &&
-          tempPlayableEnemies.enemies.length >
-              playableEnemies!.enemies.length) {
-        Notifications.showNotification(
-            "Du bist dran.", "weiterspielen", "newPlayable", 1);
-      }
+    // if (notificationsAllowed) {
+    //   if (enemyRequests != null &&
+    //       tempRequests.enemies.length > enemyRequests!.enemies.length) {
+    //     Notifications.showNotification("Neue Freundschaftsanfrage",
+    //         "Jemand will mit dir spielen.", "newFriendRequest", 1);
+    //   }
+    //   if (playableEnemies != null &&
+    //       tempPlayableEnemies.enemies.length >
+    //           playableEnemies!.enemies.length) {
+    //     Notifications.showNotification(
+    //         "Du bist dran.", "weiterspielen", "newPlayable", 1);
+    //   }
 
-      if (pendingRequests != null &&
-          tempPending.enemies.length < pendingRequests!.enemies.length) {
-        Notifications.showNotification("Neue*r Freund*in",
-            "jemand hat deine Anfrage angenommen", "newPlayable", 1);
-      }
-    }
+    //   if (pendingRequests != null &&
+    //       tempPending.enemies.length < pendingRequests!.enemies.length) {
+    //     Notifications.showNotification("Neue*r Freund*in",
+    //         "jemand hat deine Anfrage angenommen", "newPlayable", 1);
+    //   }
+    // }
 
     player?.friends = tempFriends;
     enemyRequests = tempRequests;
@@ -339,6 +343,9 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void logout() async {
     route = Routes.loading;
+    //remove devie from the users push list.
+    notificationsAllowed = false;
+    updateDeviceTokenForPushNotifications();
     db.logout(_logoutCallback);
   }
 
@@ -438,6 +445,7 @@ class QuellenreiterAppState extends ChangeNotifier {
           "Spielstarten fehlgeschlagen. ${e.emoji} ${e.name} wurde nicht herausgefordert. Versuche es erneut.";
       return;
     }
+    db.sendPushOtherPlayersTurn(this, receiverId: e.userId);
     await getFriends();
     // print(e.openGame!.statementIds.toString());
     // if successfully fetched statements
@@ -582,16 +590,24 @@ class QuellenreiterAppState extends ChangeNotifier {
     db.startLiveQueryForFriends(this);
   }
 
-  void getDeviceToken() async {
-    const platform =
-        MethodChannel('com.quellenreiter.quellenreiterApp/deviceToken');
-    try {
-      final String token = await platform.invokeMethod('getDeviceToken');
-      print("token: $token");
-      player!.deviceToken = token;
-      db.updateUser(player!, () {});
-    } on PlatformException catch (e) {
-      print("error: ${e.message}");
+  /// Checks if user allows push notifications. If yes, update user in db with
+  /// the device token. If not, delete the device token from the db.
+  void updateDeviceTokenForPushNotifications() async {
+    if (!notificationsAllowed) {
+      player!.deviceToken = "not allowed";
+    } else if (Platform.isIOS || Platform.isAndroid) {
+      const platform =
+          MethodChannel('com.quellenreiter.quellenreiterApp/deviceToken');
+      try {
+        final String token = await platform.invokeMethod('getDeviceToken');
+        print("token: $token");
+        player!.deviceToken = token;
+      } on PlatformException catch (e) {
+        print("error: ${e.message}");
+      }
     }
+    print("deviceToken: ${player!.deviceToken}");
+    // push new token to db
+    db.updateUser(player!, (Player? p) {});
   }
 }

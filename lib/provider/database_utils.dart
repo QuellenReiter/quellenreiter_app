@@ -3,6 +3,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart' as parse;
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:quellenreiter_app/models/enemy.dart';
 import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/player.dart';
@@ -304,7 +305,8 @@ class DatabaseUtils {
     return Statement.fromMap(queryResult.data?["statement"]);
   }
 
-  /// Update a [Player] in the Database by [String]. Only for username!
+  /// Update a [Player] in the Database by [String]. Only for username and
+  /// device token!
   Future<void> updateUser(Player player, Function updateUserCallback) async {
     // The session token.
     String? token = await safeStorage.read(key: "token");
@@ -648,7 +650,7 @@ class DatabaseUtils {
     return null;
   }
 
-  Future<void> sendFriendRequest(String playerId, String enemyId,
+  Future<void> sendFriendRequest(QuellenreiterAppState appState, String enemyId,
       Function sendFriendRequestCallback) async {
     // The session token.
     String? token = await safeStorage.read(key: "token");
@@ -670,7 +672,8 @@ class DatabaseUtils {
       // Update the friendship to be accepted by both players.
       var mutationResult = await client.mutate(
         MutationOptions(
-          document: gql(Queries.sendFriendRequest(playerId, enemyId)),
+          document:
+              gql(Queries.sendFriendRequest(appState.player!.id, enemyId)),
         ),
       );
 
@@ -682,6 +685,7 @@ class DatabaseUtils {
         return;
       } else {
         sendFriendRequestCallback(true);
+        sendPushFriendInvitation(appState, receiverId: enemyId);
         return;
       }
     }
@@ -989,6 +993,60 @@ class DatabaseUtils {
       }
       appState.getFriends();
     });
+  }
+
+  void sendPushFriendInvitation(QuellenreiterAppState appState,
+      {String receiverId = "123"}) async {
+    await parse.Parse().initialize(userDatabaseApplicationID,
+        userDatabaseUrl.replaceAll("graphql", "parse"),
+        clientKey: userDatabaseClientKey,
+        debug: true,
+        liveQueryUrl: userLiveQueryUrl,
+        sessionId: await safeStorage.read(key: "token"),
+        autoSendSessionId: true);
+    //Executes a cloud function that returns a ParseObject type
+    final ParseCloudFunction function =
+        ParseCloudFunction('sendPushFriendRequest');
+    final Map<String, dynamic> params = <String, dynamic>{
+      'senderName': appState.player!.name,
+      'receiverId': receiverId,
+    };
+    final ParseResponse parseResponse =
+        await function.executeObjectFunction<ParseObject>(parameters: params);
+    if (parseResponse.success && parseResponse.result != null) {
+      if (parseResponse.result['result'] is ParseObject) {
+        //Transforms the return into a ParseObject
+        final ParseObject parseObject = parseResponse.result['result'];
+        print(parseObject.objectId);
+      }
+    }
+  }
+
+  void sendPushOtherPlayersTurn(QuellenreiterAppState appState,
+      {String receiverId = "123"}) async {
+    await parse.Parse().initialize(userDatabaseApplicationID,
+        userDatabaseUrl.replaceAll("graphql", "parse"),
+        clientKey: userDatabaseClientKey,
+        debug: true,
+        liveQueryUrl: userLiveQueryUrl,
+        sessionId: await safeStorage.read(key: "token"),
+        autoSendSessionId: true);
+    //Executes a cloud function that returns a ParseObject type
+    final ParseCloudFunction function =
+        ParseCloudFunction('sendOtherPlayersTurn');
+    final Map<String, dynamic> params = <String, dynamic>{
+      'senderName': appState.player!.name,
+      'receiverId': receiverId,
+    };
+    final ParseResponse parseResponse =
+        await function.executeObjectFunction<ParseObject>(parameters: params);
+    if (parseResponse.success && parseResponse.result != null) {
+      if (parseResponse.result['result'] is ParseObject) {
+        //Transforms the return into a ParseObject
+        final ParseObject parseObject = parseResponse.result['result'];
+        print(parseObject.objectId);
+      }
+    }
   }
 
   void handleException(OperationException e) {

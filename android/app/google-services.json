@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "440162394098",
+    "project_id": "quellenreiter-push-service",
+    "storage_bucket": "quellenreiter-push-service.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:440162394098:android:eaaef182ba7bc03a78956b",
+        "android_client_info": {
+          "package_name": "com.example.quellenreiter_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "440162394098-m5gfdl6cimhro52afs26d86ofpvj94k3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqUk5A1TYPXHFEb-CPjZ6xnZmzuSkg924"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "440162394098-m5gfdl6cimhro52afs26d86ofpvj94k3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

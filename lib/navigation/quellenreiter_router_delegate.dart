@@ -193,6 +193,8 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
       case Routes.quest:
         if (appState.currentEnemy != null &&
             !appState.currentEnemy!.openGame!.isPlayersTurn()) {
+          appState.db.sendPushOtherPlayersTurn(appState,
+              receiverId: appState.currentEnemy!.userId);
           return [
             home,
             MaterialPage(
