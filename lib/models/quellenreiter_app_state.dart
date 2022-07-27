@@ -226,6 +226,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     } else {
       player = p;
       isLoggedIn = true;
+      updateDeviceTokenForPushNotifications();
     }
   }
 
