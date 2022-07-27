@@ -2,15 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:plain_notification_token/plain_notification_token.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
-import 'package:quellenreiter_app/provider/notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../consonents.dart';
 import '../provider/database_utils.dart';
 import 'enemy.dart';
 import 'game.dart';
@@ -300,27 +294,6 @@ class QuellenreiterAppState extends ChangeNotifier {
               (enemy.openGame != null && enemy.openGame!.isPlayersTurn()))
           .toList();
 
-    // notifications for requests.
-    // if (notificationsAllowed) {
-    //   if (enemyRequests != null &&
-    //       tempRequests.enemies.length > enemyRequests!.enemies.length) {
-    //     Notifications.showNotification("Neue Freundschaftsanfrage",
-    //         "Jemand will mit dir spielen.", "newFriendRequest", 1);
-    //   }
-    //   if (playableEnemies != null &&
-    //       tempPlayableEnemies.enemies.length >
-    //           playableEnemies!.enemies.length) {
-    //     Notifications.showNotification(
-    //         "Du bist dran.", "weiterspielen", "newPlayable", 1);
-    //   }
-
-    //   if (pendingRequests != null &&
-    //       tempPending.enemies.length < pendingRequests!.enemies.length) {
-    //     Notifications.showNotification("Neue*r Freund*in",
-    //         "jemand hat deine Anfrage angenommen", "newPlayable", 1);
-    //   }
-    // }
-
     player?.friends = tempFriends;
     enemyRequests = tempRequests;
     pendingRequests = tempPending;
@@ -334,11 +307,7 @@ class QuellenreiterAppState extends ChangeNotifier {
         currentEnemy = null;
       }
     }
-
-    // // becuase in other cases, this clal will happen in the background.
-    // if (route == Routes.loading) {
-    //   route = Routes.home;
-    // }
+    notifyListeners();
     return true;
   }
 
@@ -347,6 +316,8 @@ class QuellenreiterAppState extends ChangeNotifier {
     //remove devie from the users push list.
     notificationsAllowed = false;
     updateDeviceTokenForPushNotifications();
+    // remove device decision so that for next user, default is allowed again.
+    await prefs.remove("notificationsAllowed");
     db.logout(_logoutCallback);
   }
 
@@ -355,11 +326,12 @@ class QuellenreiterAppState extends ChangeNotifier {
     db.acceptFriendRequest(player!, e, _acceptRequestCallback);
   }
 
-  void _acceptRequestCallback(bool success) {
+  void _acceptRequestCallback(bool success) async {
     if (!success) {
       route = Routes.home;
     } else {
-      getFriends();
+      await getFriends();
+      route = Routes.home;
     }
   }
 
@@ -446,7 +418,7 @@ class QuellenreiterAppState extends ChangeNotifier {
           "Spielstarten fehlgeschlagen. ${e.emoji} ${e.name} wurde nicht herausgefordert. Versuche es erneut.";
       return;
     }
-    db.sendPushOtherPlayersTurn(this, receiverId: e.userId);
+    db.sendPushGameStartet(this, receiverId: e.userId);
     await getFriends();
     // print(e.openGame!.statementIds.toString());
     // if successfully fetched statements
@@ -587,7 +559,6 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   void startLiveQueryForFriends() {
-    print("startLveQuery called [appstate].");
     db.startLiveQueryForFriends(this);
   }
 

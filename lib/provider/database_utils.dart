@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart' as parse;
@@ -11,7 +9,6 @@ import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import '../consonents.dart';
 import '../constants/constants.dart';
 import '../models/statement.dart';
-import 'notifications.dart';
 import 'queries.dart';
 
 /// This class facilitates the connection to the database and manages its
@@ -22,6 +19,12 @@ class DatabaseUtils {
 
   /// Object to access [FlutterSecureStorage].
   var safeStorage = const FlutterSecureStorage();
+
+  /// Live query livequery for games
+  parse.LiveQuery? gameChangesLiveQuery;
+
+  /// Live query livequery for friends
+  parse.LiveQuery? newFriendsLiveQuery;
 
   /// Login a user.
   void login(String username, String password, Function loginCallback) async {
@@ -115,6 +118,15 @@ class DatabaseUtils {
   Future<void> logout(Function logoutCallback) async {
     const safeStorage = FlutterSecureStorage();
     await safeStorage.delete(key: "token");
+    // stop live queries
+    if (gameChangesLiveQuery != null) {
+      gameChangesLiveQuery!.client.disconnect();
+      gameChangesLiveQuery = null;
+    }
+    if (newFriendsLiveQuery != null) {
+      newFriendsLiveQuery!.client.disconnect();
+      newFriendsLiveQuery = null;
+    }
     logoutCallback();
   }
 
@@ -910,6 +922,14 @@ class DatabaseUtils {
   }
 
   void startLiveQueryForFriends(QuellenreiterAppState appState) async {
+    if (newFriendsLiveQuery != null) {
+      newFriendsLiveQuery!.client.disconnect();
+      newFriendsLiveQuery = null;
+    }
+    if (gameChangesLiveQuery != null) {
+      gameChangesLiveQuery!.client.disconnect();
+      gameChangesLiveQuery = null;
+    }
     // PArse does not support live queries with relations.
     // parse does not support graphql subscriptions ..
     await parse.Parse().initialize(userDatabaseApplicationID, userDatabaseUrl,
@@ -919,7 +939,7 @@ class DatabaseUtils {
         sessionId: await safeStorage.read(key: "token"),
         autoSendSessionId: true);
 
-    final parse.LiveQuery newFriendsLiveQuery = parse.LiveQuery();
+    newFriendsLiveQuery = parse.LiveQuery();
 
     // is user player 1?
     parse.QueryBuilder<parse.ParseObject> isPlayer1Query =
@@ -935,10 +955,11 @@ class DatabaseUtils {
       parse.ParseObject("Friendship"),
       [isPlayer1Query, isPlayer2Query],
     );
-    parse.Subscription subscription =
-        await newFriendsLiveQuery.client.subscribe(mainQueryFriends);
+    parse.Subscription subscriptionFriends =
+        await newFriendsLiveQuery!.client.subscribe(mainQueryFriends);
     // called if new friendship is created
-    subscription.on(parse.LiveQueryEvent.create, (parse.ParseObject object) {
+    subscriptionFriends.on(parse.LiveQueryEvent.create,
+        (parse.ParseObject object) {
       print('[CREATE]LiveQuery event called:\n ${object.toJson()}');
       if (appState.gameStarted) {
         return;
@@ -946,7 +967,8 @@ class DatabaseUtils {
       appState.getFriends();
     });
     //called if friendship is updated
-    subscription.on(parse.LiveQueryEvent.update, (parse.ParseObject object) {
+    subscriptionFriends.on(parse.LiveQueryEvent.update,
+        (parse.ParseObject object) {
       print('[UPDATE]LiveQuery event called:\n ${object.toJson()}');
       if (appState.gameStarted) {
         return;
@@ -956,7 +978,7 @@ class DatabaseUtils {
 
     // find games that changed
 
-    final parse.LiveQuery gameChangesLiveQuery = parse.LiveQuery();
+    gameChangesLiveQuery = parse.LiveQuery();
 
     // is user player 1?
     parse.QueryBuilder<parse.ParseObject> isPlayer1QueryGame =
@@ -972,7 +994,7 @@ class DatabaseUtils {
       [isPlayer1QueryGame, isPlayer2QueryGame],
     );
     parse.Subscription subscriptionGame =
-        await gameChangesLiveQuery.client.subscribe(gameQuery);
+        await gameChangesLiveQuery!.client.subscribe(gameQuery);
     // called if new game is created
     subscriptionGame.on(parse.LiveQueryEvent.create,
         (parse.ParseObject object) {
@@ -1034,6 +1056,33 @@ class DatabaseUtils {
     //Executes a cloud function that returns a ParseObject type
     final ParseCloudFunction function =
         ParseCloudFunction('sendOtherPlayersTurn');
+    final Map<String, dynamic> params = <String, dynamic>{
+      'senderName': appState.player!.name,
+      'receiverId': receiverId,
+    };
+    final ParseResponse parseResponse =
+        await function.executeObjectFunction<ParseObject>(parameters: params);
+    if (parseResponse.success && parseResponse.result != null) {
+      if (parseResponse.result['result'] is ParseObject) {
+        //Transforms the return into a ParseObject
+        final ParseObject parseObject = parseResponse.result['result'];
+        print(parseObject.objectId);
+      }
+    }
+  }
+
+  void sendPushGameStartet(QuellenreiterAppState appState,
+      {String receiverId = "123"}) async {
+    await parse.Parse().initialize(userDatabaseApplicationID,
+        userDatabaseUrl.replaceAll("graphql", "parse"),
+        clientKey: userDatabaseClientKey,
+        debug: true,
+        liveQueryUrl: userLiveQueryUrl,
+        sessionId: await safeStorage.read(key: "token"),
+        autoSendSessionId: true);
+    //Executes a cloud function that returns a ParseObject type
+    final ParseCloudFunction function =
+        ParseCloudFunction('sendPushGameStartet');
     final Map<String, dynamic> params = <String, dynamic>{
       'senderName': appState.player!.name,
       'receiverId': receiverId,

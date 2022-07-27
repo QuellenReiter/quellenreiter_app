@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
@@ -10,8 +9,6 @@ import 'package:quellenreiter_app/screens/game/quest_screen.dart';
 import 'package:quellenreiter_app/screens/game/ready_to_start_screen.dart';
 import 'package:quellenreiter_app/screens/loading_screen.dart';
 import 'package:quellenreiter_app/screens/main/add_friend_screen.dart';
-import 'package:quellenreiter_app/screens/main/open_games_screen.dart';
-import 'package:quellenreiter_app/screens/main/start_game_screen.dart';
 import '../constants/constants.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/main/home_screen.dart';

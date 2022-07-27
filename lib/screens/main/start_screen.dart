@@ -182,7 +182,9 @@ class _StartScreenState extends State<StartScreen> {
       onRefresh: widget.appState.getFriends,
       child: SingleChildScrollView(
         clipBehavior: Clip.none,
-        physics: const BouncingScrollPhysics(),
+        physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics()),
+        primary: false,
         child: AnimationLimiter(
           child: Column(
             mainAxisSize: MainAxisSize.min,

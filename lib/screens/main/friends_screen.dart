@@ -168,7 +168,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
               onRefresh: widget.appState.getFriends,
               child: ListView(
                 primary: false,
-                physics: const BouncingScrollPhysics(),
+                physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics()),
                 children: [
                   if (widget.appState.player?.friends == null)
                     const Center(child: CircularProgressIndicator())

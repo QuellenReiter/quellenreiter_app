@@ -144,7 +144,9 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
               RefreshIndicator(
                 onRefresh: widget.appState.getFriends,
                 child: ListView(
-                  physics: const BouncingScrollPhysics(),
+                  primary: false,
+                  physics: const AlwaysScrollableScrollPhysics(
+                      parent: BouncingScrollPhysics()),
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   children: [
                     if (widget.appState.currentEnemy!.openGame!.gameFinished())
