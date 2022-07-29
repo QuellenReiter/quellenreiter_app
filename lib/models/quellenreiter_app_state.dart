@@ -307,7 +307,6 @@ class QuellenreiterAppState extends ChangeNotifier {
         currentEnemy = null;
       }
     }
-    notifyListeners();
     return true;
   }
 
