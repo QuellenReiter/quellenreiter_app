@@ -4,18 +4,16 @@
    <application
         tools:replace="android:label"
         android:label="quellenreiter_app"
-        android:name=".App"
+        android:name="com.example.quellenreiter_app.App"
         android:icon="@mipmap/ic_launcher">
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.quellenreiter_app.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize"
-            android:showWhenLocked="true"
-            android:turnScreenOn="true">
+            android:windowSoftInputMode="adjustResize">
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues
@@ -34,8 +32,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="open" android:host="open.quellenreiter.app" />
-                <data android:scheme="https" />
+                <data android:scheme="open" android:host="quellenreiter.app" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

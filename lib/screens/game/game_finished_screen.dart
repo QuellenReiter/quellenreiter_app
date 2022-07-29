@@ -20,6 +20,7 @@ class GameFinishedScreen extends StatefulWidget {
 class _GameFinishedScreenState extends State<GameFinishedScreen> {
   ValueNotifier<int> tempPlayerXp = ValueNotifier(0);
   int countupStartValue = 0;
+  late final int newLevel;
   bool updatesDone = false;
   bool playerWon = false;
   bool enemyWon = false;
@@ -393,7 +394,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                                 ),
                                               ]),
                                           Text(
-                                            '${GameRules.currentLevel(widget.appState.player!.getXp() + countupStartValue)}',
+                                            '$newLevel',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .headline1!
@@ -504,6 +505,8 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
     pointButtonTapped = true;
     countupStartValue = tempPlayerXp.value;
     tempPlayerXp.value = 0;
+    newLevel = GameRules.currentLevel(
+        widget.appState.player!.getXp() + countupStartValue);
 
     // count down the xp
     // count up the players xp by amount.

@@ -166,7 +166,7 @@ class GameRules {
 
   /// Returns the upper xp boundary of a given level.
   static int levelUpperBoundary(int level) {
-    return 5 * (level + 1) * (9 + (level + 1));
+    return (5 * (level + 1) * (9 + (level + 1))) - 50;
   }
 
   static int currentLevel(int xp) {

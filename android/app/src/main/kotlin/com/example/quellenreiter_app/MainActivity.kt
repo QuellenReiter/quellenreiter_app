@@ -9,6 +9,7 @@ import com.parse.ParseInstallation
 class MainActivity: FlutterActivity() {
     private val CHANNEL = "com.quellenreiter.quellenreiterApp/deviceToken"
 
+
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler {
