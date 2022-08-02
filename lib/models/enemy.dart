@@ -290,7 +290,8 @@ class Enemy {
     xp = numGamesWonOther * GameRules.pointsPerWonGame + // won games give 20xp
         (trueCorrectAnswersOther + trueFakeAnswersOther) *
             GameRules.pointsPerCorrectAnswer + // correct answers give 12 xp
-        numGamesTiedOther * GameRules.pointsPerTiedGame; // tied games give 5 xp
+        numGamesTiedOther * GameRules.pointsPerTiedGame +
+        numFriends * 10; // tied games give 5 xp
     return xp;
   }
 

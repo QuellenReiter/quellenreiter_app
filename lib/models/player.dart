@@ -187,7 +187,8 @@ class Player {
     xp = numGamesWon * GameRules.pointsPerWonGame + // won games give 20xp
         (trueCorrectAnswers + trueFakeAnswers) *
             GameRules.pointsPerCorrectAnswer + // correct answers give 12 xp
-        numGamesTied * GameRules.pointsPerTiedGame; // tied games give 5 xp
+        numGamesTied * GameRules.pointsPerTiedGame +
+        numFriends * 10; // tied games give 5 xp
     return xp;
   }
 
