@@ -101,19 +101,6 @@ class Utils {
   }
 }
 
-/// static class containing all possible values of
-/// [Statement.statementCorrectness].
-class CorrectnessCategory {
-  static const String correct = "richtig";
-  static const String unverified = "unbelegt";
-  static const String falseContext = "falscher Kontext";
-  static const String manipulated = "manipuliert";
-  static const String misleading = "irreführend";
-  static const String fabricatedContent = "frei erfunden";
-  static const String falseInformation = "Fehlinformation";
-  static const String satire = "Satire";
-}
-
 class UsernameTextFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(

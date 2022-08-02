@@ -143,6 +143,72 @@ class CorrectnessCategory {
   static String fabricatedContent = "frei erfunden";
   static String falseInformation = "Fehlinformation";
   static String satire = "Satire";
+
+  static int length() {
+    return 8;
+  }
+
+  static String at(int i) {
+    switch (i) {
+      case 0:
+        return correct;
+      case 1:
+        return unverified;
+      case 2:
+        return falseContext;
+      case 3:
+        return manipulated;
+      case 4:
+        return misleading;
+      case 5:
+        return fabricatedContent;
+      case 6:
+        return falseInformation;
+      case 7:
+        return satire;
+      default:
+        return correct;
+    }
+  }
+}
+
+class CorrectnessCategoryExplanation {
+  static String correct = "Die Aussage stimmt.";
+  static String unverified =
+      "Es gibt keine Belege für die Richtigkeit dieser Aussage.";
+  static String falseContext =
+      "Die Aussage wird in einem falschen oder fehlenden Kontext dargestellt.";
+  static String manipulated =
+      "Das Video oder Bild wurde nachträglich bearbeitet.";
+  static String misleading =
+      "Etwas wird falsch interpretiert oder hat sich nicht so zugetragen, wie behauptet wird.";
+  static String fabricatedContent = "Die Inhalte sind erfunden worden.";
+  static String falseInformation =
+      "Die Aussage wurde versehentlich falsch wiedergegeben. Die Fehler wurden daraufhin vom Medium korrigiert.";
+  static String satire =
+      " Es handelt sich um Satire, die jedoch nicht als solche zu erkennen ist.";
+  static String at(int i) {
+    switch (i) {
+      case 0:
+        return correct;
+      case 1:
+        return unverified;
+      case 2:
+        return falseContext;
+      case 3:
+        return manipulated;
+      case 4:
+        return misleading;
+      case 5:
+        return fabricatedContent;
+      case 6:
+        return falseInformation;
+      case 7:
+        return satire;
+      default:
+        return correct;
+    }
+  }
 }
 
 class GameRules {
