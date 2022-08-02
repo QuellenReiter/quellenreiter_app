@@ -241,14 +241,12 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
             ),
           ),
         ];
-      case Routes.gameResults:
+      case Routes.tutorial:
         return [
-          home,
           MaterialPage(
-            key: const ValueKey('GameResultsScreen'),
-            child: GameResultsScreen(
+            key: const ValueKey('TutorialPage'),
+            child: Turorial(
               appState: appState,
-              showAll: true,
             ),
           ),
         ];

@@ -22,17 +22,11 @@ class QuellenreiterRoutePath {
   /// Currently on Settings Page?
   bool get isSettingsPage => route == Routes.settings;
 
-  /// Currently on OpenGames Page?
-  bool get isOpenGames => route == Routes.openGames;
-
   /// Currently on Archive Page?
   bool get isArchivePage => route == Routes.archive;
 
-  /// Currently on startGame Page?
-  bool get isStartGame => route == Routes.startGame;
-
-  /// Currently on gameResults Page?
-  bool get isGameResults => route == Routes.gameResults;
+  /// Currently on tutorial Page?
+  bool get isGameResults => route == Routes.tutorial;
 
   /// Currently on gameReadyToStart Page?
   bool get isGameReadyToStart => route == Routes.gameReadyToStart;

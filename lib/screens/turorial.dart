@@ -8,44 +8,70 @@ import 'package:quellenreiter_app/widgets/main_app_bar.dart';
 import 'package:quellenreiter_app/widgets/statement_card.dart';
 import 'package:quellenreiter_app/widgets/title_app_bar.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import '../constants/constants.dart';
 
 class Turorial extends StatelessWidget {
-  const Turorial({Key? key, required this.appState}) : super(key: key);
+  Turorial({Key? key, required this.appState}) : super(key: key);
   final QuellenreiterAppState appState;
+  late TutorialCoachMark tutorialCoachMark;
+  GlobalKey keyFaktFakeButton = GlobalKey();
+  GlobalKey keyStatementText = GlobalKey();
+  GlobalKey keyStatementInfo = GlobalKey();
+  GlobalKey keyStatementCard = GlobalKey();
+  GlobalKey keyStatementSave = GlobalKey();
+  GlobalKey keyStatementShare = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       appBar: MainAppBar(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: IconButton(
         onPressed: () => showTestQuest(context),
         icon: Icon(Icons.arrow_forward),
       ),
-      body: Container(
+      body: SafeArea(
         child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text("Tutorial", style: Theme.of(context).textTheme.headline1),
-            Text("Willkommen bei Quellenreiter",
-                style: Theme.of(context).textTheme.headline4),
-            Text("Hier lernst du, wie du Quellen richtig bewertest",
-                style: Theme.of(context).textTheme.headline4),
+            Text("Hi,",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline1!
+                    .copyWith(color: DesignColors.backgroundBlue)),
+            Text("Dies ist ein Multiplayer Quiz",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline4!
+                    .copyWith(color: DesignColors.backgroundBlue)),
+            Text("Du entlarvst Fake News",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline4!
+                    .copyWith(color: DesignColors.backgroundBlue)),
+            Text("und bekommst Quellen",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline4!
+                    .copyWith(color: DesignColors.backgroundBlue)),
           ],
         ),
       ),
-    ));
+    );
   }
 
-  void showTestQuest(context) {
+  void showTestQuest(context) async {
     print("showTestQuest");
     showGeneralDialog(
       context: context,
       pageBuilder: ((context, animation, secondaryAnimation) {
-        return SafeArea(
-          child: Material(
-            child: Center(
+        return Material(
+          child: Center(
+            child: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
@@ -140,6 +166,7 @@ class Turorial extends StatelessWidget {
                                                 BorderRadius.circular(10),
                                             elevation: 10.0,
                                             child: Container(
+                                              key: keyStatementText,
                                               padding: const EdgeInsets.all(10),
                                               decoration: const BoxDecoration(
                                                 borderRadius: BorderRadius.all(
@@ -163,6 +190,7 @@ class Turorial extends StatelessWidget {
                                   Padding(
                                     padding: const EdgeInsets.only(top: 20),
                                     child: Wrap(
+                                      key: keyStatementInfo,
                                       direction: Axis.horizontal,
                                       alignment: WrapAlignment.start,
                                       runAlignment: WrapAlignment.start,
@@ -235,6 +263,7 @@ class Turorial extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               child: Row(
+                                key: keyFaktFakeButton,
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
@@ -288,6 +317,133 @@ class Turorial extends StatelessWidget {
         );
       }),
     );
+
+    var targets = [
+      TargetFocus(
+        identify: "keyStetementText",
+        keyTarget: keyStatementText,
+        alignSkip: Alignment.bottomRight,
+        shape: ShapeLightFocus.RRect,
+        enableOverlayTab: true,
+        radius: 10,
+        contents: [
+          TargetContent(
+            padding: const EdgeInsets.all(20),
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return Container(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text("Schau dir diese Aussage an.",
+                        style: Theme.of(context).textTheme.headline5),
+                    TextButton.icon(
+                        label: Text("weiter"),
+                        onPressed: () => tutorialCoachMark.next(),
+                        icon: Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                        ))
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: "keyStatementInfo",
+        keyTarget: keyStatementInfo,
+        alignSkip: Alignment.bottomRight,
+        shape: ShapeLightFocus.RRect,
+        enableOverlayTab: true,
+        radius: 10,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return Container(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text("Hier findest du noch mehr Infos dazu.",
+                        style: Theme.of(context).textTheme.headline5),
+                    TextButton.icon(
+                        onPressed: () => tutorialCoachMark.next(),
+                        label: Text("weiter"),
+                        icon: Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                        ))
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: "keyFaktFakeButton",
+        keyTarget: keyFaktFakeButton,
+        alignSkip: Alignment.bottomRight,
+        shape: ShapeLightFocus.RRect,
+        enableOverlayTab: true,
+        radius: 10,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return Container(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text("Ist die Aussage ein Fake oder ein Fakt?",
+                        style: Theme.of(context).textTheme.headline5),
+                    TextButton.icon(
+                        label: Text("weiter"),
+                        onPressed: () => tutorialCoachMark.next(),
+                        icon: Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                        ))
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    ];
+
+    await Future.delayed(Duration(seconds: 1));
+    tutorialCoachMark = TutorialCoachMark(
+      context,
+      targets: targets,
+      colorShadow: DesignColors.pink,
+      textSkip: "überspringen",
+      paddingFocus: 10,
+      opacityShadow: 0.9,
+      onFinish: () {
+        print("finish");
+      },
+      onClickTarget: (target) {
+        print('onClickTarget: $target');
+      },
+      onClickTargetWithTapPosition: (target, tapDetails) {
+        print("target: $target");
+        print(
+            "clicked at position local: ${tapDetails.localPosition} - global: ${tapDetails.globalPosition}");
+      },
+      onClickOverlay: (target) {
+        print('onClickOverlay: $target');
+      },
+      onSkip: () {
+        print("skip");
+      },
+    )..show();
   }
 
   void registerAnswer(bool answer, BuildContext context) {
@@ -306,19 +462,18 @@ class Turorial extends StatelessWidget {
     showGeneralDialog(
         context: context,
         pageBuilder: (context, animation, secondaryAnimation) {
-          return SafeArea(
-            child: Scaffold(
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.endFloat,
-              floatingActionButton: IconButton(
-                onPressed: () => showStatementCard(context),
-                icon: Icon(Icons.arrow_forward),
-              ),
-              body: Dialog(
-                backgroundColor:
-                    answerCorrect ? DesignColors.green : DesignColors.red,
-                insetPadding: const EdgeInsets.all(0),
-                child: AnimationLimiter(
+          return Scaffold(
+            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+            floatingActionButton: IconButton(
+              onPressed: () => showStatementCard(context),
+              icon: Icon(Icons.arrow_forward),
+            ),
+            body: Dialog(
+              backgroundColor:
+                  answerCorrect ? DesignColors.green : DesignColors.red,
+              insetPadding: const EdgeInsets.all(0),
+              child: AnimationLimiter(
+                child: SafeArea(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     mainAxisSize: MainAxisSize.max,
@@ -398,29 +553,28 @@ class Turorial extends StatelessWidget {
         });
   }
 
-  void showStatementCard(BuildContext context) {
+  void showStatementCard(BuildContext context) async {
     showGeneralDialog(
         context: context,
         pageBuilder: (context, animation, secondaryAnimation) {
-          return SafeArea(
-            child: Scaffold(
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.endFloat,
-              floatingActionButton: IconButton(
-                onPressed: () {
-                  appState.prefs.setBool("tutorialPlayed", true);
-                  if (appState.player != null) {
-                    appState.route = Routes.home;
-                  } else {
-                    appState.route = Routes.login;
-                  }
-                },
-                icon: Icon(Icons.arrow_forward),
-              ),
-              body: Dialog(
-                backgroundColor: DesignColors.lightBlue,
-                insetPadding: const EdgeInsets.all(0),
-                child: AnimationLimiter(
+          return Scaffold(
+            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+            floatingActionButton: IconButton(
+              onPressed: () {
+                appState.prefs.setBool("tutorialPlayed", true);
+                if (appState.player != null) {
+                  appState.route = Routes.home;
+                } else {
+                  appState.route = Routes.login;
+                }
+              },
+              icon: Icon(Icons.arrow_forward),
+            ),
+            body: Dialog(
+              backgroundColor: Colors.white,
+              insetPadding: const EdgeInsets.all(0),
+              child: AnimationLimiter(
+                child: SafeArea(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     mainAxisSize: MainAxisSize.max,
@@ -436,7 +590,11 @@ class Turorial extends StatelessWidget {
                       ),
                       children: [
                         StatementCard(
-                            appState: null, statement: GameRules.testStatement),
+                            key: keyStatementCard,
+                            appState: null,
+                            statement: GameRules.testStatement,
+                            keyStatementSave: keyStatementSave,
+                            keyStatementShare: keyStatementShare),
                       ],
                     ),
                   ),
@@ -445,5 +603,67 @@ class Turorial extends StatelessWidget {
             ),
           );
         });
+    var targets = [
+      TargetFocus(
+        identify: "keyStatementCard",
+        keyTarget: keyStatementCard,
+        alignSkip: Alignment.bottomRight,
+        shape: ShapeLightFocus.RRect,
+        enableOverlayTab: true,
+        radius: 10,
+        contents: [
+          TargetContent(
+            padding: const EdgeInsets.all(20),
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return Container(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text("klicke hier, um die Faktenchecks zu sehen.",
+                        style: Theme.of(context).textTheme.headline5),
+                    TextButton.icon(
+                        label: Text("weiter"),
+                        onPressed: () => tutorialCoachMark.next(),
+                        icon: Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                        ))
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    ];
+
+    await Future.delayed(Duration(seconds: 1));
+    tutorialCoachMark = TutorialCoachMark(
+      context,
+      targets: targets,
+      colorShadow: DesignColors.pink,
+      textSkip: "überspringen",
+      paddingFocus: 10,
+      opacityShadow: 0.9,
+      onFinish: () {
+        print("finish");
+      },
+      onClickTarget: (target) {
+        print('onClickTarget: $target');
+      },
+      onClickTargetWithTapPosition: (target, tapDetails) {
+        print("target: $target");
+        print(
+            "clicked at position local: ${tapDetails.localPosition} - global: ${tapDetails.globalPosition}");
+      },
+      onClickOverlay: (target) {
+        print('onClickOverlay: $target');
+      },
+      onSkip: () {
+        print("skip");
+      },
+    )..show();
   }
 }

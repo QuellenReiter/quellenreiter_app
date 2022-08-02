@@ -303,6 +303,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ),
                         ]),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              DesignColors.red),
+                        ),
+                        onPressed: () {
+                          HapticFeedback.heavyImpact();
+
+                          widget.appState.prefs.remove("tutorialPlayed");
+                          widget.appState.route = Routes.tutorial;
+                        },
+                        child: Text("Tutorial anzeigen",
+                            style: Theme.of(context).textTheme.headline5),
+                      ),
+                    ),
                     // toggle to allow notifications
                     Row(
                       mainAxisSize: MainAxisSize.max,
@@ -316,7 +333,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           " Benachrichtigungen erlauben? ",
                           style: Theme.of(context)
                               .textTheme
-                              .headline4!
+                              .headline5!
                               .copyWith(color: DesignColors.backgroundBlue),
                         ),
                         Switch(
@@ -327,21 +344,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           },
                         ),
                       ],
-                    ),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(DesignColors.red),
-                      ),
-                      onPressed: () {
-                        HapticFeedback.heavyImpact();
-
-                        widget.appState.db.sendPushFriendInvitation(
-                            widget.appState,
-                            receiverId: "IdT7cLJEFA");
-                      },
-                      child: Text("Send Push Test",
-                          style: Theme.of(context).textTheme.headline5),
                     ),
                   ],
                 ),

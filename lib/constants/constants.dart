@@ -126,17 +126,15 @@ enum Routes {
   home,
   settings,
   friends,
-  startGame,
   archive,
   login,
   signUp,
-  openGames,
   quest,
-  gameResults,
   gameReadyToStart,
   loading,
   addFriends,
-  gameFinishedScreen
+  gameFinishedScreen,
+  tutorial
 }
 
 class CorrectnessCategory {

@@ -25,8 +25,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     // reset the errors if
     // current route is not loading and pushed route is not loading
     if ((_route != Routes.loading && value != Routes.loading ||
-            value == Routes.home && _route == Routes.loading) &&
-        value != Routes.gameResults) {
+        value == Routes.home && _route == Routes.loading)) {
       msg = null;
     }
     if (value == Routes.gameReadyToStart) {

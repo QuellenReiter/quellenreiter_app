@@ -5,6 +5,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import '../constants/constants.dart';
 import '../models/statement.dart';
@@ -15,11 +16,17 @@ import 'link_alert.dart';
 /// Brief information display of a single [Statement].
 class StatementCard extends StatefulWidget {
   const StatementCard(
-      {Key? key, required this.appState, required this.statement})
+      {Key? key,
+      required this.appState,
+      required this.statement,
+      this.keyStatementSave,
+      this.keyStatementShare})
       : super(key: key);
 
   /// The current appstate.
   final QuellenreiterAppState? appState;
+  final GlobalKey? keyStatementSave;
+  final GlobalKey? keyStatementShare;
 
   /// The [Statement] to be displayed.
   final Statement statement;
@@ -223,7 +230,7 @@ class _StatementCardState extends State<StatementCard> {
     );
   }
 
-  void _showStatementDetail(Statement statement, BuildContext context) {
+  void _showStatementDetail(Statement statement, BuildContext context) async {
     // if we are in tutorial (appstate == null) then just switch the value
     // else we are in the app and need to update the database
     isArchived.value = widget.appState == null
@@ -273,6 +280,7 @@ class _StatementCardState extends State<StatementCard> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       IconButton(
+                          key: widget.keyStatementShare,
                           icon: const Icon(Icons.share),
                           iconSize: 20,
                           onPressed: () {
@@ -284,6 +292,7 @@ class _StatementCardState extends State<StatementCard> {
                         valueListenable: archiveIsLoading,
                         builder: (context, bool loading, child) {
                           return ValueListenableBuilder(
+                              key: widget.keyStatementSave,
                               valueListenable: isArchived,
                               builder: (context, bool archived, child) {
                                 if (loading) {
@@ -603,6 +612,102 @@ class _StatementCardState extends State<StatementCard> {
         );
       },
     );
+    late TutorialCoachMark tutorialCoachMark;
+    var targets = [
+      TargetFocus(
+        identify: "keyStatementSave",
+        keyTarget: widget.keyStatementSave,
+        alignSkip: Alignment.bottomRight,
+        shape: ShapeLightFocus.Circle,
+        enableOverlayTab: true,
+        radius: 10,
+        contents: [
+          TargetContent(
+            padding: const EdgeInsets.all(20),
+            align: ContentAlign.left,
+            builder: (context, controller) {
+              return Container(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text("klicke hier, um das Statement zu speichern.",
+                        style: Theme.of(context).textTheme.headline5),
+                    TextButton.icon(
+                        label: Text("weiter"),
+                        onPressed: () => tutorialCoachMark.next(),
+                        icon: Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                        ))
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: "keyStatementShare",
+        keyTarget: widget.keyStatementShare,
+        alignSkip: Alignment.bottomRight,
+        shape: ShapeLightFocus.Circle,
+        enableOverlayTab: true,
+        radius: 10,
+        contents: [
+          TargetContent(
+            padding: const EdgeInsets.all(20),
+            align: ContentAlign.left,
+            builder: (context, controller) {
+              return Container(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text("klicke hier, um das Statement zu teilen..",
+                        style: Theme.of(context).textTheme.headline5),
+                    TextButton.icon(
+                        label: Text("weiter"),
+                        onPressed: () => tutorialCoachMark.next(),
+                        icon: Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                        ))
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    ];
+
+    await Future.delayed(Duration(seconds: 1));
+    tutorialCoachMark = TutorialCoachMark(
+      context,
+      targets: targets,
+      colorShadow: DesignColors.pink,
+      textSkip: "überspringen",
+      paddingFocus: 10,
+      opacityShadow: 0.9,
+      onFinish: () {
+        print("finish");
+      },
+      onClickTarget: (target) {
+        print('onClickTarget: $target');
+      },
+      onClickTargetWithTapPosition: (target, tapDetails) {
+        print("target: $target");
+        print(
+            "clicked at position local: ${tapDetails.localPosition} - global: ${tapDetails.globalPosition}");
+      },
+      onClickOverlay: (target) {
+        print('onClickOverlay: $target');
+      },
+      onSkip: () {
+        print("skip");
+      },
+    )..show();
   }
 
   void showImage(BuildContext context) {
