@@ -9,6 +9,16 @@ class CorrectnessBadge extends StatelessWidget {
   final String correctnessValue;
   @override
   Widget build(BuildContext context) {
+    Widget makeSheetDismissable({required Widget child}) {
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          Navigator.of(context).pop();
+        },
+        child: GestureDetector(onTap: () {}, child: child),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Material(
@@ -37,19 +47,24 @@ class CorrectnessBadge extends StatelessWidget {
             backgroundColor: Colors.transparent,
             isDismissible: true,
             builder: (BuildContext context) {
-              return SafeArea(
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      topRight: Radius.circular(15),
+              return makeSheetDismissable(
+                child: DraggableScrollableSheet(
+                  minChildSize: 0.4,
+                  maxChildSize: 1,
+                  initialChildSize: 0.6,
+                  builder: (_, controller) => Container(
+                    padding: const EdgeInsets.only(top: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        topRight: Radius.circular(15),
+                      ),
                     ),
-                  ),
-                  child: SafeArea(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
+                    child: ListView(
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      controller: controller,
                       children: [
                         SelectableText(
                           "Unsere Bewertungsskala",
