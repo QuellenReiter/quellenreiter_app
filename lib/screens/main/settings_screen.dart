@@ -40,315 +40,343 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Flexible(
-          child: Padding(
-            padding: const EdgeInsets.all(15),
-            child: AnimationLimiter(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: AnimationConfiguration.toStaggeredList(
-                  duration: const Duration(milliseconds: 300),
-                  childAnimationBuilder: (widget) => SlideAnimation(
-                    horizontalOffset: 30.0,
-                    curve: Curves.elasticOut,
-                    child: FadeInAnimation(
-                      child: widget,
-                    ),
-                  ),
-                  children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    ValueListenableBuilder(
-                      valueListenable: usernameController,
-                      builder: (context, TextEditingValue value, __) {
-                        return Row(
-                          children: [
-                            Flexible(
-                              child: TextField(
-                                style: Theme.of(context).textTheme.bodyText2,
-                                inputFormatters: [
-                                  UsernameTextFormatter(),
-                                  FilteringTextInputFormatter.allow(
-                                      Utils.regexUsername),
-                                ],
-                                enableSuggestions: false,
-                                autocorrect: false,
-                                textCapitalization: TextCapitalization.none,
-                                controller: usernameController,
-                                autofillHints: const [
-                                  AutofillHints.newUsername
-                                ],
-                                decoration: const InputDecoration(
-                                  hintText: "Gebe einen neuen Username ein.",
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(10),
+          child: ListView(
+            clipBehavior: Clip.none,
+            physics: BouncingScrollPhysics(),
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // mainAxisSize: MainAxisSize.max,
+            // crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(15),
+                child: AnimationLimiter(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: AnimationConfiguration.toStaggeredList(
+                      duration: const Duration(milliseconds: 300),
+                      childAnimationBuilder: (widget) => SlideAnimation(
+                        horizontalOffset: 30.0,
+                        curve: Curves.elasticOut,
+                        child: FadeInAnimation(
+                          child: widget,
+                        ),
+                      ),
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        ValueListenableBuilder(
+                          valueListenable: usernameController,
+                          builder: (context, TextEditingValue value, __) {
+                            return Row(
+                              children: [
+                                Flexible(
+                                  child: TextField(
+                                    style:
+                                        Theme.of(context).textTheme.bodyText2,
+                                    inputFormatters: [
+                                      UsernameTextFormatter(),
+                                      FilteringTextInputFormatter.allow(
+                                          Utils.regexUsername),
+                                    ],
+                                    enableSuggestions: false,
+                                    autocorrect: false,
+                                    textCapitalization: TextCapitalization.none,
+                                    controller: usernameController,
+                                    autofillHints: const [
+                                      AutofillHints.newUsername
+                                    ],
+                                    decoration: const InputDecoration(
+                                      hintText:
+                                          "Gebe einen neuen Username ein.",
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.transparent,
+                                      contentPadding: EdgeInsets.all(10),
                                     ),
                                   ),
-                                  filled: true,
-                                  fillColor: Colors.transparent,
-                                  contentPadding: EdgeInsets.all(10),
                                 ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: ElevatedButton.icon(
-                                onPressed: usernameController.text !=
-                                            widget.appState.player!.name &&
-                                        usernameController.text.length >=
-                                            Utils.usernameMinLength
-                                    ? () {
-                                        HapticFeedback.selectionClick();
-                                        FocusManager.instance.primaryFocus
-                                            ?.unfocus();
-                                        widget.appState.player?.name =
-                                            usernameController.text;
-                                        widget.appState.updateUser();
-                                      }
-                                    : null,
-                                icon: const Icon(Icons.switch_access_shortcut),
-                                label: const Text("Username ändern."),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    ValueListenableBuilder(
-                      valueListenable: emojiController,
-                      builder: (context, TextEditingValue value, __) {
-                        return Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Flexible(
-                              child: TextField(
-                                style: Theme.of(context).textTheme.bodyText2,
-                                controller: emojiController,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                      Utils.regexEmoji),
-                                ],
-                                maxLength: 1,
-                                decoration: const InputDecoration(
-                                  hintText: "Gebe einen neuen Emoji ein.",
-                                  counterText: "",
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(10),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: ElevatedButton.icon(
+                                    onPressed: usernameController.text !=
+                                                widget.appState.player!.name &&
+                                            usernameController.text.length >=
+                                                Utils.usernameMinLength
+                                        ? () {
+                                            HapticFeedback.selectionClick();
+                                            FocusManager.instance.primaryFocus
+                                                ?.unfocus();
+                                            widget.appState.player?.name =
+                                                usernameController.text;
+                                            widget.appState.updateUser();
+                                          }
+                                        : null,
+                                    icon: const Icon(
+                                        Icons.switch_access_shortcut),
+                                    label: const Text("Username ändern."),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        ValueListenableBuilder(
+                          valueListenable: emojiController,
+                          builder: (context, TextEditingValue value, __) {
+                            return Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: TextField(
+                                    style:
+                                        Theme.of(context).textTheme.bodyText2,
+                                    controller: emojiController,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                          Utils.regexEmoji),
+                                    ],
+                                    maxLength: 1,
+                                    decoration: const InputDecoration(
+                                      hintText: "Gebe einen neuen Emoji ein.",
+                                      counterText: "",
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.transparent,
+                                      contentPadding: EdgeInsets.all(10),
                                     ),
                                   ),
-                                  filled: true,
-                                  fillColor: Colors.transparent,
-                                  contentPadding: EdgeInsets.all(10),
+                                ),
+                                Flexible(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 10),
+                                    child: ElevatedButton.icon(
+                                      onPressed: emojiController.text !=
+                                                  widget
+                                                      .appState.player!.emoji &&
+                                              emojiController.text.isNotEmpty
+                                          ? () {
+                                              HapticFeedback.selectionClick();
+                                              FocusManager.instance.primaryFocus
+                                                  ?.unfocus();
+                                              widget.appState.player?.emoji =
+                                                  emojiController.text;
+                                              widget.appState.updateUserData();
+                                            }
+                                          : null,
+                                      icon: const Icon(Icons.emoji_emotions),
+                                      label: const Text("Emoji ändern"),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  HapticFeedback.heavyImpact();
+                                  widget.appState.logout();
+                                },
+                                icon: const Icon(Icons.logout),
+                                label: Text(
+                                  "Abmelden",
+                                  style: Theme.of(context).textTheme.headline5,
                                 ),
                               ),
-                            ),
-                            Flexible(
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 10),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
                                 child: ElevatedButton.icon(
-                                  onPressed: emojiController.text !=
-                                              widget.appState.player!.emoji &&
-                                          emojiController.text.isNotEmpty
-                                      ? () {
-                                          HapticFeedback.selectionClick();
-                                          FocusManager.instance.primaryFocus
-                                              ?.unfocus();
-                                          widget.appState.player?.emoji =
-                                              emojiController.text;
-                                          widget.appState.updateUserData();
-                                        }
-                                      : null,
-                                  icon: const Icon(Icons.emoji_emotions),
-                                  label: const Text("Emoji ändern"),
+                                  onPressed: () {
+                                    HapticFeedback.heavyImpact();
+                                    showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        backgroundColor: Colors.transparent,
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return Container(
+                                            padding:
+                                                const EdgeInsets.only(top: 50),
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.8,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  const BorderRadius.only(
+                                                topLeft: Radius.circular(15),
+                                                topRight: Radius.circular(15),
+                                              ),
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                const Icon(
+                                                  Icons.warning_amber_rounded,
+                                                  color: DesignColors.red,
+                                                  size: 200,
+                                                ),
+                                                Text(
+                                                  "Willst du deinen Account wirklich für immer löschen?",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .subtitle2,
+                                                ),
+                                                SizedBox(
+                                                  height: 30,
+                                                ),
+                                                Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.max,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
+                                                      ElevatedButton(
+                                                        style: ButtonStyle(
+                                                          backgroundColor:
+                                                              MaterialStateProperty
+                                                                  .all<Color>(
+                                                                      DesignColors
+                                                                          .red),
+                                                        ),
+                                                        onPressed: () {
+                                                          HapticFeedback
+                                                              .heavyImpact();
+
+                                                          widget.appState.db
+                                                              .deleteAccount(
+                                                                  widget
+                                                                      .appState);
+                                                        },
+                                                        child: Text("Ja",
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .headline5),
+                                                      ),
+                                                      ElevatedButton(
+                                                        style: ButtonStyle(
+                                                          backgroundColor:
+                                                              MaterialStateProperty
+                                                                  .all<Color>(
+                                                                      DesignColors
+                                                                          .green),
+                                                        ),
+                                                        onPressed: () {
+                                                          HapticFeedback
+                                                              .selectionClick();
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                        child: Text("nein",
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .headline5),
+                                                      ),
+                                                    ]),
+                                              ],
+                                            ),
+                                          );
+                                        });
+                                  },
+                                  icon: const Icon(Icons.delete_forever),
+                                  label: Text(
+                                    "Account löschen",
+                                    style:
+                                        Theme.of(context).textTheme.headline5,
+                                  ),
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            DesignColors.red),
+                                  ),
                                 ),
                               ),
+                            ]),
+                        SizedBox(
+                          height: 10,
+                        ),
+
+                        // toggle to allow notifications
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Wrap(
+                            alignment: WrapAlignment.start,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.notifications_active,
+                                color: DesignColors.backgroundBlue,
+                              ),
+                              Text(
+                                " Benachrichtigungen erlauben? ",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5!
+                                    .copyWith(
+                                        color: DesignColors.backgroundBlue),
+                              ),
+                              Switch(
+                                value: widget.appState.notificationsAllowed,
+                                onChanged: (bool value) {
+                                  HapticFeedback.mediumImpact();
+                                  widget.appState.notificationsAllowed = value;
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  DesignColors.pink),
                             ),
-                          ],
-                        );
-                      },
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ElevatedButton.icon(
                             onPressed: () {
                               HapticFeedback.heavyImpact();
-                              widget.appState.logout();
+
+                              widget.appState.prefs.remove("tutorialPlayed");
+                              widget.appState.route = Routes.tutorial;
                             },
-                            icon: const Icon(Icons.logout),
-                            label: Text(
-                              "Abmelden",
-                              style: Theme.of(context).textTheme.headline5,
-                            ),
+                            child: Text("Tutorial anzeigen",
+                                style: Theme.of(context).textTheme.headline5),
                           ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                HapticFeedback.heavyImpact();
-                                showModalBottomSheet(
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.transparent,
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return Container(
-                                        padding: const EdgeInsets.only(top: 50),
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.8,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(15),
-                                            topRight: Radius.circular(15),
-                                          ),
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            const Icon(
-                                              Icons.warning_amber_rounded,
-                                              color: DesignColors.red,
-                                              size: 200,
-                                            ),
-                                            Text(
-                                              "Willst du deinen Account wirklich für immer löschen?",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .subtitle2,
-                                            ),
-                                            SizedBox(
-                                              height: 30,
-                                            ),
-                                            Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                children: [
-                                                  ElevatedButton(
-                                                    style: ButtonStyle(
-                                                      backgroundColor:
-                                                          MaterialStateProperty
-                                                              .all<
-                                                                      Color>(
-                                                                  DesignColors
-                                                                      .red),
-                                                    ),
-                                                    onPressed: () {
-                                                      HapticFeedback
-                                                          .heavyImpact();
-
-                                                      widget.appState.db
-                                                          .deleteAccount(
-                                                              widget.appState);
-                                                    },
-                                                    child: Text("Ja",
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .headline5),
-                                                  ),
-                                                  ElevatedButton(
-                                                    style: ButtonStyle(
-                                                      backgroundColor:
-                                                          MaterialStateProperty
-                                                              .all<
-                                                                      Color>(
-                                                                  DesignColors
-                                                                      .green),
-                                                    ),
-                                                    onPressed: () {
-                                                      HapticFeedback
-                                                          .selectionClick();
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                    child: Text("nein",
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .headline5),
-                                                  ),
-                                                ]),
-                                          ],
-                                        ),
-                                      );
-                                    });
-                              },
-                              icon: const Icon(Icons.delete_forever),
-                              label: Text(
-                                "Account löschen",
-                                style: Theme.of(context).textTheme.headline5,
-                              ),
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        DesignColors.red),
-                              ),
-                            ),
-                          ),
-                        ]),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              DesignColors.red),
-                        ),
-                        onPressed: () {
-                          HapticFeedback.heavyImpact();
-
-                          widget.appState.prefs.remove("tutorialPlayed");
-                          widget.appState.route = Routes.tutorial;
-                        },
-                        child: Text("Tutorial anzeigen",
-                            style: Theme.of(context).textTheme.headline5),
-                      ),
-                    ),
-                    // toggle to allow notifications
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.notifications_active,
-                          color: DesignColors.backgroundBlue,
-                        ),
-                        Text(
-                          " Benachrichtigungen erlauben? ",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline5!
-                              .copyWith(color: DesignColors.backgroundBlue),
-                        ),
-                        Switch(
-                          value: widget.appState.notificationsAllowed,
-                          onChanged: (bool value) {
-                            HapticFeedback.mediumImpact();
-                            widget.appState.notificationsAllowed = value;
-                          },
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
         ),
         SizedBox(

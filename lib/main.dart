@@ -66,37 +66,37 @@ class _QuellenreiterAppState extends State<QuellenreiterApp> {
               headline2: TextStyle(
                 color: DesignColors.backgroundBlue,
                 fontFamily: 'Bangers',
-                fontSize: 30,
+                fontSize: 25,
               ),
               headline4: TextStyle(
                 color: Colors.white,
                 fontFamily: 'Bangers',
-                fontSize: 25,
+                fontSize: 20,
               ),
               headline5: TextStyle(
                 color: Colors.white,
                 fontFamily: 'Bangers',
-                fontSize: 20,
+                fontSize: 18,
               ),
               headline1: TextStyle(
                 color: Colors.white,
                 fontFamily: 'Bangers',
-                fontSize: 40,
+                fontSize: 30,
               ),
               subtitle1: TextStyle(
                 color: Colors.white,
                 fontFamily: 'Oswald',
-                fontSize: 20,
+                fontSize: 18,
               ),
               bodyText1: TextStyle(
                 color: Colors.white,
                 fontFamily: 'Oswald',
-                fontSize: 16,
+                fontSize: 14,
               ),
               bodyText2: TextStyle(
                 color: DesignColors.black,
                 fontFamily: 'Oswald',
-                fontSize: 14,
+                fontSize: 12,
               ),
             ),
             floatingActionButtonTheme: const FloatingActionButtonThemeData(

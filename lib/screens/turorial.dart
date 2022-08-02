@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -418,7 +419,7 @@ class Turorial extends StatelessWidget {
       ),
     ];
 
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(milliseconds: 500));
     tutorialCoachMark = TutorialCoachMark(
       context,
       targets: targets,
@@ -478,7 +479,7 @@ class Turorial extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     mainAxisSize: MainAxisSize.max,
                     children: AnimationConfiguration.toStaggeredList(
-                      duration: const Duration(milliseconds: 1000),
+                      duration: const Duration(milliseconds: 500),
                       childAnimationBuilder: (widget) => SlideAnimation(
                         horizontalOffset: 100.0,
                         verticalOffset: 100,
@@ -579,7 +580,7 @@ class Turorial extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     mainAxisSize: MainAxisSize.max,
                     children: AnimationConfiguration.toStaggeredList(
-                      duration: const Duration(milliseconds: 1000),
+                      duration: const Duration(milliseconds: 500),
                       childAnimationBuilder: (widget) => SlideAnimation(
                         horizontalOffset: 100.0,
                         verticalOffset: 100,
@@ -639,7 +640,7 @@ class Turorial extends StatelessWidget {
       ),
     ];
 
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(milliseconds: 500));
     tutorialCoachMark = TutorialCoachMark(
       context,
       targets: targets,
