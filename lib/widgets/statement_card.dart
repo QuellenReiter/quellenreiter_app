@@ -19,7 +19,7 @@ class StatementCard extends StatefulWidget {
       : super(key: key);
 
   /// The current appstate.
-  final QuellenreiterAppState appState;
+  final QuellenreiterAppState? appState;
 
   /// The [Statement] to be displayed.
   final Statement statement;
@@ -224,8 +224,12 @@ class _StatementCardState extends State<StatementCard> {
   }
 
   void _showStatementDetail(Statement statement, BuildContext context) {
-    isArchived.value = widget.appState.player!.safedStatementsIds!
-        .contains(statement.objectId);
+    // if we are in tutorial (appstate == null) then just switch the value
+    // else we are in the app and need to update the database
+    isArchived.value = widget.appState == null
+        ? isArchived.value
+        : widget.appState!.player!.safedStatementsIds!
+            .contains(statement.objectId);
 
     HapticFeedback.mediumImpact();
     showModalBottomSheet(
@@ -295,12 +299,18 @@ class _StatementCardState extends State<StatementCard> {
                                       archiveIsLoading.value = true;
 
                                       HapticFeedback.mediumImpact();
+                                      if (widget.appState != null) {
+                                        widget.appState!.player!
+                                            .safedStatementsIds!
+                                            .remove(statement.objectId!);
 
-                                      widget
-                                          .appState.player!.safedStatementsIds!
-                                          .remove(statement.objectId!);
+                                        await widget.appState!.updateUserData();
+                                      } else {
+                                        // wait for 1 second to simulate a loading time
+                                        await Future.delayed(
+                                            const Duration(seconds: 1));
+                                      }
 
-                                      await widget.appState.updateUserData();
                                       archiveIsLoading.value = false;
                                       isArchived.value = false;
                                     },
@@ -311,10 +321,16 @@ class _StatementCardState extends State<StatementCard> {
                                     onPressed: () async {
                                       archiveIsLoading.value = true;
                                       HapticFeedback.mediumImpact();
-                                      widget
-                                          .appState.player!.safedStatementsIds!
-                                          .add(statement.objectId!);
-                                      await widget.appState.updateUserData();
+                                      if (widget.appState != null) {
+                                        widget.appState!.player!
+                                            .safedStatementsIds!
+                                            .add(statement.objectId!);
+                                        await widget.appState!.updateUserData();
+                                      } else {
+                                        // wait for 1 second to simulate a loading time
+                                        await Future.delayed(
+                                            const Duration(seconds: 1));
+                                      }
 
                                       isArchived.value = true;
                                       archiveIsLoading.value = false;

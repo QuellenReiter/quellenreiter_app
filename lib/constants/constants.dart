@@ -1,4 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:quellenreiter_app/models/fact.dart';
+
+import '../models/statement.dart';
 
 /// Contains colors that are needed repeatedly throughout the app.
 class DesignColors {
@@ -270,4 +274,26 @@ class GameRules {
     }
     return levelUpperBoundary(level + 1);
   }
+
+  static Statement testStatement = Statement(
+      "statementText",
+      "statementAuthor",
+      "test",
+      CorrectnessCategory.correct,
+      2022,
+      3,
+      12,
+      Facts()
+        ..facts = [
+          Fact("factText", "factAuthor", 2022, 3, 12, "deutsch", "link",
+              "factMedia", "objectId", "factArchivedLink")
+        ],
+      "statementLanguage",
+      "statementLink",
+      "statementMedia",
+      "statementMediatype",
+      "statementPictureURL",
+      "samplePictureCopyright",
+      false,
+      "objectId");
 }
