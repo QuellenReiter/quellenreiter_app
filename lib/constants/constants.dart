@@ -88,6 +88,7 @@ class DbFields {
   static const String userPlayedStatements = "playedStatements";
   static const String userSafedStatements = "safedStatements";
   static const String userDeviceToken = "deviceToken";
+  static const String userNumFriends = "numFriends";
 
   static const String friendshipOpenGame = "openGame";
   static const String friendshipNumGamesPlayed = "numPlayedGames";

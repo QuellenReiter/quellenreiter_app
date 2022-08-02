@@ -26,6 +26,7 @@ class Enemy {
   late int numGamesWonOther;
   late int numGamesTiedOther;
   late int numGamesPlayedOther;
+  late int numFriends;
 
   /// Constructor that takes a Map of a friendship query and resolves which of
   /// player1 and player2 is
@@ -73,6 +74,8 @@ class Enemy {
           [DbFields.userGamesTied];
       numGamesPlayedOther = map?[DbFields.friendshipPlayer2][DbFields.userData]
           [DbFields.userPlayedGames];
+      numFriends = map?[DbFields.friendshipPlayer2][DbFields.userData]
+          [DbFields.userNumFriends];
     } else {
       // The player corresponds to player2 in the database friendship.
       playerIndex = 1;
@@ -105,6 +108,8 @@ class Enemy {
           [DbFields.userGamesTied];
       numGamesPlayedOther = map?[DbFields.friendshipPlayer1][DbFields.userData]
           [DbFields.userPlayedGames];
+      numFriends = map?[DbFields.friendshipPlayer1][DbFields.userData]
+          [DbFields.userNumFriends];
     }
     numGamesPlayed = map?[DbFields.friendshipNumGamesPlayed];
     friendshipId = map?["objectId"];
@@ -171,6 +176,7 @@ class Enemy {
     numGamesWonOther = 0;
     numGamesTiedOther = 0;
     numGamesPlayedOther = 0;
+    numFriends = 0;
   }
 
   Map<String, dynamic> toUserDataMap() {

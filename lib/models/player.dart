@@ -19,6 +19,7 @@ class Player {
   late List<String>? safedStatementsIds;
   late List<String>? playedStatements;
   late String? deviceToken;
+  int numFriends = 0;
 
   Player.fromMap(Map<String, dynamic>? map)
       : name = map?[DbFields.userName],
@@ -66,7 +67,10 @@ class Player {
                     .toList()
                     .cast<String>()
                 : null,
-        friends = null;
+        friends = null,
+        numFriends = map?[DbFields.userData] == null
+            ? 0
+            : map?[DbFields.userData][DbFields.userNumFriends];
 
   Map<String, dynamic> toUserDataMap() {
     var ret = {
@@ -81,7 +85,8 @@ class Player {
         DbFields.userPlayedStatements: playedStatements,
         DbFields.userSafedStatements: safedStatementsIds,
         DbFields.userGamesWon: numGamesWon,
-        DbFields.userGamesTied: numGamesTied
+        DbFields.userGamesTied: numGamesTied,
+        DbFields.userNumFriends: numFriends,
       }
     };
     return ret;
@@ -115,7 +120,8 @@ class Player {
             DbFields.userPlayedStatements: playedStatements,
             DbFields.userSafedStatements: safedStatementsIds,
             DbFields.userGamesWon: numGamesWon,
-            DbFields.userGamesTied: numGamesTied
+            DbFields.userGamesTied: numGamesTied,
+            DbFields.userNumFriends: 0,
           }
         }
       }
@@ -141,6 +147,7 @@ class Player {
         .map((x) => x["value"])
         .toList()
         .cast<String>();
+    numFriends = map[DbFields.userNumFriends];
   }
 
   void updateAnswerStats(List<bool> playerAnswers, Statements? statements) {

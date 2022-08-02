@@ -295,6 +295,12 @@ class QuellenreiterAppState extends ChangeNotifier {
           .toList();
 
     player?.friends = tempFriends;
+    // set new number of friends
+    if (player!.numFriends != tempFriends.enemies.length) {
+      player!.numFriends = tempFriends.enemies.length;
+      db.updateUserData(player, (Player? p) {});
+    }
+    player?.numFriends = tempFriends.enemies.length;
     enemyRequests = tempRequests;
     pendingRequests = tempPending;
     playableEnemies = tempPlayableEnemies;

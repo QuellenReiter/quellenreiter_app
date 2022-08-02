@@ -245,6 +245,7 @@ mutation LogIn{
           ${DbFields.userFalseCorrectAnswers}
           ${DbFields.userTrueFakeAnswers}
           ${DbFields.userFalseFakeAnswers}
+          ${DbFields.userNumFriends}
           ${DbFields.userSafedStatements}{
             ... on Element{
               value
@@ -289,6 +290,7 @@ mutation SignUp{
           ${DbFields.userFalseCorrectAnswers}
           ${DbFields.userTrueFakeAnswers}
           ${DbFields.userFalseFakeAnswers}
+          ${DbFields.userNumFriends}
           ${DbFields.userSafedStatements}{
             ... on Element{
               value
@@ -327,6 +329,7 @@ query GetCurrentUser{
         ${DbFields.userFalseCorrectAnswers}
         ${DbFields.userTrueFakeAnswers}
         ${DbFields.userFalseFakeAnswers}
+        ${DbFields.userNumFriends}
         ${DbFields.userSafedStatements}{
           ... on Element{
             value
@@ -411,6 +414,7 @@ query GetOpenFriendRequests{
             ${DbFields.userFalseCorrectAnswers}
             ${DbFields.userTrueFakeAnswers}
             ${DbFields.userFalseFakeAnswers}
+            ${DbFields.userNumFriends}
             ${DbFields.userPlayedStatements}{
               ... on Element{
                 value
@@ -431,6 +435,7 @@ query GetOpenFriendRequests{
             ${DbFields.userFalseCorrectAnswers}
             ${DbFields.userTrueFakeAnswers}
             ${DbFields.userFalseFakeAnswers}
+            ${DbFields.userNumFriends}
             ${DbFields.userPlayedStatements}{
               ... on Element{
                 value
@@ -562,6 +567,7 @@ mutation updateUser(\$user: UpdateUserDataInput!){
       ${DbFields.userFalseCorrectAnswers}
       ${DbFields.userTrueFakeAnswers}
       ${DbFields.userFalseFakeAnswers}
+      ${DbFields.userNumFriends}
       ${DbFields.userSafedStatements}{
         ... on Element{
           value

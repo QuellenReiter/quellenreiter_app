@@ -283,6 +283,9 @@ class DatabaseUtils {
         return;
       } else {
         acceptFriendCallback(true);
+        // update num of friends in Database.
+        p.numFriends += 1;
+        updateUserData(p, (Player? p) {});
         return;
       }
     }
