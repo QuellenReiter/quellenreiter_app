@@ -177,35 +177,37 @@ class _StatementCardState extends State<StatementCard> {
                     ],
                   ),
                 ),
-                Row(children: [
-                  Expanded(
-                    child: Container(
-                        width: 40,
-                        margin: const EdgeInsets.only(right: 10),
-                        child: const Divider(
-                          color: Colors.grey,
-                          height: 40,
-                        )),
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Faktenchecks zur Aussage von:",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1!
-                          .copyWith(color: DesignColors.black),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                          width: 40,
+                          margin: const EdgeInsets.only(right: 10),
+                          child: const Divider(
+                            color: Colors.grey,
+                            height: 40,
+                          )),
                     ),
-                  ),
-                  Expanded(
-                    child: Container(
-                        margin: const EdgeInsets.only(left: 10),
-                        child: const Divider(
-                          color: Colors.grey,
-                          height: 40,
-                        )),
-                  ),
-                ]),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Faktenchecks zur Aussage von:",
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText1!
+                            .copyWith(color: DesignColors.black),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                          margin: const EdgeInsets.only(left: 10),
+                          child: const Divider(
+                            color: Colors.grey,
+                            height: 40,
+                          )),
+                    ),
+                  ],
+                ),
                 // Display list of Factcheck Media.
                 Wrap(
                   alignment: WrapAlignment.spaceBetween,

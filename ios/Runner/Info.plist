@@ -71,6 +71,12 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>USER_APP_ID</key>
+	<string>$(userDatabaseApplicationID)</string>
+	<key>USER_CLIENT_KEY</key>
+	<string>$(userDatabaseClientKey)</string>
+	<key>USER_SERVER_URL</key>
+	<string>$(userDatabaseUrl)</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>

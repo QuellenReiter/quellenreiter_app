@@ -47,5 +47,5 @@ app.*.map.json
 
 # Secrets
 lib/consonents.dart
-android/app/src/main/kotlin/com/example/quellenreiter_app/App.kt
-ios/Runner/AppDelegate.swift
+android/app/src/main/res/values/strings.xml
+ios/Runner/secrets.xcconfig

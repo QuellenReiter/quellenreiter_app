@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/utilities/utilities.dart';
 
 import '../constants/constants.dart';
@@ -47,6 +48,7 @@ class CorrectnessBadge extends StatelessWidget {
             backgroundColor: Colors.transparent,
             isDismissible: true,
             builder: (BuildContext context) {
+              HapticFeedback.mediumImpact();
               return makeSheetDismissable(
                 child: DraggableScrollableSheet(
                   minChildSize: 0.4,
