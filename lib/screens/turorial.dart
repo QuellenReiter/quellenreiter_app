@@ -1,17 +1,14 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:image/image.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/main_app_bar.dart';
 import 'package:quellenreiter_app/widgets/statement_card.dart';
-import 'package:quellenreiter_app/widgets/title_app_bar.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import '../constants/constants.dart';
+import '../models/statement.dart';
 
 class Turorial extends StatelessWidget {
   Turorial({Key? key, required this.appState}) : super(key: key);
@@ -21,51 +18,70 @@ class Turorial extends StatelessWidget {
   GlobalKey keyStatementText = GlobalKey();
   GlobalKey keyStatementInfo = GlobalKey();
   GlobalKey keyStatementCard = GlobalKey();
-  GlobalKey keyStatementSave = GlobalKey();
-  GlobalKey keyStatementShare = GlobalKey();
+  GlobalKey keyStatementSaveAndShare = GlobalKey();
+  bool showStatametCardCalled = false;
+  Statement? testStatement;
 
   @override
   Widget build(BuildContext context) {
+    // start downloading the testStatement
+    getTestStatement();
     return Scaffold(
       appBar: MainAppBar(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: IconButton(
-        onPressed: () => showTestQuest(context),
-        icon: Icon(Icons.arrow_forward),
-      ),
+      floatingActionButton: actionButton("weiter", showTestQuest, context,
+          color: DesignColors.pink),
       body: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text("Hi,",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline1!
-                    .copyWith(color: DesignColors.backgroundBlue)),
-            Text("Dies ist ein Multiplayer Quiz",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline4!
-                    .copyWith(color: DesignColors.backgroundBlue)),
-            Text("Du entlarvst Fake News",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline4!
-                    .copyWith(color: DesignColors.backgroundBlue)),
-            Text("und bekommst Quellen",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline4!
-                    .copyWith(color: DesignColors.backgroundBlue)),
-          ],
+        child: AnimationLimiter(
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: AnimationConfiguration.toStaggeredList(
+                duration: const Duration(milliseconds: 1000),
+                childAnimationBuilder: (widget) => SlideAnimation(
+                  horizontalOffset: 100.0,
+                  curve: Curves.elasticOut,
+                  child: FadeInAnimation(
+                    child: widget,
+                  ),
+                ),
+                children: [
+                  Text("Hi,",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline1!
+                          .copyWith(color: DesignColors.backgroundBlue)),
+                  Text("Dies ist ein Multiplayer Quiz",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline4!
+                          .copyWith(color: DesignColors.backgroundBlue)),
+                  Text("Du entlarvst Fake News",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline4!
+                          .copyWith(color: DesignColors.backgroundBlue)),
+                  Text("und bekommst Quellen",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline4!
+                          .copyWith(color: DesignColors.backgroundBlue)),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 
   void showTestQuest(context) async {
+    // wait until testStatement is downloaded;
+    while (testStatement == null) {
+      await Future.delayed(const Duration(milliseconds: 10));
+    }
     print("showTestQuest");
     showGeneralDialog(
       context: context,
@@ -98,11 +114,9 @@ class Turorial extends StatelessWidget {
                                   fadeInCurve: Curves.easeInOut,
                                   // fit: BoxFit.,
                                   placeholder: kTransparentImage,
-                                  image: GameRules.testStatement
-                                              .statementPictureURL !=
+                                  image: testStatement!.statementPictureURL !=
                                           null
-                                      ? GameRules
-                                          .testStatement.statementPictureURL!
+                                      ? testStatement!.statementPictureURL!
                                           .replaceAll(
                                               "https%3A%2F%2Fparsefiles.back4app.com%2FFeP6gb7k9R2K9OztjKWA1DgYhubqhW0yJMyrHbxH%2F",
                                               "")
@@ -176,8 +190,7 @@ class Turorial extends StatelessWidget {
                                                     DesignColors.backgroundBlue,
                                               ),
                                               child: Text(
-                                                  GameRules.testStatement
-                                                      .statementText,
+                                                  testStatement!.statementText,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .subtitle1),
@@ -205,8 +218,7 @@ class Turorial extends StatelessWidget {
                                             Padding(
                                               padding: const EdgeInsets.only(
                                                   left: 3),
-                                              child: Text(GameRules
-                                                  .testStatement
+                                              child: Text(testStatement!
                                                   .statementAuthor),
                                             ),
                                           ],
@@ -219,11 +231,10 @@ class Turorial extends StatelessWidget {
                                             Padding(
                                               padding: const EdgeInsets.only(
                                                   left: 3),
-                                              child: Text(GameRules
-                                                      .testStatement
+                                              child: Text(testStatement!
                                                       .statementMedia +
                                                   ' | ' +
-                                                  GameRules.testStatement
+                                                  testStatement!
                                                       .statementMediatype),
                                             ),
                                           ],
@@ -235,8 +246,7 @@ class Turorial extends StatelessWidget {
                                             Padding(
                                               padding: const EdgeInsets.only(
                                                   left: 3),
-                                              child: Text(GameRules
-                                                  .testStatement
+                                              child: Text(testStatement!
                                                   .dateAsString()),
                                             ),
                                           ],
@@ -249,8 +259,7 @@ class Turorial extends StatelessWidget {
                                             Padding(
                                               padding: const EdgeInsets.only(
                                                   left: 3),
-                                              child: Text(GameRules
-                                                  .testStatement
+                                              child: Text(testStatement!
                                                   .statementLanguage),
                                             ),
                                           ],
@@ -321,7 +330,7 @@ class Turorial extends StatelessWidget {
 
     var targets = [
       TargetFocus(
-        identify: "keyStetementText",
+        identify: "keyStatementText",
         keyTarget: keyStatementText,
         alignSkip: Alignment.bottomRight,
         shape: ShapeLightFocus.RRect,
@@ -339,13 +348,8 @@ class Turorial extends StatelessWidget {
                   children: <Widget>[
                     Text("Schau dir diese Aussage an.",
                         style: Theme.of(context).textTheme.headline5),
-                    TextButton.icon(
-                        label: Text("weiter"),
-                        onPressed: () => tutorialCoachMark.next(),
-                        icon: Icon(
-                          Icons.arrow_forward,
-                          color: Colors.white,
-                        ))
+                    actionButton("weiter",
+                        (context) => tutorialCoachMark.next(), context)
                   ],
                 ),
               );
@@ -371,13 +375,8 @@ class Turorial extends StatelessWidget {
                   children: <Widget>[
                     Text("Hier findest du noch mehr Infos dazu.",
                         style: Theme.of(context).textTheme.headline5),
-                    TextButton.icon(
-                        onPressed: () => tutorialCoachMark.next(),
-                        label: Text("weiter"),
-                        icon: Icon(
-                          Icons.arrow_forward,
-                          color: Colors.white,
-                        ))
+                    actionButton("weiter",
+                        (context) => tutorialCoachMark.next(), context)
                   ],
                 ),
               );
@@ -403,13 +402,8 @@ class Turorial extends StatelessWidget {
                   children: <Widget>[
                     Text("Ist die Aussage ein Fake oder ein Fakt?",
                         style: Theme.of(context).textTheme.headline5),
-                    TextButton.icon(
-                        label: Text("weiter"),
-                        onPressed: () => tutorialCoachMark.next(),
-                        icon: Icon(
-                          Icons.arrow_forward,
-                          color: Colors.white,
-                        ))
+                    actionButton("weiter",
+                        (context) => tutorialCoachMark.next(), context)
                   ],
                 ),
               );
@@ -419,7 +413,7 @@ class Turorial extends StatelessWidget {
       ),
     ];
 
-    await Future.delayed(Duration(milliseconds: 500));
+    await Future.delayed(Duration(milliseconds: 1000));
     tutorialCoachMark = TutorialCoachMark(
       context,
       targets: targets,
@@ -448,15 +442,14 @@ class Turorial extends StatelessWidget {
   }
 
   void registerAnswer(bool answer, BuildContext context) {
+    HapticFeedback.mediumImpact();
     bool answerCorrect = false;
     if (answer &&
-        GameRules.testStatement.statementCorrectness ==
-            CorrectnessCategory.correct) {
+        testStatement!.statementCorrectness == CorrectnessCategory.correct) {
       answerCorrect = true;
     }
     if (!answer &&
-        GameRules.testStatement.statementCorrectness !=
-            CorrectnessCategory.correct) {
+        testStatement!.statementCorrectness != CorrectnessCategory.correct) {
       answerCorrect = true;
     }
 
@@ -465,10 +458,8 @@ class Turorial extends StatelessWidget {
         pageBuilder: (context, animation, secondaryAnimation) {
           return Scaffold(
             floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-            floatingActionButton: IconButton(
-              onPressed: () => showStatementCard(context),
-              icon: Icon(Icons.arrow_forward),
-            ),
+            floatingActionButton:
+                actionButton("weiter", showStatementCard, context),
             body: Dialog(
               backgroundColor:
                   answerCorrect ? DesignColors.green : DesignColors.red,
@@ -552,32 +543,37 @@ class Turorial extends StatelessWidget {
             ),
           );
         });
+
+    // wait for 5 seconds and then show the statement card
+    Future.delayed(const Duration(seconds: 5), () {
+      if (!showStatametCardCalled) {
+        showStatementCard(context);
+      }
+    });
   }
 
   void showStatementCard(BuildContext context) async {
+    showStatametCardCalled = true;
     showGeneralDialog(
         context: context,
         pageBuilder: (context, animation, secondaryAnimation) {
           return Scaffold(
             floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-            floatingActionButton: IconButton(
-              onPressed: () {
-                appState.prefs.setBool("tutorialPlayed", true);
-                if (appState.player != null) {
-                  appState.route = Routes.home;
-                } else {
-                  appState.route = Routes.login;
-                }
-              },
-              icon: Icon(Icons.arrow_forward),
-            ),
+            floatingActionButton: actionButton("weiter zur App", (context) {
+              appState.prefs.setBool("tutorialPlayed", true);
+              if (appState.player != null) {
+                appState.route = Routes.home;
+              } else {
+                appState.route = Routes.login;
+              }
+            }, context, color: DesignColors.pink),
             body: Dialog(
               backgroundColor: Colors.white,
               insetPadding: const EdgeInsets.all(0),
               child: AnimationLimiter(
                 child: SafeArea(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.max,
                     children: AnimationConfiguration.toStaggeredList(
                       duration: const Duration(milliseconds: 500),
@@ -590,12 +586,34 @@ class Turorial extends StatelessWidget {
                         ),
                       ),
                       children: [
+                        // heading with icon
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.fact_check,
+                                color: DesignColors.backgroundBlue,
+                                size: Theme.of(context)
+                                        .textTheme
+                                        .headline2!
+                                        .fontSize! +
+                                    10,
+                              ),
+                              Text(
+                                "Faktencheck zur Aussage",
+                                style: Theme.of(context).textTheme.headline2,
+                              ),
+                            ],
+                          ),
+                        ),
+
                         StatementCard(
                             key: keyStatementCard,
                             appState: null,
-                            statement: GameRules.testStatement,
-                            keyStatementSave: keyStatementSave,
-                            keyStatementShare: keyStatementShare),
+                            statement: testStatement!,
+                            keyStatementSaveAndShare: keyStatementSaveAndShare),
                       ],
                     ),
                   ),
@@ -624,13 +642,8 @@ class Turorial extends StatelessWidget {
                   children: <Widget>[
                     Text("klicke hier, um die Faktenchecks zu sehen.",
                         style: Theme.of(context).textTheme.headline5),
-                    TextButton.icon(
-                        label: Text("weiter"),
-                        onPressed: () => tutorialCoachMark.next(),
-                        icon: Icon(
-                          Icons.arrow_forward,
-                          color: Colors.white,
-                        ))
+                    actionButton("weiter",
+                        (context) => tutorialCoachMark.next(), context)
                   ],
                 ),
               );
@@ -667,4 +680,28 @@ class Turorial extends StatelessWidget {
       },
     )..show();
   }
+
+  void getTestStatement() async {
+    testStatement = await appState.db.getStatement(GameRules.testStatementId);
+  }
+}
+
+Widget actionButton(String label, Function onClick, BuildContext context,
+    {Color color = Colors.white}) {
+  return TextButton(
+    onPressed: () {
+      HapticFeedback.mediumImpact();
+      onClick(context);
+    },
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(label,
+            style:
+                Theme.of(context).textTheme.headline5!.copyWith(color: color)),
+        Icon(Icons.arrow_forward, color: color),
+      ],
+    ),
+  );
 }

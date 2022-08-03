@@ -747,6 +747,51 @@ query getStatement(\$ids: StatementWhereInput!){
     return ret;
   }
 
+  /// Returns the graphQL query to get a [Statement] by [Statement.objectId].
+  static String getStatement(String id) {
+    String ret = '''
+query getStatement{
+  statement(
+    	id: "$id"
+  ){
+    objectId
+    ${DbFields.statementText}
+    ${DbFields.statementPictureFile}{url}
+    ${DbFields.statementYear}
+    ${DbFields.statementMonth}
+    ${DbFields.statementDay}
+    ${DbFields.statementCorrectness}
+    ${DbFields.statementMedia}
+    ${DbFields.statementLanguage}
+    ${DbFields.statementCategory}
+    ${DbFields.statementMediatype}
+    ${DbFields.statementAuthor}
+    ${DbFields.statementLink}
+    ${DbFields.statementRectification}
+    ${DbFields.statementPictureCopyright}
+    ${DbFields.statementFactcheckIDs}{
+      edges{
+        node{
+          objectId
+          ${DbFields.factText}
+          ${DbFields.factAuthor}
+          ${DbFields.factYear}
+          ${DbFields.factMonth}
+          ${DbFields.factDay}
+          ${DbFields.factLanguage}
+          ${DbFields.factMedia}
+          ${DbFields.factLink}
+          ${DbFields.factArchivedLink}
+        }
+      }
+    }
+  }
+}
+''';
+    // print(ret);
+    return ret;
+  }
+
   static String removeGame() {
     String ret = '''
 mutation removeGame(\$game:DeleteOpenGameInput!){

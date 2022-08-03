@@ -295,10 +295,10 @@ class DatabaseUtils {
   }
 
   /// Get a single [Statement] from the Database by [Statement.objectId].
-  Future<Statement?> getStatement(String? statementID) async {
+  Future<Statement?> getStatement(String statementID) async {
     final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': userDatabaseApplicationID,
-      'X-Parse-Client-Key': userDatabaseClientKey,
+      'X-Parse-Application-Id': statementDatabaseApplicationID,
+      'X-Parse-Client-Key': statementDatabaseClientKey,
     });
     // create the data provider
     GraphQLClient client = GraphQLClient(
@@ -306,11 +306,7 @@ class DatabaseUtils {
       link: httpLink,
     );
     var queryResult = await client.query(
-      QueryOptions(document: gql(Queries.getStatements()), variables: {
-        "ids": {
-          "objectId": {"in": "[\"$statementID\"]"}
-        }
-      }),
+      QueryOptions(document: gql(Queries.getStatement(statementID))),
     );
     if (queryResult.hasException) {
       handleException(queryResult.exception!);

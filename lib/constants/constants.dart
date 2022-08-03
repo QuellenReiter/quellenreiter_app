@@ -273,25 +273,27 @@ class GameRules {
     return levelUpperBoundary(level + 1);
   }
 
-  static Statement testStatement = Statement(
-      "statementText",
-      "statementAuthor",
-      "test",
-      CorrectnessCategory.correct,
-      2022,
-      3,
-      12,
-      Facts()
-        ..facts = [
-          Fact("factText", "factAuthor", 2022, 3, 12, "deutsch", "link",
-              "factMedia", "objectId", "factArchivedLink")
-        ],
-      "statementLanguage",
-      "statementLink",
-      "statementMedia",
-      "statementMediatype",
-      "statementPictureURL",
-      "samplePictureCopyright",
-      false,
-      "objectId");
+  static String testStatementId = "NxWIjBHF5j";
+
+//   Statement(
+//       "statementText",
+//       "statementAuthor",
+//       "test",
+//       CorrectnessCategory.correct,
+//       2022,
+//       3,
+//       12,
+//       Facts()
+//         ..facts = [
+//           Fact("Diese App macht spaß und bringt dir bei, besser mit Falschnachrichten umzugehen.", "Simon und Jannik", 2022, 3, 12, "deutsch", "https://quellenreiter.app",
+//               "Quellenreiter:in App", "objectId", "factArchivedLink")
+//         ],
+//       "statementLanguage",
+//       "statementLink",
+//       "statementMedia",
+//       "statementMediatype",
+//       "https://raw.githubusercontent.com/QuellenReiter/quellenreiter.website/master/assets/logo-pink.png",
+//       "samplePictureCopyright",
+//       false,
+//       "objectId");
 }

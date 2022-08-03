@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
+import 'package:quellenreiter_app/screens/turorial.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
@@ -19,14 +20,12 @@ class StatementCard extends StatefulWidget {
       {Key? key,
       required this.appState,
       required this.statement,
-      this.keyStatementSave,
-      this.keyStatementShare})
+      this.keyStatementSaveAndShare})
       : super(key: key);
 
   /// The current appstate.
   final QuellenreiterAppState? appState;
-  final GlobalKey? keyStatementSave;
-  final GlobalKey? keyStatementShare;
+  final GlobalKey? keyStatementSaveAndShare;
 
   /// The [Statement] to be displayed.
   final Statement statement;
@@ -224,6 +223,7 @@ class _StatementCardState extends State<StatementCard> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
+        HapticFeedback.lightImpact();
         Navigator.of(context).pop();
       },
       child: GestureDetector(onTap: () {}, child: child),
@@ -275,82 +275,86 @@ class _StatementCardState extends State<StatementCard> {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 controller: controller,
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      IconButton(
-                          key: widget.keyStatementShare,
-                          icon: const Icon(Icons.share),
-                          iconSize: 20,
-                          onPressed: () {
-                            HapticFeedback.selectionClick();
-                            Share.share(
-                                "https://quellenreiter.github.io/fact-browser-deployment/#/statement/${statement.objectId}");
-                          }),
-                      ValueListenableBuilder(
-                        valueListenable: archiveIsLoading,
-                        builder: (context, bool loading, child) {
-                          return ValueListenableBuilder(
-                              key: widget.keyStatementSave,
-                              valueListenable: isArchived,
-                              builder: (context, bool archived, child) {
-                                if (loading) {
-                                  return const IconButton(
-                                    onPressed: null,
-                                    icon: Padding(
-                                        padding: EdgeInsets.all(6),
-                                        child: CircularProgressIndicator()),
-                                  );
-                                } else if (isArchived.value) {
-                                  return IconButton(
-                                    onPressed: () async {
-                                      archiveIsLoading.value = true;
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                      key: widget.keyStatementSaveAndShare,
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                            icon: const Icon(Icons.share),
+                            iconSize: 20,
+                            onPressed: () {
+                              HapticFeedback.selectionClick();
+                              Share.share(
+                                  "https://quellenreiter.github.io/fact-browser-deployment/#/statement/${statement.objectId}");
+                            }),
+                        ValueListenableBuilder(
+                          valueListenable: archiveIsLoading,
+                          builder: (context, bool loading, child) {
+                            return ValueListenableBuilder(
+                                valueListenable: isArchived,
+                                builder: (context, bool archived, child) {
+                                  if (loading) {
+                                    return const IconButton(
+                                      onPressed: null,
+                                      icon: Padding(
+                                          padding: EdgeInsets.all(6),
+                                          child: CircularProgressIndicator()),
+                                    );
+                                  } else if (isArchived.value) {
+                                    return IconButton(
+                                      onPressed: () async {
+                                        archiveIsLoading.value = true;
 
-                                      HapticFeedback.mediumImpact();
-                                      if (widget.appState != null) {
-                                        widget.appState!.player!
-                                            .safedStatementsIds!
-                                            .remove(statement.objectId!);
+                                        HapticFeedback.mediumImpact();
+                                        if (widget.appState != null) {
+                                          widget.appState!.player!
+                                              .safedStatementsIds!
+                                              .remove(statement.objectId!);
 
-                                        await widget.appState!.updateUserData();
-                                      } else {
-                                        // wait for 1 second to simulate a loading time
-                                        await Future.delayed(
-                                            const Duration(seconds: 1));
-                                      }
+                                          await widget.appState!
+                                              .updateUserData();
+                                        } else {
+                                          // wait for 1 second to simulate a loading time
+                                          await Future.delayed(
+                                              const Duration(seconds: 1));
+                                        }
 
-                                      archiveIsLoading.value = false;
-                                      isArchived.value = false;
-                                    },
-                                    icon: const Icon(Icons.delete),
-                                  );
-                                } else {
-                                  return IconButton(
-                                    onPressed: () async {
-                                      archiveIsLoading.value = true;
-                                      HapticFeedback.mediumImpact();
-                                      if (widget.appState != null) {
-                                        widget.appState!.player!
-                                            .safedStatementsIds!
-                                            .add(statement.objectId!);
-                                        await widget.appState!.updateUserData();
-                                      } else {
-                                        // wait for 1 second to simulate a loading time
-                                        await Future.delayed(
-                                            const Duration(seconds: 1));
-                                      }
+                                        archiveIsLoading.value = false;
+                                        isArchived.value = false;
+                                      },
+                                      icon: const Icon(Icons.delete),
+                                    );
+                                  } else {
+                                    return IconButton(
+                                      onPressed: () async {
+                                        archiveIsLoading.value = true;
+                                        HapticFeedback.mediumImpact();
+                                        if (widget.appState != null) {
+                                          widget.appState!.player!
+                                              .safedStatementsIds!
+                                              .add(statement.objectId!);
+                                          await widget.appState!
+                                              .updateUserData();
+                                        } else {
+                                          // wait for 1 second to simulate a loading time
+                                          await Future.delayed(
+                                              const Duration(seconds: 1));
+                                        }
 
-                                      isArchived.value = true;
-                                      archiveIsLoading.value = false;
-                                    },
-                                    icon: const Icon(Icons.archive_outlined),
-                                  );
-                                }
-                              });
-                        },
-                      )
-                    ],
+                                        isArchived.value = true;
+                                        archiveIsLoading.value = false;
+                                      },
+                                      icon: const Icon(Icons.archive_outlined),
+                                    );
+                                  }
+                                });
+                          },
+                        )
+                      ],
+                    ),
                   ),
 
                   Padding(
@@ -615,8 +619,8 @@ class _StatementCardState extends State<StatementCard> {
     late TutorialCoachMark tutorialCoachMark;
     var targets = [
       TargetFocus(
-        identify: "keyStatementSave",
-        keyTarget: widget.keyStatementSave,
+        identify: "keyStatementSaveAndShare",
+        keyTarget: widget.keyStatementSaveAndShare,
         alignSkip: Alignment.bottomRight,
         shape: ShapeLightFocus.Circle,
         enableOverlayTab: true,
@@ -624,55 +628,18 @@ class _StatementCardState extends State<StatementCard> {
         contents: [
           TargetContent(
             padding: const EdgeInsets.all(20),
-            align: ContentAlign.left,
+            align: ContentAlign.bottom,
             builder: (context, controller) {
               return Container(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text("klicke hier, um das Statement zu speichern.",
+                    Text(
+                        "Hier kannst du die Faktenchecks speichern oder teilen.",
                         style: Theme.of(context).textTheme.headline5),
-                    TextButton.icon(
-                        label: Text("weiter"),
-                        onPressed: () => tutorialCoachMark.next(),
-                        icon: Icon(
-                          Icons.arrow_forward,
-                          color: Colors.white,
-                        ))
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-      TargetFocus(
-        identify: "keyStatementShare",
-        keyTarget: widget.keyStatementShare,
-        alignSkip: Alignment.bottomRight,
-        shape: ShapeLightFocus.Circle,
-        enableOverlayTab: true,
-        radius: 10,
-        contents: [
-          TargetContent(
-            padding: const EdgeInsets.all(20),
-            align: ContentAlign.left,
-            builder: (context, controller) {
-              return Container(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text("klicke hier, um das Statement zu teilen..",
-                        style: Theme.of(context).textTheme.headline5),
-                    TextButton.icon(
-                        label: Text("weiter"),
-                        onPressed: () => tutorialCoachMark.next(),
-                        icon: Icon(
-                          Icons.arrow_forward,
-                          color: Colors.white,
-                        ))
+                    actionButton(
+                        "weiter", (c) => tutorialCoachMark.next(), context)
                   ],
                 ),
               );
