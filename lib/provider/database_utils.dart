@@ -127,6 +127,7 @@ class DatabaseUtils {
       newFriendsLiveQuery!.client.disconnect();
       newFriendsLiveQuery = null;
     }
+
     logoutCallback();
   }
 
@@ -874,10 +875,8 @@ class DatabaseUtils {
   }
 
   Future<void> deleteAccount(QuellenreiterAppState appState) async {
-    appState.route = Routes.loading;
     if (appState.player == null) {
       appState.route = Routes.login;
-
       return;
     }
     String? token = await safeStorage.read(key: "token");
@@ -916,6 +915,19 @@ class DatabaseUtils {
 
       return;
     }
+
+    await safeStorage.delete(key: "token");
+    // stop live queries
+    if (gameChangesLiveQuery != null) {
+      gameChangesLiveQuery!.client.disconnect();
+      gameChangesLiveQuery = null;
+    }
+    if (newFriendsLiveQuery != null) {
+      newFriendsLiveQuery!.client.disconnect();
+      newFriendsLiveQuery = null;
+    }
+
+    appState.isLoggedIn = false;
     appState.route = Routes.login;
     return;
   }

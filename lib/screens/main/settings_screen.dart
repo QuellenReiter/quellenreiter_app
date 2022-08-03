@@ -270,10 +270,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                                           HapticFeedback
                                                               .heavyImpact();
 
-                                                          widget.appState.db
-                                                              .deleteAccount(
-                                                                  widget
-                                                                      .appState);
+                                                          widget.appState
+                                                              .deleteAccount();
                                                         },
                                                         child: Text("Ja",
                                                             style: Theme.of(

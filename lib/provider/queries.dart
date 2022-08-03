@@ -605,6 +605,7 @@ mutation updateUser(\$user: UpdateUserInput!){
         ${DbFields.userFalseCorrectAnswers}
         ${DbFields.userTrueFakeAnswers}
         ${DbFields.userFalseFakeAnswers}
+        ${DbFields.userNumFriends}
         ${DbFields.userSafedStatements}{
           ... on Element{
             value

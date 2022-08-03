@@ -52,7 +52,8 @@ class Player {
             : map?[DbFields.userData]?[DbFields.userGamesTied],
         id = map?["objectId"],
         playedStatements = map?[DbFields.userData] == null
-            ? []
+            // safe statement id used in the tutorial
+            ? [GameRules.testStatementId]
             : map?[DbFields.userData]?[DbFields.userPlayedStatements] != null
                 ? map![DbFields.userData][DbFields.userPlayedStatements]
                     .map((x) => x["value"])
@@ -60,7 +61,8 @@ class Player {
                     .cast<String>()
                 : null,
         safedStatementsIds = map?[DbFields.userData] == null
-            ? []
+            // safe statement id used in the tutorial
+            ? [GameRules.testStatementId]
             : map?[DbFields.userData]?[DbFields.userSafedStatements] != null
                 ? map![DbFields.userData][DbFields.userSafedStatements]
                     .map((x) => x["value"])
@@ -70,7 +72,7 @@ class Player {
         friends = null,
         numFriends = map?[DbFields.userData] == null
             ? 0
-            : map?[DbFields.userData][DbFields.userNumFriends];
+            : map?[DbFields.userData]?[DbFields.userNumFriends];
 
   Map<String, dynamic> toUserDataMap() {
     var ret = {

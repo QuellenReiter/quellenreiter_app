@@ -325,6 +325,16 @@ class QuellenreiterAppState extends ChangeNotifier {
     db.logout(_logoutCallback);
   }
 
+  void deleteAccount() async {
+    route = Routes.loading;
+    //remove devie from the users push list.
+    notificationsAllowed = false;
+    await updateDeviceTokenForPushNotifications();
+    // remove device decision so that for next user, default is allowed again.
+    await prefs.remove("notificationsAllowed");
+    db.deleteAccount(this);
+  }
+
   void acceptRequest(Enemy e) {
     route = Routes.loading;
     db.acceptFriendRequest(player!, e, _acceptRequestCallback);
@@ -568,7 +578,7 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   /// Checks if user allows push notifications. If yes, update user in db with
   /// the device token. If not, delete the device token from the db.
-  void updateDeviceTokenForPushNotifications() async {
+  Future<void> updateDeviceTokenForPushNotifications() async {
     if (!notificationsAllowed) {
       player!.deviceToken = "not allowed";
     } else if (Platform.isIOS || Platform.isAndroid) {
@@ -584,6 +594,6 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
     print("deviceToken: ${player!.deviceToken}");
     // push new token to db
-    db.updateUser(player!, (Player? p) {});
+    await db.updateUser(player!, (Player? p) {});
   }
 }
