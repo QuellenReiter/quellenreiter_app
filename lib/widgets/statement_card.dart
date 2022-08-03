@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
-import 'package:quellenreiter_app/screens/turorial.dart';
+import 'package:quellenreiter_app/screens/tutorial.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
@@ -637,6 +637,8 @@ class _StatementCardState extends State<StatementCard> {
                   children: <Widget>[
                     Text(
                         "Hier kannst du die Faktenchecks speichern oder teilen.",
+                        style: Theme.of(context).textTheme.headline5),
+                    Text("Gespeicherte Faktenchecks landen im Archiv",
                         style: Theme.of(context).textTheme.headline5),
                     actionButton(
                         "weiter", (c) => tutorialCoachMark.next(), context)

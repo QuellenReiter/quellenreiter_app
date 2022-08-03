@@ -27,10 +27,7 @@ class Turorial extends StatelessWidget {
     // start downloading the testStatement
     getTestStatement();
     return Scaffold(
-      appBar: MainAppBar(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: actionButton("weiter", showTestQuest, context,
-          color: DesignColors.pink),
+      // appBar: MainAppBar(),
       body: SafeArea(
         child: AnimationLimiter(
           child: Center(
@@ -39,7 +36,7 @@ class Turorial extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: AnimationConfiguration.toStaggeredList(
-                duration: const Duration(milliseconds: 1000),
+                duration: const Duration(milliseconds: 2000),
                 childAnimationBuilder: (widget) => SlideAnimation(
                   horizontalOffset: 100.0,
                   curve: Curves.elasticOut,
@@ -48,26 +45,39 @@ class Turorial extends StatelessWidget {
                   ),
                 ),
                 children: [
-                  Text("Hi,",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline1!
-                          .copyWith(color: DesignColors.backgroundBlue)),
-                  Text("Dies ist ein Multiplayer Quiz",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline4!
-                          .copyWith(color: DesignColors.backgroundBlue)),
-                  Text("Du entlarvst Fake News",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline4!
-                          .copyWith(color: DesignColors.backgroundBlue)),
-                  Text("und bekommst Quellen",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline4!
-                          .copyWith(color: DesignColors.backgroundBlue)),
+                  Column(
+                    children: [
+                      Center(
+                        child: Image(
+                          height: 200,
+                          image: AssetImage('assets/logo-pink.png'),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Text('das "fake news" quiz',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline1!
+                              .copyWith(color: DesignColors.backgroundBlue)),
+                    ],
+                  ),
+
+                  // const SizedBox(height: 100),
+                  ElevatedButton(
+                    onPressed: () {
+                      HapticFeedback.heavyImpact();
+                      showTestQuest(context);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Text("spielen",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline1!
+                              .copyWith(fontSize: 40)),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -346,7 +356,7 @@ class Turorial extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text("Schau dir diese Aussage an.",
+                    Text("Schau dir die Aussage an.",
                         style: Theme.of(context).textTheme.headline5),
                     actionButton("weiter",
                         (context) => tutorialCoachMark.next(), context)
@@ -436,7 +446,12 @@ class Turorial extends StatelessWidget {
         print('onClickOverlay: $target');
       },
       onSkip: () {
-        print("skip");
+        appState.prefs.setBool("tutorialPlayed", true);
+        if (appState.player != null) {
+          appState.route = Routes.home;
+        } else {
+          appState.route = Routes.login;
+        }
       },
     )..show();
   }
@@ -640,7 +655,10 @@ class Turorial extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text("klicke hier, um die Faktenchecks zu sehen.",
+                    Text(
+                        "Nach jeder Runde werden dir die Faktenchecks angezeigt.",
+                        style: Theme.of(context).textTheme.headline5),
+                    Text("Klicke auf die Karte, um sie anzusehen.",
                         style: Theme.of(context).textTheme.headline5),
                     actionButton("weiter",
                         (context) => tutorialCoachMark.next(), context)
@@ -676,7 +694,12 @@ class Turorial extends StatelessWidget {
         print('onClickOverlay: $target');
       },
       onSkip: () {
-        print("skip");
+        appState.prefs.setBool("tutorialPlayed", true);
+        if (appState.player != null) {
+          appState.route = Routes.home;
+        } else {
+          appState.route = Routes.login;
+        }
       },
     )..show();
   }

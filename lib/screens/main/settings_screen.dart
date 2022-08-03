@@ -365,7 +365,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               widget.appState.prefs.remove("tutorialPlayed");
                               widget.appState.route = Routes.tutorial;
                             },
-                            child: Text("Tutorial anzeigen",
+                            child: Text("Tutorial spielen",
                                 style: Theme.of(context).textTheme.headline5),
                           ),
                         ),

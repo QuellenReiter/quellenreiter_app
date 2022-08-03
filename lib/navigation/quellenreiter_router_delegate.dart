@@ -9,7 +9,7 @@ import 'package:quellenreiter_app/screens/game/quest_screen.dart';
 import 'package:quellenreiter_app/screens/game/ready_to_start_screen.dart';
 import 'package:quellenreiter_app/screens/loading_screen.dart';
 import 'package:quellenreiter_app/screens/main/add_friend_screen.dart';
-import 'package:quellenreiter_app/screens/turorial.dart';
+import 'package:quellenreiter_app/screens/tutorial.dart';
 import '../constants/constants.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/main/home_screen.dart';
