@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:quellenreiter_app/utilities/utilities.dart';
-
 import '../constants/constants.dart';
 
 class CorrectnessBadge extends StatelessWidget {
@@ -75,18 +73,16 @@ class CorrectnessBadge extends StatelessWidget {
                               .headline2!
                               .copyWith(color: DesignColors.green),
                         ),
-                        Flexible(
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: CorrectnessCategory.length(),
-                              itemBuilder: (context, index) {
-                                return getBadgeAndText(
-                                    CorrectnessCategory.at(index),
-                                    CorrectnessCategoryExplanation.at(index),
-                                    context);
-                              }),
-                        )
+                        ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: CorrectnessCategory.length(),
+                            itemBuilder: (context, index) {
+                              return getBadgeAndText(
+                                  CorrectnessCategory.at(index),
+                                  CorrectnessCategoryExplanation.at(index),
+                                  context);
+                            })
                       ],
                     ),
                   ),

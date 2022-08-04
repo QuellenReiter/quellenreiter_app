@@ -626,6 +626,7 @@ class _StatementCardState extends State<StatementCard> {
         alignSkip: Alignment.bottomRight,
         shape: ShapeLightFocus.Circle,
         enableOverlayTab: true,
+        enableTargetTab: false,
         radius: 10,
         contents: [
           TargetContent(
@@ -637,13 +638,77 @@ class _StatementCardState extends State<StatementCard> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(
-                        "Hier kannst du die Faktenchecks speichern oder teilen.",
-                        style: Theme.of(context).textTheme.headline5),
-                    Text("Gespeicherte Faktenchecks landen im Archiv",
-                        style: Theme.of(context).textTheme.headline5),
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Hier kannst du die Faktenchecks",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: Colors.white),
+                          ),
+                          TextSpan(
+                            text: " Speichern ",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: DesignColors.yellow),
+                          ),
+                          TextSpan(
+                            text: "oder",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: Colors.white),
+                          ),
+                          TextSpan(
+                            text: " Teilen ",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: DesignColors.yellow),
+                          ),
+                          TextSpan(
+                            text: ".",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Gespeicherte Faktenchecks landen im ",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline4!
+                                .copyWith(color: Colors.white),
+                          ),
+                          TextSpan(
+                            text: " Archiv ",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline4!
+                                .copyWith(color: Colors.white),
+                          ),
+                          TextSpan(
+                            text: ".",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline4!
+                                .copyWith(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
                     actionButton(
-                        "weiter", (c) => tutorialCoachMark.next(), context)
+                        "weiter", (c) => tutorialCoachMark.next(), context,
+                        animate: true)
                   ],
                 ),
               );

@@ -193,14 +193,15 @@ class QuellenreiterAppState extends ChangeNotifier {
   /// Callback for checking if user is logged in.
   /// Called every time the app is started.
   void _checkTokenCallback(Player? p) async {
+    // initialize stuff that needs to be initialized after login.
+    prefs = await SharedPreferences.getInstance();
+
     if (p == null) {
       isLoggedIn = false;
     } else {
       player = p;
       isLoggedIn = true;
     }
-    // initialize stuff that needs to be initialized after login.
-    prefs = await SharedPreferences.getInstance();
   }
 
   void _loginCallback(Player? p) {

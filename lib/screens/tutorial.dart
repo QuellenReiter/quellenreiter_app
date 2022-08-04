@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
-import 'package:quellenreiter_app/widgets/main_app_bar.dart';
 import 'package:quellenreiter_app/widgets/statement_card.dart';
+import 'package:simple_animations/simple_animations.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
@@ -345,6 +346,7 @@ class Turorial extends StatelessWidget {
         alignSkip: Alignment.bottomRight,
         shape: ShapeLightFocus.RRect,
         enableOverlayTab: true,
+        enableTargetTab: false,
         radius: 10,
         contents: [
           TargetContent(
@@ -355,11 +357,37 @@ class Turorial extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text("Schau dir die Aussage an.",
-                        style: Theme.of(context).textTheme.headline5),
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Schau dir die",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: Colors.white),
+                          ),
+                          TextSpan(
+                            text: " Aussage ",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: DesignColors.yellow),
+                          ),
+                          TextSpan(
+                            text: "an.",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
                     actionButton("weiter",
-                        (context) => tutorialCoachMark.next(), context)
+                        (context) => tutorialCoachMark.next(), context,
+                        animate: true)
                   ],
                 ),
               );
@@ -373,6 +401,7 @@ class Turorial extends StatelessWidget {
         alignSkip: Alignment.bottomRight,
         shape: ShapeLightFocus.RRect,
         enableOverlayTab: true,
+        enableTargetTab: false,
         radius: 10,
         contents: [
           TargetContent(
@@ -383,10 +412,36 @@ class Turorial extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text("Hier findest du noch mehr Infos dazu.",
-                        style: Theme.of(context).textTheme.headline5),
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Hier findest du noch",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: Colors.white),
+                          ),
+                          TextSpan(
+                            text: " mehr Infos ",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: DesignColors.yellow),
+                          ),
+                          TextSpan(
+                            text: "dazu.",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
                     actionButton("weiter",
-                        (context) => tutorialCoachMark.next(), context)
+                        (context) => tutorialCoachMark.next(), context,
+                        animate: true)
                   ],
                 ),
               );
@@ -400,6 +455,7 @@ class Turorial extends StatelessWidget {
         alignSkip: Alignment.bottomRight,
         shape: ShapeLightFocus.RRect,
         enableOverlayTab: true,
+        enableTargetTab: false,
         radius: 10,
         contents: [
           TargetContent(
@@ -410,10 +466,50 @@ class Turorial extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text("Ist die Aussage ein Fake oder ein Fakt?",
-                        style: Theme.of(context).textTheme.headline5),
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Ist die Aussage ein",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: Colors.white),
+                          ),
+                          TextSpan(
+                            text: " Fakt ",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: DesignColors.yellow),
+                          ),
+                          TextSpan(
+                            text: "oder ein",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: Colors.white),
+                          ),
+                          TextSpan(
+                            text: " fake ",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: DesignColors.yellow),
+                          ),
+                          TextSpan(
+                            text: "?",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
                     actionButton("weiter",
-                        (context) => tutorialCoachMark.next(), context)
+                        (context) => tutorialCoachMark.next(), context,
+                        animate: true)
                   ],
                 ),
               );
@@ -436,11 +532,23 @@ class Turorial extends StatelessWidget {
       },
       onClickTarget: (target) {
         print('onClickTarget: $target');
+        // wiggle next button
       },
       onClickTargetWithTapPosition: (target, tapDetails) {
         print("target: $target");
         print(
             "clicked at position local: ${tapDetails.localPosition} - global: ${tapDetails.globalPosition}");
+
+        // final renderObj = context.findRenderObject();
+        // if (renderObj is RenderBox) {
+        //   final hitTestResult = BoxHitTestResult();
+        //   if (renderObj.hand (hitTestResult,
+        //       position: tapDetails.localPosition)) {
+        //     // a descendant of `renderObj` got tapped
+        //     print(hitTestResult.path);
+        //     hitTestResult.path
+        //   }
+        // }
       },
       onClickOverlay: (target) {
         print('onClickOverlay: $target');
@@ -644,6 +752,7 @@ class Turorial extends StatelessWidget {
         alignSkip: Alignment.bottomRight,
         shape: ShapeLightFocus.RRect,
         enableOverlayTab: true,
+        enableTargetTab: false,
         radius: 10,
         contents: [
           TargetContent(
@@ -655,13 +764,41 @@ class Turorial extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(
-                        "Nach jeder Runde werden dir die Faktenchecks angezeigt.",
-                        style: Theme.of(context).textTheme.headline5),
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Nach jeder Runde werden dir die",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: Colors.white),
+                          ),
+                          TextSpan(
+                            text: " Faktenchecks  ",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: DesignColors.yellow),
+                          ),
+                          TextSpan(
+                            text: "angezeigt.",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
                     Text("Klicke auf die Karte, um sie anzusehen.",
-                        style: Theme.of(context).textTheme.headline5),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline4!
+                            .copyWith(color: Colors.white)),
                     actionButton("weiter",
-                        (context) => tutorialCoachMark.next(), context)
+                        (context) => tutorialCoachMark.next(), context,
+                        animate: true)
                   ],
                 ),
               );
@@ -710,21 +847,31 @@ class Turorial extends StatelessWidget {
 }
 
 Widget actionButton(String label, Function onClick, BuildContext context,
-    {Color color = Colors.white}) {
-  return TextButton(
-    onPressed: () {
-      HapticFeedback.mediumImpact();
-      onClick(context);
-    },
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(label,
-            style:
-                Theme.of(context).textTheme.headline5!.copyWith(color: color)),
-        Icon(Icons.arrow_forward, color: color),
-      ],
+    {Color color = Colors.white, bool animate = false}) {
+  return MirrorAnimation(
+    duration: const Duration(milliseconds: 1000),
+    tween: Tween<double>(
+      begin: 1,
+      end: animate ? 3 : 1,
+    ),
+    curve: Curves.elasticIn,
+    builder: (context, child, double value) => TextButton(
+      onPressed: () {
+        HapticFeedback.mediumImpact();
+        onClick(context);
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(label,
+              style: Theme.of(context)
+                  .textTheme
+                  .headline5!
+                  .copyWith(color: color, letterSpacing: 1 * value)),
+          Icon(Icons.arrow_forward, color: color),
+        ],
+      ),
     ),
   );
 }
