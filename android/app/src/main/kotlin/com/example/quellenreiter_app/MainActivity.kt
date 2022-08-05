@@ -6,7 +6,7 @@ import io.flutter.plugin.common.MethodChannel
 import com.parse.ParseInstallation
 
 
-class MainActivity: FlutterActivity() {
+class MainActivity: FlutterActivity()  {
     private val CHANNEL = "com.quellenreiter.quellenreiterApp/deviceToken"
 
 

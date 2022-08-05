@@ -20,6 +20,6 @@ class Receiver : ParsePushBroadcastReceiver() {
         val i =  Intent()
         i.setClassName("com.example.quellenreiter_app", "com.example.quellenreiter_app.MainActivity");
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(i);
+        context.applicationContext.startActivity(i);
     }
 }

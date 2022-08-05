@@ -290,7 +290,7 @@ class _StatementCardState extends State<StatementCard> {
                             onPressed: () {
                               HapticFeedback.selectionClick();
                               Share.share(
-                                  "https://quellenreiter.github.io/fact-browser-deployment/#/statement/${statement.objectId}");
+                                  "https://fakten.quellenreiter.app/#/statement/${statement.objectId}");
                             }),
                         ValueListenableBuilder(
                           valueListenable: archiveIsLoading,
