@@ -210,13 +210,19 @@ class _LoginScreenState extends State<LoginScreen> {
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              Image(
-                                height:
-                                    MediaQuery.of(context).size.aspectRatio >
-                                            (9 / 16)
-                                        ? 100
-                                        : null,
-                                image: AssetImage("assets/branding_low.png"),
+                              GestureDetector(
+                                onLongPress: () {
+                                  HapticFeedback.heavyImpact();
+                                  widget.appState.route = Routes.tutorial;
+                                },
+                                child: Image(
+                                  height:
+                                      MediaQuery.of(context).size.aspectRatio >
+                                              (9 / 16)
+                                          ? 100
+                                          : null,
+                                  image: AssetImage("assets/branding_low.png"),
+                                ),
                               ),
                               TextButton(
                                 onPressed: () async {

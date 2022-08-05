@@ -177,6 +177,10 @@ class QuellenreiterAppState extends ChangeNotifier {
     } else if (!value) {
       route = Routes.login;
     }
+    // set player to null if user is logged out.
+    if (!value) {
+      player = null;
+    }
     _isLoggedIn = value;
     notifyListeners();
   }
@@ -235,6 +239,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   void _logoutCallback() {
+    player = null;
     isLoggedIn = false;
   }
 
@@ -320,10 +325,10 @@ class QuellenreiterAppState extends ChangeNotifier {
     route = Routes.loading;
     //remove devie from the users push list.
     notificationsAllowed = false;
-    updateDeviceTokenForPushNotifications();
+    await updateDeviceTokenForPushNotifications();
     // remove device decision so that for next user, default is allowed again.
     await prefs.remove("notificationsAllowed");
-    db.logout(_logoutCallback);
+    await db.logout(_logoutCallback);
   }
 
   void deleteAccount() async {
@@ -333,7 +338,9 @@ class QuellenreiterAppState extends ChangeNotifier {
     await updateDeviceTokenForPushNotifications();
     // remove device decision so that for next user, default is allowed again.
     await prefs.remove("notificationsAllowed");
-    db.deleteAccount(this);
+    await db.deleteAccount(this);
+
+    player = null;
   }
 
   void acceptRequest(Enemy e) {

@@ -322,6 +322,10 @@ class DatabaseUtils {
   Future<void> updateUser(Player player, Function updateUserCallback) async {
     // The session token.
     String? token = await safeStorage.read(key: "token");
+    if (token == null) {
+      updateUserCallback(false);
+      return;
+    }
     final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
       'X-Parse-Application-Id': userDatabaseApplicationID,
       'X-Parse-Client-Key': userDatabaseClientKey,
