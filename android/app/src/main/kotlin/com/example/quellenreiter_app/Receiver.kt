@@ -13,13 +13,13 @@ class Receiver : ParsePushBroadcastReceiver() {
 
     override fun onPushOpen(context: Context, intent: Intent) {
         Log.d("Push", "Push notification received")
-//        val pm = context.getPackageManager()
-//        val intent = pm.getLaunchIntentForPackage(context.getPackageName())
-//        context.startActivity(intent)
+        val pm = context.getPackageManager()
+        val intent = pm.getLaunchIntentForPackage(context.getPackageName())
+        context.applicationContext.startActivity(intent)
 
-        val i =  Intent()
-        i.setClassName("com.example.quellenreiter_app", "com.example.quellenreiter_app.MainActivity");
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.applicationContext.startActivity(i);
+//        val i =  Intent()
+//        i.setClassName("com.example.quellenreiter_app", "com.example.quellenreiter_app.MainActivity");
+//        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        context.applicationContext.startActivity(i);
     }
 }
