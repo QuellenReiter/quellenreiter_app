@@ -11,16 +11,27 @@ import 'game.dart';
 import 'player.dart';
 import 'statement.dart';
 
+/// The state of the app.
 class QuellenreiterAppState extends ChangeNotifier {
   ///  Object to be able to access the database.
   late DatabaseUtils db;
+
+  /// Object to access the shared preferences.
   late SharedPreferences prefs;
 
+  /// True if an error is shown.
   bool errorBannerActive = false;
+
+  /// True if a message is shown.
   bool msgBannerActive = false;
 
+  /// The curent [Routes]. The screen currently displayed.
   Routes _route = Routes.login;
   Routes get route => _route;
+
+  /// Sets the _route to the given value.
+  /// Also resets the errors and messages if displayed.
+  /// @param value The new [Routes].
   set route(value) {
     // reset the errors if
     // current route is not loading and pushed route is not loading
@@ -38,17 +49,22 @@ class QuellenreiterAppState extends ChangeNotifier {
   /// Holds any error message that might occur.
   String? _error;
   String? get msg => _error;
+
+  /// Sets the _error to the given value.
+  ///
+  /// @param value The new error message.
   set msg(value) {
     _error = value;
-    if (_error != null) {
-      print("ERROR: $_error");
-    }
     notifyListeners();
   }
 
   /// The current [Game]. If [Player] is not playing, [_game] is null.
   Game? _game;
   Game? get game => _game;
+
+  /// Sets the _game to the given value.
+  ///
+  /// @param value The new [Game].
   set game(value) {
     _game = value;
     notifyListeners();
@@ -57,6 +73,10 @@ class QuellenreiterAppState extends ChangeNotifier {
   /// Friend requests of the current [Player].
   Enemies? _enemyRequests;
   Enemies? get enemyRequests => _enemyRequests;
+
+  /// Sets the _enemyRequests to the given value.
+  ///
+  /// @param value The new [Enemies]. that requested to be friends with the current [Player].
   set enemyRequests(value) {
     _enemyRequests = value;
     notifyListeners();
@@ -65,6 +85,10 @@ class QuellenreiterAppState extends ChangeNotifier {
   /// Pending friend requests sent by the current [Player].
   Enemies? _pendingRequests;
   Enemies? get pendingRequests => _pendingRequests;
+
+  /// Sets the _pendingRequests to the given value.
+  ///
+  /// @param value The  [Enemies]. that were invited by the current [Player].
   set pendingRequests(value) {
     _pendingRequests = value;
     notifyListeners();
@@ -72,6 +96,10 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   /// enemies that have an open game where its the [Player] turn.
   Enemies? _playableEnemies;
+
+  /// Sets the _playableEnemies to the given value.
+  ///
+  /// @param value The [Enemies] that have an open game where its the [Player] turn.
   Enemies? get playableEnemies => _playableEnemies;
   set playableEnemies(value) {
     _playableEnemies = value;
@@ -81,6 +109,10 @@ class QuellenreiterAppState extends ChangeNotifier {
   /// The current [Player]. Should be set, if user is logged in.
   Player? _player;
   Player? get player => _player;
+
+  /// Sets the _player to the given value.
+  ///
+  /// @param value The new [Player].
   set player(value) {
     _player = value;
     notifyListeners();
@@ -89,6 +121,10 @@ class QuellenreiterAppState extends ChangeNotifier {
   /// The [Games] that are open currently.
   Games? _openGames;
   Games? get openGames => _openGames;
+
+  /// Sets the _openGames to the given value.
+  ///
+  /// @param value The new [Games] that are open currently.
   set openGames(value) {
     _openGames = value;
     notifyListeners();
@@ -97,6 +133,10 @@ class QuellenreiterAppState extends ChangeNotifier {
   /// The [Enemy] of the current game. Set when user selects game.
   Enemy? _currentEnemy;
   Enemy? get currentEnemy => _currentEnemy;
+
+  /// Sets the _currentEnemy to the given value.
+  ///
+  /// @param value The new [Enemy] whoms game is currently beign viewed by the user.
   set currentEnemy(value) {
     _currentEnemy = value;
     notifyListeners();
@@ -105,6 +145,10 @@ class QuellenreiterAppState extends ChangeNotifier {
   /// True if game mode is started.
   bool _gameStarted = false;
   bool get gameStarted => _gameStarted;
+
+  /// Sets the _gameStarted to the given value.
+  ///
+  /// @param value The new value.
   set gameStarted(value) {
     _gameStarted = value;
     notifyListeners();
@@ -112,6 +156,10 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   /// True if user wants notifications.
   bool _notificationsAllowed = true;
+
+  /// Gets if user wants notifications.
+  /// if user has not set the value yet, the default value is true.
+  /// The new value is pushed to the database.
   bool get notificationsAllowed {
     bool? value = prefs.getBool('notificationsAllowed');
     if (value == null) {
@@ -122,6 +170,8 @@ class QuellenreiterAppState extends ChangeNotifier {
     return value;
   }
 
+  /// Sets the _notificationsAllowed to the given value.
+  /// The new value is pushed to the database.
   set notificationsAllowed(value) {
     prefs.setBool('notificationsAllowed', value);
     _notificationsAllowed = value;
@@ -137,6 +187,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Resets the _friendsSearchResult and the _friendsSearchQuery.
   void resetSearchResults() {
     _friendsQuery = null;
     _friendsSearchResult = null;
@@ -153,6 +204,9 @@ class QuellenreiterAppState extends ChangeNotifier {
   /// The searchterm when searching for a friend.
   String? _friendsQuery;
   String? get friendsQuery => _friendsQuery;
+
+  /// Sets the _friendsQuery to the given value.
+  /// The query is searched for in the database using exact matching.
   set friendsQuery(value) {
     route = Routes.loading;
     _friendsQuery = value;
@@ -166,6 +220,12 @@ class QuellenreiterAppState extends ChangeNotifier {
   /// True if user is logged in.
   bool _isLoggedIn = false;
   bool get isLoggedIn => _isLoggedIn;
+
+  /// Sets the _isLoggedIn to the given value.
+  /// If the user is freshly logged in, friends and archive are downloaded.
+  /// And the livequery is started;
+  ///
+  /// @param value The new value.
   set isLoggedIn(value) {
     // if is logged and wasn't logged in before.
     if (!_isLoggedIn && value) {
@@ -185,6 +245,8 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// The [DatabaseUtils] are initialized, the route is set to loading
+  /// and it is checked, if the user is still signed in.
   QuellenreiterAppState() {
     db = DatabaseUtils();
 
@@ -208,6 +270,10 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
   }
 
+  /// Callback for the login process. If successfull, a [Player] is returned and safed.
+  /// If not, the route is set to login.
+  ///
+  /// @param p The [Player] returned from the server.
   void _loginCallback(Player? p) {
     if (p == null) {
       route = Routes.login;
@@ -218,6 +284,10 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
   }
 
+  /// Callback for the signup process. If successfull, a [Player] is returned and safed.
+  /// If not, the route is set to signup.
+  ///
+  /// @param p The [Player] returned from the server.
   void _signUpCallback(Player? p) {
     if (p == null) {
       route = Routes.signUp;
@@ -228,6 +298,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
   }
 
+  ///
   void tryLogin(String username, String password) {
     route = Routes.loading;
     db.login(username, password, _loginCallback);
@@ -267,6 +338,12 @@ class QuellenreiterAppState extends ChangeNotifier {
     await db.getUserData(player!);
   }
 
+  /// Callback for the getFriends method.
+  /// If successfull, the [Enemies] are safed.
+  /// They are split up into friends, requests, pending and playable games.
+  /// Also the current enemy is restored and updated.
+  ///
+  /// @param enemies The [Enemies] returned from the server.
   bool _getFriendsCallback(Enemies? enemies) {
     // if no friends were returned
     if (enemies == null) {
@@ -456,15 +533,13 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
     currentEnemy!.openGame!.statements =
         await db.getStatements(currentEnemy!.openGame!.statementIds!);
-    // if (currentEnemy!.openGame!.statements == null) {
-    //   route = Routes.gameReadyToStart;
-    //   db.error = "Statements konnten nicht geladen werden.";
-    //   return;
-    // }
+
     route = Routes.gameReadyToStart;
     return;
   }
 
+  /// Starts an open game with the current enemy.
+  /// only if its the [Player]s turn.
   void playGame() async {
     gameStarted = true;
     if (route != Routes.loading) {
