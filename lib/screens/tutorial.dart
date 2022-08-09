@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
@@ -22,6 +21,9 @@ class Turorial extends StatelessWidget {
   GlobalKey keyStatementSaveAndShare = GlobalKey();
   bool showStatametCardCalled = false;
   Statement? testStatement;
+
+  /// valuelistenable for loading
+  ValueNotifier<bool> isLoading = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
@@ -65,20 +67,37 @@ class Turorial extends StatelessWidget {
                   ),
 
                   // const SizedBox(height: 100),
-                  ElevatedButton(
-                    onPressed: () {
-                      HapticFeedback.heavyImpact();
-                      showTestQuest(context);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
-                      child: Text("spielen",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline1!
-                              .copyWith(fontSize: 40)),
-                    ),
-                  ),
+                  ValueListenableBuilder<bool>(
+                      valueListenable: isLoading,
+                      builder: (context, bool value, child) {
+                        if (value) {
+                          return const ElevatedButton(
+                            onPressed: null,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 30),
+                              child: Padding(
+                                  padding: EdgeInsets.all(5),
+                                  child: CircularProgressIndicator()),
+                            ),
+                          );
+                        } else {
+                          return ElevatedButton(
+                            onPressed: () {
+                              HapticFeedback.heavyImpact();
+                              showTestQuest(context);
+                            },
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 30),
+                              child: Text("spielen",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline1!
+                                      .copyWith(fontSize: 40)),
+                            ),
+                          );
+                        }
+                      }),
                 ],
               ),
             ),
@@ -89,10 +108,12 @@ class Turorial extends StatelessWidget {
   }
 
   void showTestQuest(context) async {
+    isLoading.value = true;
     // wait until testStatement is downloaded;
     while (testStatement == null) {
       await Future.delayed(const Duration(milliseconds: 10));
     }
+
     print("showTestQuest");
     showGeneralDialog(
       context: context,
