@@ -13,14 +13,14 @@ import Parse
       GeneratedPluginRegistrant.register(with: self)
       
       let parseConfig = ParseClientConfiguration {
-          $0.applicationId = Bundle.main.infoDictionary?["USER_APP_ID"] as! String
-            $0.clientKey = Bundle.main.infoDictionary?["USER_CLIENT_KEY"] as! String
-            $0.server = Bundle.main.infoDictionary?["USER_SERVER_URL"] as! String
+          $0.applicationId = (Bundle.main.infoDictionary?["USER_APP_ID"] as! String)
+            $0.clientKey = (Bundle.main.infoDictionary?["USER_CLIENT_KEY"] as! String)
+            $0.server = (Bundle.main.infoDictionary?["USER_SERVER_URL"] as! String)
         }
         Parse.initialize(with: parseConfig)
 
       if #available(iOS 10.0, *) {
-        UNUserNotificationCenter.current().delegate = self as! UNUserNotificationCenterDelegate
+        UNUserNotificationCenter.current().delegate = (self as UNUserNotificationCenterDelegate)
       }
       
 //      method to get deviceToken
@@ -44,8 +44,9 @@ import Parse
                guard granted else { return }
                self.getNotificationSettings()
            }
-      
-      UIApplication.shared.setMinimumBackgroundFetchInterval(TimeInterval(60*15))
+      DispatchQueue.main.async {
+          UIApplication.shared.setMinimumBackgroundFetchInterval(TimeInterval(60*15))
+      }
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
     
@@ -53,7 +54,9 @@ import Parse
          UNUserNotificationCenter.current().getNotificationSettings { (settings) in
              print("Notification settings: \(settings)")
              guard settings.authorizationStatus == .authorized else { return }
-             UIApplication.shared.registerForRemoteNotifications()
+             DispatchQueue.main.async {
+                 UIApplication.shared.registerForRemoteNotifications()
+             }
          }
      }
         
@@ -76,7 +79,7 @@ import Parse
                      print("You have successfully saved your push installation to Back4App!")
                  } else {
                      if let myError = error{
-                         print("Error saving parse installation \(myError.localizedDescription)")
+                         print("Error saving parse installation: \(myError)")
                      }else{
                          print("Uknown error")
                      }

@@ -77,7 +77,7 @@
 	<key>USER_CLIENT_KEY</key>
 	<string>$(userDatabaseClientKey)</string>
 	<key>USER_SERVER_URL</key>
-	<string>https://$(userDatabaseUrl)</string>
+	<string>${userDatabaseUrl}</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>
