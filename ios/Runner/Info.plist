@@ -28,10 +28,11 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>open.quellenreiter.app</string>
+			<string>quellenreiter.app</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>open</string>
+				<string>https</string>
 			</array>
 		</dict>
 	</array>
@@ -76,7 +77,7 @@
 	<key>USER_CLIENT_KEY</key>
 	<string>$(userDatabaseClientKey)</string>
 	<key>USER_SERVER_URL</key>
-	<string>$(userDatabaseUrl)</string>
+	<string>https://$(userDatabaseUrl)</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>

@@ -21,7 +21,7 @@ class App : Application() {
         Parse.setLogLevel(Parse.LOG_LEVEL_VERBOSE)
         println("Parse initialized, now uploading installation...")
         val installation = ParseInstallation.getCurrentInstallation()
-        installation.put("GCMSenderId", getString(R.string.user_server_url))
+        installation.put("GCMSenderId", getString(R.string.gms_sender))
         installation.saveInBackground()
     }
 }

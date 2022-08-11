@@ -10,7 +10,7 @@ import Parse
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
      
-    GeneratedPluginRegistrant.register(with: self)
+      GeneratedPluginRegistrant.register(with: self)
       
       let parseConfig = ParseClientConfiguration {
           $0.applicationId = Bundle.main.infoDictionary?["USER_APP_ID"] as! String
@@ -20,7 +20,7 @@ import Parse
         Parse.initialize(with: parseConfig)
 
       if #available(iOS 10.0, *) {
-        UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
+        UNUserNotificationCenter.current().delegate = self as! UNUserNotificationCenterDelegate
       }
       
 //      method to get deviceToken
