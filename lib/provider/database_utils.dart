@@ -329,7 +329,7 @@ class DatabaseUtils {
     final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
       'X-Parse-Application-Id': userDatabaseApplicationID,
       'X-Parse-Client-Key': userDatabaseClientKey,
-      'X-Parse-Session-Token': token!,
+      'X-Parse-Session-Token': token,
     });
     // create the data provider
     GraphQLClient client = GraphQLClient(
