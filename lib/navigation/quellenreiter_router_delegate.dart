@@ -151,6 +151,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         ];
 
       case Routes.gameReadyToStart:
+
         // if player is not last one and game is finished, show points.
         if (appState.currentEnemy == null ||
             appState.currentEnemy!.openGame == null) {
@@ -203,12 +204,11 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
             !appState.currentEnemy!.openGame!.isPlayersTurn()) {
           appState.db.sendPushOtherPlayersTurn(appState,
               receiverId: appState.currentEnemy!.userId);
-          // fetch data of players and games
-          appState.getFriends();
+          // appState.getFriends();
           return [
             home,
             MaterialPage(
-              key: const ValueKey('GameResultsScreen'),
+              key: const ValueKey('ReadyToStartScreen'),
               child: ReadyToStartScreen(
                 appState: appState,
                 showOnlyLast: true,

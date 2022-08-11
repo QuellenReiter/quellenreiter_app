@@ -618,132 +618,135 @@ class _StatementCardState extends State<StatementCard> {
         );
       },
     );
-    late TutorialCoachMark tutorialCoachMark;
-    var targets = [
-      TargetFocus(
-        identify: "keyStatementSaveAndShare",
-        keyTarget: widget.keyStatementSaveAndShare,
-        alignSkip: Alignment.bottomRight,
-        shape: ShapeLightFocus.Circle,
-        enableOverlayTab: true,
-        enableTargetTab: false,
-        radius: 10,
-        contents: [
-          TargetContent(
-            padding: const EdgeInsets.all(20),
-            align: ContentAlign.bottom,
-            builder: (context, controller) {
-              return Container(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: "Hier kannst du die Faktenchecks",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: Colors.white),
-                          ),
-                          TextSpan(
-                            text: " Speichern ",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: DesignColors.yellow),
-                          ),
-                          TextSpan(
-                            text: "oder",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: Colors.white),
-                          ),
-                          TextSpan(
-                            text: " Teilen ",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: DesignColors.yellow),
-                          ),
-                          TextSpan(
-                            text: ".",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: Colors.white),
-                          ),
-                        ],
+    // show tutorial, if key is not null.
+    if (widget.keyStatementSaveAndShare != null) {
+      late TutorialCoachMark tutorialCoachMark;
+      var targets = [
+        TargetFocus(
+          identify: "keyStatementSaveAndShare",
+          keyTarget: widget.keyStatementSaveAndShare,
+          alignSkip: Alignment.bottomRight,
+          shape: ShapeLightFocus.Circle,
+          enableOverlayTab: true,
+          enableTargetTab: false,
+          radius: 10,
+          contents: [
+            TargetContent(
+              padding: const EdgeInsets.all(20),
+              align: ContentAlign.bottom,
+              builder: (context, controller) {
+                return Container(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: "Hier kannst du die Faktenchecks",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline2!
+                                  .copyWith(color: Colors.white),
+                            ),
+                            TextSpan(
+                              text: " Speichern ",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline2!
+                                  .copyWith(color: DesignColors.yellow),
+                            ),
+                            TextSpan(
+                              text: "oder",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline2!
+                                  .copyWith(color: Colors.white),
+                            ),
+                            TextSpan(
+                              text: " Teilen ",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline2!
+                                  .copyWith(color: DesignColors.yellow),
+                            ),
+                            TextSpan(
+                              text: ".",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline2!
+                                  .copyWith(color: Colors.white),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: "Gespeicherte Faktenchecks landen im ",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline4!
-                                .copyWith(color: Colors.white),
-                          ),
-                          TextSpan(
-                            text: " Archiv ",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline4!
-                                .copyWith(color: Colors.white),
-                          ),
-                          TextSpan(
-                            text: ".",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline4!
-                                .copyWith(color: Colors.white),
-                          ),
-                        ],
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: "Gespeicherte Faktenchecks landen im ",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline4!
+                                  .copyWith(color: Colors.white),
+                            ),
+                            TextSpan(
+                              text: " Archiv ",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline4!
+                                  .copyWith(color: Colors.white),
+                            ),
+                            TextSpan(
+                              text: ".",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline4!
+                                  .copyWith(color: Colors.white),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    actionButton(
-                        "weiter", (c) => tutorialCoachMark.next(), context,
-                        animate: true)
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    ];
+                      actionButton(
+                          "weiter", (c) => tutorialCoachMark.next(), context,
+                          animate: true)
+                    ],
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ];
 
-    await Future.delayed(Duration(seconds: 1));
-    tutorialCoachMark = TutorialCoachMark(
-      context,
-      targets: targets,
-      colorShadow: DesignColors.pink,
-      textSkip: "überspringen",
-      paddingFocus: 10,
-      opacityShadow: 0.9,
-      onFinish: () {
-        print("finish");
-      },
-      onClickTarget: (target) {
-        print('onClickTarget: $target');
-      },
-      onClickTargetWithTapPosition: (target, tapDetails) {
-        print("target: $target");
-        print(
-            "clicked at position local: ${tapDetails.localPosition} - global: ${tapDetails.globalPosition}");
-      },
-      onClickOverlay: (target) {
-        print('onClickOverlay: $target');
-      },
-      onSkip: () {
-        print("skip");
-      },
-    )..show();
+      await Future.delayed(Duration(seconds: 1));
+      tutorialCoachMark = TutorialCoachMark(
+        context,
+        targets: targets,
+        colorShadow: DesignColors.pink,
+        textSkip: "überspringen",
+        paddingFocus: 10,
+        opacityShadow: 0.9,
+        onFinish: () {
+          print("finish");
+        },
+        onClickTarget: (target) {
+          print('onClickTarget: $target');
+        },
+        onClickTargetWithTapPosition: (target, tapDetails) {
+          print("target: $target");
+          print(
+              "clicked at position local: ${tapDetails.localPosition} - global: ${tapDetails.globalPosition}");
+        },
+        onClickOverlay: (target) {
+          print('onClickOverlay: $target');
+        },
+        onSkip: () {
+          print("skip");
+        },
+      )..show();
+    }
   }
 
   void showImage(BuildContext context) {

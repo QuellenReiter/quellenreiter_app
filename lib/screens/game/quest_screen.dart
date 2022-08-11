@@ -480,9 +480,17 @@ class _QuestScreenState extends State<QuestScreen>
       return;
     } // if game is finished
 
-    widget.appState.route = Routes.loading;
-    await HapticFeedback.heavyImpact().then((value) async =>
-        await Future.delayed(const Duration(milliseconds: 500), () {}));
-    widget.appState.route = Routes.quest;
+    // TODO: why wait here ?
+    //if its not players turn anymore, getFriends.
+    if (!widget.appState.currentEnemy!.openGame!.isPlayersTurn()) {
+      await widget.appState.getFriends();
+      widget.appState.route = Routes.quest;
+    } else {
+      widget.appState.route = Routes.loading;
+      // wait for half asecond
+      await Future.delayed(const Duration(milliseconds: 500), () {});
+      widget.appState.route = Routes.quest;
+    }
+    HapticFeedback.heavyImpact();
   }
 }
