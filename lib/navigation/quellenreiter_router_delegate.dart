@@ -151,14 +151,14 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         ];
 
       case Routes.gameReadyToStart:
-
-        // if player is not last one and game is finished, show points.
         if (appState.currentEnemy == null ||
             appState.currentEnemy!.openGame == null) {
           return [
             home,
           ];
         }
+        // if player is not last one and game is finished, show points.
+
         if ((appState.currentEnemy != null &&
                 !appState.currentEnemy!.openGame!.pointsAccessed) &&
             (appState.currentEnemy!.openGame!.gameFinished() &&
@@ -170,6 +170,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
               key: const ValueKey('ReadyToStartScreen'),
               child: ReadyToStartScreen(
                 appState: appState,
+                showOnlyLast: false,
               ),
             ),
             MaterialPage(
@@ -196,15 +197,13 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
             key: const ValueKey('ReadyToStartScreen'),
             child: ReadyToStartScreen(
               appState: appState,
+              showOnlyLast: false,
             ),
           ),
         ];
       case Routes.quest:
         if (appState.currentEnemy != null &&
             !appState.currentEnemy!.openGame!.isPlayersTurn()) {
-          appState.db.sendPushOtherPlayersTurn(appState,
-              receiverId: appState.currentEnemy!.userId);
-          // appState.getFriends();
           return [
             home,
             MaterialPage(
@@ -229,9 +228,9 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
           home,
           MaterialPage(
             key: const ValueKey('GameResultsScreen'),
-            child: GameResultsScreen(
+            child: ReadyToStartScreen(
               appState: appState,
-              showAll: true,
+              showOnlyLast: true,
             ),
           ),
           MaterialPage(

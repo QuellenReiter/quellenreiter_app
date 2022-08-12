@@ -40,6 +40,7 @@ class QuellenreiterAppState extends ChangeNotifier {
       msg = null;
     }
     if (value == Routes.gameReadyToStart) {
+      // wait 2 seconds
       gameStarted = false;
     }
     _route = value;
@@ -317,7 +318,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     print("get friends called");
     Enemies? enemies = await db.getFriends(player!);
 
-    _getFriendsCallback(enemies);
+    await _getFriendsCallback(enemies);
     return;
   }
 
@@ -343,7 +344,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   /// Also the current enemy is restored and updated.
   ///
   /// @param enemies The [Enemies] returned from the server.
-  bool _getFriendsCallback(Enemies? enemies) {
+  Future<bool> _getFriendsCallback(Enemies? enemies) async {
     // if no friends were returned
     if (enemies == null) {
       // if no friends are currently downloaded
@@ -379,7 +380,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     // set new number of friends
     if (player!.numFriends != tempFriends.enemies.length) {
       player!.numFriends = tempFriends.enemies.length;
-      db.updateUserData(player, (Player? p) {});
+      await db.updateUserData(player, (Player? p) {});
     }
     player?.numFriends = tempFriends.enemies.length;
     enemyRequests = tempRequests;
@@ -526,14 +527,14 @@ class QuellenreiterAppState extends ChangeNotifier {
     return;
   }
 
-  void getCurrentStatements() async {
+  void getCurrentStatements({Routes r = Routes.gameReadyToStart}) async {
     if (db.error != null) {
       return;
     }
     currentEnemy!.openGame!.statements =
         await db.getStatements(currentEnemy!.openGame!.statementIds!);
 
-    route = Routes.gameReadyToStart;
+    route = r;
     return;
   }
 
@@ -667,7 +668,11 @@ class QuellenreiterAppState extends ChangeNotifier {
       const platform =
           MethodChannel('com.quellenreiter.quellenreiterApp/deviceToken');
       try {
-        final String token = await platform.invokeMethod('getDeviceToken');
+        final String? token = await platform.invokeMethod('getDeviceToken');
+        if (token == null) {
+          print("token is null, are you on an iOS simulator?");
+          return;
+        }
         print("token: $token");
         player!.deviceToken = token;
       } on PlatformException catch (e) {

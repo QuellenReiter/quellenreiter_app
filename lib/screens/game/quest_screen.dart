@@ -35,7 +35,7 @@ class _QuestScreenState extends State<QuestScreen>
     }
     // show error if statements not downloaded.
     if (widget.appState.currentEnemy!.openGame!.statements == null) {
-      widget.appState.getCurrentStatements();
+      widget.appState.getCurrentStatements(r: Routes.quest);
       return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
@@ -484,13 +484,16 @@ class _QuestScreenState extends State<QuestScreen>
     //if its not players turn anymore, getFriends.
     if (!widget.appState.currentEnemy!.openGame!.isPlayersTurn()) {
       await widget.appState.getFriends();
-      widget.appState.route = Routes.quest;
+      // send notification to friend.
+      widget.appState.db.sendPushOtherPlayersTurn(widget.appState,
+          receiverId: widget.appState.currentEnemy!.userId);
     } else {
       widget.appState.route = Routes.loading;
       // wait for half asecond
       await Future.delayed(const Duration(milliseconds: 500), () {});
-      widget.appState.route = Routes.quest;
     }
+
     HapticFeedback.heavyImpact();
+    widget.appState.route = Routes.quest;
   }
 }

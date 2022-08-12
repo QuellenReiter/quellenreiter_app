@@ -13,7 +13,7 @@ import '../../widgets/statement_card.dart';
 
 class ReadyToStartScreen extends StatefulWidget {
   const ReadyToStartScreen(
-      {Key? key, required this.appState, this.showOnlyLast = false})
+      {Key? key, required this.appState, this.showOnlyLast = true})
       : super(key: key);
   final QuellenreiterAppState appState;
   final bool showOnlyLast;
@@ -39,7 +39,8 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
 
     // Check if statements are loaded. If not, load them.
     if (widget.appState.currentEnemy!.openGame!.statements == null) {
-      widget.appState.getCurrentStatements();
+      widget.appState.getCurrentStatements(
+          r: widget.showOnlyLast ? Routes.quest : Routes.gameReadyToStart);
       return Scaffold(
           appBar: AppBar(),
           body: const Center(child: CircularProgressIndicator()));
@@ -150,63 +151,66 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   children: [
                     if (widget.appState.currentEnemy!.openGame!.gameFinished())
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          if (widget.appState.currentEnemy!.openGame!
-                                  .getGameResult() ==
-                              GameResult.playerWon)
-                            Text("Gewonnen",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline1!
-                                    .copyWith(color: DesignColors.green))
-                          else if (widget.appState.currentEnemy!.openGame!
-                                  .getGameResult() ==
-                              GameResult.tied)
-                            Text("Unentschieden",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline1!
-                                    .copyWith(color: DesignColors.green))
-                          else
-                            Text("Verloren",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline1!
-                                    .copyWith(color: DesignColors.red)),
-                          Flexible(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "+",
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 30),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            if (widget.appState.currentEnemy!.openGame!
+                                    .getGameResult() ==
+                                GameResult.playerWon)
+                              Text("Gewonnen",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline4!
-                                      .copyWith(color: DesignColors.yellow),
-                                ),
-                                const Icon(
-                                  Icons.monetization_on,
-                                  color: DesignColors.yellow,
-                                  size: 24,
-                                ),
-                                Countup(
-                                  begin: 0,
-                                  end: widget.appState.currentEnemy!.openGame!
-                                      .getPlayerXp()
-                                      .toDouble(),
-                                  duration: const Duration(seconds: 1),
+                                      .headline1!
+                                      .copyWith(color: DesignColors.green))
+                            else if (widget.appState.currentEnemy!.openGame!
+                                    .getGameResult() ==
+                                GameResult.tied)
+                              Text("Unentschieden",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline4!
-                                      .copyWith(color: DesignColors.yellow),
-                                )
-                              ],
+                                      .headline1!
+                                      .copyWith(color: DesignColors.green))
+                            else
+                              Text("Verloren",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline1!
+                                      .copyWith(color: DesignColors.red)),
+                            Flexible(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "+",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline4!
+                                        .copyWith(color: DesignColors.yellow),
+                                  ),
+                                  const Icon(
+                                    Icons.monetization_on,
+                                    color: DesignColors.yellow,
+                                    size: 24,
+                                  ),
+                                  Countup(
+                                    begin: 0,
+                                    end: widget.appState.currentEnemy!.openGame!
+                                        .getPlayerXp()
+                                        .toDouble(),
+                                    duration: const Duration(seconds: 1),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline4!
+                                        .copyWith(color: DesignColors.yellow),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     // display the statementcards
                     if (statementCardsWithAnswers.isEmpty)
