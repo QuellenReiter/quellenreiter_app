@@ -354,19 +354,46 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                         Align(
                           alignment: Alignment.centerLeft,
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  DesignColors.pink),
-                            ),
-                            onPressed: () {
-                              HapticFeedback.heavyImpact();
+                          child: Row(
+                            children: [
+                              ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          DesignColors.pink),
+                                ),
+                                onPressed: () {
+                                  HapticFeedback.heavyImpact();
 
-                              widget.appState.prefs.remove("tutorialPlayed");
-                              widget.appState.route = Routes.tutorial;
-                            },
-                            child: Text("Tutorial spielen",
-                                style: Theme.of(context).textTheme.headline5),
+                                  widget.appState.prefs
+                                      .remove("tutorialPlayed");
+                                  widget.appState.route = Routes.tutorial;
+                                },
+                                child: Text("Tutorial spielen",
+                                    style:
+                                        Theme.of(context).textTheme.headline5),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          DesignColors.backgroundBlue),
+                                ),
+                                onPressed: () async {
+                                  HapticFeedback.heavyImpact();
+
+                                  await widget.appState.db.clearCache();
+
+                                  widget.appState.msg = "Cache gelöscht";
+                                },
+                                child: Text("Cache leeren",
+                                    style:
+                                        Theme.of(context).textTheme.headline5),
+                              ),
+                            ],
                           ),
                         ),
                       ],

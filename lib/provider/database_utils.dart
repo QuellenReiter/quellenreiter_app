@@ -1113,6 +1113,25 @@ class DatabaseUtils {
     }
   }
 
+  /// Clears the cache (hopefully)
+  Future<void> clearCache() async {
+    // Link to server.
+    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
+      'X-Parse-Application-Id': userDatabaseApplicationID,
+      'X-Parse-Client-Key': userDatabaseClientKey,
+      //'X-Parse-REST-API-Key' : kParseRestApiKey,
+    });
+
+    // Provides data from server and facilitates requests.
+    GraphQLClient client = GraphQLClient(
+      cache: GraphQLCache(),
+      link: httpLink,
+    );
+
+    await client.resetStore(refetchQueries: false);
+    return;
+  }
+
   void handleException(OperationException e) {
     if (e.graphqlErrors.isNotEmpty) {
       // handle graphql errors

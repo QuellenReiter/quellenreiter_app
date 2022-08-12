@@ -177,6 +177,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     prefs.setBool('notificationsAllowed', value);
     _notificationsAllowed = value;
     updateDeviceTokenForPushNotifications();
+    notifyListeners();
   }
 
   /// The [Enemies] (Friends) search result, if [Player] is searching.
