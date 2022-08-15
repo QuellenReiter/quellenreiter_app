@@ -18,7 +18,7 @@ class Player {
   late Enemies? friends;
   late List<String>? safedStatementsIds;
   late List<String>? playedStatements;
-  late String? deviceToken;
+  String? deviceToken;
   int numFriends = 0;
 
   Player.fromMap(Map<String, dynamic>? map)

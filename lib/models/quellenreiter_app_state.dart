@@ -458,9 +458,10 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   /// For updating the username
-  void updateUser() {
+  Future<void> updateUser() async {
     // route = Routes.loading;
-    db.updateUser(player!, _updateUserCallback);
+    await db.updateUser(player!, _updateUserCallback);
+    return;
   }
 
   /// for updating any other user trait.
@@ -470,10 +471,10 @@ class QuellenreiterAppState extends ChangeNotifier {
     return;
   }
 
-  void _updateUserCallback(Player? p) {
+  Future<void> _updateUserCallback(Player? p) async {
     if (p == null) {
       // login again and reset the user.
-      db.checkToken(_checkTokenCallback);
+      await db.checkToken(_checkTokenCallback);
       // route = Routes.settings;
     } else if (safedStatements!.statements.length !=
         player!.safedStatementsIds!.length) {
