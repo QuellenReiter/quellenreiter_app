@@ -329,7 +329,10 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                   child: FloatingActionButton.extended(
                     backgroundColor: DesignColors.lightGrey,
                     label: Text("Warten...",
-                        style: Theme.of(context).textTheme.headline4),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline4!
+                            .copyWith(color: DesignColors.pink)),
                     onPressed: null,
                   ),
                 )
@@ -343,7 +346,10 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                   child: FloatingActionButton.extended(
                     backgroundColor: DesignColors.lightGrey,
                     label: Text("Warten...",
-                        style: Theme.of(context).textTheme.headline4),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline4!
+                            .copyWith(color: DesignColors.pink)),
                     onPressed: null,
                   ),
                 )
@@ -353,7 +359,10 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                   child: FloatingActionButton.extended(
                     backgroundColor: DesignColors.lightGrey,
                     label: Text("Warten...",
-                        style: Theme.of(context).textTheme.headline4),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline4!
+                            .copyWith(color: DesignColors.pink)),
                     onPressed: null,
                   ),
                 ),
