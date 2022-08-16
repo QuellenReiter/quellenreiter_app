@@ -61,6 +61,9 @@ class _SignupScreenState extends State<SignupScreen> {
                 children: [
                   FractionallySizedBox(
                     widthFactor: 0.8,
+                  ),
+                  FractionallySizedBox(
+                    widthFactor: 0.8,
                     child: ValueListenableBuilder(
                       valueListenable: emojiController,
                       builder: (context, TextEditingValue value, __) {
@@ -383,13 +386,27 @@ class _SignupScreenState extends State<SignupScreen> {
                     child: Hero(
                       tag: "authSwitch",
                       child: TextButton(
-                        onPressed: () => widget.appState.route = Routes.login,
-                        child: Text(
-                          "Anmelden",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline4!
-                              .copyWith(color: DesignColors.pink),
+                        onPressed: () {
+                          HapticFeedback.mediumImpact();
+                          widget.appState.route = Routes.login;
+                        },
+                        child: Row(
+                          children: [
+                            Text(
+                              "Du hast schon ein Konto? ",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline4!
+                                  .copyWith(color: DesignColors.backgroundBlue),
+                            ),
+                            Text(
+                              " Anmelden",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline4!
+                                  .copyWith(color: DesignColors.pink),
+                            ),
+                          ],
                         ),
                       ),
                     ),

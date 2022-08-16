@@ -385,23 +385,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               const SizedBox(
                                 width: 10,
                               ),
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          DesignColors.backgroundBlue),
-                                ),
-                                onPressed: () async {
-                                  HapticFeedback.heavyImpact();
-
-                                  await widget.appState.db.clearCache();
-
-                                  widget.appState.msg = "Cache gelöscht";
-                                },
-                                child: Text("Cache leeren",
-                                    style:
-                                        Theme.of(context).textTheme.headline5),
-                              ),
                             ],
                           ),
                         ),

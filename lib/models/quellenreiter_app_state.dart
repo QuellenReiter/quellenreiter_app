@@ -40,7 +40,10 @@ class QuellenreiterAppState extends ChangeNotifier {
       msg = null;
     }
     if (value == Routes.gameReadyToStart) {
-      // wait 2 seconds
+      if (currentEnemy!.openGame!.playerAnswers.isEmpty &&
+          currentEnemy!.openGame!.isPlayersTurn()) {
+        playGame();
+      }
       gameStarted = false;
     }
     _route = value;

@@ -89,7 +89,7 @@ class Turorial extends StatelessWidget {
                             child: Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 30),
-                              child: Text("spielen",
+                              child: Text("tutorial",
                                   style: Theme.of(context)
                                       .textTheme
                                       .headline1!
@@ -579,7 +579,7 @@ class Turorial extends StatelessWidget {
         if (appState.player != null) {
           appState.route = Routes.home;
         } else {
-          appState.route = Routes.login;
+          appState.route = Routes.signUp;
         }
       },
     )..show();
@@ -708,7 +708,7 @@ class Turorial extends StatelessWidget {
               if (appState.player != null) {
                 appState.route = Routes.home;
               } else {
-                appState.route = Routes.login;
+                appState.route = Routes.signUp;
               }
             }, context, color: DesignColors.pink),
             body: Dialog(
@@ -856,7 +856,7 @@ class Turorial extends StatelessWidget {
         if (appState.player != null) {
           appState.route = Routes.home;
         } else {
-          appState.route = Routes.login;
+          appState.route = Routes.signUp;
         }
       },
     )..show();
