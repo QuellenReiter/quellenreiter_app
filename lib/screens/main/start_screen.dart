@@ -144,9 +144,11 @@ class _StartScreenState extends State<StartScreen> {
 
     // create "Start new game" widgets
     List<Widget> startNewGame = [];
-    // if any open game is finished and points are not accessed yet.
-    if (widget.appState.player!.friends!.enemies
-        .any((element) => (element.openGame == null))) {
+    // if no open game or open game is finished and points accessed.
+    if (widget.appState.player!.friends!.enemies.any((element) =>
+        (element.openGame == null ||
+            (element.openGame!.gameFinished() &&
+                element.openGame!.pointsAccessed)))) {
       // add the heading
       startNewGame.add(
         Padding(
@@ -168,7 +170,9 @@ class _StartScreenState extends State<StartScreen> {
         ),
       );
       for (Enemy e in widget.appState.player!.friends!.enemies) {
-        if (e.openGame == null) {
+        if(e.openGame == null ||
+            (e.openGame!.gameFinished() &&
+                e.openGame!.pointsAccessed)) {
           startNewGame.add(EnemyCard(
             appState: widget.appState,
             enemy: e,
