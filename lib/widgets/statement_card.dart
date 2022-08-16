@@ -705,7 +705,6 @@ class StatementCardState extends State<StatementCard> {
 
       await Future.delayed(Duration(seconds: 1));
       tutorialCoachMark = TutorialCoachMark(
-        context,
         targets: targets,
         colorShadow: DesignColors.pink,
         textSkip: "überspringen",
@@ -732,7 +731,7 @@ class StatementCardState extends State<StatementCard> {
         },
         onClickOverlay: null,
         onSkip: null,
-      )..show();
+      )..show(context: context);
     }
   }
 

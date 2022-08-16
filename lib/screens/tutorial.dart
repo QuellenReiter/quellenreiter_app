@@ -540,7 +540,6 @@ class Turorial extends StatelessWidget {
 
     await Future.delayed(Duration(milliseconds: 1000));
     tutorialCoachMark = TutorialCoachMark(
-      context,
       targets: targets,
       colorShadow: DesignColors.pink,
       textSkip: "überspringen",
@@ -575,7 +574,7 @@ class Turorial extends StatelessWidget {
           appState.route = Routes.signUp;
         }
       },
-    )..show();
+    )..show(context: context);
   }
 
   void registerAnswer(bool answer, BuildContext context) {
@@ -821,7 +820,6 @@ class Turorial extends StatelessWidget {
 
     await Future.delayed(Duration(milliseconds: 500));
     tutorialCoachMark = TutorialCoachMark(
-      context,
       targets: targets,
       colorShadow: DesignColors.pink,
       textSkip: "überspringen",
@@ -853,7 +851,7 @@ class Turorial extends StatelessWidget {
           appState.route = Routes.signUp;
         }
       },
-    )..show();
+    )..show(context: context);
   }
 
   void getTestStatement() async {
