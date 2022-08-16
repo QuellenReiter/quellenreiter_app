@@ -390,7 +390,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           HapticFeedback.mediumImpact();
                           widget.appState.route = Routes.login;
                         },
-                        child: Row(
+                        child: Wrap(
                           children: [
                             Text(
                               "Du hast schon ein Konto? ",
