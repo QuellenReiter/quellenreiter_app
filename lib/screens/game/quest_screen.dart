@@ -9,8 +9,9 @@ import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class QuestScreen extends StatefulWidget {
-  const QuestScreen({Key? key, required this.appState}) : super(key: key);
+  QuestScreen({Key? key, required this.appState}) : super(key: key);
   final QuellenreiterAppState appState;
+  bool answerRegistered = false;
   @override
   State<QuestScreen> createState() => _QuestScreenState();
 }
@@ -30,9 +31,7 @@ class _QuestScreenState extends State<QuestScreen>
         widget.appState.currentEnemy!.openGame!.playerAnswers.length;
     // set answer to false, incase user breaks the round.
     // But only if withTimer. Else doing research and closing the app is welcome.
-    if (widget.appState.currentEnemy!.openGame!.withTimer) {
-      widget.appState.currentEnemy!.openGame!.playerAnswers.add(false);
-    }
+
     // show error if statements not downloaded.
     if (widget.appState.currentEnemy!.openGame!.statements == null) {
       widget.appState.getCurrentStatements(r: Routes.quest);
@@ -41,6 +40,9 @@ class _QuestScreenState extends State<QuestScreen>
           child: CircularProgressIndicator(),
         ),
       );
+    }
+    if (widget.appState.currentEnemy!.openGame!.withTimer) {
+      widget.appState.currentEnemy!.openGame!.playerAnswers.add(false);
     }
 
     return Scaffold(
@@ -325,9 +327,12 @@ class _QuestScreenState extends State<QuestScreen>
                                 thickness: 20,
                                 value: animationLength.toDouble(),
                                 color: DesignColors.pink,
-                                onAnimationCompleted: () => registerAnswer(
-                                    statementIndex, false,
-                                    timeOver: true),
+                                onAnimationCompleted: () {
+                                  if (!widget.answerRegistered) {
+                                    registerAnswer(statementIndex, false,
+                                        timeOver: true);
+                                  }
+                                },
                               )
                             ],
                           ),
@@ -345,6 +350,7 @@ class _QuestScreenState extends State<QuestScreen>
 
   void registerAnswer(int statementIndex, bool answer,
       {bool timeOver = false}) async {
+    widget.answerRegistered = true;
     // PROBLEM: This is still not completely safe.
     // some other player could update the players stats between the above call
     // and the below update and will then be lost.

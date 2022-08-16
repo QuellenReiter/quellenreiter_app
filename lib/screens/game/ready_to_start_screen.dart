@@ -12,11 +12,11 @@ import 'package:quellenreiter_app/widgets/results_app_bar.dart';
 import '../../widgets/statement_card.dart';
 
 class ReadyToStartScreen extends StatefulWidget {
-  const ReadyToStartScreen(
+  ReadyToStartScreen(
       {Key? key, required this.appState, this.showOnlyLast = true})
       : super(key: key);
   final QuellenreiterAppState appState;
-  final bool showOnlyLast;
+  bool showOnlyLast;
   @override
   State<ReadyToStartScreen> createState() => _ReadyToStartScreenState();
 }
@@ -122,6 +122,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
 
     // Show error is there is one !
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.showOnlyLast = false;
       widget.appState.showError(context);
     });
     return Scaffold(
@@ -318,9 +319,24 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                       onPressed: () => {widget.appState.playGame()},
                     ),
                   )
+              // if game is finished and player wait for other to access points
               else if (widget.appState.currentEnemy!.openGame!.gameFinished() &&
                   widget.appState.currentEnemy!.openGame!
                           .requestingPlayerIndex ==
+                      widget.appState.currentEnemy!.openGame!.playerIndex)
+                SafeArea(
+                  minimum: const EdgeInsets.only(bottom: 20),
+                  child: FloatingActionButton.extended(
+                    backgroundColor: DesignColors.lightGrey,
+                    label: Text("Warten...",
+                        style: Theme.of(context).textTheme.headline4),
+                    onPressed: null,
+                  ),
+                )
+              // if game is finished and player can access its points
+              else if (widget.appState.currentEnemy!.openGame!.gameFinished() &&
+                  widget.appState.currentEnemy!.openGame!
+                          .requestingPlayerIndex !=
                       widget.appState.currentEnemy!.openGame!.playerIndex)
                 SafeArea(
                   minimum: const EdgeInsets.only(bottom: 20),

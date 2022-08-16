@@ -170,9 +170,8 @@ class _StartScreenState extends State<StartScreen> {
         ),
       );
       for (Enemy e in widget.appState.player!.friends!.enemies) {
-        if(e.openGame == null ||
-            (e.openGame!.gameFinished() &&
-                e.openGame!.pointsAccessed)) {
+        if (e.openGame == null ||
+            (e.openGame!.gameFinished() && e.openGame!.pointsAccessed)) {
           startNewGame.add(EnemyCard(
             appState: widget.appState,
             enemy: e,
@@ -488,7 +487,20 @@ class _StartScreenState extends State<StartScreen> {
                 ),
                 ...finishedGames,
                 ...friendRequests,
-                if (playersTurn.isEmpty && finishedGames.isEmpty)
+                if (widget.appState.player!.friends == null ||
+                    widget.appState.player!.friends!.enemies.isEmpty)
+                  Center(
+                      child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 50, left: 20, right: 20, bottom: 50),
+                    child: Text("Lade Freund:innen ein, um zu spielen.",
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline1!
+                            .copyWith(color: DesignColors.lightBlue)),
+                  ))
+                else if (playersTurn.isEmpty && finishedGames.isEmpty)
                   Center(
                       child: Padding(
                     padding: const EdgeInsets.only(
