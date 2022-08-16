@@ -174,7 +174,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   Hero(
                     tag: "authSwitch",
                     child: TextButton(
-                      onPressed: () => widget.appState.route = Routes.signUp,
+                      onPressed: () {
+                        widget.appState.route = Routes.signUp;
+                        HapticFeedback.mediumImpact();
+                      },
                       child: Text("Konto erstellen",
                           style:
                               Theme.of(context).textTheme.headline4!.copyWith(

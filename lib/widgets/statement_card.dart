@@ -31,10 +31,10 @@ class StatementCard extends StatefulWidget {
   final Statement statement;
 
   @override
-  State<StatementCard> createState() => _StatementCardState();
+  State<StatementCard> createState() => StatementCardState();
 }
 
-class _StatementCardState extends State<StatementCard> {
+class StatementCardState extends State<StatementCard> {
   ValueNotifier<bool> archiveIsLoading = ValueNotifier<bool>(false);
   ValueNotifier<bool> isArchived = ValueNotifier<bool>(false);
   @override
@@ -71,7 +71,7 @@ class _StatementCardState extends State<StatementCard> {
           hoverColor: Colors.black54,
           highlightColor: Colors.black45,
           splashColor: Colors.black38,
-          onTap: () => _showStatementDetail(widget.statement, context),
+          onTap: () => showStatementDetail(widget.statement, context),
           borderRadius: const BorderRadius.all(Radius.circular(15)),
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -232,7 +232,7 @@ class _StatementCardState extends State<StatementCard> {
     );
   }
 
-  void _showStatementDetail(Statement statement, BuildContext context) async {
+  void showStatementDetail(Statement statement, BuildContext context) async {
     // if we are in tutorial (appstate == null) then just switch the value
     // else we are in the app and need to update the database
     isArchived.value = widget.appState == null
@@ -280,7 +280,6 @@ class _StatementCardState extends State<StatementCard> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: Row(
-                      key: widget.keyStatementSaveAndShare,
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -296,6 +295,7 @@ class _StatementCardState extends State<StatementCard> {
                           valueListenable: archiveIsLoading,
                           builder: (context, bool loading, child) {
                             return ValueListenableBuilder(
+                                key: widget.keyStatementSaveAndShare,
                                 valueListenable: isArchived,
                                 builder: (context, bool archived, child) {
                                   if (loading) {
@@ -627,8 +627,8 @@ class _StatementCardState extends State<StatementCard> {
           keyTarget: widget.keyStatementSaveAndShare,
           alignSkip: Alignment.bottomRight,
           shape: ShapeLightFocus.Circle,
-          enableOverlayTab: true,
-          enableTargetTab: false,
+          enableOverlayTab: false,
+          enableTargetTab: true,
           radius: 10,
           contents: [
             TargetContent(
@@ -652,20 +652,6 @@ class _StatementCardState extends State<StatementCard> {
                             ),
                             TextSpan(
                               text: " Speichern ",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline2!
-                                  .copyWith(color: DesignColors.yellow),
-                            ),
-                            TextSpan(
-                              text: "oder",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline2!
-                                  .copyWith(color: Colors.white),
-                            ),
-                            TextSpan(
-                              text: " Teilen ",
                               style: Theme.of(context)
                                   .textTheme
                                   .headline2!
@@ -708,9 +694,6 @@ class _StatementCardState extends State<StatementCard> {
                           ],
                         ),
                       ),
-                      actionButton(
-                          "weiter", (c) => tutorialCoachMark.next(), context,
-                          animate: true)
                     ],
                   ),
                 );
@@ -722,7 +705,6 @@ class _StatementCardState extends State<StatementCard> {
 
       await Future.delayed(Duration(seconds: 1));
       tutorialCoachMark = TutorialCoachMark(
-        context,
         targets: targets,
         colorShadow: DesignColors.pink,
         textSkip: "überspringen",
@@ -731,21 +713,25 @@ class _StatementCardState extends State<StatementCard> {
         onFinish: () {
           print("finish");
         },
-        onClickTarget: (target) {
-          print('onClickTarget: $target');
+        onClickTarget: null,
+        onClickTargetWithTapPosition: (target, tapDetails) async {
+          archiveIsLoading.value = true;
+          HapticFeedback.mediumImpact();
+          if (widget.appState != null) {
+            widget.appState!.player!.safedStatementsIds!
+                .add(statement.objectId!);
+            await widget.appState!.updateUserData();
+          } else {
+            // wait for 1 second to simulate a loading time
+            await Future.delayed(const Duration(seconds: 1));
+          }
+
+          isArchived.value = true;
+          archiveIsLoading.value = false;
         },
-        onClickTargetWithTapPosition: (target, tapDetails) {
-          print("target: $target");
-          print(
-              "clicked at position local: ${tapDetails.localPosition} - global: ${tapDetails.globalPosition}");
-        },
-        onClickOverlay: (target) {
-          print('onClickOverlay: $target');
-        },
-        onSkip: () {
-          print("skip");
-        },
-      )..show();
+        onClickOverlay: null,
+        onSkip: null,
+      )..show(context: context);
     }
   }
 

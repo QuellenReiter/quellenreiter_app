@@ -17,14 +17,15 @@ class Turorial extends StatelessWidget {
   GlobalKey keyFaktFakeButton = GlobalKey();
   GlobalKey keyStatementText = GlobalKey();
   GlobalKey keyStatementInfo = GlobalKey();
-  GlobalKey keyStatementCard = GlobalKey();
+  final keyStatementCard = GlobalKey<StatementCardState>();
   GlobalKey keyStatementSaveAndShare = GlobalKey();
+  // global key to call functions of the tutorial
+
   bool showStatametCardCalled = false;
   Statement? testStatement;
 
   /// valuelistenable for loading
   ValueNotifier<bool> isLoading = ValueNotifier(false);
-
   @override
   Widget build(BuildContext context) {
     // start downloading the testStatement
@@ -89,7 +90,7 @@ class Turorial extends StatelessWidget {
                             child: Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 30),
-                              child: Text("spielen",
+                              child: Text("tutorial",
                                   style: Theme.of(context)
                                       .textTheme
                                       .headline1!
@@ -366,8 +367,8 @@ class Turorial extends StatelessWidget {
         keyTarget: keyStatementText,
         alignSkip: Alignment.bottomRight,
         shape: ShapeLightFocus.RRect,
-        enableOverlayTab: true,
-        enableTargetTab: false,
+        enableOverlayTab: false,
+        enableTargetTab: true,
         radius: 10,
         contents: [
           TargetContent(
@@ -421,8 +422,8 @@ class Turorial extends StatelessWidget {
         keyTarget: keyStatementInfo,
         alignSkip: Alignment.bottomRight,
         shape: ShapeLightFocus.RRect,
-        enableOverlayTab: true,
-        enableTargetTab: false,
+        enableOverlayTab: false,
+        enableTargetTab: true,
         radius: 10,
         contents: [
           TargetContent(
@@ -475,8 +476,8 @@ class Turorial extends StatelessWidget {
         keyTarget: keyFaktFakeButton,
         alignSkip: Alignment.bottomRight,
         shape: ShapeLightFocus.RRect,
-        enableOverlayTab: true,
-        enableTargetTab: false,
+        enableOverlayTab: false,
+        enableTargetTab: true,
         radius: 10,
         contents: [
           TargetContent(
@@ -528,9 +529,6 @@ class Turorial extends StatelessWidget {
                         ],
                       ),
                     ),
-                    actionButton("weiter",
-                        (context) => tutorialCoachMark.next(), context,
-                        animate: true)
                   ],
                 ),
               );
@@ -542,7 +540,6 @@ class Turorial extends StatelessWidget {
 
     await Future.delayed(Duration(milliseconds: 1000));
     tutorialCoachMark = TutorialCoachMark(
-      context,
       targets: targets,
       colorShadow: DesignColors.pink,
       textSkip: "überspringen",
@@ -551,38 +548,33 @@ class Turorial extends StatelessWidget {
       onFinish: () {
         print("finish");
       },
-      onClickTarget: (target) {
-        print('onClickTarget: $target');
-        // wiggle next button
-      },
-      onClickTargetWithTapPosition: (target, tapDetails) {
+      onClickTarget: null,
+      onClickTargetWithTapPosition: (target, tapDetails) async {
         print("target: $target");
         print(
             "clicked at position local: ${tapDetails.localPosition} - global: ${tapDetails.globalPosition}");
-
-        // final renderObj = context.findRenderObject();
-        // if (renderObj is RenderBox) {
-        //   final hitTestResult = BoxHitTestResult();
-        //   if (renderObj.hand (hitTestResult,
-        //       position: tapDetails.localPosition)) {
-        //     // a descendant of `renderObj` got tapped
-        //     print(hitTestResult.path);
-        //     hitTestResult.path
-        //   }
-        // }
+        if (target.keyTarget == keyFaktFakeButton) {
+          // wait for animation length
+          await Future.delayed(Duration(milliseconds: 500));
+          // if tap is on left half of the screen -> FAKE else FAKT
+          if (tapDetails.localPosition.dx <
+              MediaQuery.of(context).size.width / 2) {
+            registerAnswer(false, context);
+          } else {
+            registerAnswer(true, context);
+          }
+        }
       },
-      onClickOverlay: (target) {
-        print('onClickOverlay: $target');
-      },
+      onClickOverlay: null,
       onSkip: () {
         appState.prefs.setBool("tutorialPlayed", true);
         if (appState.player != null) {
           appState.route = Routes.home;
         } else {
-          appState.route = Routes.login;
+          appState.route = Routes.signUp;
         }
       },
-    )..show();
+    )..show(context: context);
   }
 
   void registerAnswer(bool answer, BuildContext context) {
@@ -708,7 +700,7 @@ class Turorial extends StatelessWidget {
               if (appState.player != null) {
                 appState.route = Routes.home;
               } else {
-                appState.route = Routes.login;
+                appState.route = Routes.signUp;
               }
             }, context, color: DesignColors.pink),
             body: Dialog(
@@ -772,8 +764,8 @@ class Turorial extends StatelessWidget {
         keyTarget: keyStatementCard,
         alignSkip: Alignment.bottomRight,
         shape: ShapeLightFocus.RRect,
-        enableOverlayTab: true,
-        enableTargetTab: false,
+        enableOverlayTab: false,
+        enableTargetTab: true,
         radius: 10,
         contents: [
           TargetContent(
@@ -817,9 +809,6 @@ class Turorial extends StatelessWidget {
                             .textTheme
                             .headline4!
                             .copyWith(color: Colors.white)),
-                    actionButton("weiter",
-                        (context) => tutorialCoachMark.next(), context,
-                        animate: true)
                   ],
                 ),
               );
@@ -831,7 +820,6 @@ class Turorial extends StatelessWidget {
 
     await Future.delayed(Duration(milliseconds: 500));
     tutorialCoachMark = TutorialCoachMark(
-      context,
       targets: targets,
       colorShadow: DesignColors.pink,
       textSkip: "überspringen",
@@ -840,8 +828,12 @@ class Turorial extends StatelessWidget {
       onFinish: () {
         print("finish");
       },
-      onClickTarget: (target) {
+      onClickTarget: (target) async {
         print('onClickTarget: $target');
+        // wait for animation length
+        await Future.delayed(const Duration(milliseconds: 500));
+        keyStatementCard.currentState!.showStatementDetail(
+            testStatement!, keyStatementCard.currentState!.context);
       },
       onClickTargetWithTapPosition: (target, tapDetails) {
         print("target: $target");
@@ -856,10 +848,10 @@ class Turorial extends StatelessWidget {
         if (appState.player != null) {
           appState.route = Routes.home;
         } else {
-          appState.route = Routes.login;
+          appState.route = Routes.signUp;
         }
       },
-    )..show();
+    )..show(context: context);
   }
 
   void getTestStatement() async {

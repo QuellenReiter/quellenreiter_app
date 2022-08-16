@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart' as parse;
@@ -10,6 +12,7 @@ import '../consonents.dart';
 import '../constants/constants.dart';
 import '../models/statement.dart';
 import 'queries.dart';
+import 'package:http/http.dart' as http;
 
 /// This class facilitates the connection to the database and manages its
 /// responses.
@@ -72,6 +75,13 @@ class DatabaseUtils {
   // 3. turn on class protection on back4app.
   void signUp(String username, String password, String emoji,
       Function signUpCallback) async {
+    //check for bad words
+    bool isDirty = await containsBadWord(username);
+    if (isDirty) {
+      signUpCallback(null);
+      return; //return if bad words are found
+    }
+
     // Link to server.
     final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
       'X-Parse-Application-Id': userDatabaseApplicationID,
@@ -320,10 +330,17 @@ class DatabaseUtils {
   /// Update a [Player] in the Database by [String]. Only for username and
   /// device token!
   Future<void> updateUser(Player player, Function updateUserCallback) async {
+    // check username for bad words
+    bool isDirty = await containsBadWord(player.name);
+    if (isDirty) {
+      updateUserCallback(null);
+      return; //return if bad words are found
+    }
+
     // The session token.
     String? token = await safeStorage.read(key: "token");
     if (token == null) {
-      updateUserCallback(false);
+      await updateUserCallback(false);
       return;
     }
     final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
@@ -348,10 +365,10 @@ class DatabaseUtils {
     if (mutationResult.hasException) {
       handleException(mutationResult.exception!);
 
-      updateUserCallback(null);
+      await updateUserCallback(null);
       return;
     } else {
-      updateUserCallback(
+      await updateUserCallback(
           Player.fromMap(mutationResult.data?["updateUser"]["user"]));
       return;
     }
@@ -387,10 +404,10 @@ class DatabaseUtils {
     if (mutationResult.hasException) {
       handleException(mutationResult.exception!);
 
-      updateUserCallback(null);
+      await updateUserCallback(null);
       return;
     } else {
-      updateUserCallback(player
+      await updateUserCallback(player
         ..updateDataWithMap(
             mutationResult.data?["updateUserData"]["userData"]));
       return;
@@ -1150,6 +1167,40 @@ class DatabaseUtils {
 
       print(e.toString());
       error = "Server Exception: Deine Netzwerkverbindung ist unterbrochen.";
+    }
+  }
+
+  Future<bool> containsBadWord(String username) async {
+    if (username.isEmpty) {
+      // return true because is empty
+      error = "Username is empty";
+      return true;
+    }
+
+    for (String s in customBadWords) {
+      if (username.contains(s)) {
+        error = "Username enthält ungültige Wörter.";
+        return true;
+      }
+    }
+
+    var url = Uri.https(
+        badWordsUrl, "/text/", {'key': badWordsApiKey, 'msg': username});
+
+    http.Response response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      if (jsonResponse['bad_words'].isNotEmpty) {
+        error = "Username enthält ungültige Wörter.";
+        return true;
+      } else {
+        print(username + " contains no bad words");
+        return false;
+      }
+    } else {
+      error = "Server Error";
+      return true;
     }
   }
 }

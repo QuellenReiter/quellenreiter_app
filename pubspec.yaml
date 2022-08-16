@@ -45,6 +45,7 @@ dependencies:
   shared_preferences: ^2.0.15
   background_fetch: '^1.0.3'
   tutorial_coach_mark: ^1.2.3
+  http: ^0.13.5
 
 
 

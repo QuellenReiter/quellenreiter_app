@@ -112,13 +112,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                                 widget.appState.player!.name &&
                                             usernameController.text.length >=
                                                 Utils.usernameMinLength
-                                        ? () {
+                                        ? () async {
+                                            widget.appState.route =
+                                                Routes.loading;
                                             HapticFeedback.selectionClick();
                                             FocusManager.instance.primaryFocus
                                                 ?.unfocus();
                                             widget.appState.player?.name =
                                                 usernameController.text;
-                                            widget.appState.updateUser();
+                                            await widget.appState.updateUser();
+                                            widget.appState.route =
+                                                Routes.settings;
                                           }
                                         : null,
                                     icon: const Icon(
@@ -172,13 +176,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                                   widget
                                                       .appState.player!.emoji &&
                                               emojiController.text.isNotEmpty
-                                          ? () {
+                                          ? () async {
+                                              widget.appState.route =
+                                                  Routes.loading;
                                               HapticFeedback.selectionClick();
                                               FocusManager.instance.primaryFocus
                                                   ?.unfocus();
                                               widget.appState.player?.emoji =
                                                   emojiController.text;
-                                              widget.appState.updateUserData();
+                                              await widget.appState
+                                                  .updateUserData();
+                                              widget.appState.route =
+                                                  Routes.settings;
                                             }
                                           : null,
                                       icon: const Icon(Icons.emoji_emotions),
@@ -375,23 +384,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                               const SizedBox(
                                 width: 10,
-                              ),
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          DesignColors.backgroundBlue),
-                                ),
-                                onPressed: () async {
-                                  HapticFeedback.heavyImpact();
-
-                                  await widget.appState.db.clearCache();
-
-                                  widget.appState.msg = "Cache gelöscht";
-                                },
-                                child: Text("Cache leeren",
-                                    style:
-                                        Theme.of(context).textTheme.headline5),
                               ),
                             ],
                           ),

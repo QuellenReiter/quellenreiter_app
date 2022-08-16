@@ -183,7 +183,6 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         }
         if (appState.currentEnemy!.openGame!.playerAnswers.isEmpty &&
             appState.currentEnemy!.openGame!.isPlayersTurn()) {
-          appState.playGame();
           return [
             const MaterialPage(
               key: ValueKey('LoadingScreen'),
