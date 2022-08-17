@@ -391,8 +391,15 @@ class QuellenreiterAppState extends ChangeNotifier {
     // redo current enemy
     if (currentEnemy != null) {
       try {
-        currentEnemy = player!.friends!.enemies
+        var tempCurrentEnemy = player!.friends!.enemies
             .firstWhere((enemy) => enemy.userId == currentEnemy!.userId);
+        // only update current enemy if enemy has played 3 quests so that the
+        // game is either finished or its the players turn now.
+        // this prevent constant updating while the player is browsing the quests.
+        if (tempCurrentEnemy.openGame != null &&
+            tempCurrentEnemy.openGame!.enemyAnswers.length % 3 == 0) {
+          currentEnemy = tempCurrentEnemy;
+        }
       } catch (e) {
         currentEnemy = null;
       }
