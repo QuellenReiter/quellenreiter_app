@@ -289,7 +289,13 @@ class StatementCardState extends State<StatementCard> {
                             onPressed: () {
                               HapticFeedback.selectionClick();
                               Share.share(
-                                  "https://fakten.quellenreiter.app/#/statement/${statement.objectId}");
+                                  statement.statementCorrectness +
+                                      ": " +
+                                      statement.statementText +
+                                      "\n\n" +
+                                      "https://fakten.quellenreiter.app/#/statement/${statement.objectId}",
+                                  subject:
+                                      "Teile diese Aussage mit deinen Freund:innen!");
                             }),
                         ValueListenableBuilder(
                           valueListenable: archiveIsLoading,
