@@ -151,77 +151,61 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         ];
 
       case Routes.gameReadyToStart:
+        // if no enemy, go to home
         if (appState.currentEnemy == null ||
             appState.currentEnemy!.openGame == null) {
           return [
             home,
           ];
         }
-        // if player is not last one and game is finished, show points.
-
-        if ((appState.currentEnemy != null &&
-                !appState.currentEnemy!.openGame!.pointsAccessed) &&
-            (appState.currentEnemy!.openGame!.gameFinished() &&
-                appState.currentEnemy!.openGame!.requestingPlayerIndex !=
-                    appState.currentEnemy!.openGame!.playerIndex)) {
-          return [
-            home,
-            MaterialPage(
-              key: const ValueKey('ReadyToStartScreen'),
-              child: ReadyToStartScreen(
-                appState: appState,
-                showOnlyLast: false,
-              ),
-            ),
-            MaterialPage(
-              key: const ValueKey('GameFinishedScreen'),
-              child: GameFinishedScreen(
-                appState: appState,
-              ),
-            ),
-          ];
-        }
-        if (appState.currentEnemy!.openGame!.playerAnswers.isEmpty &&
-            appState.currentEnemy!.openGame!.isPlayersTurn()) {
-          return [
-            const MaterialPage(
-              key: ValueKey('LoadingScreen'),
-              child: LoadingScreen(),
-            ),
-          ];
-        }
+        // go to ready to start screen
         return [
           home,
           MaterialPage(
-            key: const ValueKey('ReadyToStartScreen'),
+            key: const ValueKey('ReadyToStartPage'),
             child: ReadyToStartScreen(
               appState: appState,
               showOnlyLast: false,
             ),
           ),
         ];
-      case Routes.quest:
-        if (appState.currentEnemy != null &&
-            !appState.currentEnemy!.openGame!.isPlayersTurn()) {
+      case Routes.readyToStartOnlyLastScreen:
+        // if no enemy, go to home
+        if (appState.currentEnemy == null ||
+            appState.currentEnemy!.openGame == null) {
           return [
             home,
-            MaterialPage(
-              key: const ValueKey('ReadyToStartScreen'),
-              child: ReadyToStartScreen(
-                appState: appState,
-                showOnlyLast: true,
-              ),
-            ),
           ];
         }
+        // go to ready to start screen
         return [
+          home,
           MaterialPage(
-            key: const ValueKey('QuestScreen'),
-            child: QuestScreen(
+            key: const ValueKey('ReadyToStartPageOnlyLast'),
+            child: ReadyToStartScreen(
               appState: appState,
+              showOnlyLast: true,
             ),
           ),
         ];
+      case Routes.quest:
+        // error
+        if (appState.currentEnemy == null) {
+          return [home];
+        }
+        //  if it is the players turn
+        else if (appState.currentEnemy!.openGame!.isPlayersTurn()) {
+          return [
+            MaterialPage(
+              key: const ValueKey('QuestScreen'),
+              child: QuestScreen(
+                appState: appState,
+              ),
+            )
+          ];
+        } else {
+          return [home];
+        }
       case Routes.gameFinishedScreen:
         return [
           home,

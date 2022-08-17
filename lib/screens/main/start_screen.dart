@@ -505,7 +505,7 @@ class _StartScreenState extends State<StartScreen> {
                       child: Padding(
                     padding: const EdgeInsets.only(
                         top: 50, left: 20, right: 20, bottom: 50),
-                    child: Text("Du bist bei keinem Spiel an der Reihe.",
+                    child: Text("Du bist bei keinem Spiel an der Reihe",
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme

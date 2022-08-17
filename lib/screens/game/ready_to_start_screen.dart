@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/game.dart';
@@ -38,9 +39,9 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
         widget.appState.currentEnemy!.openGame!.enemyAnswers.length);
 
     // Check if statements are loaded. If not, load them.
+    // TODO: Check if this is the best place to do this
     if (widget.appState.currentEnemy!.openGame!.statements == null) {
-      widget.appState.getCurrentStatements(
-          r: widget.showOnlyLast ? Routes.quest : Routes.gameReadyToStart);
+      widget.appState.getCurrentStatements();
       return Scaffold(
           appBar: AppBar(),
           body: const Center(child: CircularProgressIndicator()));
@@ -122,7 +123,6 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
 
     // Show error is there is one !
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.showOnlyLast = false;
       widget.appState.showError(context);
     });
     return Scaffold(
@@ -294,6 +294,26 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                         widget.appState,
                         widget.appState.currentEnemy!),
                   ),
+                )
+              //if only one player accessed the points adn this is the player which did not end the game
+              else if ((widget.appState.currentEnemy!.openGame!
+                              .requestingPlayerIndex !=
+                          widget.appState.currentEnemy!.openGame!.playerIndex &&
+                      widget.appState.currentEnemy!.openGame!.gameFinished()) &&
+                  !widget.appState.currentEnemy!.openGame!.pointsAccessed)
+                SafeArea(
+                  minimum: const EdgeInsets.only(bottom: 20),
+                  child: FloatingActionButton.extended(
+                      backgroundColor: DesignColors.pink,
+                      label: Text("Punkte abholen",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: Colors.white)),
+                      onPressed: () {
+                        HapticFeedback.mediumImpact();
+                        widget.appState.route = Routes.gameFinishedScreen;
+                      }),
                 )
               else if (widget.appState.currentEnemy!.openGame!.isPlayersTurn())
                 // if not played any quests

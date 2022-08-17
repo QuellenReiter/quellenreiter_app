@@ -132,15 +132,18 @@ class EnemyCard extends StatelessWidget {
         };
         label = "Anfrage annehmen";
       }
-    } else if (enemy.openGame!.pointsAccessed) {
-      label = "Spiel starten";
+    }
+    // possible to start game and to view old results.
+    else if (enemy.openGame!.pointsAccessed) {
+      label = "Ergebnisse ansehen oder neues Spiel";
       onClickFunk = () {
         HapticFeedback.mediumImpact();
-
         appState.currentEnemy = enemy;
         appState.route = Routes.gameReadyToStart;
       };
-    } else if (enemy.openGame!.isPlayersTurn() &&
+    }
+    // show results and continue playing button
+    else if (enemy.openGame!.isPlayersTurn() &&
         enemy.openGame!.playerAnswers.isNotEmpty) {
       onClickFunk = () {
         HapticFeedback.mediumImpact();
@@ -149,25 +152,31 @@ class EnemyCard extends StatelessWidget {
         appState.route = Routes.gameReadyToStart;
       };
       label = "Du bist dran";
-    } else if (enemy.openGame!.isPlayersTurn() &&
+    }
+    // game starts immediately, because there are no results yet
+    else if (enemy.openGame!.isPlayersTurn() &&
         enemy.openGame!.playerAnswers.isEmpty) {
       onClickFunk = () {
         HapticFeedback.mediumImpact();
 
         appState.currentEnemy = enemy;
-        appState.route = Routes.gameReadyToStart;
+        appState.playGame();
       };
       label = "Du bist dran";
-    } else if (enemy.openGame!.gameFinished() &&
+    }
+    // player can access points, other player has already accessed them
+    else if (enemy.openGame!.gameFinished() &&
         enemy.openGame!.requestingPlayerIndex != enemy.openGame!.playerIndex) {
       onClickFunk = () {
         HapticFeedback.mediumImpact();
 
         appState.currentEnemy = enemy;
-        appState.route = Routes.gameReadyToStart;
+        appState.route = Routes.gameFinishedScreen;
       };
       label = "Punkte abholen";
-    } else if (enemy.openGame!.gameFinished() &&
+    }
+    // player has already accessed points and can view results
+    else if (enemy.openGame!.gameFinished() &&
         enemy.openGame!.requestingPlayerIndex == enemy.openGame!.playerIndex) {
       onClickFunk = () {
         HapticFeedback.mediumImpact();
@@ -177,8 +186,7 @@ class EnemyCard extends StatelessWidget {
       };
       label = "Ergebnisse ansehen.";
     }
-    // if enemy has to access its points
-
+    // if enemy is playing
     else {
       onClickFunk = () {
         HapticFeedback.mediumImpact();
