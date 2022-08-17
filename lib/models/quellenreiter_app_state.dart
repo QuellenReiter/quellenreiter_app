@@ -580,32 +580,35 @@ class QuellenreiterAppState extends ChangeNotifier {
   void showError(BuildContext context) {
     if (db.error != null && !errorBannerActive) {
       errorBannerActive = true;
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+            SnackBar(
               backgroundColor: DesignColors.red,
-              alignment: Alignment.bottomCenter,
-              title: const Text("Fehler:"),
-              content: Text(db.error!),
-              actions: [
-                ElevatedButton(
-                  onPressed: () {
-                    db.error = null;
-                    HapticFeedback.mediumImpact();
-
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("ok"),
-                ),
-              ],
-            );
-          }).then(
-        (value) {
-          db.error = null;
-          errorBannerActive = false;
-        },
-      );
+              content: Wrap(
+                children: [
+                  Icon(
+                    Icons.error,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    db.error!,
+                    style: Theme.of(context).textTheme.headline4!.copyWith(
+                          color: Colors.white,
+                        ),
+                  ),
+                ],
+              ),
+              duration: const Duration(seconds: 5),
+            ),
+          )
+          .closed
+          .then((value) {
+        db.error = null;
+        errorBannerActive = false;
+      });
     }
   }
 
