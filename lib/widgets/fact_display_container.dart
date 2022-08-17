@@ -171,7 +171,8 @@ class FactDisplayContainer extends StatelessWidget {
                         label: "Archivierter Link zum Artikel",
                         link: fact.factArchivedLink!,
                         color: Colors.grey[600],
-                        msg: "",
+                        msg:
+                            "Ein archivierter Link speichert den Stand einer Website zu einem bestimmten Zeitpunkt.",
                       )
                     : const SizedBox.shrink()
               ],

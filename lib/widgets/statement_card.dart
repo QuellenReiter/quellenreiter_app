@@ -507,7 +507,7 @@ class StatementCardState extends State<StatementCard> {
                                                       link: statement
                                                           .statementLink,
                                                       msg:
-                                                          "Vorsicht! Du verlässt diese Seite und wirst zu einer archivierten vollständigen Version dieser Aussage weitergeleitet. Die Inhalte können möglicherweise verstörend oder diskriminierend sein. Inhalte, die mit dem Label “Unbelegt”, “Falscher Kontext”, “Manipuliert”, “Irreführend” oder “Frei erfunden” gekennzeichnet wurden, enthalten Desinformationen und sind keine verlässliche Quelle. Vollständiger Link:"),
+                                                          "Vorsicht! Du verlässt diese Seite. Die Inhalte können möglicherweise verstörend oder diskriminierend sein. Inhalte, die mit einem roten Label gekennzeichnet wurden, enthalten möglicherweise Desinformationen und sind keine verlässliche Quelle.\nVollständiger Link:"),
                                                 ],
                                               ),
                                             ),
