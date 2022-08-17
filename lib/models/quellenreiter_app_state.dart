@@ -585,6 +585,7 @@ class QuellenreiterAppState extends ChangeNotifier {
             SnackBar(
               backgroundColor: DesignColors.red,
               content: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Icon(
                     Icons.error,
@@ -601,7 +602,7 @@ class QuellenreiterAppState extends ChangeNotifier {
                   ),
                 ],
               ),
-              duration: const Duration(seconds: 5),
+              duration: const Duration(seconds: 3),
             ),
           )
           .closed

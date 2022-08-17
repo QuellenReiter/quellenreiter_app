@@ -1150,23 +1150,27 @@ class DatabaseUtils {
   }
 
   void handleException(OperationException e) {
+    // errors in the database are not shown to the user
     if (e.graphqlErrors.isNotEmpty) {
       // handle graphql errors
-      // maybe Log this somewhere
-      print("Graphql error:");
       // set the error
-      error = e.graphqlErrors[0].message;
+      if (e.graphqlErrors[0].message == "Invalid username/password.") {
+        error = "Falscher Username oder Passwort";
+      }
+      if (e.graphqlErrors[0].message ==
+          "Account already exists for this username.") {
+        error = "Der Username ist bereits vergeben.";
+      }
       print(e.graphqlErrors.toString());
     } else if (e.linkException is NetworkException) {
-      // handle network errors
-      print("network exception:");
       print(e.toString());
-      error = "Network Exception: Netzwerkfehler.";
+      error = "Du bist offline...";
     } else if (e.linkException is ServerException) {
-      print("Other exception:");
-
       print(e.toString());
-      error = "Server Exception: Deine Netzwerkverbindung ist unterbrochen.";
+      error = "Du bist offline...";
+    } else {
+      print(e.toString());
+      error = "unbekannter Fehler. Versuche es erneut.";
     }
   }
 
