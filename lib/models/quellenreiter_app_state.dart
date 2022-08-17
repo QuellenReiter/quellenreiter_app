@@ -506,10 +506,23 @@ class QuellenreiterAppState extends ChangeNotifier {
   void startNewGame(Enemy e, bool withTimer) async {
     Routes tempRoute = route;
     route = Routes.loading;
-    // if an open game exists, delete it
-    if (e.openGame != null) {
-      db.deleteGame(e.openGame!);
+    // update player and enemy here, to be updtodate with played statements
+    await getFriends();
+    //update enemy e
+    e = player!.friends!.enemies
+        .firstWhere((enemy) => enemy.userId == e.userId);
+    // if an open game exists, check if its new or delete it
+    if (e.openGame != null &&
+        (!e.openGame!.gameFinished() || !e.openGame!.pointsAccessed)) {
+      // the existing  game is not finished and the points are not accessed
+      msg =
+          "Ein offenes spiel exisriert bereits. Beende es bevor du ein neues startest.";
+      return;
+    } else if (e.openGame != null) {
+      // delete the old game, it is finished
+      await db.deleteGame(e.openGame!);
     }
+    // delete old game
     e.openGame = Game.empty(withTimer, e, player!);
     e.openGame!.statementIds = await db.getPlayableStatements(e, player!);
     if (e.openGame!.statementIds == null) {
