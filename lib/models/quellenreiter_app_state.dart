@@ -599,51 +599,32 @@ class QuellenreiterAppState extends ChangeNotifier {
   void showMessage(BuildContext context, {IconData icon = Icons.info_outline}) {
     if (msg != null && !msgBannerActive) {
       msgBannerActive = true;
-      showModalBottomSheet(
-          isScrollControlled: true,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-          ),
-          context: context,
-          builder: (BuildContext context) {
-            return SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: AnimationLimiter(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: AnimationConfiguration.toStaggeredList(
-                      duration: const Duration(milliseconds: 500),
-                      childAnimationBuilder: (widget) => SlideAnimation(
-                        horizontalOffset: 20.0,
-                        curve: Curves.elasticOut,
-                        child: FadeInAnimation(
-                          child: widget,
-                        ),
-                      ),
-                      children: [
-                        Icon(icon, color: DesignColors.green, size: 50),
-                        Text(msg!,
-                            style: const TextStyle(
-                                color: DesignColors.green,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold)),
-                      ],
-                    ),
+      var tempmsg = msg ?? "";
+      msg = null;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+            SnackBar(
+              backgroundColor: DesignColors.lightBlue,
+              content: Row(
+                children: [
+                  Icon(icon),
+                  SizedBox(
+                    width: 10,
                   ),
-                ),
+                  Text(
+                    tempmsg,
+                    style: Theme.of(context).textTheme.headline4!.copyWith(
+                          color: DesignColors.backgroundBlue,
+                        ),
+                  ),
+                ],
               ),
-            );
-          }).then((value) => msgBannerActive = false);
-      Future.delayed(const Duration(seconds: 3)).then((value) {
-        if (msgBannerActive || msg != null) {
-          Navigator.pop(context);
-          msgBannerActive = false;
-        }
+              duration: const Duration(seconds: 3),
+            ),
+          )
+          .closed
+          .then((value) {
+        msgBannerActive = false;
       });
     }
   }
