@@ -31,6 +31,10 @@ class QuellenreiterRoutePath {
   /// Currently on gameReadyToStart Page?
   bool get isGameReadyToStart => route == Routes.gameReadyToStart;
 
+  /// Currently on readyToStartOnlyLastScreen Page?
+  bool get isGameReadyToStartOnlyLast =>
+      route == Routes.readyToStartOnlyLastScreen;
+
   /// Currently on quest Page?
   bool get isQuestScreen => route == Routes.quest;
 

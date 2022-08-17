@@ -32,9 +32,9 @@ class _QuestScreenState extends State<QuestScreen>
     // set answer to false, incase user breaks the round.
     // But only if withTimer. Else doing research and closing the app is welcome.
 
-    // show error if statements not downloaded.
+    // show loading if statements not downloaded.
     if (widget.appState.currentEnemy!.openGame!.statements == null) {
-      widget.appState.getCurrentStatements(r: Routes.quest);
+      widget.appState.getCurrentStatements();
       return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
@@ -486,13 +486,15 @@ class _QuestScreenState extends State<QuestScreen>
       return;
     } // if game is finished
 
-    // TODO: why wait here ?
     //if its not players turn anymore, getFriends.
     if (!widget.appState.currentEnemy!.openGame!.isPlayersTurn()) {
       await widget.appState.getFriends();
       // send notification to friend.
       widget.appState.db.sendPushOtherPlayersTurn(widget.appState,
           receiverId: widget.appState.currentEnemy!.userId);
+      // got toready to start show only last
+      widget.appState.route = Routes.readyToStartOnlyLastScreen;
+      return;
     } else {
       widget.appState.route = Routes.loading;
       // wait for half asecond
@@ -500,6 +502,11 @@ class _QuestScreenState extends State<QuestScreen>
     }
 
     HapticFeedback.heavyImpact();
-    widget.appState.route = Routes.quest;
+    // got to game finished screen or to the next quest
+    if (widget.appState.currentEnemy!.openGame!.gameFinished()) {
+      widget.appState.route = Routes.gameFinishedScreen;
+    } else {
+      widget.appState.route = Routes.quest;
+    }
   }
 }

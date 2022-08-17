@@ -134,7 +134,8 @@ enum Routes {
   loading,
   addFriends,
   gameFinishedScreen,
-  tutorial
+  tutorial,
+  readyToStartOnlyLastScreen
 }
 
 class CorrectnessCategory {

@@ -62,6 +62,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.resumed:
         widget.appState.getFriends();
+        widget.appState.startLiveQueryForFriends();
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:

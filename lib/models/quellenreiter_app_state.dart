@@ -39,11 +39,9 @@ class QuellenreiterAppState extends ChangeNotifier {
         value == Routes.home && _route == Routes.loading)) {
       msg = null;
     }
-    if (value == Routes.gameReadyToStart) {
-      if (currentEnemy!.openGame!.playerAnswers.isEmpty &&
-          currentEnemy!.openGame!.isPlayersTurn()) {
-        playGame();
-      }
+    // set gamestarted to false to restart live queries etc
+    if (value == Routes.gameReadyToStart ||
+        value == Routes.readyToStartOnlyLastScreen) {
       gameStarted = false;
     }
     _route = value;
@@ -462,14 +460,12 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   /// For updating the username
   Future<void> updateUser() async {
-    // route = Routes.loading;
     await db.updateUser(player!, _updateUserCallback);
     return;
   }
 
   /// for updating any other user trait.
   Future<void> updateUserData() async {
-    // route = Routes.loading;
     await db.updateUserData(player!, _updateUserCallback);
     return;
   }
@@ -478,14 +474,9 @@ class QuellenreiterAppState extends ChangeNotifier {
     if (p == null) {
       // login again and reset the user.
       await db.checkToken(_checkTokenCallback);
-      // route = Routes.settings;
     } else if (safedStatements!.statements.length !=
         player!.safedStatementsIds!.length) {
       getArchivedStatements();
-      // route = Routes.archive;
-    } else {
-      // player should still be the same object so we do not set it again.
-      // route = Routes.settings;
     }
   }
 
@@ -532,14 +523,13 @@ class QuellenreiterAppState extends ChangeNotifier {
     return;
   }
 
-  void getCurrentStatements({Routes r = Routes.gameReadyToStart}) async {
+  void getCurrentStatements() async {
     if (db.error != null) {
       return;
     }
     currentEnemy!.openGame!.statements =
         await db.getStatements(currentEnemy!.openGame!.statementIds!);
-
-    route = r;
+    notifyListeners();
     return;
   }
 
@@ -562,7 +552,6 @@ class QuellenreiterAppState extends ChangeNotifier {
       }
       // set new route
       route = Routes.quest;
-
       return;
     }
     route = Routes.home;
