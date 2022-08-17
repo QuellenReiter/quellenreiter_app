@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../constants/constants.dart';
@@ -26,6 +27,7 @@ class LinkAlert extends StatelessWidget {
                 backgroundColor: Colors.transparent,
                 isDismissible: true,
                 builder: (BuildContext context) {
+                  HapticFeedback.mediumImpact();
                   return Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -43,31 +45,42 @@ class LinkAlert extends StatelessWidget {
                         ),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             const Icon(
-                              Icons.dangerous,
+                              Icons.info_outline,
                               size: 100,
-                              color: DesignColors.red,
+                              color: DesignColors.backgroundBlue,
                             ),
                             SelectableText(
-                              "Du verlässt diese APP!",
+                              "Du öffnest einen archivierten Link",
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle1!
-                                  .copyWith(color: DesignColors.red),
+                                  .headline2!
+                                  .copyWith(color: DesignColors.pink),
+                            ),
+                            const SizedBox(
+                              height: 20,
                             ),
                             SelectableText(
                               msg,
-                              style: Theme.of(context).textTheme.subtitle2,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2!
+                                  .copyWith(
+                                    fontSize: 16,
+                                  ),
+                            ),
+                            const SizedBox(
+                              height: 20,
                             ),
                             Text(link),
                             ElevatedButton(
                               style: ButtonStyle(
                                 backgroundColor:
                                     MaterialStateProperty.all<Color>(
-                                        DesignColors.red),
+                                        DesignColors.pink),
                               ),
                               onPressed: () async {
                                 if (!await launch(link)) {
@@ -76,7 +89,7 @@ class LinkAlert extends StatelessWidget {
                                 Navigator.of(context).pop(context);
                               },
                               child: Text(
-                                "Trotzdem fortfahren.",
+                                "öffnen",
                                 style: Theme.of(context).textTheme.subtitle1,
                               ),
                             ),
@@ -88,6 +101,7 @@ class LinkAlert extends StatelessWidget {
                 },
               )
           : () async {
+              HapticFeedback.mediumImpact();
               if (!await launch(link)) {
                 throw 'could not launch';
               }

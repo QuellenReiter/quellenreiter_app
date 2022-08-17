@@ -296,16 +296,8 @@ class _StartScreenState extends State<StartScreen> {
                                                                           .player!
                                                                           .falseFakeAnswers) *
                                                                   100)
-                                                              .toString()
-                                                              .substring(
-                                                                  0,
-                                                                  min(
-                                                                      (widget.appState.player!.trueFakeAnswers /
-                                                                              (widget.appState.player!.trueFakeAnswers + widget.appState.player!.falseFakeAnswers) *
-                                                                              100)
-                                                                          .toString()
-                                                                          .length,
-                                                                      4)) +
+                                                              .round()
+                                                              .toString() +
                                                           "%",
                                                   style: Theme.of(context)
                                                       .textTheme
@@ -395,16 +387,8 @@ class _StartScreenState extends State<StartScreen> {
                                                                           .player!
                                                                           .falseCorrectAnswers) *
                                                                   100)
-                                                              .toString()
-                                                              .substring(
-                                                                  0,
-                                                                  min(
-                                                                      (widget.appState.player!.trueCorrectAnswers /
-                                                                              (widget.appState.player!.trueCorrectAnswers + widget.appState.player!.falseCorrectAnswers) *
-                                                                              100)
-                                                                          .toString()
-                                                                          .length,
-                                                                      4)) +
+                                                              .round()
+                                                              .toString() +
                                                           "%",
                                                   style: Theme.of(context)
                                                       .textTheme

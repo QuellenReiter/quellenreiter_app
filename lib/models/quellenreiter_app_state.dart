@@ -506,10 +506,23 @@ class QuellenreiterAppState extends ChangeNotifier {
   void startNewGame(Enemy e, bool withTimer) async {
     Routes tempRoute = route;
     route = Routes.loading;
-    // if an open game exists, delete it
-    if (e.openGame != null) {
-      db.deleteGame(e.openGame!);
+    // update player and enemy here, to be updtodate with played statements
+    await getFriends();
+    //update enemy e
+    e = player!.friends!.enemies
+        .firstWhere((enemy) => enemy.userId == e.userId);
+    // if an open game exists, check if its new or delete it
+    if (e.openGame != null &&
+        (!e.openGame!.gameFinished() || !e.openGame!.pointsAccessed)) {
+      // the existing  game is not finished and the points are not accessed
+      msg =
+          "Ein offenes spiel exisriert bereits. Beende es bevor du ein neues startest.";
+      return;
+    } else if (e.openGame != null) {
+      // delete the old game, it is finished
+      await db.deleteGame(e.openGame!);
     }
+    // delete old game
     e.openGame = Game.empty(withTimer, e, player!);
     e.openGame!.statementIds = await db.getPlayableStatements(e, player!);
     if (e.openGame!.statementIds == null) {
@@ -567,83 +580,68 @@ class QuellenreiterAppState extends ChangeNotifier {
   void showError(BuildContext context) {
     if (db.error != null && !errorBannerActive) {
       errorBannerActive = true;
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+            SnackBar(
               backgroundColor: DesignColors.red,
-              alignment: Alignment.bottomCenter,
-              title: const Text("Fehler:"),
-              content: Text(db.error!),
-              actions: [
-                ElevatedButton(
-                  onPressed: () {
-                    db.error = null;
-                    HapticFeedback.mediumImpact();
-
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("ok"),
-                ),
-              ],
-            );
-          }).then(
-        (value) {
-          db.error = null;
-          errorBannerActive = false;
-        },
-      );
+              content: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    db.error!,
+                    style: Theme.of(context).textTheme.headline4!.copyWith(
+                          color: Colors.white,
+                        ),
+                  ),
+                ],
+              ),
+              duration: const Duration(seconds: 3),
+            ),
+          )
+          .closed
+          .then((value) {
+        db.error = null;
+        errorBannerActive = false;
+      });
     }
   }
 
   void showMessage(BuildContext context, {IconData icon = Icons.info_outline}) {
     if (msg != null && !msgBannerActive) {
       msgBannerActive = true;
-      showModalBottomSheet(
-          isScrollControlled: true,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-          ),
-          context: context,
-          builder: (BuildContext context) {
-            return SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: AnimationLimiter(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: AnimationConfiguration.toStaggeredList(
-                      duration: const Duration(milliseconds: 500),
-                      childAnimationBuilder: (widget) => SlideAnimation(
-                        horizontalOffset: 20.0,
-                        curve: Curves.elasticOut,
-                        child: FadeInAnimation(
-                          child: widget,
-                        ),
-                      ),
-                      children: [
-                        Icon(icon, color: DesignColors.green, size: 50),
-                        Text(msg!,
-                            style: const TextStyle(
-                                color: DesignColors.green,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold)),
-                      ],
-                    ),
+      var tempmsg = msg ?? "";
+      msg = null;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+            SnackBar(
+              backgroundColor: DesignColors.lightBlue,
+              content: Row(
+                children: [
+                  Icon(icon),
+                  SizedBox(
+                    width: 10,
                   ),
-                ),
+                  Text(
+                    tempmsg,
+                    style: Theme.of(context).textTheme.headline4!.copyWith(
+                          color: DesignColors.backgroundBlue,
+                        ),
+                  ),
+                ],
               ),
-            );
-          }).then((value) => msgBannerActive = false);
-      Future.delayed(const Duration(seconds: 3)).then((value) {
-        if (msgBannerActive || msg != null) {
-          Navigator.pop(context);
-          msgBannerActive = false;
-        }
+              duration: const Duration(seconds: 3),
+            ),
+          )
+          .closed
+          .then((value) {
+        msgBannerActive = false;
       });
     }
   }
