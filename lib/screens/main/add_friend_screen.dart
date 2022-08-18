@@ -60,7 +60,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                     children: [
                       Flexible(
                         child: TextField(
-                          style: Theme.of(context).textTheme.bodyText2,
+                          style: Theme.of(context).textTheme.headline6,
                           textInputAction: TextInputAction.search,
                           inputFormatters: [
                             UsernameTextFormatter(),

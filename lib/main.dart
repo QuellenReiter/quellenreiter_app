@@ -78,6 +78,11 @@ class _QuellenreiterAppState extends State<QuellenreiterApp> {
                 fontFamily: 'Bangers',
                 fontSize: 18,
               ),
+              headline6: TextStyle(
+                color: DesignColors.black,
+                fontFamily: 'Oswald',
+                fontSize: 18,
+              ),
               headline1: TextStyle(
                 color: Colors.white,
                 fontFamily: 'Bangers',

@@ -78,7 +78,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 Flexible(
                                   child: TextField(
                                     style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                        Theme.of(context).textTheme.headline6,
                                     inputFormatters: [
                                       UsernameTextFormatter(),
                                       FilteringTextInputFormatter.allow(
@@ -147,7 +147,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 Flexible(
                                   child: TextField(
                                     style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                        Theme.of(context).textTheme.headline6,
                                     controller: emojiController,
                                     inputFormatters: [
                                       FilteringTextInputFormatter.allow(

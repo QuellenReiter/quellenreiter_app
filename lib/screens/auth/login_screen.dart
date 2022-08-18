@@ -69,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   padding: const EdgeInsets.all(5),
                                   child: TextField(
                                     style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                        Theme.of(context).textTheme.headline6,
                                     controller: usernameController,
                                     decoration: const InputDecoration(
                                       labelText: "Nutzername",
@@ -109,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     onEditingComplete: () =>
                                         TextInput.finishAutofillContext(),
                                     style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                        Theme.of(context).textTheme.headline6,
                                     obscureText: true,
                                     controller: passwordController,
                                     decoration: const InputDecoration(
