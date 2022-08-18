@@ -366,6 +366,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                                         ? () async {
                                                             HapticFeedback
                                                                 .mediumImpact();
+                                                            // check if username is available
                                                             bool usernameExists = await widget
                                                                 .appState.db
                                                                 .checkUsernameAlreadyExists(
@@ -385,9 +386,31 @@ class _SignupScreenState extends State<SignupScreen> {
                                                                           "Username bereits vergeben");
                                                               HapticFeedback
                                                                   .heavyImpact();
+
                                                               return;
                                                             }
+                                                            // check if username is bad
+                                                            bool usernameBad = await widget
+                                                                .appState.db
+                                                                .containsBadWord(
+                                                                    usernameController
+                                                                        .text);
+                                                            if (usernameBad) {
+                                                              // show error
+                                                              HapticFeedback
+                                                                  .heavyImpact();
+                                                              widget.appState
+                                                                  .showError(
+                                                                      context,
+                                                                      errorMsg:
+                                                                          "Username enthält unerwünschte Wörter");
+                                                              HapticFeedback
+                                                                  .heavyImpact();
 
+                                                              return;
+                                                            }
+                                                            TextInput
+                                                                .finishAutofillContext();
                                                             showModalBottomSheet(
                                                                 shape:
                                                                     RoundedRectangleBorder(
@@ -459,6 +482,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                                                                   ElevatedButton(
                                                                                     onPressed: () {
                                                                                       HapticFeedback.mediumImpact();
+                                                                                      TextInput.finishAutofillContext();
 
                                                                                       Navigator.of(context).pop();
                                                                                       widget.appState.trySignUp(usernameController.text, passwordController.text, emojiController.text);
