@@ -4,6 +4,8 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import com.parse.ParseInstallation
+import android.app.NotificationManager
+import android.content.Context
 
 
 class MainActivity: FlutterActivity()  {
@@ -36,5 +38,15 @@ class MainActivity: FlutterActivity()  {
         deviceToken = ParseInstallation.getCurrentInstallation().deviceToken
 
         return deviceToken
+    }
+
+    override fun onResume() {
+        super.onResume()
+        closeAllNotifications();
+    }
+
+    private fun closeAllNotifications() {
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
     }
 }

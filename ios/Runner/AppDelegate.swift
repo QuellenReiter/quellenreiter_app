@@ -21,6 +21,10 @@ import Parse
 
       if #available(iOS 10.0, *) {
         UNUserNotificationCenter.current().delegate = (self as UNUserNotificationCenterDelegate)
+        application.applicationIconBadgeNumber = 0 // For Clear Badge Counts
+        let center = UNUserNotificationCenter.current()
+        center.removeAllDeliveredNotifications() // To remove all delivered notifications
+        center.removeAllPendingNotificationRequests()
       }
       
 //      method to get deviceToken
