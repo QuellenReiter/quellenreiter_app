@@ -577,9 +577,11 @@ class QuellenreiterAppState extends ChangeNotifier {
     route = Routes.home;
   }
 
-  void showError(BuildContext context) {
-    if (db.error != null && !errorBannerActive) {
+  void showError(BuildContext context, {String? errorMsg}) {
+    if ((errorMsg != null || db.error != null) && !errorBannerActive) {
       errorBannerActive = true;
+      FocusScope.of(context).unfocus();
+
       ScaffoldMessenger.of(context)
           .showSnackBar(
             SnackBar(
@@ -595,7 +597,7 @@ class QuellenreiterAppState extends ChangeNotifier {
                     width: 10,
                   ),
                   Text(
-                    db.error!,
+                    errorMsg ?? db.error!,
                     style: Theme.of(context).textTheme.headline4!.copyWith(
                           color: Colors.white,
                         ),
@@ -607,8 +609,8 @@ class QuellenreiterAppState extends ChangeNotifier {
           )
           .closed
           .then((value) {
-        db.error = null;
         errorBannerActive = false;
+        db.error = null;
       });
     }
   }

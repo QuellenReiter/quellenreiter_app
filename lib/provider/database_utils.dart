@@ -1076,6 +1076,32 @@ class DatabaseUtils {
     }
   }
 
+  Future<bool> checkUsernameAlreadyExists(QuellenreiterAppState appState,
+      {String username = "test"}) async {
+    await parse.Parse().initialize(
+      userDatabaseApplicationID,
+      userDatabaseUrl.replaceAll("graphql", "parse"),
+      clientKey: userDatabaseClientKey,
+      debug: true,
+      liveQueryUrl: userLiveQueryUrl,
+    );
+    //Executes a cloud function that returns a ParseObject type
+    final ParseCloudFunction function = ParseCloudFunction('doesUsernameExist');
+    final Map<String, dynamic> params = <String, dynamic>{
+      'username': username,
+    };
+    final ParseResponse parseResponse =
+        await function.execute(parameters: params);
+
+    if (parseResponse.success) {
+      var resultParsed = parseResponse.result == "true";
+      //Transforms the return into a ParseObject
+      return resultParsed;
+    }
+    error = "Error: ${parseResponse.error!.message}";
+    return true;
+  }
+
   void sendPushOtherPlayersTurn(QuellenreiterAppState appState,
       {String receiverId = "123"}) async {
     await parse.Parse().initialize(userDatabaseApplicationID,
