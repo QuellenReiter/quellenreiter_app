@@ -6,6 +6,7 @@ import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/enemy_card.dart';
 import 'package:quellenreiter_app/widgets/title_app_bar.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../utilities/utilities.dart';
 
@@ -43,111 +44,164 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.appState.showError(context);
     });
-    return Scaffold(
-      appBar: TitleAppBar(
-        title: "Freund:innen finden",
-      ),
-      body: Center(
-        child: Stack(
-          children: [
-            Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: TitleAppBar(
+          title: "Freund:innen finden",
+        ),
+        body: Center(
+          child: Stack(
+            children: [
+              AnimationLimiter(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: AnimationConfiguration.toStaggeredList(
+                    duration: const Duration(milliseconds: 700),
+                    childAnimationBuilder: (widget) => SlideAnimation(
+                      horizontalOffset: 20.0,
+                      curve: Curves.elasticOut,
+                      child: FadeInAnimation(
+                        child: widget,
+                      ),
+                    ),
                     children: [
-                      Flexible(
-                        child: TextField(
-                          style: Theme.of(context).textTheme.headline6,
-                          textInputAction: TextInputAction.search,
-                          inputFormatters: [
-                            UsernameTextFormatter(),
-                            FilteringTextInputFormatter.allow(
-                                Utils.regexUsername),
-                          ],
-                          onSubmitted: (query) =>
-                              {widget.appState.friendsQuery = query.trim()},
-                          controller: searchController,
-                          decoration: const InputDecoration(
-                            hintText: "Username eingeben...",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.1,
+                      ),
+                      const Icon(
+                        Icons.group_add_rounded,
+                        size: 80,
+                        color: DesignColors.pink,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Flexible(
+                              child: TextField(
+                                style: Theme.of(context).textTheme.headline6,
+                                textInputAction: TextInputAction.search,
+                                inputFormatters: [
+                                  UsernameTextFormatter(),
+                                  FilteringTextInputFormatter.allow(
+                                      Utils.regexUsername),
+                                ],
+                                onSubmitted: (query) => {
+                                  widget.appState.friendsQuery = query.trim()
+                                },
+                                controller: searchController,
+                                decoration: const InputDecoration(
+                                  hintText: "Gib den genauen Username ein",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.transparent,
+                                  contentPadding: EdgeInsets.all(10),
+                                ),
                               ),
                             ),
-                            filled: true,
-                            fillColor: Colors.transparent,
-                            contentPadding: EdgeInsets.all(10),
-                          ),
+                            IconButton(
+                              color: DesignColors.backgroundBlue,
+                              onPressed: () {
+                                HapticFeedback.selectionClick();
+                                widget.appState.friendsQuery =
+                                    searchController.text.trim();
+                              },
+                              icon: const Icon(
+                                Icons.search,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      IconButton(
-                        color: DesignColors.backgroundBlue,
-                        onPressed: () {
-                          HapticFeedback.selectionClick();
-                          widget.appState.friendsQuery =
-                              searchController.text.trim();
-                        },
-                        icon: const Icon(
-                          Icons.search,
+                      if (widget.appState.friendsSearchResult != null &&
+                          widget
+                              .appState.friendsSearchResult!.enemies.isNotEmpty)
+                        ScrollConfiguration(
+                          behavior: ScrollConfiguration.of(context)
+                              .copyWith(scrollbars: false),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const BouncingScrollPhysics(),
+                            keyboardDismissBehavior:
+                                ScrollViewKeyboardDismissBehavior.onDrag,
+                            itemCount: widget
+                                .appState.friendsSearchResult!.enemies.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return EnemyCard(
+                                appState: widget.appState,
+                                enemy: widget.appState.friendsSearchResult!
+                                    .enemies[index],
+                                onTapped: widget.appState.sendFriendRequest,
+                              );
+                            },
+                          ),
+                        )
+                      else if (widget.appState.friendsSearchResult != null)
+                        Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Center(
+                                child: Text("Keine Ergebnisse gefunden",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline1!
+                                        .copyWith(
+                                            color: DesignColors.lightBlue)))),
+                    ],
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height / 4,
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    clipBehavior: Clip.none,
+                    children: [
+                      ClipPath(
+                        clipper: DiagonalClipper(),
+                        child: Container(
+                          color: DesignColors.pink,
+                        ),
+                      ),
+                      Positioned(
+                        top: -40,
+                        child: Center(
+                          // our logo as child
+                          child: Image(
+                            height: 150,
+                            image: AssetImage('assets/logo-pink.png'),
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                if (widget.appState.friendsSearchResult != null)
-                  Flexible(
-                    child: ScrollConfiguration(
-                      behavior: ScrollConfiguration.of(context)
-                          .copyWith(scrollbars: false),
-                      child: AnimationLimiter(
-                        child: ListView.builder(
-                          physics: const BouncingScrollPhysics(),
-                          keyboardDismissBehavior:
-                              ScrollViewKeyboardDismissBehavior.onDrag,
-                          itemCount: widget
-                              .appState.friendsSearchResult!.enemies.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return AnimationConfiguration.staggeredList(
-                              position: index,
-                              duration: const Duration(milliseconds: 400),
-                              child: SlideAnimation(
-                                horizontalOffset: 30,
-                                child: FadeInAnimation(
-                                  child: EnemyCard(
-                                    appState: widget.appState,
-                                    enemy: widget.appState.friendsSearchResult!
-                                        .enemies[index],
-                                    onTapped: widget.appState.sendFriendRequest,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 40),
+                  child: FloatingActionButton.extended(
+                    onPressed: () => {
+                      Share.share(
+                          'Quiz-Duell nur mit "Fake News":\nhttps://quellenreiter.app',
+                          subject: "Teile die app mit deinen Freund:innen."),
+                    },
+                    icon: const Icon(Icons.share),
+                    label: const Text("Freund:innen einladen"),
                   ),
-              ],
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 40),
-                child: FloatingActionButton.extended(
-                  onPressed: () => {
-                    Share.share(
-                        'Quiz-Duell nur mit "Fake News":\nhttps://quellenreiter.app',
-                        subject: "Teile die app mit deinen Freund:innen."),
-                  },
-                  icon: const Icon(Icons.share),
-                  label: const Text("Freund:innen einladen"),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
