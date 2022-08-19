@@ -33,6 +33,15 @@ class _StartScreenState extends State<StartScreen> {
   }
 
   @override
+  void didUpdateWidget(covariant StartScreen oldWidget) {
+    // make sure stats get rebuild when page is back in focus
+    setState(() {
+      player = widget.appState.player!;
+    });
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     // create finished games
     List<Widget> finishedGames = [];
