@@ -249,7 +249,15 @@ class _SignupScreenState extends State<SignupScreen> {
                                             AutofillHints.newUsername
                                           ],
                                           controller: usernameController,
-                                          decoration: const InputDecoration(
+                                          decoration: InputDecoration(
+                                            errorText: usernameController
+                                                            .text.length <
+                                                        3 &&
+                                                    usernameController
+                                                            .text.length >
+                                                        0
+                                                ? "Username muss mindestens 3 Zeichen lang sein"
+                                                : null,
                                             labelText: "Username",
                                             border: OutlineInputBorder(
                                               borderRadius: BorderRadius.all(
@@ -340,12 +348,10 @@ class _SignupScreenState extends State<SignupScreen> {
                                       },
                                     );
                                   }),
+                              const SizedBox(height: 20),
                               Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  TextButton(
-                                    onPressed: previousPage,
-                                    child: Icon(Icons.arrow_back_ios),
-                                  ),
                                   ValueListenableBuilder(
                                     valueListenable: passwordController,
                                     builder:

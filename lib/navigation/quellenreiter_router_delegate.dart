@@ -117,7 +117,6 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         return [login];
       case Routes.signUp:
         return [
-          login,
           MaterialPage(
             key: const ValueKey('SignupPage'),
             child: SignupScreen(
