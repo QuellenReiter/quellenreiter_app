@@ -578,6 +578,9 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
     HapticFeedback.heavyImpact();
 
     await widget.appState.getFriends();
+
+    // update player
+
     // wait for 1 secons
     HapticFeedback.heavyImpact();
     // pop the dialog and go to next screen.

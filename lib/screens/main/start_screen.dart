@@ -265,10 +265,11 @@ class _StartScreenState extends State<StartScreen> {
                                         end: !player.statsCanBeCalculated()
                                             ? 0
                                             : (((player.trueCorrectAnswers +
-                                                        player
-                                                            .trueFakeAnswers) /
-                                                    player.numPlayedGames *
-                                                    9))
+                                                            player
+                                                                .trueFakeAnswers) /
+                                                        (player.numPlayedGames *
+                                                            9)) *
+                                                    100)
                                                 .round()
                                                 .toDouble(),
                                         style: Theme.of(context)
