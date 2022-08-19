@@ -254,12 +254,11 @@ class _SignupScreenState extends State<SignupScreen> {
                                                             .text.length <
                                                         3 &&
                                                     usernameController
-                                                            .text.length >
-                                                        0
+                                                        .text.isNotEmpty
                                                 ? "Username muss mindestens 3 Zeichen lang sein"
                                                 : null,
                                             labelText: "Username",
-                                            border: OutlineInputBorder(
+                                            border: const OutlineInputBorder(
                                               borderRadius: BorderRadius.all(
                                                 Radius.circular(10),
                                               ),
