@@ -209,4 +209,10 @@ class Player {
   int getNexNexttLevelXp() {
     return GameRules.xpForNextNextLevel(getXp());
   }
+
+  /// Return true if all numbers are above 0 to be able to calculate stats
+  bool statsCanBeCalculated() {
+    return numPlayedGames > 0 &&
+        (trueCorrectAnswers > 0 && trueFakeAnswers > 0);
+  }
 }

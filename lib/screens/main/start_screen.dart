@@ -235,7 +235,6 @@ class _StartScreenState extends State<StartScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     child: PlayAnimation(
                       duration: const Duration(milliseconds: 500),
-                      delay: const Duration(milliseconds: 500),
                       tween: Tween<double>(
                         begin: 0.0,
                         end: 1,
@@ -249,7 +248,7 @@ class _StartScreenState extends State<StartScreen> {
                             top: 30,
                             child: Stack(children: [
                               Container(
-                                margin: EdgeInsets.all(500 - value * 500),
+                                margin: EdgeInsets.all(20 - value * 20),
                                 padding: const EdgeInsets.all(30),
                                 alignment: Alignment.center,
                                 decoration: const BoxDecoration(
@@ -263,13 +262,14 @@ class _StartScreenState extends State<StartScreen> {
                                       Countup(
                                         duration: const Duration(seconds: 1),
                                         begin: 0,
-                                        end: player.numPlayedGames == 0
+                                        end: !player.statsCanBeCalculated()
                                             ? 0
-                                            : (player.numPlayedGames *
+                                            : ((player.numPlayedGames *
                                                         9 /
-                                                        player
-                                                            .trueCorrectAnswers +
-                                                    player.trueFakeAnswers)
+                                                        (player.trueCorrectAnswers +
+                                                            player
+                                                                .trueFakeAnswers)) *
+                                                    100)
                                                 .round()
                                                 .toDouble(),
                                         style: Theme.of(context)
@@ -350,109 +350,127 @@ class _StartScreenState extends State<StartScreen> {
                                                       ),
                                                     ],
                                                   ),
-
-                                                  // const SizedBox(
-                                                  //   height: 20,
-                                                  // ),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        widget.appState.player!
-                                                            .name,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .headline5,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.max,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      buildStatsWithCircle(
-                                                          val: player
-                                                              .numGamesWon,
-                                                          label: "Gewonnen",
-                                                          color: DesignColors
-                                                              .green),
-                                                      buildStatsWithCircle(
-                                                          val: player
-                                                              .numGamesTied,
-                                                          label:
-                                                              "Unentschieden",
-                                                          color: DesignColors
-                                                              .yellow),
-                                                      buildStatsWithCircle(
-                                                          val: player
-                                                                  .numPlayedGames -
-                                                              (player.numGamesTied +
-                                                                  player
-                                                                      .numGamesWon),
-                                                          label: "Verloren",
-                                                          color:
-                                                              DesignColors.red),
-                                                    ],
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 20,
-                                                  ),
-                                                  buildLinearStatsBar(
-                                                      max:
-                                                          (player.numPlayedGames *
-                                                                  9)
-                                                              .toDouble(),
-                                                      val: (player.trueCorrectAnswers +
-                                                              player
-                                                                  .trueFakeAnswers)
-                                                          .toDouble(),
-                                                      label:
-                                                          "${player.trueCorrectAnswers + player.trueFakeAnswers} von allen ${player.numPlayedGames * 9} Aussagen richtig beantwortet."),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  buildLinearStatsBar(
-                                                      max: (player.trueCorrectAnswers +
-                                                              player
-                                                                  .falseCorrectAnswers)
-                                                          .toDouble(),
-                                                      val: player
-                                                          .trueCorrectAnswers
-                                                          .toDouble(),
-                                                      label:
-                                                          "${player.trueCorrectAnswers} von ${player.trueCorrectAnswers + player.falseCorrectAnswers} Fakten erkannt."),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  buildLinearStatsBar(
-                                                      max: (player.trueFakeAnswers +
-                                                              player
-                                                                  .falseFakeAnswers)
-                                                          .toDouble(),
-                                                      val: player
-                                                          .trueFakeAnswers
-                                                          .toDouble(),
-                                                      label:
-                                                          "${player.trueFakeAnswers} von ${player.trueFakeAnswers + player.falseFakeAnswers} Fake News entlarvt."),
-                                                  const SizedBox(height: 20),
-                                                  SelectableText(
-                                                    "Deine Statistiken werden nach jedem Spiel aktualisiert.",
+                                                  Text(
+                                                    widget
+                                                        .appState.player!.name,
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .bodyText2!
-                                                        .copyWith(
-                                                          fontSize: 16,
+                                                        .headline5,
+                                                  ),
+                                                  if (!player
+                                                      .statsCanBeCalculated())
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 10),
+                                                      child: Text(
+                                                        "Nicht genügend Infos, spiele weiter!",
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .headline2!
+                                                            .copyWith(
+                                                                color: DesignColors
+                                                                    .lightBlue),
+                                                      ),
+                                                    )
+                                                  else
+                                                    Column(
+                                                      children: [
+                                                        Row(
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            buildStatsWithCircle(
+                                                                val: player
+                                                                    .numGamesWon,
+                                                                label:
+                                                                    "Gewonnen",
+                                                                color:
+                                                                    DesignColors
+                                                                        .green),
+                                                            buildStatsWithCircle(
+                                                                val: player
+                                                                    .numGamesTied,
+                                                                label:
+                                                                    "Unentschieden",
+                                                                color: DesignColors
+                                                                    .backgroundBlue),
+                                                            buildStatsWithCircle(
+                                                                val: player
+                                                                        .numPlayedGames -
+                                                                    (player.numGamesTied +
+                                                                        player
+                                                                            .numGamesWon),
+                                                                label:
+                                                                    "Verloren",
+                                                                color:
+                                                                    DesignColors
+                                                                        .red),
+                                                          ],
                                                         ),
-                                                    textAlign: TextAlign.start,
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 20,
-                                                  ),
+                                                        const SizedBox(
+                                                          height: 20,
+                                                        ),
+                                                        buildLinearStatsBar(
+                                                            max: (player.trueCorrectAnswers +
+                                                                    player
+                                                                        .falseCorrectAnswers)
+                                                                .toDouble(),
+                                                            val: player
+                                                                .trueCorrectAnswers
+                                                                .toDouble(),
+                                                            label:
+                                                                "Fakten: ${((player.trueCorrectAnswers / player.trueCorrectAnswers + player.falseCorrectAnswers) * 100).round()}% erkannt"),
+                                                        const SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        buildLinearStatsBar(
+                                                            max: (player.trueFakeAnswers +
+                                                                    player
+                                                                        .falseFakeAnswers)
+                                                                .toDouble(),
+                                                            val: player
+                                                                .trueFakeAnswers
+                                                                .toDouble(),
+                                                            label:
+                                                                "Fakes: ${((player.trueFakeAnswers / player.trueFakeAnswers + player.falseFakeAnswers) * 100).round()}% erkannt"),
+                                                        const SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        buildLinearStatsBar(
+                                                            max:
+                                                                (player.numPlayedGames *
+                                                                        9)
+                                                                    .toDouble(),
+                                                            val: (player.trueCorrectAnswers +
+                                                                    player
+                                                                        .trueFakeAnswers)
+                                                                .toDouble(),
+                                                            label:
+                                                                "Insgesamt: ${(((player.trueCorrectAnswers + player.trueFakeAnswers) / player.numPlayedGames * 9) * 100).round()}% richtige Antworten"),
+                                                        const SizedBox(
+                                                            height: 20),
+                                                        SelectableText(
+                                                          "Deine Statistiken werden nach jedem Spiel aktualisiert.",
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .bodyText2!
+                                                                  .copyWith(
+                                                                    fontSize:
+                                                                        16,
+                                                                  ),
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 20,
+                                                        ),
+                                                      ],
+                                                    ),
                                                 ],
                                               ),
                                             ),
@@ -578,7 +596,7 @@ class _StartScreenState extends State<StartScreen> {
               edgeStyle: LinearEdgeStyle.bothCurve,
               thickness: 20,
               value: val,
-              color: DesignColors.lightBlue,
+              color: DesignColors.yellow,
             )
           ],
         ),
