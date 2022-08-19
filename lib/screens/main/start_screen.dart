@@ -264,12 +264,11 @@ class _StartScreenState extends State<StartScreen> {
                                         begin: 0,
                                         end: !player.statsCanBeCalculated()
                                             ? 0
-                                            : ((player.numPlayedGames *
-                                                        9 /
-                                                        (player.trueCorrectAnswers +
-                                                            player
-                                                                .trueFakeAnswers)) *
-                                                    100)
+                                            : (((player.trueCorrectAnswers +
+                                                        player
+                                                            .trueFakeAnswers) /
+                                                    player.numPlayedGames *
+                                                    9))
                                                 .round()
                                                 .toDouble(),
                                         style: Theme.of(context)
@@ -423,7 +422,7 @@ class _StartScreenState extends State<StartScreen> {
                                                                 .trueCorrectAnswers
                                                                 .toDouble(),
                                                             label:
-                                                                "Fakten: ${((player.trueCorrectAnswers / player.trueCorrectAnswers + player.falseCorrectAnswers) * 100).round()}% erkannt"),
+                                                                "Fakten: ${((player.trueCorrectAnswers / (player.trueCorrectAnswers + player.falseCorrectAnswers)) * 100).round()}% erkannt"),
                                                         const SizedBox(
                                                           height: 10,
                                                         ),
@@ -436,7 +435,7 @@ class _StartScreenState extends State<StartScreen> {
                                                                 .trueFakeAnswers
                                                                 .toDouble(),
                                                             label:
-                                                                "Fakes: ${((player.trueFakeAnswers / player.trueFakeAnswers + player.falseFakeAnswers) * 100).round()}% erkannt"),
+                                                                "Fakes: ${((player.trueFakeAnswers / (player.trueFakeAnswers + player.falseFakeAnswers)) * 100).round()}% erkannt"),
                                                         const SizedBox(
                                                           height: 10,
                                                         ),
@@ -450,7 +449,7 @@ class _StartScreenState extends State<StartScreen> {
                                                                         .trueFakeAnswers)
                                                                 .toDouble(),
                                                             label:
-                                                                "Insgesamt: ${(((player.trueCorrectAnswers + player.trueFakeAnswers) / player.numPlayedGames * 9) * 100).round()}% richtige Antworten"),
+                                                                "Insgesamt: ${(((player.trueCorrectAnswers + player.trueFakeAnswers) / (player.numPlayedGames * 9)) * 100).round()}% richtige Antworten"),
                                                         const SizedBox(
                                                             height: 20),
                                                         SelectableText(
@@ -584,7 +583,7 @@ class _StartScreenState extends State<StartScreen> {
           maximum: max,
           animateAxis: true,
           axisTrackStyle: LinearAxisTrackStyle(
-            thickness: 20,
+            thickness: 35,
             edgeStyle: LinearEdgeStyle.bothCurve,
           ),
           animateRange: true,
@@ -594,7 +593,7 @@ class _StartScreenState extends State<StartScreen> {
           barPointers: [
             LinearBarPointer(
               edgeStyle: LinearEdgeStyle.bothCurve,
-              thickness: 20,
+              thickness: 35,
               value: val,
               color: DesignColors.yellow,
             )
