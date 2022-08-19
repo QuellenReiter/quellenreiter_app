@@ -481,6 +481,9 @@ class _QuestScreenState extends State<QuestScreen>
 
     // if game is finished
     if (widget.appState.currentEnemy!.openGame!.gameFinished()) {
+      // notify friend that points can be accessed
+      widget.appState.db.sendPushOtherGameFinished(widget.appState,
+          receiverId: widget.appState.currentEnemy!.userId);
       // show game finished screen
       widget.appState.route = Routes.gameFinishedScreen;
       return;

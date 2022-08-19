@@ -1129,6 +1129,32 @@ class DatabaseUtils {
     }
   }
 
+  void sendPushOtherGameFinished(QuellenreiterAppState appState,
+      {String receiverId = "123"}) async {
+    await parse.Parse().initialize(userDatabaseApplicationID,
+        userDatabaseUrl.replaceAll("graphql", "parse"),
+        clientKey: userDatabaseClientKey,
+        debug: true,
+        liveQueryUrl: userLiveQueryUrl,
+        sessionId: await safeStorage.read(key: "token"),
+        autoSendSessionId: true);
+    //Executes a cloud function that returns a ParseObject type
+    final ParseCloudFunction function = ParseCloudFunction('sendGameFinished');
+    final Map<String, dynamic> params = <String, dynamic>{
+      'senderName': appState.player!.name,
+      'receiverId': receiverId,
+    };
+    final ParseResponse parseResponse =
+        await function.executeObjectFunction<ParseObject>(parameters: params);
+    if (parseResponse.success && parseResponse.result != null) {
+      if (parseResponse.result['result'] is ParseObject) {
+        //Transforms the return into a ParseObject
+        final ParseObject parseObject = parseResponse.result['result'];
+        print(parseObject.objectId);
+      }
+    }
+  }
+
   void sendPushGameStartet(QuellenreiterAppState appState,
       {String receiverId = "123"}) async {
     await parse.Parse().initialize(userDatabaseApplicationID,
