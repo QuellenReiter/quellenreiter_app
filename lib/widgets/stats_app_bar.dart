@@ -59,13 +59,21 @@ class _StatsAppBarState extends State<StatsAppBar> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Text(
-                  widget.appState.player!.emoji,
-                  style: TextStyle(fontSize: 50),
+              if (widget.appState.route == Routes.addFriends)
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: BackButton(
+                    color: Colors.white,
+                  ),
+                )
+              else
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: Text(
+                    widget.appState.player!.emoji,
+                    style: TextStyle(fontSize: 50),
+                  ),
                 ),
-              ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

@@ -4,6 +4,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/enemy_card.dart';
+import 'package:quellenreiter_app/widgets/stats_app_bar.dart';
 import 'package:quellenreiter_app/widgets/title_app_bar.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -48,9 +49,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: TitleAppBar(
-          title: "Freund:innen finden",
-        ),
+        appBar: StatsAppBar(appState: widget.appState),
         body: Center(
           child: Stack(
             children: [
@@ -70,10 +69,27 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.1,
                       ),
-                      const Icon(
-                        Icons.group_add_rounded,
-                        size: 80,
-                        color: DesignColors.pink,
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(top: 15, left: 15, right: 15),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.group_rounded,
+                              color: DesignColors.backgroundBlue,
+                              size: Theme.of(context)
+                                      .textTheme
+                                      .headline2!
+                                      .fontSize! +
+                                  10,
+                            ),
+                            Text(
+                              "freund:innen suchen",
+                              style: Theme.of(context).textTheme.headline2,
+                            ),
+                          ],
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(15),
@@ -168,17 +184,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                       ClipPath(
                         clipper: DiagonalClipper(),
                         child: Container(
-                          color: DesignColors.pink,
-                        ),
-                      ),
-                      Positioned(
-                        top: -40,
-                        child: Center(
-                          // our logo as child
-                          child: Image(
-                            height: 150,
-                            image: AssetImage('assets/logo-pink.png'),
-                          ),
+                          color: DesignColors.lightBlue,
                         ),
                       ),
                     ],
@@ -196,7 +202,13 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                           subject: "Teile die app mit deinen Freund:innen."),
                     },
                     icon: const Icon(Icons.share),
-                    label: const Text("Freund:innen einladen"),
+                    label: Text(
+                      "Freund:innen einladen",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline2!
+                          .copyWith(color: Colors.white),
+                    ),
                   ),
                 ),
               ),
