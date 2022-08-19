@@ -296,31 +296,50 @@ class _SignupScreenState extends State<SignupScreen> {
                               ),
                               const SizedBox(height: 20),
                               ValueListenableBuilder(
-                                valueListenable: password2Controller,
-                                builder: (context, TextEditingValue value, __) {
-                                  return TextField(
-                                    keyboardType: TextInputType.visiblePassword,
-                                    style:
-                                        Theme.of(context).textTheme.headline6,
-                                    autofillHints: const [
-                                      AutofillHints.newPassword
-                                    ],
-                                    obscureText: true,
-                                    controller: password2Controller,
-                                    decoration: const InputDecoration(
-                                      labelText: "Passwort wiederholen",
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
-                                        ),
-                                      ),
-                                      filled: true,
-                                      fillColor: Colors.transparent,
-                                      contentPadding: EdgeInsets.all(10),
-                                    ),
-                                  );
-                                },
-                              ),
+                                  valueListenable: passwordController,
+                                  builder: (context, value, child) {
+                                    return ValueListenableBuilder(
+                                      valueListenable: password2Controller,
+                                      builder: (context, TextEditingValue value,
+                                          __) {
+                                        return TextField(
+                                          keyboardType:
+                                              TextInputType.visiblePassword,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6,
+                                          autofillHints: const [
+                                            AutofillHints.newPassword
+                                          ],
+                                          obscureText: true,
+                                          controller: password2Controller,
+                                          decoration: InputDecoration(
+                                            errorText: passwordController
+                                                        .text !=
+                                                    password2Controller.text
+                                                ? "Passwörter stimmen nicht überein"
+                                                : passwordController
+                                                                .text.length <
+                                                            8 &&
+                                                        passwordController
+                                                                .text.length >
+                                                            2
+                                                    ? "Passwort muss mindestens 8 Zeichen lang sein."
+                                                    : null,
+                                            labelText: "Passwort wiederholen",
+                                            border: const OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(10),
+                                              ),
+                                            ),
+                                            filled: true,
+                                            fillColor: Colors.transparent,
+                                            contentPadding: EdgeInsets.all(10),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  }),
                               Row(
                                 children: [
                                   TextButton(
