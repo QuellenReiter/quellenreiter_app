@@ -556,6 +556,8 @@ class QuellenreiterAppState extends ChangeNotifier {
   /// Starts an open game with the current enemy.
   /// only if its the [Player]s turn.
   void playGame() async {
+    HapticFeedback.mediumImpact();
+
     gameStarted = true;
     if (route != Routes.loading) {
       route = Routes.loading;
