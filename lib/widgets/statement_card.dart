@@ -631,7 +631,7 @@ class StatementCardState extends State<StatementCard> {
         TargetFocus(
           identify: "keyStatementSaveAndShare",
           keyTarget: widget.keyStatementSaveAndShare,
-          alignSkip: Alignment.bottomRight,
+          alignSkip: Alignment.topLeft,
           shape: ShapeLightFocus.Circle,
           enableOverlayTab: false,
           enableTargetTab: true,
@@ -678,13 +678,6 @@ class StatementCardState extends State<StatementCard> {
                             ),
                             TextSpan(
                               text: " Archiv ",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline4!
-                                  .copyWith(color: Colors.white),
-                            ),
-                            TextSpan(
-                              text: ".",
                               style: Theme.of(context)
                                   .textTheme
                                   .headline4!

@@ -365,7 +365,7 @@ class Turorial extends StatelessWidget {
       TargetFocus(
         identify: "keyStatementText",
         keyTarget: keyStatementText,
-        alignSkip: Alignment.bottomRight,
+        alignSkip: Alignment.topLeft,
         shape: ShapeLightFocus.RRect,
         enableOverlayTab: false,
         enableTargetTab: true,
@@ -420,7 +420,7 @@ class Turorial extends StatelessWidget {
       TargetFocus(
         identify: "keyStatementInfo",
         keyTarget: keyStatementInfo,
-        alignSkip: Alignment.bottomRight,
+        alignSkip: Alignment.topLeft,
         shape: ShapeLightFocus.RRect,
         enableOverlayTab: false,
         enableTargetTab: true,
@@ -474,7 +474,7 @@ class Turorial extends StatelessWidget {
       TargetFocus(
         identify: "keyFaktFakeButton",
         keyTarget: keyFaktFakeButton,
-        alignSkip: Alignment.bottomRight,
+        alignSkip: Alignment.topLeft,
         shape: ShapeLightFocus.RRect,
         enableOverlayTab: false,
         enableTargetTab: true,
@@ -762,7 +762,7 @@ class Turorial extends StatelessWidget {
       TargetFocus(
         identify: "keyStatementCard",
         keyTarget: keyStatementCard,
-        alignSkip: Alignment.bottomRight,
+        alignSkip: Alignment.topLeft,
         shape: ShapeLightFocus.RRect,
         enableOverlayTab: false,
         enableTargetTab: true,
