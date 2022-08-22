@@ -286,7 +286,7 @@ class _StartScreenState extends State<StartScreen> {
                                             .headline1!
                                             .copyWith(
                                                 color: DesignColors.green,
-                                                fontSize: 120 * value),
+                                                fontSize: 100 * value),
                                       ),
                                       Text(
                                         "%",
@@ -295,7 +295,7 @@ class _StartScreenState extends State<StartScreen> {
                                             .headline1!
                                             .copyWith(
                                                 color: DesignColors.green,
-                                                fontSize: 120 * value),
+                                                fontSize: 100 * value),
                                         textAlign: TextAlign.center,
                                       ),
                                     ],
@@ -415,7 +415,7 @@ class _StartScreenState extends State<StartScreen> {
                                                                   val: player
                                                                       .numGamesTied,
                                                                   label:
-                                                                      "Unentschieden",
+                                                                      "Gleichstand",
                                                                   color: DesignColors
                                                                       .backgroundBlue),
                                                             ),
@@ -655,7 +655,7 @@ class _StartScreenState extends State<StartScreen> {
         color: DesignColors.lightGrey,
       ),
       child: Text(
-        "${val}x \n ${label}",
+        "${val}x\n${label}",
         style: Theme.of(context).textTheme.headline4!.copyWith(color: color),
         textAlign: TextAlign.center,
       ),
