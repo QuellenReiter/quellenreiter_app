@@ -528,7 +528,7 @@ class DatabaseUtils {
         if (p != null) {
           appState.player = p;
         } else {
-          appState.msg = "Player konnte nicht aktualisiert werden.";
+          appState.msg = "Player konnte nicht aktualisiert werden";
         }
       });
     }
@@ -1211,7 +1211,7 @@ class DatabaseUtils {
       }
       if (e.graphqlErrors[0].message ==
           "Account already exists for this username.") {
-        error = "Der Username ist bereits vergeben.";
+        error = "Der Username ist bereits vergeben";
       }
       print(e.graphqlErrors.toString());
     } else if (e.linkException is NetworkException) {
@@ -1222,7 +1222,7 @@ class DatabaseUtils {
       error = "Du bist offline...";
     } else {
       print(e.toString());
-      error = "unbekannter Fehler. Versuche es erneut.";
+      error = "unbekannter Fehler. Versuche es erneut";
     }
   }
 
@@ -1248,7 +1248,7 @@ class DatabaseUtils {
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       if (jsonResponse['bad_words'].isNotEmpty) {
-        error = "Username enthält ungültige Wörter.";
+        error = "Username enthält ungültige Wörter";
         return true;
       } else {
         print(username + " contains no bad words");

@@ -516,7 +516,7 @@ class QuellenreiterAppState extends ChangeNotifier {
         (!e.openGame!.gameFinished() || !e.openGame!.pointsAccessed)) {
       // the existing  game is not finished and the points are not accessed
       msg =
-          "Ein offenes spiel exisriert bereits. Beende es bevor du ein neues startest.";
+          "Ein offenes spiel existiert bereits. Beende es bevor du ein neues startest.";
       return;
     } else if (e.openGame != null) {
       // delete the old game, it is finished
@@ -538,7 +538,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     // print(e.openGame!.statementIds.toString());
     // if successfully fetched statements
     route = tempRoute;
-    msg = "${e.emoji} ${e.name} wurde herausgefordert.";
+    msg = "${e.emoji} ${e.name} wurde herausgefordert";
 
     return;
   }

@@ -54,7 +54,7 @@ class _SignupScreenState extends State<SignupScreen> {
       if (usernameExists) {
         // show error
         HapticFeedback.heavyImpact();
-        widget.appState.db.error = "Username schon vergeben.";
+        widget.appState.db.error = "Username schon vergeben";
         HapticFeedback.heavyImpact();
         return;
       }
@@ -73,7 +73,7 @@ class _SignupScreenState extends State<SignupScreen> {
     if (usernameExists) {
       // show error
       HapticFeedback.heavyImpact();
-      return "Username schon vergeben.";
+      return "Username schon vergeben";
     } else {
       return null;
     }
@@ -331,7 +331,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                                         passwordController
                                                                 .text.length >
                                                             2
-                                                    ? "Passwort muss mindestens 8 Zeichen lang sein."
+                                                    ? "Passwort muss mindestens 8 Zeichen lang sein"
                                                     : null,
                                             labelText: "Passwort wiederholen",
                                             border: const OutlineInputBorder(
@@ -496,7 +496,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                                                                 style: Theme.of(context).textTheme.headline2!.copyWith(color: DesignColors.backgroundBlue),
                                                                               ),
                                                                               Text(
-                                                                                "Du kannst es nicht zurücksetzen, wenn du es vergisst.",
+                                                                                "Du kannst es nicht zurücksetzen, wenn du es vergisst",
                                                                                 style: Theme.of(context).textTheme.subtitle1!.copyWith(color: DesignColors.backgroundBlue),
                                                                               ),
                                                                               Row(
@@ -511,7 +511,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                                                                       Navigator.of(context).pop();
                                                                                       widget.appState.trySignUp(usernameController.text, passwordController.text, emojiController.text);
                                                                                     },
-                                                                                    child: Text("Ja, weiter."),
+                                                                                    child: Text("Ja, weiter"),
                                                                                   ),
                                                                                   ElevatedButton(
                                                                                     onPressed: () {
@@ -519,7 +519,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
                                                                                       Navigator.of(context).pop();
                                                                                     },
-                                                                                    child: Text("Nein, zurück."),
+                                                                                    child: Text("Nein, zurück"),
                                                                                   ),
                                                                                 ],
                                                                               ),

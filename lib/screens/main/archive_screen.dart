@@ -19,7 +19,7 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
         widget.appState.safedStatements!.statements.isEmpty) {
       return Center(
         child: Text(
-            "Hier kannst du Faktenchecks speichern, die du interessant findest.",
+            "Hier kannst du Faktenchecks speichern, die du interessant findest",
             textAlign: TextAlign.center,
             style: Theme.of(context)
                 .textTheme

@@ -219,7 +219,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                           child: Padding(
                         padding: const EdgeInsets.only(
                             top: 200, left: 20, right: 20),
-                        child: Text("Du hast noch keine Statements gespielt.",
+                        child: Text("Du hast noch keine Statements gespielt",
                             textAlign: TextAlign.center,
                             style: Theme.of(context)
                                 .textTheme

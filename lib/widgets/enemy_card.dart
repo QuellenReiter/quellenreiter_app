@@ -184,7 +184,7 @@ class EnemyCard extends StatelessWidget {
         appState.currentEnemy = enemy;
         appState.route = Routes.gameReadyToStart;
       };
-      label = "Ergebnisse ansehen.";
+      label = "Ergebnisse ansehen";
     }
     // if enemy is playing
     else {
@@ -202,7 +202,6 @@ class EnemyCard extends StatelessWidget {
       child: Material(
         borderRadius: const BorderRadius.all(Radius.circular(15)),
         elevation: 5,
-        color: DesignColors.pink,
 
         // Make it clickable.
         child: Stack(
@@ -216,6 +215,7 @@ class EnemyCard extends StatelessWidget {
               borderRadius: const BorderRadius.all(Radius.circular(15)),
               child: Container(
                 decoration: BoxDecoration(
+                    color: DesignColors.pink,
                     borderRadius: const BorderRadius.all(Radius.circular(15)),
                     border: Border.all(
                       color: label == "Du bist dran"

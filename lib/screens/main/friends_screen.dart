@@ -189,7 +189,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
 
                             Share.share(
                               'Quiz-Duell nur mit "Fake News":\nhttps://quellenreiter.app',
-                              subject: "Teile die app mit deinen Freund:innen.",
+                              subject: "Teile die app mit deinen Freund:innen",
                             );
                           },
                           icon: const Icon(Icons.send_rounded),

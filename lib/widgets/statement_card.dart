@@ -400,7 +400,7 @@ class StatementCardState extends State<StatementCard> {
                                         // The image with rounded edges and cropped
                                         // to 4:3 ratio.
                                         Tooltip(
-                                          message: "Klicken zum Vergrößern.",
+                                          message: "Klicken zum Vergrößern",
                                           child: Material(
                                             borderRadius:
                                                 BorderRadius.circular(10),
@@ -662,13 +662,6 @@ class StatementCardState extends State<StatementCard> {
                                   .textTheme
                                   .headline2!
                                   .copyWith(color: DesignColors.yellow),
-                            ),
-                            TextSpan(
-                              text: ".",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline2!
-                                  .copyWith(color: Colors.white),
                             ),
                           ],
                         ),

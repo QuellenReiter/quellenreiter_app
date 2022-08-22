@@ -476,7 +476,7 @@ class _StartScreenState extends State<StartScreen> {
                                                         const SizedBox(
                                                             height: 20),
                                                         SelectableText(
-                                                          "Deine Statistiken werden nach jedem Spiel aktualisiert.",
+                                                          "Deine Statistiken werden nach jedem Spiel aktualisiert",
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
@@ -541,7 +541,7 @@ class _StartScreenState extends State<StartScreen> {
                               Share.share(
                                   'Quiz-Duell nur mit "Fake News":\nhttps://quellenreiter.app',
                                   subject:
-                                      "Teile die app mit deinen Freund:innen.");
+                                      "Teile die app mit deinen Freund:innen");
                             },
                             icon: Icon(Icons.share_outlined),
                             label: Text(
@@ -566,7 +566,7 @@ class _StartScreenState extends State<StartScreen> {
                       child: Padding(
                     padding: const EdgeInsets.only(
                         top: 50, left: 20, right: 20, bottom: 50),
-                    child: Text("Lade Freund:innen ein, um zu spielen.",
+                    child: Text("Lade Freund:innen ein, um zu spielen",
                         textAlign: TextAlign.center,
                         style: Theme.of(context)
                             .textTheme

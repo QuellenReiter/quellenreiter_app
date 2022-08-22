@@ -172,7 +172,7 @@ class FactDisplayContainer extends StatelessWidget {
                         link: fact.factArchivedLink!,
                         color: Colors.grey[600],
                         msg:
-                            "Ein archivierter Link speichert den Stand einer Website zu einem bestimmten Zeitpunkt.",
+                            "Ein archivierter Link speichert den Stand einer Website zu einem bestimmten Zeitpunkt",
                       )
                     : const SizedBox.shrink()
               ],

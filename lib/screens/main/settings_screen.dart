@@ -92,8 +92,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       AutofillHints.newUsername
                                     ],
                                     decoration: const InputDecoration(
-                                      hintText:
-                                          "Gebe einen neuen Username ein.",
+                                      hintText: "Gebe einen neuen Username ein",
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(10),
@@ -127,7 +126,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         : null,
                                     icon: const Icon(
                                         Icons.switch_access_shortcut),
-                                    label: const Text("Username ändern."),
+                                    label: const Text("Username ändern"),
                                   ),
                                 ),
                               ],
@@ -155,7 +154,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     ],
                                     maxLength: 1,
                                     decoration: const InputDecoration(
-                                      hintText: "Gebe einen neuen Emoji ein.",
+                                      hintText: "Gebe einen neuen Emoji ein",
                                       counterText: "",
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.all(

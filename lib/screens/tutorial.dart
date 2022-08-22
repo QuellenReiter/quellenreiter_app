@@ -398,7 +398,7 @@ class Turorial extends StatelessWidget {
                                 .copyWith(color: DesignColors.yellow),
                           ),
                           TextSpan(
-                            text: "an.",
+                            text: "an",
                             style: Theme.of(context)
                                 .textTheme
                                 .headline2!
@@ -452,7 +452,7 @@ class Turorial extends StatelessWidget {
                                 .copyWith(color: DesignColors.yellow),
                           ),
                           TextSpan(
-                            text: "dazu.",
+                            text: "dazu",
                             style: Theme.of(context)
                                 .textTheme
                                 .headline2!
@@ -795,7 +795,7 @@ class Turorial extends StatelessWidget {
                                 .copyWith(color: DesignColors.yellow),
                           ),
                           TextSpan(
-                            text: "angezeigt.",
+                            text: "angezeigt",
                             style: Theme.of(context)
                                 .textTheme
                                 .headline2!
@@ -804,7 +804,7 @@ class Turorial extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Text("Klicke auf die Karte, um sie anzusehen.",
+                    Text("Klicke auf die Karte, um sie anzusehen",
                         style: Theme.of(context)
                             .textTheme
                             .headline4!
