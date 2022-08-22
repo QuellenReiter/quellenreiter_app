@@ -340,24 +340,27 @@ class _StartScreenState extends State<StartScreen> {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.stretch,
                                                 children: [
-                                                  Row(
-                                                    children: [
-                                                      const Icon(
-                                                        Icons.trending_up,
-                                                        size: 60,
-                                                        color: DesignColors
-                                                            .backgroundBlue,
-                                                      ),
-                                                      SelectableText(
-                                                        "Deine Statistiken",
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .headline2!
-                                                            .copyWith(
-                                                                color: DesignColors
-                                                                    .backgroundBlue),
-                                                      ),
-                                                    ],
+                                                  Flexible(
+                                                    child: Row(
+                                                      children: [
+                                                        const Icon(
+                                                          Icons.trending_up,
+                                                          size: 60,
+                                                          color: DesignColors
+                                                              .backgroundBlue,
+                                                        ),
+                                                        SelectableText(
+                                                          "Deine Statistiken",
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .headline2!
+                                                              .copyWith(
+                                                                  color: DesignColors
+                                                                      .backgroundBlue),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                   Text(
                                                     widget
@@ -391,37 +394,47 @@ class _StartScreenState extends State<StartScreen> {
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
                                                                   .spaceBetween,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .end,
                                                           children: [
-                                                            buildStatsWithCircle(
-                                                                val: player
-                                                                    .numGamesWon,
-                                                                label:
-                                                                    "Gewonnen",
-                                                                color:
-                                                                    DesignColors
+                                                            Builder(builder:
+                                                                (context) {
+                                                              return Flexible(
+                                                                child: buildStatsWithRectangle(
+                                                                    val: player
+                                                                        .numGamesWon,
+                                                                    label:
+                                                                        "Gewonnen",
+                                                                    color: DesignColors
                                                                         .green),
-                                                            buildStatsWithCircle(
-                                                                val: player
-                                                                    .numGamesTied,
-                                                                label:
-                                                                    "Unentschieden",
-                                                                color: DesignColors
-                                                                    .backgroundBlue),
-                                                            buildStatsWithCircle(
-                                                                val: player
-                                                                        .numPlayedGames -
-                                                                    (player.numGamesTied +
-                                                                        player
-                                                                            .numGamesWon),
-                                                                label:
-                                                                    "Verloren",
-                                                                color:
-                                                                    DesignColors
-                                                                        .red),
+                                                              );
+                                                            }),
+                                                            Flexible(
+                                                              child: buildStatsWithRectangle(
+                                                                  val: player
+                                                                      .numGamesTied,
+                                                                  label:
+                                                                      "Unentschieden",
+                                                                  color: DesignColors
+                                                                      .backgroundBlue),
+                                                            ),
+                                                            Flexible(
+                                                              child: buildStatsWithRectangle(
+                                                                  val: player.numPlayedGames -
+                                                                      (player.numGamesTied +
+                                                                          player
+                                                                              .numGamesWon),
+                                                                  label:
+                                                                      "Verloren",
+                                                                  color:
+                                                                      DesignColors
+                                                                          .red),
+                                                            ),
                                                           ],
                                                         ),
                                                         const SizedBox(
-                                                          height: 20,
+                                                          height: 10,
                                                         ),
                                                         buildLinearStatsBar(
                                                             max: (player.trueCorrectAnswers +
@@ -630,10 +643,11 @@ class _StartScreenState extends State<StartScreen> {
     );
   }
 
-  Widget buildStatsWithCircle(
+  Widget buildStatsWithRectangle(
       {int val = 0, String label = "", Color color = Colors.transparent}) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.symmetric(horizontal: 5),
+      padding: const EdgeInsets.all(5),
       alignment: Alignment.center,
       decoration: const BoxDecoration(
         shape: BoxShape.rectangle,
@@ -642,7 +656,7 @@ class _StartScreenState extends State<StartScreen> {
       ),
       child: Text(
         "${val}x \n ${label}",
-        style: Theme.of(context).textTheme.headline2!.copyWith(color: color),
+        style: Theme.of(context).textTheme.headline4!.copyWith(color: color),
         textAlign: TextAlign.center,
       ),
     );

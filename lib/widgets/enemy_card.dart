@@ -230,46 +230,49 @@ class EnemyCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Flexible(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  enemy.name,
-                                  style: Theme.of(context).textTheme.headline4,
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 10),
-                                  child: Icon(
-                                    Icons.workspace_premium_rounded,
-                                    color: DesignColors.yellow,
-                                    size: 24,
+                      Flexible(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Flexible(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    enemy.name,
+                                    style:
+                                        Theme.of(context).textTheme.headline4,
                                   ),
-                                ),
-                                Countup(
-                                  begin: 0,
-                                  end: enemy.getLevel().toDouble(),
-                                  duration: const Duration(milliseconds: 500),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline4!
-                                      .copyWith(color: DesignColors.yellow),
-                                ),
-                              ],
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 10),
+                                    child: Icon(
+                                      Icons.workspace_premium_rounded,
+                                      color: DesignColors.yellow,
+                                      size: 24,
+                                    ),
+                                  ),
+                                  Countup(
+                                    begin: 0,
+                                    end: enemy.getLevel().toDouble(),
+                                    duration: const Duration(milliseconds: 500),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline4!
+                                        .copyWith(color: DesignColors.yellow),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          Flexible(
-                              child: Text(
-                            label,
-                            style: Theme.of(context).textTheme.subtitle1,
-                          ))
-                        ],
+                            Flexible(
+                                child: Text(
+                              label,
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ))
+                          ],
+                        ),
                       ),
                       const Icon(
                         Icons.arrow_forward_ios,
