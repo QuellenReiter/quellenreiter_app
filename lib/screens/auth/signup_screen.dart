@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:quellenreiter_app/consonents.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
+import 'package:url_launcher/link.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../utilities/utilities.dart';
 import '../../widgets/main_app_bar.dart';
@@ -20,6 +22,7 @@ class _SignupScreenState extends State<SignupScreen> {
   late TextEditingController emojiController;
   late TextEditingController password2Controller;
   final PageController _pageController = PageController(viewportFraction: 1);
+  ValueNotifier<bool> agbAccepted = ValueNotifier<bool>(false);
 
   @override
   void initState() {
@@ -347,7 +350,64 @@ class _SignupScreenState extends State<SignupScreen> {
                                       },
                                     );
                                   }),
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 10),
+                              // toggle to allow notifications
+                              ValueListenableBuilder(
+                                  valueListenable: agbAccepted,
+                                  builder:
+                                      (context, bool agbAcceptedValue, child) {
+                                    return Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Wrap(
+                                        alignment: WrapAlignment.start,
+                                        crossAxisAlignment:
+                                            WrapCrossAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Ich stimme den",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!
+                                                .copyWith(
+                                                    color: DesignColors.black),
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              HapticFeedback.mediumImpact();
+                                              if (!await launch(
+                                                  datenschutzUrl)) {
+                                                throw 'could not launch';
+                                              }
+                                            },
+                                            child: Text(
+                                              "Datenschutzbestimmungen",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText1!
+                                                  .copyWith(
+                                                      color: DesignColors.pink),
+                                            ),
+                                          ),
+                                          Text(
+                                            "zu. ",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!
+                                                .copyWith(
+                                                    color: DesignColors.black),
+                                          ),
+                                          Switch(
+                                            value: agbAcceptedValue,
+                                            onChanged: (bool value) {
+                                              HapticFeedback.mediumImpact();
+                                              agbAccepted.value = value;
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }),
+                              const SizedBox(height: 10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -390,6 +450,21 @@ class _SignupScreenState extends State<SignupScreen> {
                                                         ? () async {
                                                             HapticFeedback
                                                                 .mediumImpact();
+                                                            // agbs accepted
+                                                            if (!agbAccepted
+                                                                .value) {
+                                                              HapticFeedback
+                                                                  .heavyImpact();
+                                                              widget.appState
+                                                                  .showError(
+                                                                      context,
+                                                                      errorMsg:
+                                                                          "Du musst die Datenschutzbestimmungen akzeptieren");
+                                                              HapticFeedback
+                                                                  .heavyImpact();
+
+                                                              return;
+                                                            }
                                                             // check if username is available
                                                             bool usernameExists = await widget
                                                                 .appState.db

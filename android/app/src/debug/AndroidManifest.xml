@@ -4,7 +4,7 @@
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <application
-        android:label="quellenreiter_app"
+        android:label="QuellenReiter:in"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name="com.example.quellenreiter_app.MainActivity"

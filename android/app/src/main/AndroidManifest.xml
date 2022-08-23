@@ -13,7 +13,7 @@
 
     <application
         tools:replace="android:label"
-        android:label="quellenreiter_app"
+        android:label="QuellenReiter:in"
         android:name=".App"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -42,7 +42,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="open" android:host="quellenreiter.app" />
+                <data android:scheme="open" android:host="quellenreiter.app/addfriends/" />
                 <data android:scheme="https" />
             </intent-filter>
         </activity>

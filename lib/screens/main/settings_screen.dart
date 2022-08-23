@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:quellenreiter_app/consonents.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/utilities/utilities.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -464,6 +465,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               onPressed: () async {
                                 HapticFeedback.mediumImpact();
                                 if (!await launch(
+                                    "https://forms.gle/qwf8jg3fWt3tVsQi8")) {
+                                  throw 'could not launch';
+                                }
+                              },
+                              child: Text(
+                                "Support",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1!
+                                    .copyWith(color: DesignColors.lightGrey),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                HapticFeedback.mediumImpact();
+                                if (!await launch(
                                     "https://quellenreiter.app/Impressum/")) {
                                   throw 'could not launch';
                                 }
@@ -479,8 +496,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             TextButton(
                               onPressed: () async {
                                 HapticFeedback.mediumImpact();
-                                if (!await launch(
-                                    "https://quellenreiter.app/Datenschutz/")) {
+                                if (!await launch(datenschutzUrl)) {
                                   throw 'could not launch';
                                 }
                               },
