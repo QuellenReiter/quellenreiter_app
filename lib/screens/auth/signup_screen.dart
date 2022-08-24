@@ -270,7 +270,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                             fillColor: Colors.transparent,
                                             contentPadding: EdgeInsets.all(10),
                                           ),
-                                          keyboardType: TextInputType.name,
+                                          keyboardType: TextInputType.text,
                                         ),
                                       ]);
                                 },
