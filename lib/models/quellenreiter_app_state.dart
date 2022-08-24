@@ -669,7 +669,7 @@ class QuellenreiterAppState extends ChangeNotifier {
       player!.deviceToken = "not allowed";
     } else if (Platform.isIOS || Platform.isAndroid) {
       const platform =
-          MethodChannel('com.quellenreiter.quellenreiterApp/deviceToken');
+          MethodChannel('com.quellenreiter.quellenreiter_app/deviceToken');
       try {
         final String? token = await platform.invokeMethod('getDeviceToken');
         if (token == null) {

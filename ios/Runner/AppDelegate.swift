@@ -29,7 +29,7 @@ import Parse
       
 //      method to get deviceToken
       let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
-          let batteryChannel = FlutterMethodChannel(name: "com.quellenreiter.quellenreiterApp/deviceToken",
+          let batteryChannel = FlutterMethodChannel(name: "com.quellenreiter.quellenreiter_app/deviceToken",
                                                     binaryMessenger: controller.binaryMessenger)
           batteryChannel.setMethodCallHandler({
             (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in

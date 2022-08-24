@@ -1,4 +1,4 @@
-package com.example.quellenreiter_app
+package com.quellenreiter.quellenreiter_app
 import androidx.annotation.NonNull
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -9,7 +9,7 @@ import android.content.Context
 
 
 class MainActivity: FlutterActivity()  {
-    private val CHANNEL = "com.quellenreiter.quellenreiterApp/deviceToken"
+    private val CHANNEL = "com.quellenreiter.quellenreiter_app/deviceToken"
 
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {

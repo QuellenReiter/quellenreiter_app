@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.quellenreiter_app">
+    package="com.quellenreiter.quellenreiter_app">
     <!-- Flutter needs it to communicate with the running application
          to allow setting breakpoints, to provide hot reload, etc.
     -->
@@ -7,7 +7,7 @@
         android:label="QuellenReiter:in"
         android:icon="@mipmap/ic_launcher">
         <activity
-            android:name="com.example.quellenreiter_app.MainActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"

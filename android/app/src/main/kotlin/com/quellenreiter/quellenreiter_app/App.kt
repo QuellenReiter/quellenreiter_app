@@ -1,4 +1,4 @@
-package com.example.quellenreiter_app
+package com.quellenreiter.quellenreiter_app
 
 import android.app.Application
 import com.parse.Parse

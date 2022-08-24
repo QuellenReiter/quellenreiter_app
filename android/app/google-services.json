@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:440162394098:android:eaaef182ba7bc03a78956b",
+        "mobilesdk_app_id": "1:440162394098:android:6e24d8bab4e62ddd78956b",
         "android_client_info": {
-          "package_name": "com.example.quellenreiter_app"
+          "package_name": "com.quellenreiter.quellenreiter_app"
         }
       },
       "oauth_client": [

@@ -1,4 +1,4 @@
-package com.example.quellenreiter_app
+package com.quellenreiter.quellenreiter_app
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -16,10 +16,6 @@ class Receiver : ParsePushBroadcastReceiver() {
         val pm = context.getPackageManager()
         val intent = pm.getLaunchIntentForPackage(context.getPackageName())
         context.applicationContext.startActivity(intent)
-
-//        val i =  Intent()
-//        i.setClassName("com.example.quellenreiter_app", "com.example.quellenreiter_app.MainActivity");
-//        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        context.applicationContext.startActivity(i);
+    
     }
 }
