@@ -166,7 +166,8 @@ class QuellenreiterAppState extends ChangeNotifier {
     bool? value = prefs.getBool('notificationsAllowed');
     if (value == null) {
       value = true;
-      notificationsAllowed = value;
+      prefs.setBool('notificationsAllowed', value);
+      _notificationsAllowed = value;
       updateDeviceTokenForPushNotifications();
     }
     return value;
@@ -410,7 +411,8 @@ class QuellenreiterAppState extends ChangeNotifier {
   void logout() async {
     route = Routes.loading;
     //remove devie from the users push list.
-    notificationsAllowed = false;
+    prefs.setBool('notificationsAllowed', false);
+    _notificationsAllowed = false;
     await updateDeviceTokenForPushNotifications();
     // remove device decision so that for next user, default is allowed again.
     await prefs.remove("notificationsAllowed");

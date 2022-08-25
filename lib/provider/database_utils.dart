@@ -307,7 +307,7 @@ class DatabaseUtils {
 
   /// Get a single [Statement] from the Database by [Statement.objectId].
   Future<Statement?> getStatement(String statementID) async {
-    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
+    final HttpLink httpLink = HttpLink(statementDatabaseUrl, defaultHeaders: {
       'X-Parse-Application-Id': statementDatabaseApplicationID,
       'X-Parse-Client-Key': statementDatabaseClientKey,
     });
@@ -612,38 +612,6 @@ class DatabaseUtils {
                 : DbFields.gamePlayer1Id],
       );
     }
-  }
-
-  /// Search for [Statements] from the Database by [String].
-  ///
-  /// If [query] is empty or null, return the newest [Statements].
-  Future<Statements?> searchStatements(String? query) async {
-    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': userDatabaseApplicationID,
-      'X-Parse-Client-Key': userDatabaseClientKey,
-    });
-    // create the data provider
-    GraphQLClient client = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
-    var queryResult = await client.query(
-      QueryOptions(
-        document: query == null || query.isEmpty
-            ? gql(
-                Queries.getnNewestStatements(8),
-              )
-            : gql(
-                Queries.searchStatements(query),
-              ),
-      ),
-    );
-    if (queryResult.hasException) {
-      handleException(queryResult.exception!);
-
-      return null;
-    }
-    return Statements.fromMap(queryResult.data);
   }
 
   /// Fetch all safed/liked [Statements] from a [Player].
