@@ -23,6 +23,7 @@ class _SignupScreenState extends State<SignupScreen> {
   late TextEditingController password2Controller;
   final PageController _pageController = PageController(viewportFraction: 1);
   ValueNotifier<bool> agbAccepted = ValueNotifier<bool>(false);
+  ValueNotifier<bool> registerClicked = ValueNotifier<bool>(false);
 
   @override
   void initState() {
@@ -252,6 +253,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                             AutofillHints.newUsername
                                           ],
                                           controller: usernameController,
+                                          maxLength: 12,
                                           decoration: InputDecoration(
                                             errorText: usernameController
                                                             .text.length <
@@ -270,7 +272,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                             fillColor: Colors.transparent,
                                             contentPadding: EdgeInsets.all(10),
                                           ),
-                                          keyboardType: TextInputType.text,
+                                          keyboardType: TextInputType.name,
                                         ),
                                       ]);
                                 },
@@ -299,8 +301,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                       fillColor: Colors.transparent,
                                       contentPadding: EdgeInsets.all(10),
                                     ),
-                                    onEditingComplete: () =>
-                                        TextInput.finishAutofillContext(),
                                   );
                                 },
                               ),
@@ -321,6 +321,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                           autofillHints: const [
                                             AutofillHints.newPassword
                                           ],
+                                          onEditingComplete: () =>
+                                              TextInput.finishAutofillContext(),
                                           obscureText: true,
                                           controller: password2Controller,
                                           decoration: InputDecoration(
@@ -412,216 +414,233 @@ class _SignupScreenState extends State<SignupScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   ValueListenableBuilder(
-                                    valueListenable: passwordController,
-                                    builder:
-                                        (context, TextEditingValue value, __) {
-                                      return ValueListenableBuilder(
-                                        valueListenable: usernameController,
-                                        builder: (context,
-                                            TextEditingValue value, __) {
-                                          return ValueListenableBuilder(
-                                            valueListenable:
-                                                password2Controller,
-                                            builder: (context,
-                                                TextEditingValue value, __) {
-                                              return ValueListenableBuilder(
-                                                valueListenable:
-                                                    emojiController,
-                                                builder: (context,
-                                                    TextEditingValue value,
-                                                    __) {
-                                                  return ElevatedButton(
-                                                    onPressed: (usernameController
-                                                                        .text
-                                                                        .length >=
-                                                                    Utils
-                                                                        .usernameMinLength &&
-                                                                passwordController
-                                                                        .text
-                                                                        .length >
-                                                                    7 &&
-                                                                emojiController
-                                                                    .text
-                                                                    .isNotEmpty) &&
-                                                            password2Controller
-                                                                    .value ==
-                                                                passwordController
-                                                                    .value
-                                                        ? () async {
-                                                            HapticFeedback
-                                                                .mediumImpact();
-                                                            // agbs accepted
-                                                            if (!agbAccepted
-                                                                .value) {
-                                                              HapticFeedback
-                                                                  .heavyImpact();
-                                                              widget.appState
-                                                                  .showError(
-                                                                      context,
-                                                                      errorMsg:
-                                                                          "Du musst die Datenschutzbestimmungen akzeptieren");
-                                                              HapticFeedback
-                                                                  .heavyImpact();
-
-                                                              return;
-                                                            }
-                                                            // check if username is available
-                                                            bool usernameExists = await widget
-                                                                .appState.db
-                                                                .checkUsernameAlreadyExists(
-                                                                    widget
-                                                                        .appState,
-                                                                    username:
-                                                                        usernameController
-                                                                            .text);
-                                                            if (usernameExists) {
-                                                              // show error
-                                                              HapticFeedback
-                                                                  .heavyImpact();
-                                                              widget.appState
-                                                                  .showError(
-                                                                      context,
-                                                                      errorMsg:
-                                                                          "Username bereits vergeben");
-                                                              HapticFeedback
-                                                                  .heavyImpact();
-
-                                                              return;
-                                                            }
-                                                            // check if username is bad
-                                                            bool usernameBad = await widget
-                                                                .appState.db
-                                                                .containsBadWord(
-                                                                    usernameController
-                                                                        .text);
-                                                            if (usernameBad) {
-                                                              // show error
-                                                              HapticFeedback
-                                                                  .heavyImpact();
-                                                              widget.appState
-                                                                  .showError(
-                                                                      context,
-                                                                      errorMsg:
-                                                                          "Username enthält unerwünschte Wörter");
-                                                              HapticFeedback
-                                                                  .heavyImpact();
-
-                                                              return;
-                                                            }
-                                                            TextInput
-                                                                .finishAutofillContext();
-                                                            showModalBottomSheet(
-                                                                shape:
-                                                                    RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .only(
-                                                                    topLeft: Radius
-                                                                        .circular(
-                                                                            10),
-                                                                    topRight: Radius
-                                                                        .circular(
-                                                                            10),
-                                                                  ),
-                                                                ),
-                                                                isScrollControlled:
-                                                                    true,
-                                                                isDismissible:
-                                                                    true,
-                                                                context:
-                                                                    context,
-                                                                builder:
-                                                                    (BuildContext
-                                                                        context) {
-                                                                  return SafeArea(
-                                                                    child:
-                                                                        Padding(
-                                                                      padding:
-                                                                          const EdgeInsets.all(
-                                                                              20),
-                                                                      child:
-                                                                          AnimationLimiter(
-                                                                        child:
-                                                                            Column(
-                                                                          mainAxisSize:
-                                                                              MainAxisSize.min,
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.start,
-                                                                          crossAxisAlignment:
-                                                                              CrossAxisAlignment.center,
-                                                                          children:
-                                                                              AnimationConfiguration.toStaggeredList(
-                                                                            duration:
-                                                                                const Duration(milliseconds: 800),
-                                                                            childAnimationBuilder: (widget) =>
-                                                                                SlideAnimation(
-                                                                              horizontalOffset: 20.0,
-                                                                              curve: Curves.elasticOut,
-                                                                              child: FadeInAnimation(
-                                                                                child: widget,
-                                                                              ),
-                                                                            ),
-                                                                            children: [
-                                                                              const Text(
-                                                                                "🧠",
-                                                                                style: TextStyle(fontSize: 100),
-                                                                              ),
-                                                                              Text(
-                                                                                "Hast du dir dein Passwort gemerkt?",
-                                                                                style: Theme.of(context).textTheme.headline2!.copyWith(color: DesignColors.backgroundBlue),
-                                                                              ),
-                                                                              Text(
-                                                                                "Du kannst es nicht zurücksetzen, wenn du es vergisst",
-                                                                                style: Theme.of(context).textTheme.subtitle1!.copyWith(color: DesignColors.backgroundBlue),
-                                                                              ),
-                                                                              Row(
-                                                                                mainAxisSize: MainAxisSize.max,
-                                                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                                                children: [
-                                                                                  ElevatedButton(
-                                                                                    onPressed: () {
-                                                                                      HapticFeedback.mediumImpact();
-                                                                                      TextInput.finishAutofillContext();
-
-                                                                                      Navigator.of(context).pop();
-                                                                                      widget.appState.trySignUp(usernameController.text, passwordController.text, emojiController.text);
-                                                                                    },
-                                                                                    child: Text("Ja, weiter"),
-                                                                                  ),
-                                                                                  ElevatedButton(
-                                                                                    onPressed: () {
-                                                                                      HapticFeedback.mediumImpact();
-
-                                                                                      Navigator.of(context).pop();
-                                                                                    },
-                                                                                    child: Text("Nein, zurück"),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                            ],
-                                                                          ),
+                                      valueListenable: registerClicked,
+                                      builder:
+                                          (context, bool isLoading, child) {
+                                        return ValueListenableBuilder(
+                                          valueListenable: passwordController,
+                                          builder: (context,
+                                              TextEditingValue value, __) {
+                                            return ValueListenableBuilder(
+                                              valueListenable:
+                                                  usernameController,
+                                              builder: (context,
+                                                  TextEditingValue value, __) {
+                                                return ValueListenableBuilder(
+                                                  valueListenable:
+                                                      password2Controller,
+                                                  builder: (context,
+                                                      TextEditingValue value,
+                                                      __) {
+                                                    return ValueListenableBuilder(
+                                                      valueListenable:
+                                                          emojiController,
+                                                      builder: (context,
+                                                          TextEditingValue
+                                                              value,
+                                                          __) {
+                                                        return ElevatedButton(
+                                                          onPressed: (usernameController
+                                                                              .text
+                                                                              .length >=
+                                                                          Utils
+                                                                              .usernameMinLength &&
+                                                                      passwordController
+                                                                              .text
+                                                                              .length >
+                                                                          7 &&
+                                                                      emojiController
+                                                                          .text
+                                                                          .isNotEmpty) &&
+                                                                  (password2Controller
+                                                                              .value ==
+                                                                          passwordController
+                                                                              .value &&
+                                                                      !isLoading)
+                                                              ? () async {
+                                                                  registerClicked
+                                                                          .value =
+                                                                      true;
+                                                                  HapticFeedback
+                                                                      .mediumImpact();
+                                                                  // agbs accepted
+                                                                  if (!agbAccepted
+                                                                      .value) {
+                                                                    HapticFeedback
+                                                                        .heavyImpact();
+                                                                    widget.appState.showError(
+                                                                        context,
+                                                                        errorMsg:
+                                                                            "Du musst die Datenschutzbestimmungen akzeptieren");
+                                                                    HapticFeedback
+                                                                        .heavyImpact();
+                                                                    registerClicked
+                                                                            .value =
+                                                                        false;
+                                                                    return;
+                                                                  }
+                                                                  // check if username is available
+                                                                  bool usernameExists = await widget
+                                                                      .appState
+                                                                      .db
+                                                                      .checkUsernameAlreadyExists(
+                                                                          widget
+                                                                              .appState,
+                                                                          username:
+                                                                              usernameController.text);
+                                                                  if (usernameExists) {
+                                                                    // show error
+                                                                    HapticFeedback
+                                                                        .heavyImpact();
+                                                                    widget.appState.showError(
+                                                                        context,
+                                                                        errorMsg:
+                                                                            "Username bereits vergeben");
+                                                                    HapticFeedback
+                                                                        .heavyImpact();
+                                                                    registerClicked
+                                                                            .value =
+                                                                        false;
+                                                                    return;
+                                                                  }
+                                                                  // check if username is bad
+                                                                  bool usernameBad = await widget
+                                                                      .appState
+                                                                      .db
+                                                                      .containsBadWord(
+                                                                          usernameController
+                                                                              .text);
+                                                                  if (usernameBad) {
+                                                                    // show error
+                                                                    HapticFeedback
+                                                                        .heavyImpact();
+                                                                    widget.appState.showError(
+                                                                        context,
+                                                                        errorMsg:
+                                                                            "Username enthält unerwünschte Wörter");
+                                                                    HapticFeedback
+                                                                        .heavyImpact();
+                                                                    registerClicked
+                                                                            .value =
+                                                                        false;
+                                                                    return;
+                                                                  }
+                                                                  TextInput
+                                                                      .finishAutofillContext();
+                                                                  showModalBottomSheet(
+                                                                      shape:
+                                                                          RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.only(
+                                                                          topLeft:
+                                                                              Radius.circular(10),
+                                                                          topRight:
+                                                                              Radius.circular(10),
                                                                         ),
                                                                       ),
-                                                                    ),
-                                                                  );
-                                                                });
-                                                          }
-                                                        : null,
-                                                    child: Text(
-                                                      "Registrieren",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headline1,
-                                                    ),
-                                                  );
-                                                },
-                                              );
-                                            },
-                                          );
-                                        },
-                                      );
-                                    },
-                                  ),
+                                                                      isScrollControlled:
+                                                                          true,
+                                                                      isDismissible:
+                                                                          true,
+                                                                      context:
+                                                                          context,
+                                                                      builder:
+                                                                          (BuildContext
+                                                                              context) {
+                                                                        return SafeArea(
+                                                                          child:
+                                                                              Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.all(20),
+                                                                            child:
+                                                                                AnimationLimiter(
+                                                                              child: Column(
+                                                                                mainAxisSize: MainAxisSize.min,
+                                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                children: AnimationConfiguration.toStaggeredList(
+                                                                                  duration: const Duration(milliseconds: 800),
+                                                                                  childAnimationBuilder: (widget) => SlideAnimation(
+                                                                                    horizontalOffset: 20.0,
+                                                                                    curve: Curves.elasticOut,
+                                                                                    child: FadeInAnimation(
+                                                                                      child: widget,
+                                                                                    ),
+                                                                                  ),
+                                                                                  children: [
+                                                                                    const Text(
+                                                                                      "🧠",
+                                                                                      style: TextStyle(fontSize: 100),
+                                                                                    ),
+                                                                                    Text(
+                                                                                      "Hast du dir dein Passwort gemerkt?",
+                                                                                      style: Theme.of(context).textTheme.headline2!.copyWith(color: DesignColors.backgroundBlue),
+                                                                                    ),
+                                                                                    Text(
+                                                                                      "Du kannst es nicht zurücksetzen, wenn du es vergisst",
+                                                                                      style: Theme.of(context).textTheme.subtitle1!.copyWith(color: DesignColors.backgroundBlue),
+                                                                                    ),
+                                                                                    Row(
+                                                                                      mainAxisSize: MainAxisSize.max,
+                                                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                      children: [
+                                                                                        ElevatedButton(
+                                                                                          onPressed: () {
+                                                                                            HapticFeedback.mediumImpact();
+                                                                                            TextInput.finishAutofillContext();
+
+                                                                                            Navigator.of(context).pop();
+                                                                                            widget.appState.trySignUp(usernameController.text, passwordController.text, emojiController.text);
+                                                                                          },
+                                                                                          child: Text("Ja, weiter"),
+                                                                                        ),
+                                                                                        ElevatedButton(
+                                                                                          onPressed: () {
+                                                                                            HapticFeedback.mediumImpact();
+                                                                                            registerClicked.value = false;
+                                                                                            Navigator.of(context).pop();
+                                                                                          },
+                                                                                          child: Text("Nein, zurück"),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        );
+                                                                      }).then((value) => registerClicked
+                                                                          .value =
+                                                                      false);
+                                                                }
+                                                              : null,
+                                                          child: isLoading
+                                                              ? const Padding(
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              5),
+                                                                  child:
+                                                                      const CircularProgressIndicator(),
+                                                                )
+                                                              : Text(
+                                                                  "Registrieren",
+                                                                  style: Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .headline1,
+                                                                ),
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                            );
+                                          },
+                                        );
+                                      }),
                                 ],
                               ),
                               SizedBox(

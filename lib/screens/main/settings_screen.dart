@@ -77,31 +77,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             return Row(
                               children: [
                                 Flexible(
-                                  child: TextField(
-                                    style:
-                                        Theme.of(context).textTheme.headline6,
-                                    inputFormatters: [
-                                      UsernameTextFormatter(),
-                                      FilteringTextInputFormatter.allow(
-                                          Utils.regexUsername),
-                                    ],
-                                    enableSuggestions: false,
-                                    autocorrect: false,
-                                    textCapitalization: TextCapitalization.none,
-                                    controller: usernameController,
-                                    autofillHints: const [
-                                      AutofillHints.newUsername
-                                    ],
-                                    decoration: const InputDecoration(
-                                      hintText: "Gebe einen neuen Username ein",
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
+                                  child: AutofillGroup(
+                                    child: TextField(
+                                      style:
+                                          Theme.of(context).textTheme.headline6,
+                                      inputFormatters: [
+                                        UsernameTextFormatter(),
+                                        FilteringTextInputFormatter.allow(
+                                            Utils.regexUsername),
+                                      ],
+                                      enableSuggestions: false,
+                                      autocorrect: false,
+                                      textCapitalization:
+                                          TextCapitalization.none,
+                                      controller: usernameController,
+                                      autofillHints: const [
+                                        AutofillHints.newUsername
+                                      ],
+                                      keyboardType: TextInputType.name,
+                                      decoration: const InputDecoration(
+                                        hintText:
+                                            "Gebe einen neuen Username ein",
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(10),
+                                          ),
                                         ),
+                                        filled: true,
+                                        fillColor: Colors.transparent,
+                                        contentPadding: EdgeInsets.all(10),
                                       ),
-                                      filled: true,
-                                      fillColor: Colors.transparent,
-                                      contentPadding: EdgeInsets.all(10),
+                                      onEditingComplete: () =>
+                                          TextInput.finishAutofillContext(),
                                     ),
                                   ),
                                 ),
