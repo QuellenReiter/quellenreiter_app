@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -107,7 +108,9 @@ class UsernameTextFormatter extends TextInputFormatter {
       TextEditingValue oldValue, TextEditingValue newValue) {
     return TextEditingValue(
       text: newValue.text.toLowerCase().characters.take(12).toString(),
-      selection: newValue.selection,
+      selection: TextSelection.collapsed(
+        offset: min(newValue.selection.end, 12),
+      ),
     );
   }
 }
