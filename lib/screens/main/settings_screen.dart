@@ -403,6 +403,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
               ),
+              if (MediaQuery.of(context).size.height > 1000)
+                SizedBox(
+                  height: 200,
+                ),
               SizedBox(
                 // height: min(MediaQuery.of(context).size.height / 2, 400),
                 child: Stack(
@@ -480,8 +484,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                             "QuellenReiter.app",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyText1!
-                                                .copyWith(color: Colors.white),
+                                                .bodyText2!
+                                                .copyWith(
+                                                    color:
+                                                        DesignColors.lightGrey),
                                           ),
                                         ),
                                         TextButton(
@@ -496,7 +502,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                             "Support",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyText1!
+                                                .bodyText2!
                                                 .copyWith(
                                                     color:
                                                         DesignColors.lightGrey),
@@ -514,7 +520,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                             "Impressum",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyText1!
+                                                .bodyText2!
                                                 .copyWith(
                                                     color:
                                                         DesignColors.lightGrey),
@@ -531,7 +537,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                             "Datenschutz",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyText1!
+                                                .bodyText2!
                                                 .copyWith(
                                                     color:
                                                         DesignColors.lightGrey),
@@ -545,121 +551,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ]),
                       ),
                     ),
-                    // Positioned(
-                    //   top: 5,
-                    //   child: RotationTransition(
-                    //     turns: AlwaysStoppedAnimation(-8 / 360),
-                    //     child: Container(
-                    //       width: MediaQuery.of(context).size.width + 10,
-                    //       color: DesignColors.lightBlue,
-                    //       child: Center(
-                    //         child: Text(
-                    //           "Made in Berlin with ❤️ and ☕ and Steuergeld.",
-                    //           style: Theme.of(context)
-                    //               .textTheme
-                    //               .bodyText1!
-                    //               .copyWith(color: DesignColors.backgroundBlue),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-                    // Positioned(
-                    //   bottom: 0,
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.symmetric(horizontal: 30),
-                    //     child: Column(
-                    //       mainAxisSize: MainAxisSize.max,
-                    //       mainAxisAlignment: MainAxisAlignment.end,
-                    //       children: [
-                    //         Image(
-                    //           height: MediaQuery.of(context).size.aspectRatio >
-                    //                   (9 / 16)
-                    //               ? 100
-                    //               : null,
-                    //           width: MediaQuery.of(context).size.aspectRatio >
-                    //                   (9 / 16)
-                    //               ? null
-                    //               : MediaQuery.of(context).size.width - 40,
-                    //           image:
-                    //               const AssetImage("assets/branding_low.png"),
-                    //         ),
-                    //         Wrap(
-                    //           runAlignment: WrapAlignment.center,
-                    //           alignment: WrapAlignment.spaceBetween,
-                    //           children: [
-                    //             TextButton(
-                    //               onPressed: () async {
-                    //                 HapticFeedback.mediumImpact();
-                    //                 if (!await launch(
-                    //                     "https://quellenreiter.app")) {
-                    //                   throw 'could not launch';
-                    //                 }
-                    //               },
-                    //               child: Text(
-                    //                 "QuellenReiter.app",
-                    //                 style: Theme.of(context)
-                    //                     .textTheme
-                    //                     .bodyText1!
-                    //                     .copyWith(color: Colors.white),
-                    //               ),
-                    //             ),
-                    //             TextButton(
-                    //               onPressed: () async {
-                    //                 HapticFeedback.mediumImpact();
-                    //                 if (!await launch(
-                    //                     "https://forms.gle/qwf8jg3fWt3tVsQi8")) {
-                    //                   throw 'could not launch';
-                    //                 }
-                    //               },
-                    //               child: Text(
-                    //                 "Support",
-                    //                 style: Theme.of(context)
-                    //                     .textTheme
-                    //                     .bodyText1!
-                    //                     .copyWith(
-                    //                         color: DesignColors.lightGrey),
-                    //               ),
-                    //             ),
-                    //             TextButton(
-                    //               onPressed: () async {
-                    //                 HapticFeedback.mediumImpact();
-                    //                 if (!await launch(
-                    //                     "https://quellenreiter.app/Impressum/")) {
-                    //                   throw 'could not launch';
-                    //                 }
-                    //               },
-                    //               child: Text(
-                    //                 "Impressum",
-                    //                 style: Theme.of(context)
-                    //                     .textTheme
-                    //                     .bodyText1!
-                    //                     .copyWith(
-                    //                         color: DesignColors.lightGrey),
-                    //               ),
-                    //             ),
-                    //             TextButton(
-                    //               onPressed: () async {
-                    //                 HapticFeedback.mediumImpact();
-                    //                 if (!await launch(datenschutzUrl)) {
-                    //                   throw 'could not launch';
-                    //                 }
-                    //               },
-                    //               child: Text(
-                    //                 "Datenschutz",
-                    //                 style: Theme.of(context)
-                    //                     .textTheme
-                    //                     .bodyText1!
-                    //                     .copyWith(
-                    //                         color: DesignColors.lightGrey),
-                    //               ),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
                   ],
                 ),
               ),
