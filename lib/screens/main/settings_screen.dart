@@ -44,10 +44,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Flexible(
           child: ListView(
+            shrinkWrap: true,
             clipBehavior: Clip.none,
             physics: BouncingScrollPhysics(),
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
