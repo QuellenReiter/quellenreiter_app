@@ -241,7 +241,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                             color: DesignColors.yellow,
                                           ),
                                           Text(
-                                            '${GameRules.currentLevel(widget.appState.player!.getXp() + countupStartValue)}',
+                                            '${GameRules.currentLevel(widget.appState.player!.getXp())}',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .headline1!
@@ -568,7 +568,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
         // both player have accessed their points
         widget.appState.currentEnemy!.openGame!.pointsAccessed = true;
       }
-      bool success = await widget.appState.db.updateGame(widget.appState);
+      await widget.appState.db.updateGame(widget.appState);
 
       HapticFeedback.heavyImpact();
 
@@ -576,13 +576,20 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
       return;
     });
     HapticFeedback.heavyImpact();
+    showGeneralDialog(
+        transitionDuration: const Duration(milliseconds: 50),
+        context: context,
+        pageBuilder: (context, anim1, anim2) {
+          return Container(
+              color: Colors.white,
+              child: Center(child: CircularProgressIndicator()));
+        });
 
     await widget.appState.getFriends();
 
     // update player
 
     // wait for 1 secons
-    HapticFeedback.heavyImpact();
     // pop the dialog and go to next screen.
     Navigator.of(context).pop();
     widget.appState.route = Routes.gameReadyToStart;
