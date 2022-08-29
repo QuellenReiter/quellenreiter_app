@@ -31,9 +31,6 @@ class _QuellenreiterAppState extends State<QuellenreiterApp> {
   Widget build(BuildContext context) {
     // link to the API
     return MaterialApp.router(
-      supportedLocales: [
-        Locale('de', ''), // german, no country code
-      ],
       backButtonDispatcher: RootBackButtonDispatcher(),
       routeInformationParser: _routeInformationParser,
       routerDelegate: _routerDelegate,
