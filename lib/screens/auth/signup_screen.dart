@@ -115,7 +115,7 @@ class _SignupScreenState extends State<SignupScreen> {
         appBar: MainAppBar(),
         body: Column(
           mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Flexible(
               child: GestureDetector(
@@ -692,63 +692,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     ],
                   )),
             ),
-            Hero(
-              tag: "authFooter",
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height / 3.7,
-                child: Stack(
-                  alignment: Alignment.bottomCenter,
-                  clipBehavior: Clip.none,
-                  children: [
-                    ClipPath(
-                      clipper: DiagonalClipper(),
-                      child: Container(
-                        color: DesignColors.pink,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 20,
-                      child: SizedBox(
-                        height: MediaQuery.of(context).size.height / 4,
-                        width: MediaQuery.of(context).size.width,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Image(
-                                height:
-                                    MediaQuery.of(context).size.aspectRatio >
-                                            (9 / 16)
-                                        ? 100
-                                        : null,
-                                image: AssetImage("assets/branding_low.png"),
-                              ),
-                              TextButton(
-                                onPressed: () async {
-                                  HapticFeedback.mediumImpact();
-                                  if (!await launch(
-                                      "https://quellenreiter.app")) {
-                                    throw 'could not launch';
-                                  }
-                                },
-                                child: Text(
-                                  "QuellenReiter.app",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .copyWith(color: Colors.white),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            SizedBox(
+              height: 50,
             ),
           ],
         ),
