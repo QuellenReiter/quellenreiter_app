@@ -342,7 +342,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                             decoration: InputDecoration(
                                               errorText: passwordController
                                                           .text !=
-                                                      password2Controller.text
+                                                      password2Controller.text &&
+                                                      password2Controller.text.length > 0
                                                   ? "Passwörter stimmen nicht überein"
                                                   : passwordController
                                                                   .text.length <
