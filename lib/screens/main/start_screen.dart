@@ -77,9 +77,9 @@ class _StartScreenState extends State<StartScreen> {
         ),
       );
       for (Enemy e in widget.appState.player!.friends!.enemies) {
-        if (e.openGame != null &&
-            e.openGame!.gameFinished() &&
-            e.openGame!.requestingPlayerIndex != e.openGame!.playerIndex) {
+        if ((e.openGame != null && e.openGame!.gameFinished()) &&
+            (!e.openGame!.pointsAccessed &&
+                e.openGame!.requestingPlayerIndex != e.openGame!.playerIndex)) {
           finishedGames.add(EnemyCard(
             appState: widget.appState,
             enemy: e,
