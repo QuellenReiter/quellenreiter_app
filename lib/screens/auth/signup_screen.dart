@@ -97,7 +97,17 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget createPageWithCenteredContent(Widget child) {
     return FractionallySizedBox(
       widthFactor: 0.8,
-      child: Center(child: child),
+      child: LayoutBuilder(builder: (context, constraint) {
+        return SingleChildScrollView(
+          clipBehavior: Clip.none,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraint.maxHeight),
+            child: IntrinsicHeight(
+              child: Center(child: child),
+            ),
+          ),
+        );
+      }),
     );
   }
 
@@ -109,9 +119,10 @@ class _SignupScreenState extends State<SignupScreen> {
     });
 
     return GestureDetector(
+      onVerticalDragEnd: (_) => FocusScope.of(context).unfocus(),
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: MainAppBar(),
         body: Column(
           mainAxisSize: MainAxisSize.max,
@@ -120,6 +131,7 @@ class _SignupScreenState extends State<SignupScreen> {
             Flexible(
               child: GestureDetector(
                   onTap: () => FocusScope.of(context).unfocus(),
+                  onVerticalDragEnd: (_) => FocusScope.of(context).unfocus(),
                   child: PageView(
                     clipBehavior: Clip.none,
                     physics: const NeverScrollableScrollPhysics(),
