@@ -105,8 +105,10 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                                   FilteringTextInputFormatter.allow(
                                       Utils.regexUsername),
                                 ],
-                                onSubmitted: (query) => {
-                                  widget.appState.friendsQuery = query.trim()
+                                onSubmitted: (query) {
+                                  HapticFeedback.selectionClick();
+                                  widget.appState.friendsQuery =
+                                      searchController.text.trim();
                                 },
                                 controller: searchController,
                                 decoration: const InputDecoration(
