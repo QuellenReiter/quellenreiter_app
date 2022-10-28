@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:quellenreiter_app/widgets/custom_bottom_sheet.dart';
 import '../constants/constants.dart';
 
 class CorrectnessBadge extends StatelessWidget {
@@ -40,55 +41,31 @@ class CorrectnessBadge extends StatelessWidget {
               style: Theme.of(context).textTheme.headline4,
             ),
           ),
-          onTap: () => showModalBottomSheet<void>(
+          onTap: () => CustomBottomSheet.showCustomBottomSheet(
+            initialHeight: 0.6,
             context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            isDismissible: true,
-            builder: (BuildContext context) {
-              HapticFeedback.mediumImpact();
-              return makeSheetDismissable(
-                child: DraggableScrollableSheet(
-                  minChildSize: 0.4,
-                  maxChildSize: 1,
-                  initialChildSize: 0.6,
-                  builder: (_, controller) => Container(
-                    padding: const EdgeInsets.only(top: 20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        topRight: Radius.circular(15),
-                      ),
-                    ),
-                    child: ListView(
-                      physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      controller: controller,
-                      children: [
-                        SelectableText(
-                          "Unsere Bewertungsskala",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline2!
-                              .copyWith(color: DesignColors.green),
-                        ),
-                        ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: CorrectnessCategory.length(),
-                            itemBuilder: (context, index) {
-                              return getBadgeAndText(
-                                  CorrectnessCategory.at(index),
-                                  CorrectnessCategoryExplanation.at(index),
-                                  context);
-                            })
-                      ],
-                    ),
-                  ),
+            scrollable: true,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                SelectableText(
+                  "Unsere Bewertungsskala",
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .copyWith(color: DesignColors.green),
                 ),
-              );
-            },
+                ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: CorrectnessCategory.length(),
+                    itemBuilder: (context, index) {
+                      return getBadgeAndText(CorrectnessCategory.at(index),
+                          CorrectnessCategoryExplanation.at(index), context);
+                    })
+              ],
+            ),
           ),
         ),
       ),

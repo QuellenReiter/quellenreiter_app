@@ -7,7 +7,8 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
-import 'package:quellenreiter_app/widgets/bottom_sheets.dart';
+import 'package:quellenreiter_app/widgets/custom_bottom_sheet.dart';
+import 'package:quellenreiter_app/widgets/start_game_container.dart';
 import 'package:quellenreiter_app/widgets/results_app_bar.dart';
 
 import '../../widgets/statement_card.dart';
@@ -289,10 +290,13 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                             .textTheme
                             .headline2!
                             .copyWith(color: Colors.white)),
-                    onPressed: () => BottomSheets.showStartGameBottomSheet(
-                        context,
-                        widget.appState,
-                        widget.appState.currentEnemy!),
+                    onPressed: () => CustomBottomSheet.showCustomBottomSheet(
+                      context: context,
+                      scrollable: false,
+                      child: StartGameContainer(
+                          appState: widget.appState,
+                          enemy: widget.appState.currentEnemy!),
+                    ),
                   ),
                 )
               //if only one player accessed the points adn this is the player which did not end the game

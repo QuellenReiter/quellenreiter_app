@@ -1,14 +1,14 @@
 import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/models/enemy.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
-import 'package:quellenreiter_app/widgets/bottom_sheets.dart';
+import 'package:quellenreiter_app/widgets/start_game_container.dart';
 
 import '../constants/constants.dart';
 import '../models/player.dart';
 import '../models/statement.dart';
+import 'custom_bottom_sheet.dart';
 
 /// Brief information display of a single [Statement].
 class EnemyCard extends StatelessWidget {
@@ -119,8 +119,11 @@ class EnemyCard extends StatelessWidget {
     if (enemy.openGame == null) {
       if (enemy.acceptedByPlayer && enemy.acceptedByOther) {
         label = "Spiel starten";
-        onClickFunk = () =>
-            BottomSheets.showStartGameBottomSheet(context, appState, enemy);
+        onClickFunk = () => CustomBottomSheet.showCustomBottomSheet(
+              context: context,
+              scrollable: false,
+              child: StartGameContainer(appState: appState, enemy: enemy),
+            );
       } else if (!enemy.acceptedByOther && !enemy.acceptedByPlayer) {
         onClickFunk = () => onTapped(enemy);
         label = "Anfrage senden";

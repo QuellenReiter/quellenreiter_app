@@ -6,6 +6,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/consonents.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/utilities/utilities.dart';
+import 'package:quellenreiter_app/widgets/custom_bottom_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../constants/constants.dart';
 
@@ -234,95 +235,74 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 child: ElevatedButton.icon(
                                   onPressed: () {
                                     HapticFeedback.heavyImpact();
-                                    showModalBottomSheet(
-                                        isScrollControlled: true,
-                                        backgroundColor: Colors.transparent,
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return Container(
-                                            padding:
-                                                const EdgeInsets.only(top: 50),
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.8,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  const BorderRadius.only(
-                                                topLeft: Radius.circular(15),
-                                                topRight: Radius.circular(15),
-                                              ),
-                                            ),
-                                            child: Column(
+                                    CustomBottomSheet.showCustomBottomSheet(
+                                      context: context,
+                                      scrollable: false,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(
+                                            Icons.warning_amber_rounded,
+                                            color: DesignColors.red,
+                                            size: 200,
+                                          ),
+                                          Text(
+                                            "Willst du deinen Account wirklich für immer löschen?",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .subtitle2,
+                                          ),
+                                          SizedBox(
+                                            height: 30,
+                                          ),
+                                          Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
                                               children: [
-                                                const Icon(
-                                                  Icons.warning_amber_rounded,
-                                                  color: DesignColors.red,
-                                                  size: 200,
-                                                ),
-                                                Text(
-                                                  "Willst du deinen Account wirklich für immer löschen?",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .subtitle2,
-                                                ),
-                                                SizedBox(
-                                                  height: 30,
-                                                ),
-                                                Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.max,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceEvenly,
-                                                    children: [
-                                                      ElevatedButton(
-                                                        style: ButtonStyle(
-                                                          backgroundColor:
-                                                              MaterialStateProperty
-                                                                  .all<Color>(
-                                                                      DesignColors
-                                                                          .red),
-                                                        ),
-                                                        onPressed: () {
-                                                          HapticFeedback
-                                                              .heavyImpact();
+                                                ElevatedButton(
+                                                  style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .all<
+                                                                    Color>(
+                                                                DesignColors
+                                                                    .red),
+                                                  ),
+                                                  onPressed: () {
+                                                    HapticFeedback
+                                                        .heavyImpact();
 
-                                                          widget.appState
-                                                              .deleteAccount();
-                                                        },
-                                                        child: Text("Ja",
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .headline5),
-                                                      ),
-                                                      ElevatedButton(
-                                                        style: ButtonStyle(
-                                                          backgroundColor:
-                                                              MaterialStateProperty
-                                                                  .all<Color>(
-                                                                      DesignColors
-                                                                          .green),
-                                                        ),
-                                                        onPressed: () {
-                                                          HapticFeedback
-                                                              .selectionClick();
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                        child: Text("nein",
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .headline5),
-                                                      ),
-                                                    ]),
-                                              ],
-                                            ),
-                                          );
-                                        });
+                                                    widget.appState
+                                                        .deleteAccount();
+                                                  },
+                                                  child: Text("Ja",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .headline5),
+                                                ),
+                                                ElevatedButton(
+                                                  style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .all<Color>(
+                                                                DesignColors
+                                                                    .green),
+                                                  ),
+                                                  onPressed: () {
+                                                    HapticFeedback
+                                                        .selectionClick();
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: Text("nein",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .headline5),
+                                                ),
+                                              ]),
+                                        ],
+                                      ),
+                                    );
                                   },
                                   icon: const Icon(Icons.delete_forever),
                                   label: Text(

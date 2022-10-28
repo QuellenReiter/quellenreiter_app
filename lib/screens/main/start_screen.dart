@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
+import 'package:quellenreiter_app/widgets/custom_bottom_sheet.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:simple_animations/stateless_animation/play_animation.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -461,149 +462,122 @@ class _StartScreenState extends State<StartScreen> {
       color: DesignColors.backgroundBlue,
       icon: const Icon(Icons.info),
       onPressed: () {
-        showModalBottomSheet<void>(
-          isScrollControlled: true,
+        CustomBottomSheet.showCustomBottomSheet(
           context: context,
-          backgroundColor: Colors.transparent,
-          isDismissible: true,
-          builder: (BuildContext context) {
-            HapticFeedback.mediumImpact();
-            return Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(15),
-                  topRight: Radius.circular(15),
+          scrollable: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Flexible(
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.trending_up,
+                      size: 60,
+                      color: DesignColors.backgroundBlue,
+                    ),
+                    SelectableText(
+                      "Deine Statistiken",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline2!
+                          .copyWith(color: DesignColors.backgroundBlue),
+                    ),
+                  ],
                 ),
               ),
-              child: SafeArea(
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  constraints: const BoxConstraints(
-                    maxWidth: 700,
+              Text(
+                widget.appState.player!.name,
+                style: Theme.of(context).textTheme.headline5,
+              ),
+              if (!player.statsCanBeCalculated())
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Text(
+                    "Nicht genügend Infos, spiele weiter!",
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline2!
+                        .copyWith(color: DesignColors.lightBlue),
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Flexible(
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.trending_up,
-                              size: 60,
-                              color: DesignColors.backgroundBlue,
-                            ),
-                            SelectableText(
-                              "Deine Statistiken",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline2!
-                                  .copyWith(color: DesignColors.backgroundBlue),
-                            ),
-                          ],
+                )
+              else
+                Column(
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Builder(builder: (context) {
+                          return Flexible(
+                            child: buildStatsWithRectangle(
+                                val: player.numGamesWon,
+                                label: "Gewonnen",
+                                color: DesignColors.green),
+                          );
+                        }),
+                        Flexible(
+                          child: buildStatsWithRectangle(
+                              val: player.numGamesTied,
+                              label: "Gleichstand",
+                              color: DesignColors.backgroundBlue),
                         ),
-                      ),
-                      Text(
-                        widget.appState.player!.name,
-                        style: Theme.of(context).textTheme.headline5,
-                      ),
-                      if (!player.statsCanBeCalculated())
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Text(
-                            "Nicht genügend Infos, spiele weiter!",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: DesignColors.lightBlue),
+                        Flexible(
+                          child: buildStatsWithRectangle(
+                              val: player.numPlayedGames -
+                                  (player.numGamesTied + player.numGamesWon),
+                              label: "Verloren",
+                              color: DesignColors.red),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildLinearStatsBar(
+                        max: (player.trueCorrectAnswers +
+                                player.falseCorrectAnswers)
+                            .toDouble(),
+                        val: player.trueCorrectAnswers.toDouble(),
+                        label:
+                            "Fakten: ${((player.trueCorrectAnswers / (player.trueCorrectAnswers + player.falseCorrectAnswers)) * 100).round()}% erkannt"),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildLinearStatsBar(
+                        max: (player.trueFakeAnswers + player.falseFakeAnswers)
+                            .toDouble(),
+                        val: player.trueFakeAnswers.toDouble(),
+                        label:
+                            "Fakes: ${((player.trueFakeAnswers / (player.trueFakeAnswers + player.falseFakeAnswers)) * 100).round()}% erkannt"),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildLinearStatsBar(
+                        max: (player.numPlayedGames * 9).toDouble(),
+                        val:
+                            (player.trueCorrectAnswers + player.trueFakeAnswers)
+                                .toDouble(),
+                        label:
+                            "Insgesamt: ${(((player.trueCorrectAnswers + player.trueFakeAnswers) / (player.numPlayedGames * 9)) * 100).round()}% richtige Antworten"),
+                    const SizedBox(height: 20),
+                    SelectableText(
+                      "Deine Statistiken werden nach jedem Spiel aktualisiert",
+                      style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                            fontSize: 16,
                           ),
-                        )
-                      else
-                        Column(
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Builder(builder: (context) {
-                                  return Flexible(
-                                    child: buildStatsWithRectangle(
-                                        val: player.numGamesWon,
-                                        label: "Gewonnen",
-                                        color: DesignColors.green),
-                                  );
-                                }),
-                                Flexible(
-                                  child: buildStatsWithRectangle(
-                                      val: player.numGamesTied,
-                                      label: "Gleichstand",
-                                      color: DesignColors.backgroundBlue),
-                                ),
-                                Flexible(
-                                  child: buildStatsWithRectangle(
-                                      val: player.numPlayedGames -
-                                          (player.numGamesTied +
-                                              player.numGamesWon),
-                                      label: "Verloren",
-                                      color: DesignColors.red),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            buildLinearStatsBar(
-                                max: (player.trueCorrectAnswers +
-                                        player.falseCorrectAnswers)
-                                    .toDouble(),
-                                val: player.trueCorrectAnswers.toDouble(),
-                                label:
-                                    "Fakten: ${((player.trueCorrectAnswers / (player.trueCorrectAnswers + player.falseCorrectAnswers)) * 100).round()}% erkannt"),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            buildLinearStatsBar(
-                                max: (player.trueFakeAnswers +
-                                        player.falseFakeAnswers)
-                                    .toDouble(),
-                                val: player.trueFakeAnswers.toDouble(),
-                                label:
-                                    "Fakes: ${((player.trueFakeAnswers / (player.trueFakeAnswers + player.falseFakeAnswers)) * 100).round()}% erkannt"),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            buildLinearStatsBar(
-                                max: (player.numPlayedGames * 9).toDouble(),
-                                val: (player.trueCorrectAnswers +
-                                        player.trueFakeAnswers)
-                                    .toDouble(),
-                                label:
-                                    "Insgesamt: ${(((player.trueCorrectAnswers + player.trueFakeAnswers) / (player.numPlayedGames * 9)) * 100).round()}% richtige Antworten"),
-                            const SizedBox(height: 20),
-                            SelectableText(
-                              "Deine Statistiken werden nach jedem Spiel aktualisiert",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText2!
-                                  .copyWith(
-                                    fontSize: 16,
-                                  ),
-                              textAlign: TextAlign.start,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                          ],
-                        ),
-                    ],
-                  ),
+                      textAlign: TextAlign.start,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                  ],
                 ),
-              ),
-            );
-          },
+            ],
+          ),
         );
       },
     );
