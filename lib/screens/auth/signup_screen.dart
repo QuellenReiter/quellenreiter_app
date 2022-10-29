@@ -4,6 +4,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/consonents.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
+import 'package:quellenreiter_app/widgets/custom_bottom_sheet.dart';
 import 'package:url_launcher/link.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../utilities/utilities.dart';
@@ -97,7 +98,17 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget createPageWithCenteredContent(Widget child) {
     return FractionallySizedBox(
       widthFactor: 0.8,
-      child: Center(child: child),
+      child: LayoutBuilder(builder: (context, constraint) {
+        return SingleChildScrollView(
+          clipBehavior: Clip.none,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraint.maxHeight),
+            child: IntrinsicHeight(
+              child: Center(child: child),
+            ),
+          ),
+        );
+      }),
     );
   }
 
@@ -109,9 +120,10 @@ class _SignupScreenState extends State<SignupScreen> {
     });
 
     return GestureDetector(
+      onVerticalDragEnd: (_) => FocusScope.of(context).unfocus(),
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: MainAppBar(),
         body: Column(
           mainAxisSize: MainAxisSize.max,
@@ -120,6 +132,7 @@ class _SignupScreenState extends State<SignupScreen> {
             Flexible(
               child: GestureDetector(
                   onTap: () => FocusScope.of(context).unfocus(),
+                  onVerticalDragEnd: (_) => FocusScope.of(context).unfocus(),
                   child: PageView(
                     clipBehavior: Clip.none,
                     physics: const NeverScrollableScrollPhysics(),
@@ -541,90 +554,81 @@ class _SignupScreenState extends State<SignupScreen> {
                                                                     }
                                                                     TextInput
                                                                         .finishAutofillContext();
-                                                                    showModalBottomSheet(
-                                                                        shape:
-                                                                            RoundedRectangleBorder(
-                                                                          borderRadius:
-                                                                              BorderRadius.only(
-                                                                            topLeft:
-                                                                                Radius.circular(10),
-                                                                            topRight:
-                                                                                Radius.circular(10),
-                                                                          ),
-                                                                        ),
-                                                                        isScrollControlled:
-                                                                            true,
-                                                                        isDismissible:
-                                                                            true,
-                                                                        context:
-                                                                            context,
-                                                                        builder:
-                                                                            (BuildContext
-                                                                                context) {
-                                                                          return SafeArea(
-                                                                            child:
-                                                                                Padding(
-                                                                              padding: const EdgeInsets.all(20),
-                                                                              child: AnimationLimiter(
-                                                                                child: Column(
-                                                                                  mainAxisSize: MainAxisSize.min,
-                                                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                  children: AnimationConfiguration.toStaggeredList(
-                                                                                    duration: const Duration(milliseconds: 800),
-                                                                                    childAnimationBuilder: (widget) => SlideAnimation(
-                                                                                      horizontalOffset: 20.0,
-                                                                                      curve: Curves.elasticOut,
-                                                                                      child: FadeInAnimation(
-                                                                                        child: widget,
-                                                                                      ),
-                                                                                    ),
-                                                                                    children: [
-                                                                                      const Text(
-                                                                                        "🧠",
-                                                                                        style: TextStyle(fontSize: 100),
-                                                                                      ),
-                                                                                      Text(
-                                                                                        "Hast du dir dein Passwort gemerkt?",
-                                                                                        style: Theme.of(context).textTheme.headline2!.copyWith(color: DesignColors.backgroundBlue),
-                                                                                      ),
-                                                                                      Text(
-                                                                                        "Du kannst es nicht zurücksetzen, wenn du es vergisst",
-                                                                                        style: Theme.of(context).textTheme.subtitle1!.copyWith(color: DesignColors.backgroundBlue),
-                                                                                      ),
-                                                                                      Row(
-                                                                                        mainAxisSize: MainAxisSize.max,
-                                                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                                                        children: [
-                                                                                          ElevatedButton(
-                                                                                            onPressed: () {
-                                                                                              HapticFeedback.mediumImpact();
-                                                                                              TextInput.finishAutofillContext();
-
-                                                                                              Navigator.of(context).pop();
-                                                                                              widget.appState.trySignUp(usernameController.text, passwordController.text, emojiController.text);
-                                                                                            },
-                                                                                            child: Text("Ja, weiter"),
-                                                                                          ),
-                                                                                          ElevatedButton(
-                                                                                            onPressed: () {
-                                                                                              HapticFeedback.mediumImpact();
-                                                                                              registerClicked.value = false;
-                                                                                              Navigator.of(context).pop();
-                                                                                            },
-                                                                                            child: Text("Nein, zurück"),
-                                                                                          ),
-                                                                                        ],
-                                                                                      ),
-                                                                                    ],
-                                                                                  ),
-                                                                                ),
+                                                                    CustomBottomSheet
+                                                                        .showCustomBottomSheet(
+                                                                      context:
+                                                                          context,
+                                                                      scrollable:
+                                                                          false,
+                                                                      onClosed:
+                                                                          () {
+                                                                        registerClicked.value =
+                                                                            false;
+                                                                      },
+                                                                      child:
+                                                                          AnimationLimiter(
+                                                                        child:
+                                                                            Column(
+                                                                          mainAxisSize:
+                                                                              MainAxisSize.min,
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.start,
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.center,
+                                                                          children:
+                                                                              AnimationConfiguration.toStaggeredList(
+                                                                            duration:
+                                                                                const Duration(milliseconds: 800),
+                                                                            childAnimationBuilder: (widget) =>
+                                                                                SlideAnimation(
+                                                                              horizontalOffset: 20.0,
+                                                                              curve: Curves.elasticOut,
+                                                                              child: FadeInAnimation(
+                                                                                child: widget,
                                                                               ),
                                                                             ),
-                                                                          );
-                                                                        }).then((value) => registerClicked
-                                                                            .value =
-                                                                        false);
+                                                                            children: [
+                                                                              const Text(
+                                                                                "🧠",
+                                                                                style: TextStyle(fontSize: 95),
+                                                                              ),
+                                                                              Text(
+                                                                                "Hast du dir dein Passwort gemerkt?",
+                                                                                style: Theme.of(context).textTheme.headline2!.copyWith(color: DesignColors.backgroundBlue),
+                                                                              ),
+                                                                              Text(
+                                                                                "Du kannst es nicht zurücksetzen, wenn du es vergisst",
+                                                                                style: Theme.of(context).textTheme.subtitle1!.copyWith(color: DesignColors.backgroundBlue),
+                                                                              ),
+                                                                              Row(
+                                                                                mainAxisSize: MainAxisSize.max,
+                                                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                children: [
+                                                                                  ElevatedButton(
+                                                                                    onPressed: () {
+                                                                                      HapticFeedback.mediumImpact();
+                                                                                      TextInput.finishAutofillContext();
+
+                                                                                      Navigator.of(context).pop();
+                                                                                      widget.appState.trySignUp(usernameController.text, passwordController.text, emojiController.text);
+                                                                                    },
+                                                                                    child: Text("Ja, weiter"),
+                                                                                  ),
+                                                                                  ElevatedButton(
+                                                                                    onPressed: () {
+                                                                                      HapticFeedback.mediumImpact();
+                                                                                      registerClicked.value = false;
+                                                                                      Navigator.of(context).pop();
+                                                                                    },
+                                                                                    child: Text("Nein, zurück"),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    );
                                                                   }
                                                                 : null,
                                                             child: isLoading
