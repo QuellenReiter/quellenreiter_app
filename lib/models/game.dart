@@ -75,7 +75,7 @@ class Game {
     // not downloading all but only 50 could be the bin approach wanted.
     // sort by object ID should be date and category independent.
 
-    // get statements directlly and then safe the ids ! :)
+    // get statements directly and then save the ids! :)
     requestingPlayerIndex = e.playerIndex;
     id = null;
     withTimer = timer;
@@ -89,7 +89,6 @@ class Game {
   }
 
   /// Returns true if the player is the next one to play.
-
   bool isPlayersTurn() {
     if (gameFinished()) {
       return false;
@@ -105,7 +104,6 @@ class Game {
   }
 
   /// Returns true if both players have played 9 statements
-  ///
   bool gameFinished() {
     return player.answers.length >= 9 && opponent.answers.length >= 9;
   }
