@@ -147,7 +147,7 @@ class EnemyCard extends StatelessWidget {
     }
     // show results and continue playing button
     else if (enemy.openGame!.isPlayersTurn() &&
-        enemy.openGame!.playerAnswers.isNotEmpty) {
+        enemy.openGame!.player.answers.isNotEmpty) {
       onClickFunk = () {
         HapticFeedback.mediumImpact();
 
@@ -158,7 +158,7 @@ class EnemyCard extends StatelessWidget {
     }
     // game starts immediately, because there are no results yet
     else if (enemy.openGame!.isPlayersTurn() &&
-        enemy.openGame!.playerAnswers.isEmpty) {
+        enemy.openGame!.player.answers.isEmpty) {
       onClickFunk = () {
         HapticFeedback.mediumImpact();
 

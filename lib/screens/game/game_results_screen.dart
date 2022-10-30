@@ -37,13 +37,13 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
                 physics: const BouncingScrollPhysics(),
                 itemCount: widget.showAll
                     ? widget
-                        .appState.currentEnemy!.openGame!.playerAnswers.length
+                        .appState.currentEnemy!.openGame!.player.answers.length
                     : 3,
                 itemBuilder: (BuildContext context, int index) {
                   if (!widget.showAll) {
                     // if not all shown, show last three in correct order
                     index = widget.appState.currentEnemy!.openGame!
-                            .playerAnswers.length -
+                            .player.answers.length -
                         3 +
                         index;
                   }
