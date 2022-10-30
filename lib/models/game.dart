@@ -34,9 +34,27 @@ class Game {
   late GamePlayer player;
   late GamePlayer opponent;
 
-  // Game.fromMap(Map<String, dynamic>? map) {
+  Game.fromDbMap(Map<String, dynamic> openGame, int playerIdx) {
+    playerIndex = playerIdx;
 
-  // }
+    bool isFirstPlayer = playerIndex == 0;
+    //object Id
+    id = openGame["objectId"];
+    // player game object
+    player = GamePlayer.fromDbMap(openGame, isFirstPlayer);
+    // opponent game object
+    opponent = GamePlayer.fromDbMap(openGame, !isFirstPlayer);
+
+    statementIds = openGame[DbFields.gameStatementIds]
+        .map((x) => x["value"])
+        .toList()
+        .cast<String>();
+    withTimer = openGame[DbFields.gameWithTimer];
+    requestingPlayerIndex = openGame[DbFields.gameRequestingPlayerIndex];
+    statements = null;
+    pointsAccessed = openGame[DbFields.gamePointsAccessed];
+  }
+
   Game(
       this.id,
       this.player,
