@@ -87,24 +87,17 @@ class Game {
   /// Returns true if the player is the next one to play.
 
   bool isPlayersTurn() {
-    bool ret = false;
+    if (gameFinished()) {
+      return false;
+    }
     // player starts and ( enemy has more or equal answers or player is within a round )
-    if ((playerIndex != requestingPlayerIndex &&
-            ((enemyAnswers.length >= playerAnswers.length) ||
-                playerAnswers.length % 3 != 0)) ||
+    return (playerIndex != requestingPlayerIndex &&
+            (opponent.answers.length >= player.answers.length ||
+                player.answers.length % 3 != 0) ||
         // OR: enemy starts and enemy has a finished the round and enemy has more answers
-        ((playerIndex == requestingPlayerIndex &&
-                enemyAnswers.length % 3 == 0) &&
-            enemyAnswers.length > playerAnswers.length)) {
-      ret = true;
-    } else {
-      ret = false;
-    }
-    // if both have 9 answers.
-    if (playerAnswers.length >= 9 && enemyAnswers.length >= 9) {
-      ret = false;
-    }
-    return ret;
+        (playerIndex == requestingPlayerIndex &&
+            opponent.answers.length % 3 == 0 &&
+            opponent.answers.length > player.answers.length));
   }
 
   /// Returns true if both players have played 9 statements
