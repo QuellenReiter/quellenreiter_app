@@ -173,7 +173,7 @@ class Enemy {
       ret = {
         "id": friendshipId,
         "fields": {
-          DbFields.friendshipPlayer1Id: openGame!.playerId,
+          DbFields.friendshipPlayer1Id: openGame!.player.id,
           DbFields.friendshipPlayer2Id: userId,
           DbFields.friendshipApproved1: acceptedByPlayer,
           DbFields.friendshipApproved2: acceptedByOther,
@@ -190,7 +190,7 @@ class Enemy {
         "id": friendshipId,
         "fields": {
           DbFields.friendshipPlayer1Id: userId,
-          DbFields.friendshipPlayer2Id: openGame!.playerId,
+          DbFields.friendshipPlayer2Id: openGame!.player.id,
           DbFields.friendshipApproved2: acceptedByPlayer,
           DbFields.friendshipApproved1: acceptedByOther,
           DbFields.friendshipWonGamesPlayer2: wonGamesPlayer,
