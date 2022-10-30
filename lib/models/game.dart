@@ -6,7 +6,6 @@ import 'enemy.dart';
 
 class Game {
   String? id;
-  int round = 0;
   int statementIndex = 0;
   late Statements? statements;
   late List<String>? statementIds;
@@ -43,15 +42,12 @@ class Game {
     // get statements directlly and then safe the ids ! :)
     requestingPlayerIndex = e.playerIndex;
     id = null;
-    playerIndex = e.playerIndex;
-    statements = null;
     playerAnswers = [];
     enemyAnswers = [];
     withTimer = timer;
     statementIds = null;
     statementIndex = 0;
     statements = null;
-    round = 0;
     playerIndex = 0;
     pointsAccessed = false;
     playerId = p.id;
