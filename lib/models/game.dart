@@ -4,6 +4,24 @@ import 'package:quellenreiter_app/models/statement.dart';
 
 import 'enemy.dart';
 
+class GamePlayer {
+  late String? id;
+  late List<bool> answers;
+
+  GamePlayer(this.id, this.answers);
+
+  GamePlayer.fromDbMap(Map<String, dynamic> openGame, bool isFirstPlayer) {
+    id = openGame[
+        isFirstPlayer ? DbFields.gamePlayer1Id : DbFields.gamePlayer2Id];
+    answers = openGame[isFirstPlayer
+            ? DbFields.gameAnswersPlayer1
+            : DbFields.gameAnswersPlayer2]
+        .map((x) => x["value"])
+        .toList()
+        .cast<bool>();
+  }
+}
+
 class Game {
   String? id;
   int statementIndex = 0;
