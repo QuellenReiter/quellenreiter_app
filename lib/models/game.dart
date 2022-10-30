@@ -27,30 +27,26 @@ class Game {
   int statementIndex = 0;
   late Statements? statements;
   late List<String>? statementIds;
-  late List<bool> playerAnswers;
-  late List<bool> enemyAnswers;
   late int requestingPlayerIndex;
   bool withTimer = false;
   late int playerIndex;
   late bool pointsAccessed;
-  late String? playerId;
-  late String? enemyId;
+  late GamePlayer player;
+  late GamePlayer opponent;
 
   // Game.fromMap(Map<String, dynamic>? map) {
 
   // }
   Game(
       this.id,
-      this.enemyAnswers,
-      this.playerAnswers,
+      this.player,
+      this.opponent,
       this.playerIndex,
       this.statementIds,
       this.withTimer,
       this.requestingPlayerIndex,
       this.statements,
-      this.pointsAccessed,
-      this.playerId,
-      this.enemyId);
+      this.pointsAccessed);
 
   Game.empty(bool timer, Enemy e, Player p) {
     // where to get statement ids? download all possible and pickRandom on device.
@@ -60,16 +56,14 @@ class Game {
     // get statements directlly and then safe the ids ! :)
     requestingPlayerIndex = e.playerIndex;
     id = null;
-    playerAnswers = [];
-    enemyAnswers = [];
     withTimer = timer;
     statementIds = null;
     statementIndex = 0;
     statements = null;
     playerIndex = 0;
     pointsAccessed = false;
-    playerId = p.id;
-    enemyId = e.userId;
+    player = GamePlayer(p.id, []);
+    opponent = GamePlayer(e.userId, []);
   }
 
   /// Returns true if the player is the next one to play.
@@ -98,40 +92,27 @@ class Game {
   /// Returns true if both players have played 9 statements
   ///
   bool gameFinished() {
-    return playerAnswers.length >= 9 && enemyAnswers.length >= 9;
+    return player.answers.length >= 9 && opponent.answers.length >= 9;
   }
 
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> ret = {};
-    if (playerIndex == 0) {
-      ret = {
-        "id": id,
-        "fields": {
-          DbFields.gamePlayer1Id: playerId,
-          DbFields.gamePlayer2Id: enemyId,
-          DbFields.gameStatementIds: statementIds ?? [],
-          DbFields.gameAnswersPlayer1: playerAnswers,
-          DbFields.gameAnswersPlayer2: enemyAnswers,
-          DbFields.gameWithTimer: withTimer,
-          DbFields.gameRequestingPlayerIndex: requestingPlayerIndex,
-          DbFields.gamePointsAccessed: pointsAccessed == false ? null : true,
-        }
-      };
-    } else {
-      ret = {
-        "id": id,
-        "fields": {
-          DbFields.gamePlayer1Id: enemyId,
-          DbFields.gamePlayer2Id: playerId,
-          DbFields.gameStatementIds: statementIds ?? [],
-          DbFields.gameAnswersPlayer1: enemyAnswers,
-          DbFields.gameAnswersPlayer2: playerAnswers,
-          DbFields.gameWithTimer: withTimer,
-          DbFields.gameRequestingPlayerIndex: requestingPlayerIndex,
-          DbFields.gamePointsAccessed: pointsAccessed == false ? null : true,
-        }
-      };
-    }
+    GamePlayer player1Db = playerIndex == 0 ? player : opponent;
+    GamePlayer player2Db = playerIndex == 1 ? player : opponent;
+
+    Map<String, dynamic> ret = {
+      "id": id,
+      "fields": {
+        DbFields.gamePlayer1Id: player1Db.id,
+        DbFields.gamePlayer2Id: player2Db.id,
+        DbFields.gameStatementIds: statementIds ?? [],
+        DbFields.gameAnswersPlayer1: player1Db.answers,
+        DbFields.gameAnswersPlayer2: player2Db.answers,
+        DbFields.gameWithTimer: withTimer,
+        DbFields.gameRequestingPlayerIndex: requestingPlayerIndex,
+        DbFields.gamePointsAccessed: pointsAccessed == false ? null : true,
+      }
+    };
+
     // removes null values, important if enemyId and playerId are null.
     ret["fields"].removeWhere((key, value) => value == null);
 

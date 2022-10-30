@@ -540,14 +540,14 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
         widget.appState.player!.numGamesWon += 1;
         widget.appState.player!.numPlayedGames += 1;
         widget.appState.player!.updateAnswerStats(
-            widget.appState.currentEnemy!.openGame!.playerAnswers,
+            widget.appState.currentEnemy!.openGame!.player.answers,
             widget.appState.currentEnemy!.openGame!.statements);
       } else if (enemyWon) {
         // enemy has won
         // update player
         widget.appState.player!.numPlayedGames += 1;
         widget.appState.player!.updateAnswerStats(
-            widget.appState.currentEnemy!.openGame!.playerAnswers,
+            widget.appState.currentEnemy!.openGame!.player.answers,
             widget.appState.currentEnemy!.openGame!.statements);
       } else {
         // Game endet in a Tie
@@ -555,7 +555,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
         widget.appState.player!.numPlayedGames += 1;
         widget.appState.player!.numGamesTied += 1;
         widget.appState.player!.updateAnswerStats(
-            widget.appState.currentEnemy!.openGame!.playerAnswers,
+            widget.appState.currentEnemy!.openGame!.player.answers,
             widget.appState.currentEnemy!.openGame!.statements);
       }
       // increase played games of friendship if playerIndex = 0
