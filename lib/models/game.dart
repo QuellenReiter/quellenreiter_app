@@ -20,6 +20,10 @@ class GamePlayer {
         .toList()
         .cast<bool>();
   }
+
+  int getPoints() {
+    return answers.where((ans) => ans).length;
+  }
 }
 
 class Game {
@@ -132,11 +136,11 @@ class Game {
   }
 
   GameResult getGameResult() {
-    if (playerAnswers.fold<int>(0, (p, c) => p + (c ? 1 : 0)) >
-        enemyAnswers.fold<int>(0, (p, c) => p + (c ? 1 : 0))) {
+    int playerPoints = player.getPoints();
+    int opponentPoints = opponent.getPoints();
+    if (playerPoints > opponentPoints) {
       return GameResult.playerWon;
-    } else if (playerAnswers.fold<int>(0, (p, c) => p + (c ? 1 : 0)) <
-        enemyAnswers.fold<int>(0, (p, c) => p + (c ? 1 : 0))) {
+    } else if (playerPoints < opponentPoints) {
       return GameResult.enemyWon;
     } else {
       return GameResult.tied;
@@ -144,9 +148,7 @@ class Game {
   }
 
   int getPlayerXp() {
-    int xp = 0;
-    xp = playerAnswers.fold<int>(0, (p, c) => p + (c ? 1 : 0)) *
-        GameRules.pointsPerCorrectAnswer;
+    int xp = player.getPoints() * GameRules.pointsPerCorrectAnswer;
     if (getGameResult() == GameResult.tied) {
       xp += GameRules.pointsPerTiedGame;
     } else if (getGameResult() == GameResult.playerWon) {
