@@ -451,17 +451,17 @@ query GetOpenFriendRequests{
           ${DbFields.gameAnswersPlayer1}{
             ... on Element{
                 value
-            } 
+            }
           }
           ${DbFields.gameAnswersPlayer2}{
             ... on Element{
                 value
-            } 
+            }
           }
           ${DbFields.gameStatementIds}{
             ... on Element{
                 value
-            } 
+            }
           }
           ${DbFields.gamePointsAccessed}
         }
@@ -514,7 +514,7 @@ query GetOpenFriendRequests{
     }
   }
 }
-    
+
 ''';
     return ret;
   }
@@ -640,18 +640,18 @@ mutation updateGame(\$openGame: UpdateOpenGameInput!){
       ${DbFields.gameAnswersPlayer1}{
         ... on Element{
             value
-        } 
+        }
       }
       ${DbFields.gamePlayer2Id}
       ${DbFields.gameAnswersPlayer2}{
         ... on Element{
             value
-        } 
+        }
       }
       ${DbFields.gameStatementIds}{
         ... on Element{
             value
-        } 
+        }
       }
       ${DbFields.gamePointsAccessed}
     }
@@ -677,18 +677,18 @@ mutation uploadGame(\$openGame: CreateOpenGameInput!){
       ${DbFields.gameAnswersPlayer1}{
         ... on Element{
             value
-        } 
+        }
       }
       ${DbFields.gamePlayer2Id}
       ${DbFields.gameAnswersPlayer2}{
         ... on Element{
             value
-        } 
+        }
       }
       ${DbFields.gameStatementIds}{
         ... on Element{
             value
-        } 
+        }
       }
       ${DbFields.gamePointsAccessed}
     }
