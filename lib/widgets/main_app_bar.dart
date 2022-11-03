@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import '../constants/constants.dart';
 
 /// The AppBar (top of the App) that contains searchbar and links to impressum, datenschutz and
@@ -39,19 +37,20 @@ class _MainAppBarState extends State<MainAppBar> {
           clipBehavior: Clip.none,
           // Set background color and rounded bottom corners.
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
+            borderRadius:
+                const BorderRadius.vertical(bottom: Radius.circular(15)),
             color: DesignColors.backgroundBlue,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.2),
                 blurRadius: 4,
-                offset: Offset(0, 4),
+                offset: const Offset(0, 4),
               ),
             ],
           ),
         ),
       ),
-      SafeArea(
+      const SafeArea(
         child: Center(
           child: Image(
             height: 500,
