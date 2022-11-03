@@ -81,35 +81,22 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     switch (indexTapped) {
       case 0:
         widget.appState.route = Routes.home;
-        setState(() {
-          index = 0;
-        });
         break;
       case 1:
         widget.appState.route = Routes.friends;
-        setState(() {
-          index = 1;
-        });
         break;
       case 2:
         widget.appState.route = Routes.archive;
-        setState(() {
-          index = 2;
-        });
         break;
       case 3:
         widget.appState.route = Routes.settings;
-        setState(() {
-          index = 3;
-        });
-
         break;
       default:
         widget.appState.route = Routes.home;
-        setState(() {
-          index = 0;
-        });
     }
+    setState(() {
+      index = indexTapped;
+    });
   }
 
   @override
