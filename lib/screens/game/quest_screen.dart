@@ -28,7 +28,7 @@ class _QuestScreenState extends State<QuestScreen>
     });
     // set index of statement to be shown
     int statementIndex =
-        widget.appState.currentEnemy!.openGame!.playerAnswers.length;
+        widget.appState.currentEnemy!.openGame!.player.answers.length;
     // set answer to false, incase user breaks the round.
     // But only if withTimer. Else doing research and closing the app is welcome.
 
@@ -42,7 +42,7 @@ class _QuestScreenState extends State<QuestScreen>
       );
     }
     if (widget.appState.currentEnemy!.openGame!.withTimer) {
-      widget.appState.currentEnemy!.openGame!.playerAnswers.add(false);
+      widget.appState.currentEnemy!.openGame!.player.answers.add(false);
     }
 
     return Scaffold(
@@ -356,18 +356,18 @@ class _QuestScreenState extends State<QuestScreen>
     // and the below update and will then be lost.
     // add false as a placeHolder if not with timer.
     if (!widget.appState.currentEnemy!.openGame!.withTimer) {
-      widget.appState.currentEnemy!.openGame!.playerAnswers.add(false);
+      widget.appState.currentEnemy!.openGame!.player.answers.add(false);
     }
     // if time is over (only if with timer)
     if (timeOver) {
-      widget.appState.currentEnemy!.openGame!.playerAnswers[statementIndex] =
+      widget.appState.currentEnemy!.openGame!.player.answers[statementIndex] =
           false;
       // if statemetn and answer are true.
     } else if (widget.appState.currentEnemy!.openGame!.statements!
                 .statements[statementIndex].statementCorrectness ==
             CorrectnessCategory.correct &&
         answer) {
-      widget.appState.currentEnemy!.openGame!.playerAnswers[statementIndex] =
+      widget.appState.currentEnemy!.openGame!.player.answers[statementIndex] =
           true;
     }
     // if statement and answer are fake.
@@ -375,18 +375,18 @@ class _QuestScreenState extends State<QuestScreen>
                 .statements[statementIndex].statementCorrectness !=
             CorrectnessCategory.correct &&
         !answer) {
-      widget.appState.currentEnemy!.openGame!.playerAnswers[statementIndex] =
+      widget.appState.currentEnemy!.openGame!.player.answers[statementIndex] =
           true;
     }
     // else answer is false.
     else {
-      widget.appState.currentEnemy!.openGame!.playerAnswers[statementIndex] =
+      widget.appState.currentEnemy!.openGame!.player.answers[statementIndex] =
           false;
     }
     HapticFeedback.heavyImpact();
 
     var answerCorrect =
-        widget.appState.currentEnemy!.openGame!.playerAnswers[statementIndex];
+        widget.appState.currentEnemy!.openGame!.player.answers[statementIndex];
 
     // show some inbetween screen
     showDialog(

@@ -36,8 +36,8 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
   @override
   Widget build(BuildContext context) {
     commonLength = min(
-        widget.appState.currentEnemy!.openGame!.playerAnswers.length,
-        widget.appState.currentEnemy!.openGame!.enemyAnswers.length);
+        widget.appState.currentEnemy!.openGame!.player.answers.length,
+        widget.appState.currentEnemy!.openGame!.opponent.answers.length);
 
     // Check if statements are loaded. If not, load them.
     // TODO: Check if this is the best place to do this
@@ -51,7 +51,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
     // build the list of statementcards
     statementCardsWithAnswers = [];
     for (int i = 0;
-        i < widget.appState.currentEnemy!.openGame!.playerAnswers.length;
+        i < widget.appState.currentEnemy!.openGame!.player.answers.length;
         i++) {
       var tempStatement =
           widget.appState.currentEnemy!.openGame!.statements!.statements[i];
@@ -74,7 +74,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   if (widget
-                          .appState.currentEnemy!.openGame!.playerAnswers[i] ==
+                          .appState.currentEnemy!.openGame!.player.answers[i] ==
                       true)
                     const CircleAvatar(
                       backgroundColor: DesignColors.green,
@@ -96,8 +96,8 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                       backgroundColor: DesignColors.lightGrey,
                       child: Icon(Icons.watch_later_outlined),
                     )
-                  else if (widget
-                          .appState.currentEnemy!.openGame!.enemyAnswers[i] ==
+                  else if (widget.appState.currentEnemy!.openGame!.opponent
+                          .answers[i] ==
                       true)
                     const CircleAvatar(
                       backgroundColor: DesignColors.green,
@@ -322,7 +322,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
               else if (widget.appState.currentEnemy!.openGame!.isPlayersTurn())
                 // if not played any quests
                 if (widget
-                    .appState.currentEnemy!.openGame!.playerAnswers.isEmpty)
+                    .appState.currentEnemy!.openGame!.player.answers.isEmpty)
                   SafeArea(
                     minimum: const EdgeInsets.only(bottom: 20),
                     child: FloatingActionButton.extended(

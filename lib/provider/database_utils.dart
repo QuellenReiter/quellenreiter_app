@@ -566,52 +566,11 @@ class DatabaseUtils {
       handleException(mutationResult.exception!);
 
       return null;
-    } else {
-      return Game(
-        //object Id
-        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
-            ["objectId"],
-        // enemyAnswers
-        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame][
-                enemy.playerIndex == 0
-                    ? DbFields.gameAnswersPlayer2
-                    : DbFields.gameAnswersPlayer1]
-            .map((x) => x["value"])
-            .toList()
-            .cast<bool>(),
-        // player answers
-        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame][
-                enemy.playerIndex == 0
-                    ? DbFields.gameAnswersPlayer1
-                    : DbFields.gameAnswersPlayer2]
-            .map((x) => x["value"])
-            .toList()
-            .cast<bool>(),
-        enemy.playerIndex,
-        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
-                [DbFields.gameStatementIds]
-            .map((x) => x["value"])
-            .toList()
-            .cast<String>(),
-        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
-            [DbFields.gameWithTimer],
-        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
-            [DbFields.gameRequestingPlayerIndex],
-        null,
-        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame]
-            [DbFields.gamePointsAccessed],
-        // pplayerID
-        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame][
-            enemy.playerIndex == 0
-                ? DbFields.gamePlayer1Id
-                : DbFields.gamePlayer2Id],
-        // enemyId
-        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame][
-            enemy.playerIndex == 0
-                ? DbFields.gamePlayer2Id
-                : DbFields.gamePlayer1Id],
-      );
     }
+
+    Map<String, dynamic> openGame =
+        mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame];
+    return Game.fromDbMap(openGame, enemy.playerIndex);
   }
 
   /// Fetch all safed/liked [Statements] from a [Player].

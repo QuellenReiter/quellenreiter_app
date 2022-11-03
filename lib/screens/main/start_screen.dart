@@ -50,13 +50,18 @@ class _StartScreenState extends State<StartScreen> {
     if (widget.appState.player!.friends == null) {
       widget.appState.getFriends();
       return const Center(child: CircularProgressIndicator());
-    } else if (widget.appState.player!.friends!.enemies.any((element) =>
-        (element.openGame != null
-            ? (element.openGame!.gameFinished() &&
-                    !element.openGame!.pointsAccessed) &&
-                element.openGame!.requestingPlayerIndex !=
-                    element.openGame!.playerIndex
-            : false))) {
+    }
+
+    List<Enemy> enemies = widget.appState.player!.friends!.enemies;
+    List<bool> isFinished = enemies
+        .map((e) => // TODO write a member function for this
+            e.openGame != null &&
+            e.openGame!.gameFinished() &&
+            !e.openGame!.pointsAccessed &&
+            e.openGame!.requestingPlayerIndex != e.openGame!.playerIndex)
+        .toList();
+
+    if (isFinished.any((e) => e)) {
       // add the heading
       finishedGames.add(
         Padding(
@@ -77,16 +82,16 @@ class _StartScreenState extends State<StartScreen> {
           ),
         ),
       );
-      for (Enemy e in widget.appState.player!.friends!.enemies) {
-        if ((e.openGame != null && e.openGame!.gameFinished()) &&
-            (!e.openGame!.pointsAccessed &&
-                e.openGame!.requestingPlayerIndex != e.openGame!.playerIndex)) {
-          finishedGames.add(EnemyCard(
-            appState: widget.appState,
-            enemy: e,
-            onTapped: (enemy) => {},
-          ));
+      for (var i = 0; i < enemies.length; i++) {
+        if (!isFinished[i]) {
+          continue;
         }
+
+        finishedGames.add(EnemyCard(
+          appState: widget.appState,
+          enemy: enemies[i],
+          onTapped: (_) => {},
+        ));
       }
     }
 
