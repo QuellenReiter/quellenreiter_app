@@ -157,28 +157,22 @@ class Player {
       return;
     }
     for (int i = 0; i < GameRules.statementsPerGame; i++) {
+      bool stmCorrect = CorrectnessCategory.isFact(
+          statements.statements[i].statementCorrectness);
       // correctly found as Reak News
-      if (playerAnswers[i] &&
-          statements.statements[i].statementCorrectness ==
-              CorrectnessCategory.correct) {
+      if (playerAnswers[i] && stmCorrect) {
         trueCorrectAnswers += 1;
       }
       // Correctly found as Fake News
-      else if (playerAnswers[i] &&
-          statements.statements[i].statementCorrectness !=
-              CorrectnessCategory.correct) {
+      else if (playerAnswers[i] && !stmCorrect) {
         trueFakeAnswers += 1;
       }
       // Thought to be Real but was Fake News
-      else if (!playerAnswers[i] &&
-          statements.statements[i].statementCorrectness !=
-              CorrectnessCategory.correct) {
+      else if (!playerAnswers[i] && !stmCorrect) {
         falseFakeAnswers += 1;
       }
       // Thought to be Fake but was Real News
-      else if (!playerAnswers[i] &&
-          statements.statements[i].statementCorrectness ==
-              CorrectnessCategory.correct) {
+      else {
         falseCorrectAnswers += 1;
       }
     }

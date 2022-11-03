@@ -174,6 +174,10 @@ class CorrectnessCategory {
         return correct;
     }
   }
+
+  static bool isFact(String category) {
+    return category == CorrectnessCategory.correct;
+  }
 }
 
 class CorrectnessCategoryExplanation {

@@ -147,8 +147,8 @@ class StatementCardState extends State<StatementCard> {
                       // Display correctness.
                       Container(
                         decoration: BoxDecoration(
-                          color: widget.statement.statementCorrectness ==
-                                  CorrectnessCategory.correct
+                          color: CorrectnessCategory.isFact(
+                                  widget.statement.statementCorrectness)
                               ? DesignColors.green
                               : DesignColors.red,
                           borderRadius: const BorderRadius.all(
@@ -449,8 +449,8 @@ class StatementCardState extends State<StatementCard> {
                                       decoration: BoxDecoration(
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(10)),
-                                        color: statement.statementCorrectness ==
-                                                CorrectnessCategory.correct
+                                        color: CorrectnessCategory.isFact(
+                                                statement.statementCorrectness)
                                             ? DesignColors.green
                                             : DesignColors.red,
                                       ),

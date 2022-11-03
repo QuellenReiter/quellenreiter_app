@@ -19,18 +19,18 @@ class CorrectnessBadge extends StatelessWidget {
       );
     }
 
+    bool answerCorrect = CorrectnessCategory.isFact(correctnessValue);
+
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Material(
         borderRadius: const BorderRadius.all(Radius.circular(10)),
-        color: correctnessValue != CorrectnessCategory.correct
-            ? DesignColors.red
-            : DesignColors.green,
+        color: answerCorrect ? DesignColors.green : DesignColors.red,
         child: InkWell(
           borderRadius: const BorderRadius.all(Radius.circular(10)),
-          hoverColor: correctnessValue != CorrectnessCategory.correct
-              ? const Color.fromARGB(255, 176, 77, 1)
-              : const Color.fromARGB(255, 0, 121, 89),
+          hoverColor: answerCorrect
+              ? const Color.fromARGB(255, 0, 121, 89)
+              : const Color.fromARGB(255, 176, 77, 1),
           child: Container(
             padding: const EdgeInsets.all(10),
             decoration: const BoxDecoration(
@@ -93,7 +93,7 @@ class CorrectnessBadge extends StatelessWidget {
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  color: badgeText == CorrectnessCategory.correct
+                  color: CorrectnessCategory.isFact(badgeText)
                       ? DesignColors.green
                       : DesignColors.red,
                 ),
