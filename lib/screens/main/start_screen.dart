@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,11 +23,11 @@ class StartScreen extends StatefulWidget {
 }
 
 class _StartScreenState extends State<StartScreen> {
-  late Player player;
+  late Player _player;
 
   @override
   void initState() {
-    player = widget.appState.player!;
+    _player = widget.appState.player!;
     super.initState();
   }
 
@@ -37,7 +35,7 @@ class _StartScreenState extends State<StartScreen> {
   void didUpdateWidget(covariant StartScreen oldWidget) {
     // make sure stats get rebuild when page is back in focus
     setState(() {
-      player = widget.appState.player!;
+      _player = widget.appState.player!;
     });
     super.didUpdateWidget(oldWidget);
   }
@@ -272,11 +270,11 @@ class _StartScreenState extends State<StartScreen> {
                               Countup(
                                 duration: const Duration(seconds: 1),
                                 begin: 0,
-                                end: !player.statsCanBeCalculated()
+                                end: !_player.statsCanBeCalculated()
                                     ? 0
-                                    : (((player.trueCorrectAnswers +
-                                                    player.trueFakeAnswers) /
-                                                (player.numPlayedGames * 9)) *
+                                    : (((_player.trueCorrectAnswers +
+                                                    _player.trueFakeAnswers) /
+                                                (_player.numPlayedGames * 9)) *
                                             100)
                                         .round()
                                         .toDouble(),
@@ -497,7 +495,7 @@ class _StartScreenState extends State<StartScreen> {
                 widget.appState.player!.name,
                 style: Theme.of(context).textTheme.headline5,
               ),
-              if (!player.statsCanBeCalculated())
+              if (!_player.statsCanBeCalculated())
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: Text(
@@ -519,21 +517,21 @@ class _StartScreenState extends State<StartScreen> {
                         Builder(builder: (context) {
                           return Flexible(
                             child: buildStatsWithRectangle(
-                                val: player.numGamesWon,
+                                val: _player.numGamesWon,
                                 label: "Gewonnen",
                                 color: DesignColors.green),
                           );
                         }),
                         Flexible(
                           child: buildStatsWithRectangle(
-                              val: player.numGamesTied,
+                              val: _player.numGamesTied,
                               label: "Gleichstand",
                               color: DesignColors.backgroundBlue),
                         ),
                         Flexible(
                           child: buildStatsWithRectangle(
-                              val: player.numPlayedGames -
-                                  (player.numGamesTied + player.numGamesWon),
+                              val: _player.numPlayedGames -
+                                  (_player.numGamesTied + _player.numGamesWon),
                               label: "Verloren",
                               color: DesignColors.red),
                         ),
@@ -543,31 +541,32 @@ class _StartScreenState extends State<StartScreen> {
                       height: 10,
                     ),
                     buildLinearStatsBar(
-                        max: (player.trueCorrectAnswers +
-                                player.falseCorrectAnswers)
+                        max: (_player.trueCorrectAnswers +
+                                _player.falseCorrectAnswers)
                             .toDouble(),
-                        val: player.trueCorrectAnswers.toDouble(),
+                        val: _player.trueCorrectAnswers.toDouble(),
                         label:
-                            "Fakten: ${((player.trueCorrectAnswers / (player.trueCorrectAnswers + player.falseCorrectAnswers)) * 100).round()}% erkannt"),
+                            "Fakten: ${((_player.trueCorrectAnswers / (_player.trueCorrectAnswers + _player.falseCorrectAnswers)) * 100).round()}% erkannt"),
                     const SizedBox(
                       height: 10,
                     ),
                     buildLinearStatsBar(
-                        max: (player.trueFakeAnswers + player.falseFakeAnswers)
-                            .toDouble(),
-                        val: player.trueFakeAnswers.toDouble(),
-                        label:
-                            "Fakes: ${((player.trueFakeAnswers / (player.trueFakeAnswers + player.falseFakeAnswers)) * 100).round()}% erkannt"),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    buildLinearStatsBar(
-                        max: (player.numPlayedGames * 9).toDouble(),
-                        val:
-                            (player.trueCorrectAnswers + player.trueFakeAnswers)
+                        max:
+                            (_player.trueFakeAnswers + _player.falseFakeAnswers)
                                 .toDouble(),
+                        val: _player.trueFakeAnswers.toDouble(),
                         label:
-                            "Insgesamt: ${(((player.trueCorrectAnswers + player.trueFakeAnswers) / (player.numPlayedGames * 9)) * 100).round()}% richtige Antworten"),
+                            "Fakes: ${((_player.trueFakeAnswers / (_player.trueFakeAnswers + _player.falseFakeAnswers)) * 100).round()}% erkannt"),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildLinearStatsBar(
+                        max: (_player.numPlayedGames * 9).toDouble(),
+                        val: (_player.trueCorrectAnswers +
+                                _player.trueFakeAnswers)
+                            .toDouble(),
+                        label:
+                            "Insgesamt: ${(((_player.trueCorrectAnswers + _player.trueFakeAnswers) / (_player.numPlayedGames * 9)) * 100).round()}% richtige Antworten"),
                     const SizedBox(height: 20),
                     SelectableText(
                       "Deine Statistiken werden nach jedem Spiel aktualisiert",
