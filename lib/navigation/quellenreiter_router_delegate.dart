@@ -150,9 +150,9 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         ];
 
       case Routes.gameReadyToStart:
-        // if no enemy, go to home
-        if (appState.currentEnemy == null ||
-            appState.currentEnemy!.openGame == null) {
+        // if no opponent, go to home
+        if (appState.currentOpponent == null ||
+            appState.currentOpponent!.openGame == null) {
           return [
             home,
           ];
@@ -169,9 +169,9 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
           ),
         ];
       case Routes.readyToStartOnlyLastScreen:
-        // if no enemy, go to home
-        if (appState.currentEnemy == null ||
-            appState.currentEnemy!.openGame == null) {
+        // if no opponent, go to home
+        if (appState.currentOpponent == null ||
+            appState.currentOpponent!.openGame == null) {
           return [
             home,
           ];
@@ -189,11 +189,11 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         ];
       case Routes.quest:
         // error
-        if (appState.currentEnemy == null) {
+        if (appState.currentOpponent == null) {
           return [home];
         }
         //  if it is the players turn
-        else if (appState.currentEnemy!.openGame!.isPlayersTurn()) {
+        else if (appState.currentOpponent!.openGame!.isPlayersTurn()) {
           return [
             MaterialPage(
               key: const ValueKey('QuestScreen'),

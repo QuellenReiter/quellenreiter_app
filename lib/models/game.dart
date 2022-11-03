@@ -2,7 +2,7 @@ import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/player.dart';
 import 'package:quellenreiter_app/models/statement.dart';
 
-import 'enemy.dart';
+import 'opponent.dart';
 
 class GamePlayer {
   late String? id;
@@ -70,7 +70,7 @@ class Game {
       this.statements,
       this.pointsAccessed);
 
-  Game.empty(bool timer, Enemy e, Player p) {
+  Game.empty(bool timer, Opponent e, Player p) {
     // where to get statement ids? download all possible and pickRandom on device.
     // not downloading all but only 50 could be the bin approach wanted.
     // sort by object ID should be date and category independent.
@@ -93,11 +93,11 @@ class Game {
     if (gameFinished()) {
       return false;
     }
-    // player starts and ( enemy has more or equal answers or player is within a round )
+    // player starts and (opponent has more or equal answers or player is within a round)
     return (playerIndex != requestingPlayerIndex &&
             (opponent.answers.length >= player.answers.length ||
                 player.answers.length % 3 != 0) ||
-        // OR: enemy starts and enemy has a finished the round and enemy has more answers
+        // OR: opponent starts, has a finished round and has more answers
         (playerIndex == requestingPlayerIndex &&
             opponent.answers.length % 3 == 0 &&
             opponent.answers.length > player.answers.length));
@@ -126,7 +126,7 @@ class Game {
       }
     };
 
-    // removes null values, important if enemyId and playerId are null.
+    // removes null values, important if opponentId and playerId are null.
     ret["fields"].removeWhere((key, value) => value == null);
 
     // print(ret);
@@ -139,7 +139,7 @@ class Game {
     if (playerPoints > opponentPoints) {
       return GameResult.playerWon;
     } else if (playerPoints < opponentPoints) {
-      return GameResult.enemyWon;
+      return GameResult.opponentWon;
     } else {
       return GameResult.tied;
     }
@@ -160,4 +160,4 @@ class Games {
   List<Game> games = [];
 }
 
-enum GameResult { playerWon, tied, enemyWon }
+enum GameResult { playerWon, tied, opponentWon }

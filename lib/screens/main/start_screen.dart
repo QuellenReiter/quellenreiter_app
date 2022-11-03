@@ -11,9 +11,9 @@ import 'package:share_plus/share_plus.dart';
 import 'package:simple_animations/stateless_animation/play_animation.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
-import '../../models/enemy.dart';
+import '../../models/opponent.dart';
 import '../../models/player.dart';
-import '../../widgets/enemy_card.dart';
+import '../../widgets/opponent_card.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({Key? key, required this.appState}) : super(key: key);
@@ -52,8 +52,8 @@ class _StartScreenState extends State<StartScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    List<Enemy> enemies = widget.appState.player!.friends!.enemies;
-    List<bool> isFinished = enemies
+    List<Opponent> opponents = widget.appState.player!.friends!.opponents;
+    List<bool> isFinished = opponents
         .map((e) => // TODO write a member function for this
             e.openGame != null &&
             e.openGame!.gameFinished() &&
@@ -82,14 +82,14 @@ class _StartScreenState extends State<StartScreen> {
           ),
         ),
       );
-      for (var i = 0; i < enemies.length; i++) {
+      for (var i = 0; i < opponents.length; i++) {
         if (!isFinished[i]) {
           continue;
         }
 
-        finishedGames.add(EnemyCard(
+        finishedGames.add(OpponentCard(
           appState: widget.appState,
-          enemy: enemies[i],
+          opponent: opponents[i],
           onTapped: (_) => {},
         ));
       }
@@ -98,8 +98,8 @@ class _StartScreenState extends State<StartScreen> {
     // create "Its your turn" widgets
     List<Widget> playersTurn = [];
     // if any open game is finished and points are not accessed yet.
-    if (widget.appState.playableEnemies != null &&
-        widget.appState.playableEnemies!.enemies.isNotEmpty) {
+    if (widget.appState.playableOpponents != null &&
+        widget.appState.playableOpponents!.opponents.isNotEmpty) {
       // add the heading
       playersTurn.add(
         Padding(
@@ -120,11 +120,11 @@ class _StartScreenState extends State<StartScreen> {
           ),
         ),
       );
-      for (Enemy e in widget.appState.playableEnemies!.enemies) {
-        playersTurn.add(EnemyCard(
+      for (Opponent opp in widget.appState.playableOpponents!.opponents) {
+        playersTurn.add(OpponentCard(
           appState: widget.appState,
-          enemy: e,
-          onTapped: (enemy) => {},
+          opponent: opp,
+          onTapped: (opponent) => {},
         ));
       }
     }
@@ -132,8 +132,8 @@ class _StartScreenState extends State<StartScreen> {
     // create "friendrequest" widgets
     List<Widget> friendRequests = [];
     // if any open game is finished and points are not accessed yet.
-    if (widget.appState.enemyRequests != null &&
-        widget.appState.enemyRequests!.enemies.isNotEmpty) {
+    if (widget.appState.opponentRequests != null &&
+        widget.appState.opponentRequests!.opponents.isNotEmpty) {
       // add the heading
       friendRequests.add(
         Padding(
@@ -154,11 +154,11 @@ class _StartScreenState extends State<StartScreen> {
           ),
         ),
       );
-      for (Enemy e in widget.appState.enemyRequests!.enemies) {
-        friendRequests.add(EnemyCard(
+      for (Opponent opp in widget.appState.opponentRequests!.opponents) {
+        friendRequests.add(OpponentCard(
           appState: widget.appState,
-          enemy: e,
-          onTapped: (enemy) => {},
+          opponent: opp,
+          onTapped: (opponent) => {},
         ));
       }
     }
@@ -166,7 +166,7 @@ class _StartScreenState extends State<StartScreen> {
     // create "Start new game" widgets
     List<Widget> startNewGame = [];
     // if no open game or open game is finished and points accessed.
-    if (widget.appState.player!.friends!.enemies.any((element) =>
+    if (widget.appState.player!.friends!.opponents.any((element) =>
         (element.openGame == null ||
             (element.openGame!.gameFinished() &&
                 element.openGame!.pointsAccessed)))) {
@@ -190,13 +190,13 @@ class _StartScreenState extends State<StartScreen> {
           ),
         ),
       );
-      for (Enemy e in widget.appState.player!.friends!.enemies) {
-        if (e.openGame == null ||
-            (e.openGame!.gameFinished() && e.openGame!.pointsAccessed)) {
-          startNewGame.add(EnemyCard(
+      for (Opponent opp in widget.appState.player!.friends!.opponents) {
+        if (opp.openGame == null ||
+            (opp.openGame!.gameFinished() && opp.openGame!.pointsAccessed)) {
+          startNewGame.add(OpponentCard(
             appState: widget.appState,
-            enemy: e,
-            onTapped: (enemy) => {},
+            opponent: opp,
+            onTapped: (opponent) => {},
           ));
         }
       }
@@ -360,7 +360,7 @@ class _StartScreenState extends State<StartScreen> {
                 ...finishedGames,
                 ...friendRequests,
                 if (widget.appState.player!.friends == null ||
-                    widget.appState.player!.friends!.enemies.isEmpty)
+                    widget.appState.player!.friends!.opponents.isEmpty)
                   Center(
                       child: Padding(
                     padding: const EdgeInsets.only(

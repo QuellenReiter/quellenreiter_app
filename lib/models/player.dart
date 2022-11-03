@@ -1,4 +1,4 @@
-import 'package:quellenreiter_app/models/enemy.dart';
+import 'package:quellenreiter_app/models/opponent.dart';
 import 'package:quellenreiter_app/models/statement.dart';
 import '../constants/constants.dart';
 
@@ -15,7 +15,7 @@ class Player {
   late int trueFakeAnswers;
   late int falseCorrectAnswers;
   late int falseFakeAnswers;
-  late Enemies? friends;
+  late Opponents? friends;
   late List<String>? safedStatementsIds;
   late List<String>? playedStatements;
   String? deviceToken;

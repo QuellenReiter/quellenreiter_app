@@ -5,7 +5,7 @@ import 'game.dart';
 import 'player.dart';
 import 'statement.dart';
 
-class Enemy {
+class Opponent {
   late int playerIndex;
   late String friendshipId;
   late List<String> playedStatementIds;
@@ -29,9 +29,8 @@ class Enemy {
   late int numFriends;
 
   /// Constructor that takes a Map of a friendship query and resolves which of
-  /// player1 and player2 is
-  /// the player and which is the enemy.
-  Enemy.fromFriendshipMap(Map<String, dynamic>? map, Player p) {
+  /// player1 and player2 is the player and which is the opponent.
+  Opponent.fromFriendshipMap(Map<String, dynamic>? map, Player p) {
     if (map?[DbFields.friendshipPlayer2] == null ||
         map?[DbFields.friendshipPlayer1] == null) {
       throw Exception('Invalid friendship map');
@@ -123,7 +122,7 @@ class Enemy {
     }
   }
 
-  Enemy.fromUserMap(Map<String, dynamic>? map) {
+  Opponent.fromUserMap(Map<String, dynamic>? map) {
     name = map?[DbFields.userName];
     emoji = map?[DbFields.userData] == null
         ? ""
@@ -206,31 +205,31 @@ class Enemy {
     return ret;
   }
 
-  void updateAnswerStats(List<bool> enemyAnswers, Statements? statements) {
+  void updateAnswerStats(List<bool> opponentAnswers, Statements? statements) {
     if (statements == null) {
       return;
     }
     for (int i = 0; i < GameRules.statementsPerGame; i++) {
       // correctly found as Reak News
-      if (enemyAnswers[i] &&
+      if (opponentAnswers[i] &&
           statements.statements[i].statementCorrectness ==
               CorrectnessCategory.correct) {
         trueCorrectAnswersOther += 1;
       }
       // Correctly found as Fake News
-      else if (enemyAnswers[i] &&
+      else if (opponentAnswers[i] &&
           statements.statements[i].statementCorrectness !=
               CorrectnessCategory.correct) {
         trueFakeAnswersOther += 1;
       }
       // Thought to be Real but was Fake News
-      else if (!enemyAnswers[i] &&
+      else if (!opponentAnswers[i] &&
           statements.statements[i].statementCorrectness !=
               CorrectnessCategory.correct) {
         falseFakeAnswersOther += 1;
       }
       // Thought to be Fake but was Real News
-      else if (!enemyAnswers[i] &&
+      else if (!opponentAnswers[i] &&
           statements.statements[i].statementCorrectness ==
               CorrectnessCategory.correct) {
         falseCorrectAnswersOther += 1;
@@ -270,38 +269,39 @@ class Enemy {
   }
 }
 
-class Enemies {
-  List<Enemy> enemies = [];
+class Opponents {
+  List<Opponent> opponents = [];
 
-  Enemies.fromFriendshipMap(Map<String, dynamic>? map, Player p) {
+  Opponents.fromFriendshipMap(Map<String, dynamic>? map, Player p) {
     if (map?["edges"] == null) {
       return;
     }
-    for (Map<String, dynamic>? enemy in map?["edges"]) {
+    for (Map<String, dynamic>? opponent in map?["edges"]) {
       try {
-        enemies.add(Enemy.fromFriendshipMap(enemy?["node"], p));
+        opponents.add(Opponent.fromFriendshipMap(opponent?["node"], p));
       } catch (e) {
-        debugPrint("invalid Freindship with ID:" + enemy?["node"]["objectId"]);
+        debugPrint(
+            "Invalid friendship with ID:" + opponent?["node"]["objectId"]);
       }
     }
   }
 
-  Enemies.fromUserMap(Map<String, dynamic>? map) {
+  Opponents.fromUserMap(Map<String, dynamic>? map) {
     if (map?["edges"] == null) {
       return;
     }
-    for (Map<String, dynamic>? enemy in map?["edges"]) {
-      enemies.add(Enemy.fromUserMap(enemy?["node"]));
+    for (Map<String, dynamic>? opponent in map?["edges"]) {
+      opponents.add(Opponent.fromUserMap(opponent?["node"]));
     }
   }
-  Enemies.empty() {
-    enemies = [];
+  Opponents.empty() {
+    opponents = [];
   }
 
   List<String> getNames() {
     List<String> ret = [];
-    for (Enemy e in enemies) {
-      ret.add(e.name);
+    for (Opponent opp in opponents) {
+      ret.add(opp.name);
     }
     return ret;
   }

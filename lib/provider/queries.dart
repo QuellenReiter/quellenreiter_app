@@ -1,4 +1,4 @@
-import 'package:quellenreiter_app/models/enemy.dart';
+import 'package:quellenreiter_app/models/opponent.dart';
 import 'package:quellenreiter_app/models/game.dart';
 
 import '../constants/constants.dart';
@@ -520,7 +520,7 @@ query GetOpenFriendRequests{
   }
 
   /// Returns the graphQL query to send a friend requests.
-  static String sendFriendRequest(String playerId, String enemyId) {
+  static String sendFriendRequest(String playerId, String opponentId) {
     String ret = '''
 mutation sendFriendRequest {
   createFriendship(
@@ -531,9 +531,9 @@ mutation sendFriendRequest {
         }
         ${DbFields.friendshipPlayer1Id}: "$playerId"
         ${DbFields.friendshipPlayer2}:{
-          link: "$enemyId"
+          link: "$opponentId"
         }
-        ${DbFields.friendshipPlayer2Id}: "$enemyId"
+        ${DbFields.friendshipPlayer2Id}: "$opponentId"
         ${DbFields.friendshipApproved1}: true
         ${DbFields.friendshipApproved2}: false
       }
@@ -812,11 +812,11 @@ mutation removeGame(\$game:DeleteOpenGameInput!){
     String deleteOpenGames = "";
     String deleteFriendships = "";
     if (player.friends != null) {
-      for (Enemy e in player.friends!.enemies) {
+      for (Opponent opp in player.friends!.opponents) {
         deleteFriendships += '''
-${e.name}Friendship: deleteFriendship(
+${opp.name}Friendship: deleteFriendship(
   input: {
-    id: "${e.friendshipId}"
+    id: "${opp.friendshipId}"
   }
 ){
   friendship{
@@ -824,11 +824,11 @@ ${e.name}Friendship: deleteFriendship(
   }
 }
 ''';
-        if (e.openGame != null) {
+        if (opp.openGame != null) {
           deleteOpenGames += '''
-${e.name}Game: deleteOpenGame(
+${opp.name}Game: deleteOpenGame(
   input: {
-    id: "${e.openGame!.id}"
+    id: "${opp.openGame!.id}"
   }
 ){
   openGame{

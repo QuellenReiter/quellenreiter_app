@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
-import 'package:quellenreiter_app/widgets/enemy_card.dart';
+import 'package:quellenreiter_app/widgets/opponent_card.dart';
 import 'package:quellenreiter_app/widgets/stats_app_bar.dart';
 import 'package:quellenreiter_app/widgets/title_app_bar.dart';
 import 'package:share_plus/share_plus.dart';
@@ -139,8 +139,8 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                         ),
                       ),
                       if (widget.appState.friendsSearchResult != null &&
-                          widget
-                              .appState.friendsSearchResult!.enemies.isNotEmpty)
+                          widget.appState.friendsSearchResult!.opponents
+                              .isNotEmpty)
                         ScrollConfiguration(
                           behavior: ScrollConfiguration.of(context)
                               .copyWith(scrollbars: false),
@@ -150,12 +150,12 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                             keyboardDismissBehavior:
                                 ScrollViewKeyboardDismissBehavior.onDrag,
                             itemCount: widget
-                                .appState.friendsSearchResult!.enemies.length,
+                                .appState.friendsSearchResult!.opponents.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return EnemyCard(
+                              return OpponentCard(
                                 appState: widget.appState,
-                                enemy: widget.appState.friendsSearchResult!
-                                    .enemies[index],
+                                opponent: widget.appState.friendsSearchResult!
+                                    .opponents[index],
                                 onTapped: widget.appState.sendFriendRequest,
                               );
                             },

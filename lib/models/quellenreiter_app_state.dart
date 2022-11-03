@@ -6,7 +6,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../provider/database_utils.dart';
-import 'enemy.dart';
+import 'opponent.dart';
 import 'game.dart';
 import 'player.dart';
 import 'statement.dart';
@@ -73,38 +73,38 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   /// Friend requests of the current [Player].
-  Enemies? _enemyRequests;
-  Enemies? get enemyRequests => _enemyRequests;
+  Opponents? _opponentRequests;
+  Opponents? get opponentRequests => _opponentRequests;
 
-  /// Sets the _enemyRequests to the given value.
+  /// Sets the _opponentRequests to the given value.
   ///
-  /// @param value The new [Enemies]. that requested to be friends with the current [Player].
-  set enemyRequests(value) {
-    _enemyRequests = value;
+  /// @param value The new [Opponents]. that requested to be friends with the current [Player].
+  set opponentRequests(value) {
+    _opponentRequests = value;
     notifyListeners();
   }
 
   /// Pending friend requests sent by the current [Player].
-  Enemies? _pendingRequests;
-  Enemies? get pendingRequests => _pendingRequests;
+  Opponents? _pendingRequests;
+  Opponents? get pendingRequests => _pendingRequests;
 
   /// Sets the _pendingRequests to the given value.
   ///
-  /// @param value The  [Enemies]. that were invited by the current [Player].
+  /// @param value The  [Opponents]. that were invited by the current [Player].
   set pendingRequests(value) {
     _pendingRequests = value;
     notifyListeners();
   }
 
-  /// enemies that have an open game where its the [Player] turn.
-  Enemies? _playableEnemies;
+  /// opponents that have an open game where its the [Player] turn.
+  Opponents? _playableOpponents;
 
-  /// Sets the _playableEnemies to the given value.
+  /// Sets the _playableOpponents to the given value.
   ///
-  /// @param value The [Enemies] that have an open game where its the [Player] turn.
-  Enemies? get playableEnemies => _playableEnemies;
-  set playableEnemies(value) {
-    _playableEnemies = value;
+  /// @param value The [Opponents] that have an open game where its the [Player] turn.
+  Opponents? get playableOpponents => _playableOpponents;
+  set playableOpponents(value) {
+    _playableOpponents = value;
     notifyListeners();
   }
 
@@ -132,15 +132,15 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// The [Enemy] of the current game. Set when user selects game.
-  Enemy? _currentEnemy;
-  Enemy? get currentEnemy => _currentEnemy;
+  /// The [Opponent] of the current game. Set when user selects game.
+  Opponent? _currentOpponent;
+  Opponent? get currentOpponent => _currentOpponent;
 
-  /// Sets the _currentEnemy to the given value.
+  /// Sets the _currentOpponent to the given value.
   ///
-  /// @param value The new [Enemy] whoms game is currently beign viewed by the user.
-  set currentEnemy(value) {
-    _currentEnemy = value;
+  /// @param value The new [Opponent] whose game is currently being viewed by the user.
+  set currentOpponent(value) {
+    _currentOpponent = value;
     notifyListeners();
   }
 
@@ -182,9 +182,9 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// The [Enemies] (Friends) search result, if [Player] is searching.
-  Enemies? _friendsSearchResult;
-  Enemies? get friendsSearchResult => _friendsSearchResult;
+  /// The [Opponents] (Friends) search result, if [Player] is searching.
+  Opponents? _friendsSearchResult;
+  Opponents? get friendsSearchResult => _friendsSearchResult;
   set friendsSearchResult(value) {
     _friendsSearchResult = value;
     notifyListeners();
@@ -319,13 +319,13 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   Future<void> getFriends() async {
     print("get friends called");
-    Enemies? enemies = await db.getFriends(player!);
+    Opponents? opponents = await db.getFriends(player!);
 
-    await _getFriendsCallback(enemies);
+    await _getFriendsCallback(opponents);
     return;
   }
 
-  void sendFriendRequest(Enemy e) {
+  void sendFriendRequest(Opponent e) {
     route = Routes.loading;
     db.sendFriendRequest(this, e.userId, _sendFriendRequest);
   }
@@ -342,67 +342,70 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   /// Callback for the getFriends method.
-  /// If successfull, the [Enemies] are safed.
+  /// If successfull, the [Opponents] are safed.
   /// They are split up into friends, requests, pending and playable games.
-  /// Also the current enemy is restored and updated.
+  /// Also the current opponent is restored and updated.
   ///
-  /// @param enemies The [Enemies] returned from the server.
-  Future<bool> _getFriendsCallback(Enemies? enemies) async {
+  /// @param opponents The [Opponents] returned from the server.
+  Future<bool> _getFriendsCallback(Opponents? opponents) async {
     // if no friends were returned
-    if (enemies == null) {
+    if (opponents == null) {
       // if no friends are currently downloaded
       if (player!.friends == null) {
-        player?.friends = Enemies.empty();
+        player?.friends = Opponents.empty();
       }
       // else, just keep the downloaded friends.
       return false;
     }
     // set friends
-    var tempFriends = Enemies.empty()
-      ..enemies = enemies.enemies
-          .where((enemy) => enemy.acceptedByOther && enemy.acceptedByPlayer)
+    var tempFriends = Opponents.empty()
+      ..opponents = opponents.opponents
+          .where((opponent) =>
+              opponent.acceptedByOther && opponent.acceptedByPlayer)
           .toList();
     // set received requests
-    var tempRequests = Enemies.empty()
-      ..enemies = enemies.enemies
-          .where((enemy) => enemy.acceptedByOther && !enemy.acceptedByPlayer)
+    var tempRequests = Opponents.empty()
+      ..opponents = opponents.opponents
+          .where((opponent) =>
+              opponent.acceptedByOther && !opponent.acceptedByPlayer)
           .toList();
     // set pending requests
-    var tempPending = Enemies.empty()
-      ..enemies = enemies.enemies
-          .where((enemy) => !enemy.acceptedByOther && enemy.acceptedByPlayer)
+    var tempPending = Opponents.empty()
+      ..opponents = opponents.opponents
+          .where((opponent) =>
+              !opponent.acceptedByOther && opponent.acceptedByPlayer)
           .toList();
 
-    var tempPlayableEnemies = Enemies.empty()
-      ..enemies = enemies.enemies
-          .where((enemy) =>
-              (enemy.openGame != null && enemy.openGame!.isPlayersTurn()))
+    var tempPlayableOpponents = Opponents.empty()
+      ..opponents = opponents.opponents
+          .where((opponent) =>
+              (opponent.openGame != null && opponent.openGame!.isPlayersTurn()))
           .toList();
 
     player?.friends = tempFriends;
     // set new number of friends
-    if (player!.numFriends != tempFriends.enemies.length) {
-      player!.numFriends = tempFriends.enemies.length;
+    if (player!.numFriends != tempFriends.opponents.length) {
+      player!.numFriends = tempFriends.opponents.length;
       await db.updateUserData(player, (Player? p) {});
     }
-    player?.numFriends = tempFriends.enemies.length;
-    enemyRequests = tempRequests;
+    player?.numFriends = tempFriends.opponents.length;
+    opponentRequests = tempRequests;
     pendingRequests = tempPending;
-    playableEnemies = tempPlayableEnemies;
-    // redo current enemy
-    if (currentEnemy != null) {
+    playableOpponents = tempPlayableOpponents;
+    // redo current opponent
+    if (currentOpponent != null) {
       try {
-        var tempCurrentEnemy = player!.friends!.enemies
-            .firstWhere((enemy) => enemy.userId == currentEnemy!.userId);
-        // only update current enemy if enemy has played 3 quests so that the
-        // game is either finished or its the players turn now.
-        // this prevent constant updating while the player is browsing the quests.
-        if (tempCurrentEnemy.openGame != null &&
-            tempCurrentEnemy.openGame!.opponent.answers.length % 3 == 0) {
-          currentEnemy = tempCurrentEnemy;
+        var tempCurrentOpponent = player!.friends!.opponents.firstWhere(
+            (opponent) => opponent.userId == currentOpponent!.userId);
+        // Only update current opponent if they have played 3 quests so that the
+        // game is either finished or it is the player's turn now.
+        // This prevents constant updating while the player is browsing the quests.
+        if (tempCurrentOpponent.openGame != null &&
+            tempCurrentOpponent.openGame!.opponent.answers.length % 3 == 0) {
+          currentOpponent = tempCurrentOpponent;
         }
       } catch (e) {
-        currentEnemy = null;
+        currentOpponent = null;
       }
     }
     return true;
@@ -431,9 +434,9 @@ class QuellenreiterAppState extends ChangeNotifier {
     player = null;
   }
 
-  void acceptRequest(Enemy e) {
+  void acceptRequest(Opponent opp) {
     route = Routes.loading;
-    db.acceptFriendRequest(player!, e, _acceptRequestCallback);
+    db.acceptFriendRequest(player!, opp, _acceptRequestCallback);
   }
 
   void _acceptRequestCallback(bool success) async {
@@ -454,10 +457,10 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
   }
 
-  void _searchFriendsCallback(Enemies? e) {
-    if (e != null) {
+  void _searchFriendsCallback(Opponents? opp) {
+    if (opp != null) {
       route = Routes.addFriends;
-      friendsSearchResult = e;
+      friendsSearchResult = opp;
     } else {
       route = Routes.addFriends;
     }
@@ -505,42 +508,42 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
   }
 
-  void startNewGame(Enemy e, bool withTimer) async {
+  void startNewGame(Opponent opp, bool withTimer) async {
     Routes tempRoute = route;
     route = Routes.loading;
-    // update player and enemy here, to be updtodate with played statements
+    // update player and opponent here, to be updtodate with played statements
     await getFriends();
-    //update enemy e
-    e = player!.friends!.enemies
-        .firstWhere((enemy) => enemy.userId == e.userId);
+    //update opponent e
+    opp = player!.friends!.opponents
+        .firstWhere((opponent) => opponent.userId == opp.userId);
     // if an open game exists, check if its new or delete it
-    if (e.openGame != null &&
-        (!e.openGame!.gameFinished() || !e.openGame!.pointsAccessed)) {
+    if (opp.openGame != null &&
+        (!opp.openGame!.gameFinished() || !opp.openGame!.pointsAccessed)) {
       // the existing  game is not finished and the points are not accessed
       msg =
           "Ein offenes spiel existiert bereits. Beende es bevor du ein neues startest.";
       return;
-    } else if (e.openGame != null) {
+    } else if (opp.openGame != null) {
       // delete the old game, it is finished
-      await db.deleteGame(e.openGame!);
+      await db.deleteGame(opp.openGame!);
     }
     // delete old game
-    e.openGame = Game.empty(withTimer, e, player!);
-    e.openGame!.statementIds = await db.getPlayableStatements(e, player!);
-    if (e.openGame!.statementIds == null) {
+    opp.openGame = Game.empty(withTimer, opp, player!);
+    opp.openGame!.statementIds = await db.getPlayableStatements(opp, player!);
+    if (opp.openGame!.statementIds == null) {
       // reset game because not started
-      e.openGame = null;
+      opp.openGame = null;
       route = tempRoute;
       db.error ??
-          "Spielstarten fehlgeschlagen. ${e.emoji} ${e.name} wurde nicht herausgefordert. Versuche es erneut.";
+          "Spielstarten fehlgeschlagen. ${opp.emoji} ${opp.name} wurde nicht herausgefordert. Versuche es erneut.";
       return;
     }
-    db.sendPushGameStartet(this, receiverId: e.userId);
+    db.sendPushGameStartet(this, receiverId: opp.userId);
     await getFriends();
     // print(e.openGame!.statementIds.toString());
     // if successfully fetched statements
     route = tempRoute;
-    msg = "${e.emoji} ${e.name} wurde herausgefordert";
+    msg = "${opp.emoji} ${opp.name} wurde herausgefordert";
 
     return;
   }
@@ -549,14 +552,14 @@ class QuellenreiterAppState extends ChangeNotifier {
     if (db.error != null) {
       return;
     }
-    currentEnemy!.openGame!.statements =
-        await db.getStatements(currentEnemy!.openGame!.statementIds!);
+    currentOpponent!.openGame!.statements =
+        await db.getStatements(currentOpponent!.openGame!.statementIds!);
     notifyListeners();
     return;
   }
 
-  /// Starts an open game with the current enemy.
-  /// only if its the [Player]s turn.
+  /// Starts an open game with the current opponent.
+  /// Only if it is the [Player]s turn.
   void playGame() async {
     HapticFeedback.mediumImpact();
 
@@ -564,13 +567,13 @@ class QuellenreiterAppState extends ChangeNotifier {
     if (route != Routes.loading) {
       route = Routes.loading;
     }
-    if (currentEnemy!.openGame != null &&
-        currentEnemy!.openGame!.isPlayersTurn()) {
+    if (currentOpponent!.openGame != null &&
+        currentOpponent!.openGame!.isPlayersTurn()) {
       // download statements
-      currentEnemy!.openGame!.statements =
-          await db.getStatements(currentEnemy!.openGame!.statementIds!);
+      currentOpponent!.openGame!.statements =
+          await db.getStatements(currentOpponent!.openGame!.statementIds!);
       // check if error
-      if (currentEnemy!.openGame!.statements == null) {
+      if (currentOpponent!.openGame!.statements == null) {
         route = Routes.home;
         return;
       }
@@ -655,7 +658,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   List<String> getNames() {
     var ret = player!.friends!.getNames();
     ret.add(player!.name);
-    ret.addAll(enemyRequests!.getNames());
+    ret.addAll(opponentRequests!.getNames());
     ret.addAll(pendingRequests!.getNames());
     return ret;
   }

@@ -108,7 +108,7 @@ class DbFields {
 
   static const String openGameStatements = "statements";
 
-  static const String enemyName = "name";
+  static const String opponentName = "name";
 
   static const String gameStatementIds = "statementIds";
   static const String gameWithTimer = "withTimer";

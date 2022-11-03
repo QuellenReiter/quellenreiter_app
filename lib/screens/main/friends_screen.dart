@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:quellenreiter_app/models/enemy.dart';
+import 'package:quellenreiter_app/models/opponent.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
-import 'package:quellenreiter_app/widgets/enemy_card.dart';
+import 'package:quellenreiter_app/widgets/opponent_card.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../constants/constants.dart';
@@ -20,14 +20,14 @@ class FriendsScreen extends StatefulWidget {
 class _FriendsScreenState extends State<FriendsScreen> {
   @override
   Widget build(BuildContext context) {
-    List<Widget> enemyCards = [];
-    // create list of enemy cards
+    List<Widget> opponentCards = [];
+    // create list of opponent cards
     // if requests exist
 
     // list of sent and pending requests
     List<Widget> pendingRequests = [];
     if (widget.appState.pendingRequests != null &&
-        widget.appState.pendingRequests!.enemies.isNotEmpty) {
+        widget.appState.pendingRequests!.opponents.isNotEmpty) {
       pendingRequests.add(
         const Divider(
           indent: 15,
@@ -55,18 +55,18 @@ class _FriendsScreenState extends State<FriendsScreen> {
           ),
         ),
       );
-      for (Enemy e in widget.appState.pendingRequests!.enemies) {
-        pendingRequests.add(EnemyCard(
+      for (Opponent opp in widget.appState.pendingRequests!.opponents) {
+        pendingRequests.add(OpponentCard(
           appState: widget.appState,
-          enemy: e,
-          onTapped: (e) {},
+          opponent: opp,
+          onTapped: (opponent) {},
         ));
       }
     }
     // add all current friends
     if (widget.appState.player!.friends != null &&
-        widget.appState.player!.friends!.enemies.isNotEmpty) {
-      enemyCards.addAll([
+        widget.appState.player!.friends!.opponents.isNotEmpty) {
+      opponentCards.addAll([
         Padding(
           padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
           child: Row(
@@ -87,10 +87,10 @@ class _FriendsScreenState extends State<FriendsScreen> {
       ]);
       int i = 1;
       bool playerAdded = false;
-      for (Enemy e in widget.appState.player!.friends!.enemies
+      for (Opponent opp in widget.appState.player!.friends!.opponents
         ..sort((a, b) => b.getXp().compareTo(a.getXp()))) {
-        if (!playerAdded && widget.appState.player!.getXp() > e.getXp()) {
-          enemyCards.add(
+        if (!playerAdded && widget.appState.player!.getXp() > opp.getXp()) {
+          opponentCards.add(
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -99,10 +99,10 @@ class _FriendsScreenState extends State<FriendsScreen> {
                     child: Text("$i.",
                         style: Theme.of(context).textTheme.headline2)),
                 Flexible(
-                  child: EnemyCard(
+                  child: OpponentCard(
                     appState: widget.appState,
-                    enemy: widget.appState.player!,
-                    onTapped: (enemy) => {},
+                    opponent: widget.appState.player!,
+                    onTapped: (opponent) => {},
                   ),
                 ),
               ],
@@ -111,17 +111,17 @@ class _FriendsScreenState extends State<FriendsScreen> {
           i++;
           playerAdded = true;
         }
-        enemyCards.add(
+        opponentCards.add(
           Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
             Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child:
                     Text("$i.", style: Theme.of(context).textTheme.headline2)),
             Flexible(
-              child: EnemyCard(
+              child: OpponentCard(
                 appState: widget.appState,
-                enemy: e,
-                onTapped: (enemy) => {},
+                opponent: opp,
+                onTapped: (opponent) => {},
               ),
             ),
           ]),
@@ -129,7 +129,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
         i++;
       }
       if (!playerAdded) {
-        enemyCards.add(
+        opponentCards.add(
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -138,10 +138,10 @@ class _FriendsScreenState extends State<FriendsScreen> {
                   child: Text("$i.",
                       style: Theme.of(context).textTheme.headline2)),
               Flexible(
-                child: EnemyCard(
+                child: OpponentCard(
                   appState: widget.appState,
-                  enemy: widget.appState.player!,
-                  onTapped: (enemy) => {},
+                  opponent: widget.appState.player!,
+                  onTapped: (opponent) => {},
                 ),
               ),
             ],
@@ -174,7 +174,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                   if (widget.appState.player?.friends == null)
                     const Center(child: CircularProgressIndicator())
                   // display button if user has no friends yet.
-                  else if (widget.appState.player!.friends!.enemies.isEmpty)
+                  else if (widget.appState.player!.friends!.opponents.isEmpty)
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -213,7 +213,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
                           height: 50,
                         ),
                         if (widget.appState.pendingRequests != null &&
-                            widget.appState.pendingRequests!.enemies.isNotEmpty)
+                            widget
+                                .appState.pendingRequests!.opponents.isNotEmpty)
                           ...pendingRequests
                       ],
                     )
@@ -231,7 +232,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                             ),
                           ),
                           children: [
-                            ...enemyCards,
+                            ...opponentCards,
                             ...pendingRequests,
                           ],
                         ),
