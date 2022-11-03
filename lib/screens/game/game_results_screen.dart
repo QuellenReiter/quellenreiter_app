@@ -36,14 +36,14 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
               child: ListView.builder(
                 physics: const BouncingScrollPhysics(),
                 itemCount: widget.showAll
-                    ? widget.appState.currentOpponent!.openGame!.player.answers
-                        .length
+                    ? widget.appState.currentOpponent!.openGame!.player
+                        .amountAnswered
                     : 3,
                 itemBuilder: (BuildContext context, int index) {
                   if (!widget.showAll) {
                     // if not all shown, show last three in correct order
                     index = widget.appState.currentOpponent!.openGame!.player
-                            .answers.length -
+                            .amountAnswered -
                         3 +
                         index;
                   }

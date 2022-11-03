@@ -24,6 +24,10 @@ class GamePlayer {
   int getPoints() {
     return answers.where((ans) => ans).length;
   }
+
+  int get amountAnswered {
+    return answers.length;
+  }
 }
 
 class Game {
@@ -95,17 +99,17 @@ class Game {
     }
     // player starts and (opponent has more or equal answers or player is within a round)
     return (playerIndex != requestingPlayerIndex &&
-            (opponent.answers.length >= player.answers.length ||
-                player.answers.length % 3 != 0) ||
-        // OR: opponent starts, has a finished round and has more answers
+            (opponent.amountAnswered >= player.amountAnswered ||
+                player.amountAnswered % 3 != 0) ||
+        // OR: opponent starts, has finished a round and has more answers
         (playerIndex == requestingPlayerIndex &&
-            opponent.answers.length % 3 == 0 &&
-            opponent.answers.length > player.answers.length));
+            opponent.amountAnswered % 3 == 0 &&
+            opponent.amountAnswered > player.amountAnswered));
   }
 
   /// Returns true if both players have played 9 statements
   bool gameFinished() {
-    return player.answers.length >= 9 && opponent.answers.length >= 9;
+    return player.amountAnswered >= 9 && opponent.amountAnswered >= 9;
   }
 
   Map<String, dynamic> toMap() {

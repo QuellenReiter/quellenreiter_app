@@ -28,7 +28,7 @@ class _QuestScreenState extends State<QuestScreen>
     });
     // set index of statement to be shown
     int statementIndex =
-        widget.appState.currentOpponent!.openGame!.player.answers.length;
+        widget.appState.currentOpponent!.openGame!.player.amountAnswered;
     // set answer to false, incase user breaks the round.
     // But only if withTimer. Else doing research and closing the app is welcome.
 

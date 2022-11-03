@@ -401,7 +401,7 @@ class QuellenreiterAppState extends ChangeNotifier {
         // game is either finished or it is the player's turn now.
         // This prevents constant updating while the player is browsing the quests.
         if (tempCurrentOpponent.openGame != null &&
-            tempCurrentOpponent.openGame!.opponent.answers.length % 3 == 0) {
+            tempCurrentOpponent.openGame!.opponent.amountAnswered % 3 == 0) {
           currentOpponent = tempCurrentOpponent;
         }
       } catch (e) {
