@@ -322,38 +322,20 @@ class _QuestScreenState extends State<QuestScreen>
     // some other player could update the players stats between the above call
     // and the below update and will then be lost.
     // add false as a placeHolder if not with timer.
-    // if time is over (only if with timer)
-    if (timeOver) {
-      widget.appState.currentOpponent!.openGame!.player
-          .answers[statementIndex] = false;
-      // if statemetn and answer are true.
-    } else if (widget.appState.currentOpponent!.openGame!.statements!
-                .statements[statementIndex].statementCorrectness ==
-            CorrectnessCategory.correct &&
-        answer) {
-      widget.appState.currentOpponent!.openGame!.player
-          .answers[statementIndex] = true;
-    }
-    // if statement and answer are fake.
-    else if (widget.appState.currentOpponent!.openGame!.statements!
-                .statements[statementIndex].statementCorrectness !=
-            CorrectnessCategory.correct &&
-        !answer) {
-      widget.appState.currentOpponent!.openGame!.player
-          .answers[statementIndex] = true;
-    }
-    // else answer is false.
-    else {
-      widget.appState.currentOpponent!.openGame!.player
-          .answers[statementIndex] = false;
-    }
     if (!currentGame.withTimer) {
       currentGame.player.answers.add(false);
     }
+
+    bool stmCorrect = CorrectnessCategory.isFact(currentGame
+        .statements!.statements[statementIndex].statementCorrectness);
+
+    // true if no timeout (only if with timer) AND answer and correctness match
+    currentGame.player.answers[statementIndex] =
+        (!timeOver && stmCorrect == answer);
+
     HapticFeedback.heavyImpact();
 
-    var answerCorrect = widget
-        .appState.currentOpponent!.openGame!.player.answers[statementIndex];
+    bool answerCorrect = currentGame.player.answers[statementIndex];
 
     // show some inbetween screen
     showDialog(
