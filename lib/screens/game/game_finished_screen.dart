@@ -23,8 +23,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
   int countupStartValue = 0;
   late final int newLevel;
   bool updatesDone = false;
-  bool playerWon = false;
-  bool opponentWon = false;
+  late GameResult result;
   bool pointButtonTapped = false;
 
   @override
@@ -35,10 +34,26 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
     });
 
     Game currentGame = widget.appState.currentOpponent!.openGame!;
-    playerWon = currentGame.getGameResult() == GameResult.playerWon;
-    opponentWon = currentGame.getGameResult() == GameResult.opponentWon;
+    result = currentGame.getGameResult();
 
     tempPlayerXp.value = currentGame.getPlayerXp();
+
+    String finalText = "";
+    String finalEmoji = "";
+    switch (result) {
+      case GameResult.playerWon:
+        finalText = "Du hast\ngewonnen";
+        finalEmoji = "🏆";
+        break;
+      case GameResult.opponentWon:
+        finalText = "Du hast\nverloren";
+        finalEmoji = "🤦";
+        break;
+      case GameResult.tied:
+        finalText = "Unentschieden";
+        finalEmoji = "🪢";
+        break;
+    }
 
     return Stack(children: [
       Scaffold(
@@ -310,11 +325,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                               child: Align(
                                 alignment: Alignment.center,
                                 child: Text(
-                                  playerWon
-                                      ? "Du hast\ngewonnen"
-                                      : opponentWon
-                                          ? "du hast\nverloren"
-                                          : "Unentschieden",
+                                  finalText,
                                   style: Theme.of(context)
                                       .textTheme
                                       .headline1!
@@ -327,11 +338,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                             ),
                           ),
                           Text(
-                            playerWon
-                                ? "🏆"
-                                : opponentWon
-                                    ? "🤦"
-                                    : "🪢",
+                            finalEmoji,
                             style: TextStyle(fontSize: 100 * value),
                           ),
                           Positioned(
@@ -529,32 +536,24 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
       Game currentGame = widget.appState.currentOpponent!.openGame!;
       Player currentPlayer = widget.appState.player!;
 
+      if (result == GameResult.playerWon) {
+        // player has won, update player
+        widget.appState.currentOpponent!.wonGamesPlayer += 1;
+        currentPlayer.numGamesWon += 1;
+      } else if (result == GameResult.tied) {
+        // Game endet in a tie, update player
+        currentPlayer.numGamesTied += 1;
+      }
+
       // if statements are not downloaded (especially if player
       // wants to get its points), download them.
       currentGame.statements ??=
           await widget.appState.db.getStatements(currentGame.statementIds!);
-      if (playerWon) {
-        // player has won
-        widget.appState.currentOpponent!.wonGamesPlayer += 1;
-        // update player
-        currentPlayer.numGamesWon += 1;
-        currentPlayer.numPlayedGames += 1;
-        currentPlayer.updateAnswerStats(
-            currentGame.player.answers, currentGame.statements);
-      } else if (opponentWon) {
-        // opponent has won
-        // update player
-        currentPlayer.numPlayedGames += 1;
-        currentPlayer.updateAnswerStats(
-            currentGame.player.answers, currentGame.statements);
-      } else {
-        // Game endet in a Tie
-        // update player
-        currentPlayer.numPlayedGames += 1;
-        currentPlayer.numGamesTied += 1;
-        currentPlayer.updateAnswerStats(
-            currentGame.player.answers, currentGame.statements);
-      }
+
+      currentPlayer.updateAnswerStats(
+          currentGame.player.answers, currentGame.statements);
+      currentPlayer.numPlayedGames += 1;
+
       // increase played games of friendship if playerIndex = 0
       if (currentGame.playerIndex == 0) {
         widget.appState.currentOpponent!.numGamesPlayed += 1;
