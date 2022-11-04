@@ -23,27 +23,27 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
       widget.appState.showError(context);
     });
 
-    if (widget.appState.currentEnemy!.openGame!.statements == null) {
+    if (widget.appState.currentOpponent!.openGame!.statements == null) {
       widget.appState.getCurrentStatements();
     }
     return Scaffold(
       appBar: AppBar(
         title: const Text("Faktenchecks"),
       ),
-      body: widget.appState.currentEnemy!.openGame!.statements == null
+      body: widget.appState.currentOpponent!.openGame!.statements == null
           ? const Center(child: CircularProgressIndicator())
           : AnimationLimiter(
               child: ListView.builder(
                 physics: const BouncingScrollPhysics(),
                 itemCount: widget.showAll
-                    ? widget
-                        .appState.currentEnemy!.openGame!.player.answers.length
+                    ? widget.appState.currentOpponent!.openGame!.player.answers
+                        .length
                     : 3,
                 itemBuilder: (BuildContext context, int index) {
                   if (!widget.showAll) {
                     // if not all shown, show last three in correct order
-                    index = widget.appState.currentEnemy!.openGame!
-                            .player.answers.length -
+                    index = widget.appState.currentOpponent!.openGame!.player
+                            .answers.length -
                         3 +
                         index;
                   }
@@ -82,8 +82,8 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
                                 ),
                               ),
                             StatementCard(
-                              statement: widget.appState.currentEnemy!.openGame!
-                                  .statements!.statements[index],
+                              statement: widget.appState.currentOpponent!
+                                  .openGame!.statements!.statements[index],
                               appState: widget.appState,
                             ),
                           ],

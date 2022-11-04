@@ -1,7 +1,7 @@
 import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:quellenreiter_app/models/enemy.dart';
+import 'package:quellenreiter_app/models/opponent.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/start_game_container.dart';
 
@@ -11,36 +11,36 @@ import '../models/statement.dart';
 import 'custom_bottom_sheet.dart';
 
 /// Brief information display of a single [Statement].
-class EnemyCard extends StatelessWidget {
-  const EnemyCard(
+class OpponentCard extends StatelessWidget {
+  const OpponentCard(
       {Key? key,
-      required this.enemy,
+      required this.opponent,
       required this.onTapped,
       required this.appState})
       : super(key: key);
 
-  /// The [Enemy] to be displayed.
-  final dynamic enemy;
+  /// The [Opponent] to be displayed.
+  final dynamic opponent;
   final QuellenreiterAppState appState;
 
-  /// Stores if user tapped on this [EnemyCard] and notifies the navigation.
-  final ValueChanged<Enemy> onTapped;
+  /// Stores if user tapped on this [OpponentCard] and notifies the navigation.
+  final ValueChanged<Opponent> onTapped;
   @override
   Widget build(BuildContext context) {
     dynamic onClickFunk;
     String label = "";
 
-    if (enemy.runtimeType == Player ||
-        (enemy.runtimeType == Enemy) &&
-            (enemy.acceptedByOther == false &&
-                enemy.acceptedByPlayer == true)) {
+    if (opponent.runtimeType == Player ||
+        (opponent.runtimeType == Opponent) &&
+            (opponent.acceptedByOther == false &&
+                opponent.acceptedByPlayer == true)) {
       return Padding(
         padding:
             const EdgeInsets.only(top: 10, bottom: 10, left: 30, right: 10),
         child: Material(
           borderRadius: const BorderRadius.all(Radius.circular(15)),
           elevation: 5,
-          color: enemy.runtimeType == Enemy
+          color: opponent.runtimeType == Opponent
               ? DesignColors.lightPink
               : DesignColors.lightBlue,
 
@@ -69,7 +69,7 @@ class EnemyCard extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  enemy.name,
+                                  opponent.name,
                                   style: Theme.of(context).textTheme.headline4,
                                 ),
                                 const Padding(
@@ -82,7 +82,7 @@ class EnemyCard extends StatelessWidget {
                                 ),
                                 Countup(
                                   begin: 0,
-                                  end: enemy.getLevel().toDouble(),
+                                  end: opponent.getLevel().toDouble(),
                                   duration: const Duration(milliseconds: 500),
                                   style: Theme.of(context)
                                       .textTheme
@@ -103,7 +103,7 @@ class EnemyCard extends StatelessWidget {
                           ? 1.06
                           : 1.1,
                   child: Text(
-                    enemy.emoji,
+                    opponent.emoji,
                     style: Theme.of(context)
                         .textTheme
                         .headline1!
@@ -116,88 +116,88 @@ class EnemyCard extends StatelessWidget {
         ),
       );
     }
-    if (enemy.openGame == null) {
-      if (enemy.acceptedByPlayer && enemy.acceptedByOther) {
+    if (opponent.openGame == null) {
+      if (opponent.acceptedByPlayer && opponent.acceptedByOther) {
         label = "Spiel starten";
         onClickFunk = () => CustomBottomSheet.showCustomBottomSheet(
               context: context,
               scrollable: false,
-              child: StartGameContainer(appState: appState, enemy: enemy),
+              child: StartGameContainer(appState: appState, opponent: opponent),
             );
-      } else if (!enemy.acceptedByOther && !enemy.acceptedByPlayer) {
-        onClickFunk = () => onTapped(enemy);
+      } else if (!opponent.acceptedByOther && !opponent.acceptedByPlayer) {
+        onClickFunk = () => onTapped(opponent);
         label = "Anfrage senden";
-      } else if (enemy.acceptedByOther && !enemy.acceptedByPlayer) {
+      } else if (opponent.acceptedByOther && !opponent.acceptedByPlayer) {
         onClickFunk = () {
           HapticFeedback.mediumImpact();
 
-          appState.acceptRequest(enemy);
+          appState.acceptRequest(opponent);
         };
         label = "Anfrage annehmen";
       }
     }
     // possible to start game and to view old results.
-    else if (enemy.openGame!.pointsAccessed) {
+    else if (opponent.openGame!.pointsAccessed) {
       label = "Ergebnisse ansehen oder neues Spiel";
       onClickFunk = () {
         HapticFeedback.mediumImpact();
-        appState.currentEnemy = enemy;
+        appState.currentOpponent = opponent;
         appState.route = Routes.gameReadyToStart;
       };
     }
     // show results and continue playing button
-    else if (enemy.openGame!.isPlayersTurn() &&
-        enemy.openGame!.player.answers.isNotEmpty) {
+    else if (opponent.openGame!.isPlayersTurn() &&
+        opponent.openGame!.player.answers.isNotEmpty) {
       onClickFunk = () {
         HapticFeedback.mediumImpact();
 
-        appState.currentEnemy = enemy;
+        appState.currentOpponent = opponent;
         appState.route = Routes.gameReadyToStart;
       };
       label = "Du bist dran";
     }
     // game starts immediately, because there are no results yet
-    else if (enemy.openGame!.isPlayersTurn() &&
-        enemy.openGame!.player.answers.isEmpty) {
+    else if (opponent.openGame!.isPlayersTurn() &&
+        opponent.openGame!.player.answers.isEmpty) {
       onClickFunk = () {
         HapticFeedback.mediumImpact();
 
-        appState.currentEnemy = enemy;
+        appState.currentOpponent = opponent;
         appState.playGame();
       };
       label = "Du bist dran";
     }
     // player can access points, other player has already accessed them
-    else if (enemy.openGame!.gameFinished() &&
-        enemy.openGame!.requestingPlayerIndex != enemy.openGame!.playerIndex) {
+    else if (opponent.openGame!.gameFinished() &&
+        opponent.openGame!.requestingPlayerIndex != opponent.openGame!.playerIndex) {
       onClickFunk = () {
         HapticFeedback.mediumImpact();
 
-        appState.currentEnemy = enemy;
+        appState.currentOpponent = opponent;
         appState.route = Routes.gameFinishedScreen;
       };
       label = "Punkte abholen";
     }
     // player has already accessed points and can view results
-    else if (enemy.openGame!.gameFinished() &&
-        enemy.openGame!.requestingPlayerIndex == enemy.openGame!.playerIndex) {
+    else if (opponent.openGame!.gameFinished() &&
+        opponent.openGame!.requestingPlayerIndex == opponent.openGame!.playerIndex) {
       onClickFunk = () {
         HapticFeedback.mediumImpact();
 
-        appState.currentEnemy = enemy;
+        appState.currentOpponent = opponent;
         appState.route = Routes.gameReadyToStart;
       };
       label = "Ergebnisse ansehen";
     }
-    // if enemy is playing
+    // if opponent is playing
     else {
       onClickFunk = () {
         HapticFeedback.mediumImpact();
 
-        appState.currentEnemy = enemy;
+        appState.currentOpponent = opponent;
         appState.route = Routes.gameReadyToStart;
       };
-      label = "${enemy.name} spielt...";
+      label = "${opponent.name} spielt...";
     }
 
     return Padding(
@@ -244,7 +244,7 @@ class EnemyCard extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    enemy.name,
+                                    opponent.name,
                                     style:
                                         Theme.of(context).textTheme.headline4,
                                   ),
@@ -258,7 +258,7 @@ class EnemyCard extends StatelessWidget {
                                   ),
                                   Countup(
                                     begin: 0,
-                                    end: enemy.getLevel().toDouble(),
+                                    end: opponent.getLevel().toDouble(),
                                     duration: const Duration(milliseconds: 500),
                                     style: Theme.of(context)
                                         .textTheme
@@ -302,7 +302,7 @@ class EnemyCard extends StatelessWidget {
                     const Icon(Icons.monetization_on_rounded,
                         color: DesignColors.pink),
                     Text(
-                      "+${enemy.openGame!.getPlayerXp()}",
+                      "+${opponent.openGame!.getPlayerXp()}",
                       style: Theme.of(context)
                           .textTheme
                           .headline5!
@@ -372,7 +372,7 @@ class EnemyCard extends StatelessWidget {
                   ? 1.06
                   : 1.1,
               child: Text(
-                enemy.emoji,
+                opponent.emoji,
                 style: Theme.of(context)
                     .textTheme
                     .headline1!

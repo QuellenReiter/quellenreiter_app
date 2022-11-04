@@ -36,12 +36,12 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
   @override
   Widget build(BuildContext context) {
     commonLength = min(
-        widget.appState.currentEnemy!.openGame!.player.answers.length,
-        widget.appState.currentEnemy!.openGame!.opponent.answers.length);
+        widget.appState.currentOpponent!.openGame!.player.answers.length,
+        widget.appState.currentOpponent!.openGame!.opponent.answers.length);
 
     // Check if statements are loaded. If not, load them.
     // TODO: Check if this is the best place to do this
-    if (widget.appState.currentEnemy!.openGame!.statements == null) {
+    if (widget.appState.currentOpponent!.openGame!.statements == null) {
       widget.appState.getCurrentStatements();
       return Scaffold(
           appBar: AppBar(),
@@ -51,10 +51,10 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
     // build the list of statementcards
     statementCardsWithAnswers = [];
     for (int i = 0;
-        i < widget.appState.currentEnemy!.openGame!.player.answers.length;
+        i < widget.appState.currentOpponent!.openGame!.player.answers.length;
         i++) {
       var tempStatement =
-          widget.appState.currentEnemy!.openGame!.statements!.statements[i];
+          widget.appState.currentOpponent!.openGame!.statements!.statements[i];
       statementCardsWithAnswers.add(
         Padding(
           padding: const EdgeInsets.only(top: 10),
@@ -73,8 +73,8 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  if (widget
-                          .appState.currentEnemy!.openGame!.player.answers[i] ==
+                  if (widget.appState.currentOpponent!.openGame!.player
+                          .answers[i] ==
                       true)
                     const CircleAvatar(
                       backgroundColor: DesignColors.green,
@@ -96,7 +96,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                       backgroundColor: DesignColors.lightGrey,
                       child: Icon(Icons.watch_later_outlined),
                     )
-                  else if (widget.appState.currentEnemy!.openGame!.opponent
+                  else if (widget.appState.currentOpponent!.openGame!.opponent
                           .answers[i] ==
                       true)
                     const CircleAvatar(
@@ -152,14 +152,15 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                       parent: BouncingScrollPhysics()),
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   children: [
-                    if (widget.appState.currentEnemy!.openGame!.gameFinished())
+                    if (widget.appState.currentOpponent!.openGame!
+                        .gameFinished())
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 30),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            if (widget.appState.currentEnemy!.openGame!
+                            if (widget.appState.currentOpponent!.openGame!
                                     .getGameResult() ==
                                 GameResult.playerWon)
                               Text("Gewonnen",
@@ -167,7 +168,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                                       .textTheme
                                       .headline1!
                                       .copyWith(color: DesignColors.green))
-                            else if (widget.appState.currentEnemy!.openGame!
+                            else if (widget.appState.currentOpponent!.openGame!
                                     .getGameResult() ==
                                 GameResult.tied)
                               Text("Unentschieden",
@@ -199,7 +200,8 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                                   ),
                                   Countup(
                                     begin: 0,
-                                    end: widget.appState.currentEnemy!.openGame!
+                                    end: widget
+                                        .appState.currentOpponent!.openGame!
                                         .getPlayerXp()
                                         .toDouble(),
                                     duration: const Duration(seconds: 1),
@@ -276,11 +278,12 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                   ],
                 ),
               ),
-              if (widget.appState.currentEnemy == null ||
-                  widget.appState.currentEnemy!.openGame == null)
+              if (widget.appState.currentOpponent == null ||
+                  widget.appState.currentOpponent!.openGame == null)
                 const Text("Fehler.")
               //if both players accessed the points
-              else if (widget.appState.currentEnemy!.openGame!.pointsAccessed)
+              else if (widget
+                  .appState.currentOpponent!.openGame!.pointsAccessed)
                 SafeArea(
                   minimum: const EdgeInsets.only(bottom: 20),
                   child: FloatingActionButton.extended(
@@ -295,16 +298,18 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                       scrollable: false,
                       child: StartGameContainer(
                           appState: widget.appState,
-                          enemy: widget.appState.currentEnemy!),
+                          opponent: widget.appState.currentOpponent!),
                     ),
                   ),
                 )
               //if only one player accessed the points adn this is the player which did not end the game
-              else if ((widget.appState.currentEnemy!.openGame!
+              else if ((widget.appState.currentOpponent!.openGame!
                               .requestingPlayerIndex !=
-                          widget.appState.currentEnemy!.openGame!.playerIndex &&
-                      widget.appState.currentEnemy!.openGame!.gameFinished()) &&
-                  !widget.appState.currentEnemy!.openGame!.pointsAccessed)
+                          widget.appState.currentOpponent!.openGame!
+                              .playerIndex &&
+                      widget.appState.currentOpponent!.openGame!
+                          .gameFinished()) &&
+                  !widget.appState.currentOpponent!.openGame!.pointsAccessed)
                 SafeArea(
                   minimum: const EdgeInsets.only(bottom: 20),
                   child: FloatingActionButton.extended(
@@ -319,10 +324,11 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                         widget.appState.route = Routes.gameFinishedScreen;
                       }),
                 )
-              else if (widget.appState.currentEnemy!.openGame!.isPlayersTurn())
+              else if (widget.appState.currentOpponent!.openGame!
+                  .isPlayersTurn())
                 // if not played any quests
                 if (widget
-                    .appState.currentEnemy!.openGame!.player.answers.isEmpty)
+                    .appState.currentOpponent!.openGame!.player.answers.isEmpty)
                   SafeArea(
                     minimum: const EdgeInsets.only(bottom: 20),
                     child: FloatingActionButton.extended(
@@ -344,10 +350,11 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                     ),
                   )
               // if game is finished and player wait for other to access points
-              else if (widget.appState.currentEnemy!.openGame!.gameFinished() &&
-                  widget.appState.currentEnemy!.openGame!
+              else if (widget.appState.currentOpponent!.openGame!
+                      .gameFinished() &&
+                  widget.appState.currentOpponent!.openGame!
                           .requestingPlayerIndex ==
-                      widget.appState.currentEnemy!.openGame!.playerIndex)
+                      widget.appState.currentOpponent!.openGame!.playerIndex)
                 SafeArea(
                   minimum: const EdgeInsets.only(bottom: 20),
                   child: FloatingActionButton.extended(
@@ -361,10 +368,11 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                   ),
                 )
               // if game is finished and player can access its points
-              else if (widget.appState.currentEnemy!.openGame!.gameFinished() &&
-                  widget.appState.currentEnemy!.openGame!
+              else if (widget.appState.currentOpponent!.openGame!
+                      .gameFinished() &&
+                  widget.appState.currentOpponent!.openGame!
                           .requestingPlayerIndex !=
-                      widget.appState.currentEnemy!.openGame!.playerIndex)
+                      widget.appState.currentOpponent!.openGame!.playerIndex)
                 SafeArea(
                   minimum: const EdgeInsets.only(bottom: 20),
                   child: FloatingActionButton.extended(

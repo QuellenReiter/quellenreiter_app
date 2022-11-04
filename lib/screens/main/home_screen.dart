@@ -162,8 +162,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               icon: Stack(
                 children: [
                   const Icon(Icons.home_outlined),
-                  if (widget.appState.enemyRequests != null &&
-                      widget.appState.enemyRequests!.enemies.isNotEmpty)
+                  if (widget.appState.opponentRequests != null &&
+                      widget.appState.opponentRequests!.opponents.isNotEmpty)
                     Positioned(
                       right: 0,
                       child: Container(
@@ -177,7 +177,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           minHeight: 12,
                         ),
                         child: Text(
-                          '${widget.appState.enemyRequests?.enemies.length}',
+                          '${widget.appState.opponentRequests?.opponents.length}',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 8,
@@ -191,8 +191,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               activeIcon: Stack(
                 children: [
                   const Icon(Icons.home_filled),
-                  if (widget.appState.enemyRequests != null &&
-                      widget.appState.enemyRequests!.enemies.isNotEmpty)
+                  if (widget.appState.opponentRequests != null &&
+                      widget.appState.opponentRequests!.opponents.isNotEmpty)
                     Positioned(
                       right: 0,
                       child: Container(
@@ -206,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           minHeight: 12,
                         ),
                         child: Text(
-                          '${widget.appState.enemyRequests?.enemies.length}',
+                          '${widget.appState.opponentRequests?.opponents.length}',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 8,

@@ -28,12 +28,12 @@ class _QuestScreenState extends State<QuestScreen>
     });
     // set index of statement to be shown
     int statementIndex =
-        widget.appState.currentEnemy!.openGame!.player.answers.length;
+        widget.appState.currentOpponent!.openGame!.player.answers.length;
     // set answer to false, incase user breaks the round.
     // But only if withTimer. Else doing research and closing the app is welcome.
 
     // show loading if statements not downloaded.
-    if (widget.appState.currentEnemy!.openGame!.statements == null) {
+    if (widget.appState.currentOpponent!.openGame!.statements == null) {
       widget.appState.getCurrentStatements();
       return const Scaffold(
         body: Center(
@@ -41,8 +41,8 @@ class _QuestScreenState extends State<QuestScreen>
         ),
       );
     }
-    if (widget.appState.currentEnemy!.openGame!.withTimer) {
-      widget.appState.currentEnemy!.openGame!.player.answers.add(false);
+    if (widget.appState.currentOpponent!.openGame!.withTimer) {
+      widget.appState.currentOpponent!.openGame!.player.answers.add(false);
     }
 
     return Scaffold(
@@ -74,7 +74,7 @@ class _QuestScreenState extends State<QuestScreen>
                               placeholder: kTransparentImage,
                               image: widget
                                           .appState
-                                          .currentEnemy!
+                                          .currentOpponent!
                                           .openGame!
                                           .statements!
                                           .statements[statementIndex]
@@ -82,7 +82,7 @@ class _QuestScreenState extends State<QuestScreen>
                                       null
                                   ? widget
                                       .appState
-                                      .currentEnemy!
+                                      .currentOpponent!
                                       .openGame!
                                       .statements!
                                       .statements[statementIndex]
@@ -155,7 +155,7 @@ class _QuestScreenState extends State<QuestScreen>
                                           child: Text(
                                               widget
                                                   .appState
-                                                  .currentEnemy!
+                                                  .currentOpponent!
                                                   .openGame!
                                                   .statements!
                                                   .statements[statementIndex]
@@ -188,7 +188,7 @@ class _QuestScreenState extends State<QuestScreen>
                                               const EdgeInsets.only(left: 3),
                                           child: Text(widget
                                               .appState
-                                              .currentEnemy!
+                                              .currentOpponent!
                                               .openGame!
                                               .statements!
                                               .statements[statementIndex]
@@ -206,7 +206,7 @@ class _QuestScreenState extends State<QuestScreen>
                                               const EdgeInsets.only(left: 3),
                                           child: Text(widget
                                                   .appState
-                                                  .currentEnemy!
+                                                  .currentOpponent!
                                                   .openGame!
                                                   .statements!
                                                   .statements[statementIndex]
@@ -214,7 +214,7 @@ class _QuestScreenState extends State<QuestScreen>
                                               ' | ' +
                                               widget
                                                   .appState
-                                                  .currentEnemy!
+                                                  .currentOpponent!
                                                   .openGame!
                                                   .statements!
                                                   .statements[statementIndex]
@@ -231,7 +231,7 @@ class _QuestScreenState extends State<QuestScreen>
                                               const EdgeInsets.only(left: 3),
                                           child: SelectableText(widget
                                               .appState
-                                              .currentEnemy!
+                                              .currentOpponent!
                                               .openGame!
                                               .statements!
                                               .statements[statementIndex]
@@ -249,7 +249,7 @@ class _QuestScreenState extends State<QuestScreen>
                                               const EdgeInsets.only(left: 3),
                                           child: SelectableText(widget
                                               .appState
-                                              .currentEnemy!
+                                              .currentOpponent!
                                               .openGame!
                                               .statements!
                                               .statements[statementIndex]
@@ -307,7 +307,8 @@ class _QuestScreenState extends State<QuestScreen>
                           ),
                         ),
                         // Timer
-                        if (widget.appState.currentEnemy!.openGame!.withTimer)
+                        if (widget
+                            .appState.currentOpponent!.openGame!.withTimer)
                           SfLinearGauge(
                             minimum: 0,
                             maximum: 1,
@@ -355,38 +356,38 @@ class _QuestScreenState extends State<QuestScreen>
     // some other player could update the players stats between the above call
     // and the below update and will then be lost.
     // add false as a placeHolder if not with timer.
-    if (!widget.appState.currentEnemy!.openGame!.withTimer) {
-      widget.appState.currentEnemy!.openGame!.player.answers.add(false);
+    if (!widget.appState.currentOpponent!.openGame!.withTimer) {
+      widget.appState.currentOpponent!.openGame!.player.answers.add(false);
     }
     // if time is over (only if with timer)
     if (timeOver) {
-      widget.appState.currentEnemy!.openGame!.player.answers[statementIndex] =
-          false;
+      widget.appState.currentOpponent!.openGame!.player
+          .answers[statementIndex] = false;
       // if statemetn and answer are true.
-    } else if (widget.appState.currentEnemy!.openGame!.statements!
+    } else if (widget.appState.currentOpponent!.openGame!.statements!
                 .statements[statementIndex].statementCorrectness ==
             CorrectnessCategory.correct &&
         answer) {
-      widget.appState.currentEnemy!.openGame!.player.answers[statementIndex] =
-          true;
+      widget.appState.currentOpponent!.openGame!.player
+          .answers[statementIndex] = true;
     }
     // if statement and answer are fake.
-    else if (widget.appState.currentEnemy!.openGame!.statements!
+    else if (widget.appState.currentOpponent!.openGame!.statements!
                 .statements[statementIndex].statementCorrectness !=
             CorrectnessCategory.correct &&
         !answer) {
-      widget.appState.currentEnemy!.openGame!.player.answers[statementIndex] =
-          true;
+      widget.appState.currentOpponent!.openGame!.player
+          .answers[statementIndex] = true;
     }
     // else answer is false.
     else {
-      widget.appState.currentEnemy!.openGame!.player.answers[statementIndex] =
-          false;
+      widget.appState.currentOpponent!.openGame!.player
+          .answers[statementIndex] = false;
     }
     HapticFeedback.heavyImpact();
 
-    var answerCorrect =
-        widget.appState.currentEnemy!.openGame!.player.answers[statementIndex];
+    var answerCorrect = widget
+        .appState.currentOpponent!.openGame!.player.answers[statementIndex];
 
     // show some inbetween screen
     showDialog(
@@ -480,21 +481,21 @@ class _QuestScreenState extends State<QuestScreen>
     await widget.appState.db.updateGame(widget.appState);
 
     // if game is finished
-    if (widget.appState.currentEnemy!.openGame!.gameFinished()) {
+    if (widget.appState.currentOpponent!.openGame!.gameFinished()) {
       // notify friend that points can be accessed
       widget.appState.db.sendPushOtherGameFinished(widget.appState,
-          receiverId: widget.appState.currentEnemy!.userId);
+          receiverId: widget.appState.currentOpponent!.userId);
       // show game finished screen
       widget.appState.route = Routes.gameFinishedScreen;
       return;
     } // if game is finished
 
     //if its not players turn anymore, getFriends.
-    if (!widget.appState.currentEnemy!.openGame!.isPlayersTurn()) {
+    if (!widget.appState.currentOpponent!.openGame!.isPlayersTurn()) {
       await widget.appState.getFriends();
       // send notification to friend.
       widget.appState.db.sendPushOtherPlayersTurn(widget.appState,
-          receiverId: widget.appState.currentEnemy!.userId);
+          receiverId: widget.appState.currentOpponent!.userId);
       // got toready to start show only last
       widget.appState.route = Routes.readyToStartOnlyLastScreen;
       return;
@@ -506,7 +507,7 @@ class _QuestScreenState extends State<QuestScreen>
 
     HapticFeedback.heavyImpact();
     // got to game finished screen or to the next quest
-    if (widget.appState.currentEnemy!.openGame!.gameFinished()) {
+    if (widget.appState.currentOpponent!.openGame!.gameFinished()) {
       widget.appState.route = Routes.gameFinishedScreen;
     } else {
       widget.appState.route = Routes.quest;
