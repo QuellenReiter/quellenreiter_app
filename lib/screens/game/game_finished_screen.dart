@@ -2,6 +2,7 @@ import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:quellenreiter_app/models/player.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -33,14 +34,11 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
       widget.appState.showError(context);
     });
 
-    playerWon = widget.appState.currentOpponent!.openGame!.getGameResult() ==
-        GameResult.playerWon;
+    Game currentGame = widget.appState.currentOpponent!.openGame!;
+    playerWon = currentGame.getGameResult() == GameResult.playerWon;
+    opponentWon = currentGame.getGameResult() == GameResult.opponentWon;
 
-    opponentWon = widget.appState.currentOpponent!.openGame!.getGameResult() ==
-        GameResult.opponentWon;
-
-    tempPlayerXp.value =
-        widget.appState.currentOpponent!.openGame!.getPlayerXp();
+    tempPlayerXp.value = currentGame.getPlayerXp();
 
     return Stack(children: [
       Scaffold(
@@ -527,47 +525,44 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
         widget.appState.route = Routes.gameReadyToStart;
         return;
       }
+
+      Game currentGame = widget.appState.currentOpponent!.openGame!;
+      Player currentPlayer = widget.appState.player!;
+
       // if statements are not downloaded (especially if player
       // wants to get its points), download them.
-      if (widget.appState.currentOpponent!.openGame!.statements == null) {
-        widget.appState.currentOpponent!.openGame!.statements =
-            await widget.appState.db.getStatements(
-                widget.appState.currentOpponent!.openGame!.statementIds!);
-      }
+      currentGame.statements ??=
+          await widget.appState.db.getStatements(currentGame.statementIds!);
       if (playerWon) {
         // player has won
         widget.appState.currentOpponent!.wonGamesPlayer += 1;
         // update player
-        widget.appState.player!.numGamesWon += 1;
-        widget.appState.player!.numPlayedGames += 1;
-        widget.appState.player!.updateAnswerStats(
-            widget.appState.currentOpponent!.openGame!.player.answers,
-            widget.appState.currentOpponent!.openGame!.statements);
+        currentPlayer.numGamesWon += 1;
+        currentPlayer.numPlayedGames += 1;
+        currentPlayer.updateAnswerStats(
+            currentGame.player.answers, currentGame.statements);
       } else if (opponentWon) {
         // opponent has won
         // update player
-        widget.appState.player!.numPlayedGames += 1;
-        widget.appState.player!.updateAnswerStats(
-            widget.appState.currentOpponent!.openGame!.player.answers,
-            widget.appState.currentOpponent!.openGame!.statements);
+        currentPlayer.numPlayedGames += 1;
+        currentPlayer.updateAnswerStats(
+            currentGame.player.answers, currentGame.statements);
       } else {
         // Game endet in a Tie
         // update player
-        widget.appState.player!.numPlayedGames += 1;
-        widget.appState.player!.numGamesTied += 1;
-        widget.appState.player!.updateAnswerStats(
-            widget.appState.currentOpponent!.openGame!.player.answers,
-            widget.appState.currentOpponent!.openGame!.statements);
+        currentPlayer.numPlayedGames += 1;
+        currentPlayer.numGamesTied += 1;
+        currentPlayer.updateAnswerStats(
+            currentGame.player.answers, currentGame.statements);
       }
       // increase played games of friendship if playerIndex = 0
-      if (widget.appState.currentOpponent!.openGame!.playerIndex == 0) {
+      if (currentGame.playerIndex == 0) {
         widget.appState.currentOpponent!.numGamesPlayed += 1;
       }
       // if the last player accessed the points
-      if (widget.appState.currentOpponent!.openGame!.requestingPlayerIndex !=
-          widget.appState.currentOpponent!.openGame!.playerIndex) {
+      if (currentGame.requestingPlayerIndex != currentGame.playerIndex) {
         // both player have accessed their points
-        widget.appState.currentOpponent!.openGame!.pointsAccessed = true;
+        currentGame.pointsAccessed = true;
       }
       await widget.appState.db.updateGame(widget.appState);
 
