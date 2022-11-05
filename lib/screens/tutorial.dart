@@ -579,9 +579,9 @@ class Turorial extends StatelessWidget {
 
   void registerAnswer(bool answer, BuildContext context) {
     HapticFeedback.mediumImpact();
-    bool stmCorrect =
+    bool statementCorrect =
         CorrectnessCategory.isFact(testStatement!.statementCorrectness);
-    bool answerCorrect = answer == stmCorrect;
+    bool answerCorrect = answer == statementCorrect;
 
     showGeneralDialog(
         context: context,
