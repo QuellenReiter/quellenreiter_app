@@ -326,12 +326,12 @@ class _QuestScreenState extends State<QuestScreen>
       currentGame.player.answers.add(false);
     }
 
-    bool stmCorrect = CorrectnessCategory.isFact(currentGame
+    bool statementCorrect = CorrectnessCategory.isFact(currentGame
         .statements!.statements[statementIndex].statementCorrectness);
 
     // true if no timeout (only if with timer) AND answer and correctness match
     currentGame.player.answers[statementIndex] =
-        (!timeOver && stmCorrect == answer);
+        (!timeOver && statementCorrect == answer);
 
     HapticFeedback.heavyImpact();
 
