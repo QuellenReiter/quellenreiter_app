@@ -210,18 +210,18 @@ class Opponent {
       return;
     }
     for (int i = 0; i < GameRules.statementsPerGame; i++) {
-      bool stmCorrect = CorrectnessCategory.isFact(
+      bool statementCorrect = CorrectnessCategory.isFact(
           statements.statements[i].statementCorrectness);
       // correctly found as Real News
-      if (opponentAnswers[i] && stmCorrect) {
+      if (opponentAnswers[i] && statementCorrect) {
         trueCorrectAnswersOther += 1;
       }
       // Correctly found as Fake News
-      else if (opponentAnswers[i] && !stmCorrect) {
+      else if (opponentAnswers[i] && !statementCorrect) {
         trueFakeAnswersOther += 1;
       }
       // Thought to be Real but was Fake News
-      else if (!opponentAnswers[i] && !stmCorrect) {
+      else if (!opponentAnswers[i] && !statementCorrect) {
         falseFakeAnswersOther += 1;
       }
       // Thought to be Fake but was Real News
