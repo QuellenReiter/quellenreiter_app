@@ -2,6 +2,7 @@ import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:quellenreiter_app/models/player.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -18,13 +19,12 @@ class GameFinishedScreen extends StatefulWidget {
 }
 
 class _GameFinishedScreenState extends State<GameFinishedScreen> {
-  ValueNotifier<int> tempPlayerXp = ValueNotifier(0);
-  int countupStartValue = 0;
-  late final int newLevel;
-  bool updatesDone = false;
-  bool playerWon = false;
-  bool opponentWon = false;
-  bool pointButtonTapped = false;
+  ValueNotifier<int> _tempPlayerXp = ValueNotifier(0);
+  int _countupStartValue = 0;
+  late final int _newLevel;
+  bool _updatesDone = false;
+  late GameResult _result;
+  bool _pointButtonTapped = false;
 
   @override
   Widget build(BuildContext context) {
@@ -33,14 +33,27 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
       widget.appState.showError(context);
     });
 
-    playerWon = widget.appState.currentOpponent!.openGame!.getGameResult() ==
-        GameResult.playerWon;
+    Game currentGame = widget.appState.currentOpponent!.openGame!;
+    _result = currentGame.getGameResult();
 
-    opponentWon = widget.appState.currentOpponent!.openGame!.getGameResult() ==
-        GameResult.opponentWon;
+    _tempPlayerXp.value = currentGame.getPlayerXp();
 
-    tempPlayerXp.value =
-        widget.appState.currentOpponent!.openGame!.getPlayerXp();
+    String finalText = "";
+    String finalEmoji = "";
+    switch (_result) {
+      case GameResult.playerWon:
+        finalText = "Du hast\ngewonnen";
+        finalEmoji = "🏆";
+        break;
+      case GameResult.opponentWon:
+        finalText = "Du hast\nverloren";
+        finalEmoji = "🤦";
+        break;
+      case GameResult.tied:
+        finalText = "Unentschieden";
+        finalEmoji = "🪢";
+        break;
+    }
 
     return Stack(children: [
       Scaffold(
@@ -62,7 +75,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                   ),
                   children: [
                     ValueListenableBuilder<int>(
-                        valueListenable: tempPlayerXp,
+                        valueListenable: _tempPlayerXp,
                         builder: (BuildContext context, val, child) {
                           return Container(
                             margin: const EdgeInsets.all(10),
@@ -108,17 +121,16 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                           alignment: Alignment.center,
                                           children: [
                                             SfLinearGauge(
-                                              minimum:
-                                                  GameRules.xpForCurrentLevel(
-                                                          widget.appState
-                                                                  .player!
-                                                                  .getXp() +
-                                                              countupStartValue)
-                                                      .toDouble(),
+                                              minimum: GameRules
+                                                      .xpForCurrentLevel(widget
+                                                              .appState.player!
+                                                              .getXp() +
+                                                          _countupStartValue)
+                                                  .toDouble(),
                                               maximum: GameRules.xpForNextLevel(
                                                       widget.appState.player!
                                                               .getXp() +
-                                                          countupStartValue)
+                                                          _countupStartValue)
                                                   .toDouble(),
                                               animateAxis: true,
                                               axisTrackStyle:
@@ -129,7 +141,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                               ),
                                               animateRange: true,
                                               animationDuration:
-                                                  countupStartValue > 0
+                                                  _countupStartValue > 0
                                                       ? 1000
                                                       : 400,
                                               showTicks: false,
@@ -142,7 +154,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                                   value: widget.appState.player!
                                                           .getXp()
                                                           .toDouble() +
-                                                      countupStartValue,
+                                                      _countupStartValue,
                                                   color: DesignColors.pink,
                                                 )
                                               ],
@@ -186,7 +198,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                                       Text(
                                                         (widget.appState.player!
                                                                         .getXp() +
-                                                                    countupStartValue)
+                                                                    _countupStartValue)
                                                                 .toString() +
                                                             "/" +
                                                             widget.appState
@@ -218,7 +230,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                 ),
                                 // if player did not reach new Level.
                                 if (widget.appState.player!.getXp().toDouble() +
-                                        countupStartValue <
+                                        _countupStartValue <
                                     widget.appState.player!.getNextLevelXp())
                                   AnimationLimiter(
                                     child: Row(
@@ -272,7 +284,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                           color: DesignColors.yellow,
                                         ),
                                         Text(
-                                          '${GameRules.currentLevel(widget.appState.player!.getXp() + countupStartValue)}',
+                                          '${GameRules.currentLevel(widget.appState.player!.getXp() + _countupStartValue)}',
                                           style: Theme.of(context)
                                               .textTheme
                                               .headline1!
@@ -312,11 +324,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                               child: Align(
                                 alignment: Alignment.center,
                                 child: Text(
-                                  playerWon
-                                      ? "Du hast\ngewonnen"
-                                      : opponentWon
-                                          ? "du hast\nverloren"
-                                          : "Unentschieden",
+                                  finalText,
                                   style: Theme.of(context)
                                       .textTheme
                                       .headline1!
@@ -329,22 +337,18 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                             ),
                           ),
                           Text(
-                            playerWon
-                                ? "🏆"
-                                : opponentWon
-                                    ? "🤦"
-                                    : "🪢",
+                            finalEmoji,
                             style: TextStyle(fontSize: 100 * value),
                           ),
                           Positioned(
                             top: 30,
                             child: ValueListenableBuilder<int>(
-                                valueListenable: tempPlayerXp,
+                                valueListenable: _tempPlayerXp,
                                 builder: (BuildContext context, val, child) {
                                   if (widget.appState.player!
                                               .getXp()
                                               .toDouble() +
-                                          countupStartValue <
+                                          _countupStartValue <
                                       widget.appState.player!
                                           .getNextLevelXp()) {
                                     return SizedBox.shrink();
@@ -395,7 +399,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                                 ),
                                               ]),
                                           Text(
-                                            '$newLevel',
+                                            '$_newLevel',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .headline1!
@@ -441,10 +445,10 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                               size: 30,
                             ),
                             ValueListenableBuilder<int>(
-                              valueListenable: tempPlayerXp,
+                              valueListenable: _tempPlayerXp,
                               builder: (BuildContext context, val, child) {
                                 return Countup(
-                                  begin: countupStartValue.toDouble(),
+                                  begin: _countupStartValue.toDouble(),
                                   end: val.toDouble(),
                                   duration: const Duration(seconds: 1),
                                   style: Theme.of(context)
@@ -457,7 +461,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                           ],
                         ),
                         const SizedBox(height: 20),
-                        if (!pointButtonTapped)
+                        if (!_pointButtonTapped)
                           MirrorAnimation(
                             duration: const Duration(milliseconds: 1000),
                             tween: Tween<double>(
@@ -503,11 +507,11 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
 
   // called on tap of getCoins.
   void onTapGetPoints() async {
-    pointButtonTapped = true;
-    countupStartValue = tempPlayerXp.value;
-    tempPlayerXp.value = 0;
-    newLevel = GameRules.currentLevel(
-        widget.appState.player!.getXp() + countupStartValue);
+    _pointButtonTapped = true;
+    _countupStartValue = _tempPlayerXp.value;
+    _tempPlayerXp.value = 0;
+    _newLevel = GameRules.currentLevel(
+        widget.appState.player!.getXp() + _countupStartValue);
 
     // count down the xp
     // count up the players xp by amount.
@@ -527,47 +531,36 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
         widget.appState.route = Routes.gameReadyToStart;
         return;
       }
+
+      Game currentGame = widget.appState.currentOpponent!.openGame!;
+      Player currentPlayer = widget.appState.player!;
+
+      if (_result == GameResult.playerWon) {
+        // player has won, update player
+        widget.appState.currentOpponent!.wonGamesPlayer += 1;
+        currentPlayer.numGamesWon += 1;
+      } else if (_result == GameResult.tied) {
+        // Game endet in a tie, update player
+        currentPlayer.numGamesTied += 1;
+      }
+
       // if statements are not downloaded (especially if player
       // wants to get its points), download them.
-      if (widget.appState.currentOpponent!.openGame!.statements == null) {
-        widget.appState.currentOpponent!.openGame!.statements =
-            await widget.appState.db.getStatements(
-                widget.appState.currentOpponent!.openGame!.statementIds!);
-      }
-      if (playerWon) {
-        // player has won
-        widget.appState.currentOpponent!.wonGamesPlayer += 1;
-        // update player
-        widget.appState.player!.numGamesWon += 1;
-        widget.appState.player!.numPlayedGames += 1;
-        widget.appState.player!.updateAnswerStats(
-            widget.appState.currentOpponent!.openGame!.player.answers,
-            widget.appState.currentOpponent!.openGame!.statements);
-      } else if (opponentWon) {
-        // opponent has won
-        // update player
-        widget.appState.player!.numPlayedGames += 1;
-        widget.appState.player!.updateAnswerStats(
-            widget.appState.currentOpponent!.openGame!.player.answers,
-            widget.appState.currentOpponent!.openGame!.statements);
-      } else {
-        // Game endet in a Tie
-        // update player
-        widget.appState.player!.numPlayedGames += 1;
-        widget.appState.player!.numGamesTied += 1;
-        widget.appState.player!.updateAnswerStats(
-            widget.appState.currentOpponent!.openGame!.player.answers,
-            widget.appState.currentOpponent!.openGame!.statements);
-      }
+      currentGame.statements ??=
+          await widget.appState.db.getStatements(currentGame.statementIds!);
+
+      currentPlayer.updateAnswerStats(
+          currentGame.player.answers, currentGame.statements);
+      currentPlayer.numPlayedGames += 1;
+
       // increase played games of friendship if playerIndex = 0
-      if (widget.appState.currentOpponent!.openGame!.playerIndex == 0) {
+      if (currentGame.playerIndex == 0) {
         widget.appState.currentOpponent!.numGamesPlayed += 1;
       }
       // if the last player accessed the points
-      if (widget.appState.currentOpponent!.openGame!.requestingPlayerIndex !=
-          widget.appState.currentOpponent!.openGame!.playerIndex) {
+      if (currentGame.requestingPlayerIndex != currentGame.playerIndex) {
         // both player have accessed their points
-        widget.appState.currentOpponent!.openGame!.pointsAccessed = true;
+        currentGame.pointsAccessed = true;
       }
       await widget.appState.db.updateGame(widget.appState);
 

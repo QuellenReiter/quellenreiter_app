@@ -401,7 +401,7 @@ class QuellenreiterAppState extends ChangeNotifier {
         // game is either finished or it is the player's turn now.
         // This prevents constant updating while the player is browsing the quests.
         if (tempCurrentOpponent.openGame != null &&
-            tempCurrentOpponent.openGame!.opponent.answers.length % 3 == 0) {
+            tempCurrentOpponent.openGame!.opponent.amountAnswered % 3 == 0) {
           currentOpponent = tempCurrentOpponent;
         }
       } catch (e) {
@@ -549,11 +549,11 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   void getCurrentStatements() async {
+    Game currentGame = currentOpponent!.openGame!;
     if (db.error != null) {
       return;
     }
-    currentOpponent!.openGame!.statements =
-        await db.getStatements(currentOpponent!.openGame!.statementIds!);
+    currentGame.statements = await db.getStatements(currentGame.statementIds!);
     notifyListeners();
     return;
   }
@@ -567,13 +567,15 @@ class QuellenreiterAppState extends ChangeNotifier {
     if (route != Routes.loading) {
       route = Routes.loading;
     }
-    if (currentOpponent!.openGame != null &&
-        currentOpponent!.openGame!.isPlayersTurn()) {
+
+    Game? currentGame = currentOpponent!.openGame;
+
+    if (currentGame != null && currentGame.isPlayersTurn()) {
       // download statements
-      currentOpponent!.openGame!.statements =
-          await db.getStatements(currentOpponent!.openGame!.statementIds!);
+      currentGame.statements =
+          await db.getStatements(currentGame.statementIds!);
       // check if error
-      if (currentOpponent!.openGame!.statements == null) {
+      if (currentGame.statements == null) {
         route = Routes.home;
         return;
       }

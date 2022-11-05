@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
+import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
+import 'package:quellenreiter_app/models/statement.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -26,14 +28,14 @@ class _QuestScreenState extends State<QuestScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.appState.showError(context);
     });
+
+    Game currentGame = widget.appState.currentOpponent!.openGame!;
+
     // set index of statement to be shown
-    int statementIndex =
-        widget.appState.currentOpponent!.openGame!.player.answers.length;
-    // set answer to false, incase user breaks the round.
-    // But only if withTimer. Else doing research and closing the app is welcome.
+    int statementIndex = currentGame.player.amountAnswered;
 
     // show loading if statements not downloaded.
-    if (widget.appState.currentOpponent!.openGame!.statements == null) {
+    if (currentGame.statements == null) {
       widget.appState.getCurrentStatements();
       return const Scaffold(
         body: Center(
@@ -41,9 +43,16 @@ class _QuestScreenState extends State<QuestScreen>
         ),
       );
     }
-    if (widget.appState.currentOpponent!.openGame!.withTimer) {
-      widget.appState.currentOpponent!.openGame!.player.answers.add(false);
+
+    // set answer to false, in case user breaks the round.
+    // But only if withTimer. Else doing research and closing the app is welcome.
+    if (currentGame.withTimer) {
+      currentGame.player.answers.add(false);
     }
+
+    Statement currentStatement =
+        currentGame.statements!.statements[statementIndex];
+    String? pictureURL = currentStatement.statementPictureURL;
 
     return Scaffold(
       body: SafeArea(
@@ -72,24 +81,10 @@ class _QuestScreenState extends State<QuestScreen>
                               fadeInCurve: Curves.easeInOut,
                               // fit: BoxFit.,
                               placeholder: kTransparentImage,
-                              image: widget
-                                          .appState
-                                          .currentOpponent!
-                                          .openGame!
-                                          .statements!
-                                          .statements[statementIndex]
-                                          .statementPictureURL !=
-                                      null
-                                  ? widget
-                                      .appState
-                                      .currentOpponent!
-                                      .openGame!
-                                      .statements!
-                                      .statements[statementIndex]
-                                      .statementPictureURL!
-                                      .replaceAll(
-                                          "https%3A%2F%2Fparsefiles.back4app.com%2FFeP6gb7k9R2K9OztjKWA1DgYhubqhW0yJMyrHbxH%2F",
-                                          "")
+                              image: pictureURL != null
+                                  ? pictureURL.replaceAll(
+                                      "https%3A%2F%2Fparsefiles.back4app.com%2FFeP6gb7k9R2K9OztjKWA1DgYhubqhW0yJMyrHbxH%2F",
+                                      "")
                                   : "https://quellenreiter.app/assets/logo-pink.png",
                             ),
                           ),
@@ -153,13 +148,7 @@ class _QuestScreenState extends State<QuestScreen>
                                             color: DesignColors.backgroundBlue,
                                           ),
                                           child: Text(
-                                              widget
-                                                  .appState
-                                                  .currentOpponent!
-                                                  .openGame!
-                                                  .statements!
-                                                  .statements[statementIndex]
-                                                  .statementText,
+                                              currentStatement.statementText,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .subtitle1),
@@ -186,13 +175,8 @@ class _QuestScreenState extends State<QuestScreen>
                                         Padding(
                                           padding:
                                               const EdgeInsets.only(left: 3),
-                                          child: Text(widget
-                                              .appState
-                                              .currentOpponent!
-                                              .openGame!
-                                              .statements!
-                                              .statements[statementIndex]
-                                              .statementAuthor),
+                                          child: Text(
+                                              currentStatement.statementAuthor),
                                         ),
                                       ],
                                     ),
@@ -204,21 +188,11 @@ class _QuestScreenState extends State<QuestScreen>
                                         Padding(
                                           padding:
                                               const EdgeInsets.only(left: 3),
-                                          child: Text(widget
-                                                  .appState
-                                                  .currentOpponent!
-                                                  .openGame!
-                                                  .statements!
-                                                  .statements[statementIndex]
-                                                  .statementMedia +
-                                              ' | ' +
-                                              widget
-                                                  .appState
-                                                  .currentOpponent!
-                                                  .openGame!
-                                                  .statements!
-                                                  .statements[statementIndex]
-                                                  .statementMediatype),
+                                          child: Text(
+                                              currentStatement.statementMedia +
+                                                  ' | ' +
+                                                  currentStatement
+                                                      .statementMediatype),
                                         ),
                                       ],
                                     ),
@@ -229,13 +203,8 @@ class _QuestScreenState extends State<QuestScreen>
                                         Padding(
                                           padding:
                                               const EdgeInsets.only(left: 3),
-                                          child: SelectableText(widget
-                                              .appState
-                                              .currentOpponent!
-                                              .openGame!
-                                              .statements!
-                                              .statements[statementIndex]
-                                              .dateAsString()),
+                                          child: SelectableText(
+                                              currentStatement.dateAsString()),
                                         ),
                                       ],
                                     ),
@@ -247,12 +216,7 @@ class _QuestScreenState extends State<QuestScreen>
                                         Padding(
                                           padding:
                                               const EdgeInsets.only(left: 3),
-                                          child: SelectableText(widget
-                                              .appState
-                                              .currentOpponent!
-                                              .openGame!
-                                              .statements!
-                                              .statements[statementIndex]
+                                          child: SelectableText(currentStatement
                                               .statementLanguage),
                                         ),
                                       ],
@@ -307,8 +271,7 @@ class _QuestScreenState extends State<QuestScreen>
                           ),
                         ),
                         // Timer
-                        if (widget
-                            .appState.currentOpponent!.openGame!.withTimer)
+                        if (currentGame.withTimer)
                           SfLinearGauge(
                             minimum: 0,
                             maximum: 1,
@@ -352,42 +315,27 @@ class _QuestScreenState extends State<QuestScreen>
   void registerAnswer(int statementIndex, bool answer,
       {bool timeOver = false}) async {
     widget.answerRegistered = true;
+
+    Game currentGame = widget.appState.currentOpponent!.openGame!;
+
     // PROBLEM: This is still not completely safe.
     // some other player could update the players stats between the above call
     // and the below update and will then be lost.
     // add false as a placeHolder if not with timer.
-    if (!widget.appState.currentOpponent!.openGame!.withTimer) {
-      widget.appState.currentOpponent!.openGame!.player.answers.add(false);
+    if (!currentGame.withTimer) {
+      currentGame.player.answers.add(false);
     }
-    // if time is over (only if with timer)
-    if (timeOver) {
-      widget.appState.currentOpponent!.openGame!.player
-          .answers[statementIndex] = false;
-      // if statemetn and answer are true.
-    } else if (widget.appState.currentOpponent!.openGame!.statements!
-                .statements[statementIndex].statementCorrectness ==
-            CorrectnessCategory.correct &&
-        answer) {
-      widget.appState.currentOpponent!.openGame!.player
-          .answers[statementIndex] = true;
-    }
-    // if statement and answer are fake.
-    else if (widget.appState.currentOpponent!.openGame!.statements!
-                .statements[statementIndex].statementCorrectness !=
-            CorrectnessCategory.correct &&
-        !answer) {
-      widget.appState.currentOpponent!.openGame!.player
-          .answers[statementIndex] = true;
-    }
-    // else answer is false.
-    else {
-      widget.appState.currentOpponent!.openGame!.player
-          .answers[statementIndex] = false;
-    }
+
+    bool statementCorrect = CorrectnessCategory.isFact(currentGame
+        .statements!.statements[statementIndex].statementCorrectness);
+
+    // true if no timeout (only if with timer) AND answer and correctness match
+    currentGame.player.answers[statementIndex] =
+        (!timeOver && statementCorrect == answer);
+
     HapticFeedback.heavyImpact();
 
-    var answerCorrect = widget
-        .appState.currentOpponent!.openGame!.player.answers[statementIndex];
+    bool answerCorrect = currentGame.player.answers[statementIndex];
 
     // show some inbetween screen
     showDialog(
@@ -481,7 +429,7 @@ class _QuestScreenState extends State<QuestScreen>
     await widget.appState.db.updateGame(widget.appState);
 
     // if game is finished
-    if (widget.appState.currentOpponent!.openGame!.gameFinished()) {
+    if (currentGame.gameFinished()) {
       // notify friend that points can be accessed
       widget.appState.db.sendPushOtherGameFinished(widget.appState,
           receiverId: widget.appState.currentOpponent!.userId);
@@ -491,7 +439,7 @@ class _QuestScreenState extends State<QuestScreen>
     } // if game is finished
 
     //if its not players turn anymore, getFriends.
-    if (!widget.appState.currentOpponent!.openGame!.isPlayersTurn()) {
+    if (!currentGame.isPlayersTurn()) {
       await widget.appState.getFriends();
       // send notification to friend.
       widget.appState.db.sendPushOtherPlayersTurn(widget.appState,
@@ -506,8 +454,8 @@ class _QuestScreenState extends State<QuestScreen>
     }
 
     HapticFeedback.heavyImpact();
-    // got to game finished screen or to the next quest
-    if (widget.appState.currentOpponent!.openGame!.gameFinished()) {
+    // go to game finished screen or to the next quest
+    if (currentGame.gameFinished()) {
       widget.appState.route = Routes.gameFinishedScreen;
     } else {
       widget.appState.route = Routes.quest;

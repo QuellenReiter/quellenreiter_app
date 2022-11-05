@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 
 import '../../constants/constants.dart';
@@ -23,29 +24,25 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
       widget.appState.showError(context);
     });
 
-    if (widget.appState.currentOpponent!.openGame!.statements == null) {
+    Game currentGame = widget.appState.currentOpponent!.openGame!;
+    if (currentGame.statements == null) {
       widget.appState.getCurrentStatements();
     }
     return Scaffold(
       appBar: AppBar(
         title: const Text("Faktenchecks"),
       ),
-      body: widget.appState.currentOpponent!.openGame!.statements == null
+      body: currentGame.statements == null
           ? const Center(child: CircularProgressIndicator())
           : AnimationLimiter(
               child: ListView.builder(
                 physics: const BouncingScrollPhysics(),
-                itemCount: widget.showAll
-                    ? widget.appState.currentOpponent!.openGame!.player.answers
-                        .length
-                    : 3,
+                itemCount:
+                    widget.showAll ? currentGame.player.amountAnswered : 3,
                 itemBuilder: (BuildContext context, int index) {
                   if (!widget.showAll) {
                     // if not all shown, show last three in correct order
-                    index = widget.appState.currentOpponent!.openGame!.player
-                            .answers.length -
-                        3 +
-                        index;
+                    index = currentGame.player.amountAnswered - 3 + index;
                   }
                   return AnimationConfiguration.staggeredList(
                     position: index,
@@ -82,8 +79,8 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
                                 ),
                               ),
                             StatementCard(
-                              statement: widget.appState.currentOpponent!
-                                  .openGame!.statements!.statements[index],
+                              statement:
+                                  currentGame.statements!.statements[index],
                               appState: widget.appState,
                             ),
                           ],
