@@ -72,6 +72,18 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Friendships of the [Player].
+  Opponents? _friendships;
+  Opponents? get friendships => _friendships;
+
+  /// Sets the _opponentRequests to the given value.
+  ///
+  /// @param value [Opponents] of the [Player].
+  set friendships(value) {
+    _friendships = value;
+    notifyListeners();
+  }
+
   /// Friend requests of the current [Player].
   Opponents? _opponentRequests;
   Opponents? get opponentRequests => _opponentRequests;
@@ -352,9 +364,12 @@ class QuellenreiterAppState extends ChangeNotifier {
     // if no friends were returned
     if (opponents == null) {
       // if no friends are currently downloaded
+      // To be Removed
       if (player!.friendships == null) {
         player?.friendships = Opponents.empty();
       }
+      friendships ??= Opponents.empty();
+
       // else, just keep the downloaded friends.
       return false;
     }
@@ -382,8 +397,10 @@ class QuellenreiterAppState extends ChangeNotifier {
           .where((opponent) =>
               (opponent.openGame != null && opponent.openGame!.isPlayersTurn()))
           .toList();
-
+    // to be removed
     player?.friendships = tempFriends;
+
+    friendships = tempFriends;
     // set new number of friends
     if (player!.numFriends != tempFriends.opponents.length) {
       player!.numFriends = tempFriends.opponents.length;
