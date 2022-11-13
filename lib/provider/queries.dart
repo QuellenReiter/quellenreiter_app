@@ -1,5 +1,6 @@
 import 'package:quellenreiter_app/models/opponent.dart';
 import 'package:quellenreiter_app/models/game.dart';
+import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 
 import '../constants/constants.dart';
 import '../models/fact.dart';
@@ -808,11 +809,11 @@ mutation removeGame(\$game:DeleteOpenGameInput!){
     return ret;
   }
 
-  static String deleteUser(Player player) {
+  static String deleteUser(QuellenreiterAppState appState) {
     String deleteOpenGames = "";
     String deleteFriendships = "";
-    if (player.friendships != null) {
-      for (Opponent opp in player.friendships!.opponents) {
+    if (appState.friendships != null) {
+      for (Opponent opp in appState.friendships!.opponents) {
         deleteFriendships += '''
 ${opp.name}Friendship: deleteFriendship(
   input: {
@@ -846,7 +847,7 @@ mutation removeUser(\$user:DeleteUserInput!){
   $deleteFriendships
   deleteUserData(
     input:{
-      id: "${player.dataId}"
+      id: "${appState.player!.dataId}"
     }
   ){
     userData{

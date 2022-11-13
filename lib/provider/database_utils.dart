@@ -852,7 +852,7 @@ class DatabaseUtils {
     // Remeove the User and all open games and friendships.
     var mutationResult = await clientUserDB.mutate(
       MutationOptions(
-        document: gql(Queries.deleteUser(appState.player!)),
+        document: gql(Queries.deleteUser(appState)),
         variables: {
           "user": {
             "id": appState.player!.id,

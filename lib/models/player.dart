@@ -1,4 +1,3 @@
-import 'package:quellenreiter_app/models/opponent.dart';
 import 'package:quellenreiter_app/models/statement.dart';
 import '../constants/constants.dart';
 
@@ -14,7 +13,6 @@ class Player {
   late int trueFakeAnswers;
   late int falseCorrectAnswers;
   late int falseFakeAnswers;
-  late Opponents? friendships;
   late List<String>? safedStatementsIds;
   late List<String>? playedStatements;
   String? deviceToken;
@@ -68,7 +66,6 @@ class Player {
                     .toList()
                     .cast<String>()
                 : null,
-        friendships = null,
         numFriends = map?[DbFields.userData] == null
             ? 0
             : map?[DbFields.userData]?[DbFields.userNumFriends];

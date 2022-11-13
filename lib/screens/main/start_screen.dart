@@ -45,12 +45,12 @@ class _StartScreenState extends State<StartScreen> {
     // create finished games
     List<Widget> finishedGames = [];
     // if any open game is finished and points are not accessed yet.
-    if (widget.appState.player!.friendships == null) {
+    if (widget.appState.friendships == null) {
       widget.appState.getFriends();
       return const Center(child: CircularProgressIndicator());
     }
 
-    List<Opponent> opponents = widget.appState.player!.friendships!.opponents;
+    List<Opponent> opponents = widget.appState.friendships!.opponents;
     List<bool> isFinished = opponents
         .map((e) => // TODO write a member function for this
             e.openGame != null &&
@@ -164,7 +164,7 @@ class _StartScreenState extends State<StartScreen> {
     // create "Start new game" widgets
     List<Widget> startNewGame = [];
     // if no open game or open game is finished and points accessed.
-    if (widget.appState.player!.friendships!.opponents.any((element) =>
+    if (widget.appState.friendships!.opponents.any((element) =>
         (element.openGame == null ||
             (element.openGame!.gameFinished() &&
                 element.openGame!.pointsAccessed)))) {
@@ -188,7 +188,7 @@ class _StartScreenState extends State<StartScreen> {
           ),
         ),
       );
-      for (Opponent opp in widget.appState.player!.friendships!.opponents) {
+      for (Opponent opp in widget.appState.friendships!.opponents) {
         if (opp.openGame == null ||
             (opp.openGame!.gameFinished() && opp.openGame!.pointsAccessed)) {
           startNewGame.add(OpponentCard(
@@ -357,8 +357,8 @@ class _StartScreenState extends State<StartScreen> {
                 ),
                 ...finishedGames,
                 ...friendRequests,
-                if (widget.appState.player!.friendships == null ||
-                    widget.appState.player!.friendships!.opponents.isEmpty)
+                if (widget.appState.friendships == null ||
+                    widget.appState.friendships!.opponents.isEmpty)
                   Center(
                       child: Padding(
                     padding: const EdgeInsets.only(
