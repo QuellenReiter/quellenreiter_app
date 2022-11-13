@@ -7,7 +7,6 @@ class Player {
   late String? dataId;
   late String name;
   late String emoji;
-  String? email;
   late int numPlayedGames;
   late int numGamesWon;
   late int numGamesTied;
@@ -15,7 +14,7 @@ class Player {
   late int trueFakeAnswers;
   late int falseCorrectAnswers;
   late int falseFakeAnswers;
-  late Opponents? friends;
+  late Opponents? friendships;
   late List<String>? safedStatementsIds;
   late List<String>? playedStatements;
   String? deviceToken;
@@ -69,7 +68,7 @@ class Player {
                     .toList()
                     .cast<String>()
                 : null,
-        friends = null,
+        friendships = null,
         numFriends = map?[DbFields.userData] == null
             ? 0
             : map?[DbFields.userData]?[DbFields.userNumFriends];

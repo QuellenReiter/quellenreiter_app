@@ -811,8 +811,8 @@ mutation removeGame(\$game:DeleteOpenGameInput!){
   static String deleteUser(Player player) {
     String deleteOpenGames = "";
     String deleteFriendships = "";
-    if (player.friends != null) {
-      for (Opponent opp in player.friends!.opponents) {
+    if (player.friendships != null) {
+      for (Opponent opp in player.friendships!.opponents) {
         deleteFriendships += '''
 ${opp.name}Friendship: deleteFriendship(
   input: {

@@ -352,8 +352,8 @@ class QuellenreiterAppState extends ChangeNotifier {
     // if no friends were returned
     if (opponents == null) {
       // if no friends are currently downloaded
-      if (player!.friends == null) {
-        player?.friends = Opponents.empty();
+      if (player!.friendships == null) {
+        player?.friendships = Opponents.empty();
       }
       // else, just keep the downloaded friends.
       return false;
@@ -383,7 +383,7 @@ class QuellenreiterAppState extends ChangeNotifier {
               (opponent.openGame != null && opponent.openGame!.isPlayersTurn()))
           .toList();
 
-    player?.friends = tempFriends;
+    player?.friendships = tempFriends;
     // set new number of friends
     if (player!.numFriends != tempFriends.opponents.length) {
       player!.numFriends = tempFriends.opponents.length;
@@ -406,7 +406,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     // redo current opponent
     if (currentOpponent != null) {
       try {
-        var tempCurrentOpponent = player!.friends!.opponents.firstWhere(
+        var tempCurrentOpponent = player!.friendships!.opponents.firstWhere(
             (opponent) => opponent.userId == currentOpponent!.userId);
         // Only update current opponent if they have played 3 quests so that the
         // game is either finished or it is the player's turn now.
@@ -460,7 +460,7 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void searchFriends() {
     if (friendsQuery != null) {
-      if (player!.friends == null) {
+      if (player!.friendships == null) {
         db.searchFriends(friendsQuery!, [player!.name], _searchFriendsCallback);
       }
       db.searchFriends(friendsQuery!, getNames(), _searchFriendsCallback);
@@ -524,7 +524,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     // update player and opponent here, to be updtodate with played statements
     await getFriends();
     //update opponent e
-    opp = player!.friends!.opponents
+    opp = player!.friendships!.opponents
         .firstWhere((opponent) => opponent.userId == opp.userId);
     // if an open game exists, check if its new or delete it
     if (opp.openGame != null &&
@@ -668,7 +668,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   List<String> getNames() {
-    var ret = player!.friends!.getNames();
+    var ret = player!.friendships!.getNames();
     ret.add(player!.name);
     ret.addAll(opponentRequests!.getNames());
     ret.addAll(pendingRequests!.getNames());

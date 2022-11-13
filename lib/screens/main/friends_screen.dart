@@ -64,8 +64,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
       }
     }
     // add all current friends
-    if (widget.appState.player!.friends != null &&
-        widget.appState.player!.friends!.opponents.isNotEmpty) {
+    if (widget.appState.player!.friendships != null &&
+        widget.appState.player!.friendships!.opponents.isNotEmpty) {
       opponentCards.addAll([
         Padding(
           padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
@@ -87,7 +87,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
       ]);
       int i = 1;
       bool playerAdded = false;
-      for (Opponent opp in widget.appState.player!.friends!.opponents
+      for (Opponent opp in widget.appState.player!.friendships!.opponents
         ..sort((a, b) => b.getXp().compareTo(a.getXp()))) {
         if (!playerAdded && widget.appState.player!.getXp() > opp.getXp()) {
           opponentCards.add(
@@ -171,10 +171,11 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 physics: const AlwaysScrollableScrollPhysics(
                     parent: BouncingScrollPhysics()),
                 children: [
-                  if (widget.appState.player?.friends == null)
+                  if (widget.appState.player?.friendships == null)
                     const Center(child: CircularProgressIndicator())
                   // display button if user has no friends yet.
-                  else if (widget.appState.player!.friends!.opponents.isEmpty)
+                  else if (widget
+                      .appState.player!.friendships!.opponents.isEmpty)
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,
