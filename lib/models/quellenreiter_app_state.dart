@@ -321,7 +321,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     print("get friends called");
     Opponents? opponents = await db.getFriends(player!);
 
-    await _getFriendsCallback(opponents);
+    await _determineOpponentState(opponents);
     return;
   }
 
@@ -343,11 +343,12 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   /// Callback for the getFriends method.
   /// If successfull, the [Opponents] are safed.
-  /// They are split up into friends, requests, pending and playable games.
-  /// Also the current opponent is restored and updated.
+  /// They are split up into [player.friends], [opponentRequests],
+  /// [pendingRequests] and [playableOpponents].
+  /// Also the [currentOpponent] is restored and updated.
   ///
   /// @param opponents The [Opponents] returned from the server.
-  Future<bool> _getFriendsCallback(Opponents? opponents) async {
+  Future<bool> _determineOpponentState(Opponents? opponents) async {
     // if no friends were returned
     if (opponents == null) {
       // if no friends are currently downloaded
@@ -392,6 +393,16 @@ class QuellenreiterAppState extends ChangeNotifier {
     opponentRequests = tempRequests;
     pendingRequests = tempPending;
     playableOpponents = tempPlayableOpponents;
+    _restoreCurrentOpponent();
+    return true;
+  }
+
+  /// Restore the [currentOpponent] in the [player]'s friends.
+  ///
+  /// Used after [Opponent]s are downloaded from the server.
+  /// Needed to restore the [currentOpponent] after a reload.
+  /// If User is looking at Game Results or something alike.
+  void _restoreCurrentOpponent() {
     // redo current opponent
     if (currentOpponent != null) {
       try {
@@ -408,7 +419,6 @@ class QuellenreiterAppState extends ChangeNotifier {
         currentOpponent = null;
       }
     }
-    return true;
   }
 
   void logout() async {

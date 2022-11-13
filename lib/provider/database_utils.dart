@@ -53,7 +53,7 @@ class DatabaseUtils {
     // If login result has any exceptions.
     if (loginResult.hasException) {
       // print(loginResult.exception.toString());
-      handleException(loginResult.exception!);
+      _handleException(loginResult.exception!);
       loginCallback(null);
       return;
     }
@@ -104,7 +104,7 @@ class DatabaseUtils {
     // print(signUpResult.toString());
     // If login result has any exceptions.
     if (signUpResult.hasException) {
-      handleException(signUpResult.exception!);
+      _handleException(signUpResult.exception!);
 
       signUpCallback(null);
       return;
@@ -167,7 +167,7 @@ class DatabaseUtils {
 
       // print(queryResult.toString());
       if (queryResult.hasException) {
-        handleException(queryResult.exception!);
+        _handleException(queryResult.exception!);
         checkTokenCallback(null);
         return;
       } else {
@@ -209,7 +209,7 @@ class DatabaseUtils {
       );
 
       if (queryResult.hasException) {
-        handleException(queryResult.exception!);
+        _handleException(queryResult.exception!);
 
         return p;
       }
@@ -246,7 +246,7 @@ class DatabaseUtils {
 
       // print(queryResult.toString());
       if (queryResult.hasException) {
-        handleException(queryResult.exception!);
+        _handleException(queryResult.exception!);
 
         return null;
       } else {
@@ -288,7 +288,7 @@ class DatabaseUtils {
 
       // print(mutationResult.toString());
       if (mutationResult.hasException) {
-        handleException(mutationResult.exception!);
+        _handleException(mutationResult.exception!);
 
         acceptFriendCallback(false);
         return;
@@ -320,7 +320,7 @@ class DatabaseUtils {
       QueryOptions(document: gql(Queries.getStatement(statementID))),
     );
     if (queryResult.hasException) {
-      handleException(queryResult.exception!);
+      _handleException(queryResult.exception!);
 
       return null;
     }
@@ -330,6 +330,7 @@ class DatabaseUtils {
   /// Update a [Player] in the Database by [String]. Only for username and
   /// device token!
   Future<void> updateUser(Player player, Function updateUserCallback) async {
+    // TODO fetch player before updating so nothing is overwritten
     // check username for bad words
     bool isDirty = await containsBadWord(player.name);
     if (isDirty) {
@@ -363,7 +364,7 @@ class DatabaseUtils {
     );
     // print(mutationResult);
     if (mutationResult.hasException) {
-      handleException(mutationResult.exception!);
+      _handleException(mutationResult.exception!);
 
       await updateUserCallback(null);
       return;
@@ -379,6 +380,7 @@ class DatabaseUtils {
   /// Can be anything except username and auth stuff.
   Future<void> updateUserData(
       dynamic player, Function updateUserCallback) async {
+    // TODO: fetch player before updating so nothing is overwritten
     // The session token.
     String? token = await safeStorage.read(key: "token");
     final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
@@ -402,7 +404,7 @@ class DatabaseUtils {
 
     // print(mutationResult);
     if (mutationResult.hasException) {
-      handleException(mutationResult.exception!);
+      _handleException(mutationResult.exception!);
 
       await updateUserCallback(null);
       return;
@@ -443,7 +445,7 @@ class DatabaseUtils {
 
     // print(mutationResult);
     if (mutationResult.hasException) {
-      handleException(mutationResult.exception!);
+      _handleException(mutationResult.exception!);
 
       createUserDataCallback(null);
       return;
@@ -480,7 +482,7 @@ class DatabaseUtils {
 
     // print(mutationResult);
     if (mutationResult.hasException) {
-      handleException(mutationResult.exception!);
+      _handleException(mutationResult.exception!);
 
       return false;
     } else {
@@ -515,7 +517,7 @@ class DatabaseUtils {
 
     // print(mutationResult);
     if (mutationResult.hasException) {
-      handleException(mutationResult.exception!);
+      _handleException(mutationResult.exception!);
 
       return false;
     }
@@ -563,7 +565,7 @@ class DatabaseUtils {
       ),
     );
     if (mutationResult.hasException) {
-      handleException(mutationResult.exception!);
+      _handleException(mutationResult.exception!);
 
       return null;
     }
@@ -598,7 +600,7 @@ class DatabaseUtils {
     );
     // print(queryResult);
     if (queryResult.hasException) {
-      handleException(queryResult.exception!);
+      _handleException(queryResult.exception!);
 
       return null;
     }
@@ -639,7 +641,7 @@ class DatabaseUtils {
 
       // print(mutationResult.toString());
       if (mutationResult.hasException) {
-        handleException(mutationResult.exception!);
+        _handleException(mutationResult.exception!);
 
         sendFriendRequestCallback(false);
         return;
@@ -683,7 +685,7 @@ class DatabaseUtils {
 
       // print(queryResult.toString());
       if (queryResult.hasException) {
-        handleException(queryResult.exception!);
+        _handleException(queryResult.exception!);
 
         searchFriendsCallback(null);
         return;
@@ -748,7 +750,7 @@ class DatabaseUtils {
     );
     // if exception in query, return null.
     if (playableStatements.hasException) {
-      handleException(playableStatements.exception!);
+      _handleException(playableStatements.exception!);
 
       return null;
     }
@@ -817,7 +819,7 @@ class DatabaseUtils {
       ),
     );
     if (mutationResult.hasException) {
-      handleException(mutationResult.exception!);
+      _handleException(mutationResult.exception!);
     }
 
     return;
@@ -859,7 +861,7 @@ class DatabaseUtils {
       ),
     );
     if (mutationResult.hasException) {
-      handleException(mutationResult.exception!);
+      _handleException(mutationResult.exception!);
       appState.route = Routes.settings;
 
       return;
@@ -1110,26 +1112,9 @@ class DatabaseUtils {
     }
   }
 
-  /// Clears the cache (hopefully)
-  Future<void> clearCache() async {
-    // Link to server.
-    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': userDatabaseApplicationID,
-      'X-Parse-Client-Key': userDatabaseClientKey,
-      //'X-Parse-REST-API-Key' : kParseRestApiKey,
-    });
-
-    // Provides data from server and facilitates requests.
-    GraphQLClient client = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
-
-    await client.resetStore(refetchQueries: false);
-    return;
-  }
-
-  void handleException(OperationException e) {
+  /// Handle errors from GraphQL server.
+  /// Todo: Move this into own class.
+  void _handleException(OperationException e) {
     // errors in the database are not shown to the user
     if (e.graphqlErrors.isNotEmpty) {
       // handle graphql errors
