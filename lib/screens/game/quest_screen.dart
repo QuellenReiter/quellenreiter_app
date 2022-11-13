@@ -432,7 +432,7 @@ class _QuestScreenState extends State<QuestScreen>
     if (currentGame.gameFinished()) {
       // notify friend that points can be accessed
       widget.appState.db.sendPushOtherGameFinished(widget.appState,
-          receiverId: widget.appState.currentOpponent!.userId);
+          receiverId: widget.appState.currentOpponent!.opponent.id);
       // show game finished screen
       widget.appState.route = Routes.gameFinishedScreen;
       return;
@@ -443,7 +443,7 @@ class _QuestScreenState extends State<QuestScreen>
       await widget.appState.getFriends();
       // send notification to friend.
       widget.appState.db.sendPushOtherPlayersTurn(widget.appState,
-          receiverId: widget.appState.currentOpponent!.userId);
+          receiverId: widget.appState.currentOpponent!.opponent.id);
       // got toready to start show only last
       widget.appState.route = Routes.readyToStartOnlyLastScreen;
       return;

@@ -100,13 +100,13 @@ class _ResultsAppBarState extends State<ResultsAppBar> {
                       alignment: Alignment.bottomCenter,
                       children: [
                         Text(
-                          widget.appState.currentOpponent!.emoji,
+                          widget.appState.currentOpponent!.opponent.emoji,
                           style: Theme.of(context).textTheme.headline1,
                         ),
                         Positioned(
                           bottom: -10,
                           child: Text(
-                            widget.appState.currentOpponent!.name,
+                            widget.appState.currentOpponent!.opponent.name,
                             style: Theme.of(context).textTheme.headline4,
                           ),
                         ),

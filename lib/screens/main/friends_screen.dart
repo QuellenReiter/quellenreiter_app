@@ -101,7 +101,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 Flexible(
                   child: OpponentCard(
                     appState: widget.appState,
-                    opponent: widget.appState.player!,
+                    player: widget.appState.player!,
                     onTapped: (opponent) => {},
                   ),
                 ),
@@ -140,7 +140,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
               Flexible(
                 child: OpponentCard(
                   appState: widget.appState,
-                  opponent: widget.appState.player!,
+                  player: widget.appState.player!,
                   onTapped: (opponent) => {},
                 ),
               ),

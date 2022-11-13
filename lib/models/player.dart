@@ -141,10 +141,12 @@ class Player {
         .map((x) => x["value"])
         .toList()
         .cast<String>();
-    safedStatementsIds = map[DbFields.userSafedStatements]
-        .map((x) => x["value"])
-        .toList()
-        .cast<String>();
+    safedStatementsIds = map[DbFields.userSafedStatements] != null
+        ? map[DbFields.userSafedStatements]
+            .map((x) => x["value"])
+            .toList()
+            .cast<String>()
+        : [];
     numFriends = map[DbFields.userNumFriends];
   }
 

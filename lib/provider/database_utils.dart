@@ -379,7 +379,7 @@ class DatabaseUtils {
   ///
   /// Can be anything except username and auth stuff.
   Future<void> updateUserData(
-      dynamic player, Function updateUserCallback) async {
+      Player player, Function updateUserCallback) async {
     // TODO: fetch player before updating so nothing is overwritten
     // The session token.
     String? token = await safeStorage.read(key: "token");
@@ -526,7 +526,7 @@ class DatabaseUtils {
       // update friendship
       await updateFriendship(appState.currentOpponent!);
       // update player
-      await updateUserData(appState.player, (Player? p) {
+      await updateUserData(appState.player!, (Player? p) {
         if (p != null) {
           appState.player = p;
         } else {
@@ -734,7 +734,7 @@ class DatabaseUtils {
     );
     // combine played statements
     List<String> playedStatemntsCombined = [
-      ...opp.playedStatementIds,
+      ...opp.opponent.playedStatements!,
       ...p.playedStatements!
     ];
     // get 50 possible ids
@@ -769,7 +769,7 @@ class DatabaseUtils {
     // random shufflung
     ids.shuffle();
     // add to played statements of p and e
-    opp.playedStatementIds.addAll(ids.take(9));
+    opp.opponent.playedStatements!.addAll(ids.take(9));
     p.playedStatements!.addAll(ids.take(9));
     //upload game game
     opp.openGame!.statementIds = ids.take(9).toList();
@@ -780,7 +780,7 @@ class DatabaseUtils {
     //update p and e in database
     await updateUserData(p, (Player? player) {});
 
-    await updateUserData(opp, (Opponent? player) {});
+    await updateUserData(opp.opponent, (Player? player) {});
     // update friendship
     await updateFriendship(opp);
     // updateUser(player, updateUserCallback)

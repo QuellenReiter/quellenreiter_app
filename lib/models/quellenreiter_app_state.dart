@@ -339,7 +339,7 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void sendFriendRequest(Opponent e) {
     route = Routes.loading;
-    db.sendFriendRequest(this, e.userId, _sendFriendRequest);
+    db.sendFriendRequest(this, e.opponent.id, _sendFriendRequest);
   }
 
   void _sendFriendRequest(bool success) {
@@ -398,7 +398,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     // set new number of friends
     if (player!.numFriends != tempFriends.opponents.length) {
       player!.numFriends = tempFriends.opponents.length;
-      await db.updateUserData(player, (Player? p) {});
+      await db.updateUserData(player!, (Player? p) {});
     }
     player?.numFriends = tempFriends.opponents.length;
     opponentRequests = tempRequests;
@@ -418,7 +418,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     if (currentOpponent != null) {
       try {
         var tempCurrentOpponent = friendships!.opponents.firstWhere(
-            (opponent) => opponent.userId == currentOpponent!.userId);
+            (opponent) => opponent.opponent.id == currentOpponent!.opponent.id);
         // Only update current opponent if they have played 3 quests so that the
         // game is either finished or it is the player's turn now.
         // This prevents constant updating while the player is browsing the quests.
@@ -536,7 +536,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     await getFriends();
     //update opponent e
     opp = friendships!.opponents
-        .firstWhere((opponent) => opponent.userId == opp.userId);
+        .firstWhere((opponent) => opponent.opponent.id == opp.opponent.id);
     // if an open game exists, check if its new or delete it
     if (opp.openGame != null &&
         (!opp.openGame!.gameFinished() || !opp.openGame!.pointsAccessed)) {
@@ -556,15 +556,15 @@ class QuellenreiterAppState extends ChangeNotifier {
       opp.openGame = null;
       route = tempRoute;
       db.error ??
-          "Spielstarten fehlgeschlagen. ${opp.emoji} ${opp.name} wurde nicht herausgefordert. Versuche es erneut.";
+          "Spielstarten fehlgeschlagen. ${opp.opponent.emoji} ${opp.opponent.name} wurde nicht herausgefordert. Versuche es erneut.";
       return;
     }
-    db.sendPushGameStartet(this, receiverId: opp.userId);
+    db.sendPushGameStartet(this, receiverId: opp.opponent.id);
     await getFriends();
     // print(e.openGame!.statementIds.toString());
     // if successfully fetched statements
     route = tempRoute;
-    msg = "${opp.emoji} ${opp.name} wurde herausgefordert";
+    msg = "${opp.opponent.emoji} ${opp.opponent.name} wurde herausgefordert";
 
     return;
   }

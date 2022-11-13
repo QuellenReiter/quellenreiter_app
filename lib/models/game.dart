@@ -89,7 +89,7 @@ class Game {
     playerIndex = 0;
     pointsAccessed = false;
     player = GamePlayer(p.id, []);
-    opponent = GamePlayer(e.userId, []);
+    opponent = GamePlayer(e.opponent.id, []);
   }
 
   /// Returns true if the player is the next one to play.

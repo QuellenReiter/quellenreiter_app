@@ -510,6 +510,17 @@ query GetOpenFriendRequests{
           ${DbFields.userFalseCorrectAnswers}
           ${DbFields.userTrueFakeAnswers}
           ${DbFields.userFalseFakeAnswers}
+          ${DbFields.userNumFriends}
+          ${DbFields.userPlayedStatements}{
+            ... on Element{
+              value
+            }
+          }
+          ${DbFields.userSafedStatements}{
+            ... on Element{
+              value
+            }
+          }
         }
       }
     }
@@ -815,7 +826,7 @@ mutation removeGame(\$game:DeleteOpenGameInput!){
     if (appState.friendships != null) {
       for (Opponent opp in appState.friendships!.opponents) {
         deleteFriendships += '''
-${opp.name}Friendship: deleteFriendship(
+${opp.opponent.name}Friendship: deleteFriendship(
   input: {
     id: "${opp.friendshipId}"
   }
@@ -827,7 +838,7 @@ ${opp.name}Friendship: deleteFriendship(
 ''';
         if (opp.openGame != null) {
           deleteOpenGames += '''
-${opp.name}Game: deleteOpenGame(
+${opp.opponent.name}Game: deleteOpenGame(
   input: {
     id: "${opp.openGame!.id}"
   }
