@@ -24,7 +24,7 @@ class _GameResultsScreenState extends State<GameResultsScreen> {
       widget.appState.showError(context);
     });
 
-    Game currentGame = widget.appState.currentOpponent!.openGame!;
+    Game currentGame = widget.appState.focusedPlayerRelation!.openGame!;
     if (currentGame.statements == null) {
       widget.appState.getCurrentStatements();
     }

@@ -85,11 +85,12 @@ class _ResultsAppBarState extends State<ResultsAppBar> {
                     ),
                   ),
                   Text(
-                    widget.appState.currentOpponent!.openGame!.player
+                    widget.appState.focusedPlayerRelation!.openGame!.player
                             .getPoints()
                             .toString() +
                         " : " +
-                        widget.appState.currentOpponent!.openGame!.opponent
+                        widget
+                            .appState.focusedPlayerRelation!.openGame!.opponent
                             .getPoints()
                             .toString(),
                     style: Theme.of(context).textTheme.headline1,
@@ -100,13 +101,14 @@ class _ResultsAppBarState extends State<ResultsAppBar> {
                       alignment: Alignment.bottomCenter,
                       children: [
                         Text(
-                          widget.appState.currentOpponent!.opponent.emoji,
+                          widget.appState.focusedPlayerRelation!.opponent.emoji,
                           style: Theme.of(context).textTheme.headline1,
                         ),
                         Positioned(
                           bottom: -10,
                           child: Text(
-                            widget.appState.currentOpponent!.opponent.name,
+                            widget
+                                .appState.focusedPlayerRelation!.opponent.name,
                             style: Theme.of(context).textTheme.headline4,
                           ),
                         ),

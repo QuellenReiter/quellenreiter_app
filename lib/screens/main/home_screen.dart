@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
-        widget.appState.getFriends();
+        widget.appState.getPlayerRelations();
         widget.appState.startLiveQueryForFriends();
         break;
       case AppLifecycleState.inactive:
@@ -150,7 +150,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 children: [
                   const Icon(Icons.home_outlined),
                   if (widget.appState.opponentRequests != null &&
-                      widget.appState.opponentRequests!.opponents.isNotEmpty)
+                      widget.appState.opponentRequests!.playerRelations
+                          .isNotEmpty)
                     Positioned(
                       right: 0,
                       child: Container(
@@ -164,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           minHeight: 12,
                         ),
                         child: Text(
-                          '${widget.appState.opponentRequests?.opponents.length}',
+                          '${widget.appState.opponentRequests?.playerRelations.length}',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 8,
@@ -179,7 +180,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 children: [
                   const Icon(Icons.home_filled),
                   if (widget.appState.opponentRequests != null &&
-                      widget.appState.opponentRequests!.opponents.isNotEmpty)
+                      widget.appState.opponentRequests!.playerRelations
+                          .isNotEmpty)
                     Positioned(
                       right: 0,
                       child: Container(
@@ -193,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           minHeight: 12,
                         ),
                         child: Text(
-                          '${widget.appState.opponentRequests?.opponents.length}',
+                          '${widget.appState.opponentRequests?.playerRelations.length}',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 8,

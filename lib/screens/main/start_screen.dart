@@ -9,7 +9,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:simple_animations/stateless_animation/play_animation.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
-import '../../models/opponent.dart';
+import '../../models/player_relation.dart';
 import '../../models/player.dart';
 import '../../widgets/opponent_card.dart';
 
@@ -46,12 +46,13 @@ class _StartScreenState extends State<StartScreen> {
     List<Widget> finishedGames = [];
     // if any open game is finished and points are not accessed yet.
     if (widget.appState.friendships == null) {
-      widget.appState.getFriends();
+      widget.appState.getPlayerRelations();
       return const Center(child: CircularProgressIndicator());
     }
 
-    List<Opponent> opponents = widget.appState.friendships!.opponents;
-    List<bool> isFinished = opponents
+    List<PlayerRelation> playerRelations =
+        widget.appState.friendships!.playerRelations;
+    List<bool> isFinished = playerRelations
         .map((e) => // TODO write a member function for this
             e.openGame != null &&
             e.openGame!.gameFinished() &&
@@ -80,14 +81,14 @@ class _StartScreenState extends State<StartScreen> {
           ),
         ),
       );
-      for (var i = 0; i < opponents.length; i++) {
+      for (var i = 0; i < playerRelations.length; i++) {
         if (!isFinished[i]) {
           continue;
         }
 
         finishedGames.add(OpponentCard(
           appState: widget.appState,
-          opponent: opponents[i],
+          playerRelation: playerRelations[i],
           onTapped: (_) => {},
         ));
       }
@@ -97,7 +98,7 @@ class _StartScreenState extends State<StartScreen> {
     List<Widget> playersTurn = [];
     // if any open game is finished and points are not accessed yet.
     if (widget.appState.playableOpponents != null &&
-        widget.appState.playableOpponents!.opponents.isNotEmpty) {
+        widget.appState.playableOpponents!.playerRelations.isNotEmpty) {
       // add the heading
       playersTurn.add(
         Padding(
@@ -118,10 +119,11 @@ class _StartScreenState extends State<StartScreen> {
           ),
         ),
       );
-      for (Opponent opp in widget.appState.playableOpponents!.opponents) {
+      for (PlayerRelation pr
+          in widget.appState.playableOpponents!.playerRelations) {
         playersTurn.add(OpponentCard(
           appState: widget.appState,
-          opponent: opp,
+          playerRelation: pr,
           onTapped: (opponent) => {},
         ));
       }
@@ -131,7 +133,7 @@ class _StartScreenState extends State<StartScreen> {
     List<Widget> friendRequests = [];
     // if any open game is finished and points are not accessed yet.
     if (widget.appState.opponentRequests != null &&
-        widget.appState.opponentRequests!.opponents.isNotEmpty) {
+        widget.appState.opponentRequests!.playerRelations.isNotEmpty) {
       // add the heading
       friendRequests.add(
         Padding(
@@ -152,10 +154,11 @@ class _StartScreenState extends State<StartScreen> {
           ),
         ),
       );
-      for (Opponent opp in widget.appState.opponentRequests!.opponents) {
+      for (PlayerRelation pr
+          in widget.appState.opponentRequests!.playerRelations) {
         friendRequests.add(OpponentCard(
           appState: widget.appState,
-          opponent: opp,
+          playerRelation: pr,
           onTapped: (opponent) => {},
         ));
       }
@@ -164,7 +167,7 @@ class _StartScreenState extends State<StartScreen> {
     // create "Start new game" widgets
     List<Widget> startNewGame = [];
     // if no open game or open game is finished and points accessed.
-    if (widget.appState.friendships!.opponents.any((element) =>
+    if (widget.appState.friendships!.playerRelations.any((element) =>
         (element.openGame == null ||
             (element.openGame!.gameFinished() &&
                 element.openGame!.pointsAccessed)))) {
@@ -188,12 +191,12 @@ class _StartScreenState extends State<StartScreen> {
           ),
         ),
       );
-      for (Opponent opp in widget.appState.friendships!.opponents) {
-        if (opp.openGame == null ||
-            (opp.openGame!.gameFinished() && opp.openGame!.pointsAccessed)) {
+      for (PlayerRelation pr in widget.appState.friendships!.playerRelations) {
+        if (pr.openGame == null ||
+            (pr.openGame!.gameFinished() && pr.openGame!.pointsAccessed)) {
           startNewGame.add(OpponentCard(
             appState: widget.appState,
-            opponent: opp,
+            playerRelation: pr,
             onTapped: (opponent) => {},
           ));
         }
@@ -201,7 +204,7 @@ class _StartScreenState extends State<StartScreen> {
     }
 
     return RefreshIndicator(
-      onRefresh: widget.appState.getFriends,
+      onRefresh: widget.appState.getPlayerRelations,
       child: SingleChildScrollView(
         clipBehavior: Clip.none,
         physics: const AlwaysScrollableScrollPhysics(
@@ -358,7 +361,7 @@ class _StartScreenState extends State<StartScreen> {
                 ...finishedGames,
                 ...friendRequests,
                 if (widget.appState.friendships == null ||
-                    widget.appState.friendships!.opponents.isEmpty)
+                    widget.appState.friendships!.playerRelations.isEmpty)
                   Center(
                       child: Padding(
                     padding: const EdgeInsets.only(

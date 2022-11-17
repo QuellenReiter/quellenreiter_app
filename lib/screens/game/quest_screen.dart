@@ -29,7 +29,7 @@ class _QuestScreenState extends State<QuestScreen>
       widget.appState.showError(context);
     });
 
-    Game currentGame = widget.appState.currentOpponent!.openGame!;
+    Game currentGame = widget.appState.focusedPlayerRelation!.openGame!;
 
     // set index of statement to be shown
     int statementIndex = currentGame.player.amountAnswered;
@@ -316,7 +316,7 @@ class _QuestScreenState extends State<QuestScreen>
       {bool timeOver = false}) async {
     widget.answerRegistered = true;
 
-    Game currentGame = widget.appState.currentOpponent!.openGame!;
+    Game currentGame = widget.appState.focusedPlayerRelation!.openGame!;
 
     // PROBLEM: This is still not completely safe.
     // some other player could update the players stats between the above call
@@ -432,7 +432,7 @@ class _QuestScreenState extends State<QuestScreen>
     if (currentGame.gameFinished()) {
       // notify friend that points can be accessed
       widget.appState.db.sendPushOtherGameFinished(widget.appState,
-          receiverId: widget.appState.currentOpponent!.opponent.id);
+          receiverId: widget.appState.focusedPlayerRelation!.opponent.id);
       // show game finished screen
       widget.appState.route = Routes.gameFinishedScreen;
       return;
@@ -440,10 +440,10 @@ class _QuestScreenState extends State<QuestScreen>
 
     //if its not players turn anymore, getFriends.
     if (!currentGame.isPlayersTurn()) {
-      await widget.appState.getFriends();
+      await widget.appState.getPlayerRelations();
       // send notification to friend.
       widget.appState.db.sendPushOtherPlayersTurn(widget.appState,
-          receiverId: widget.appState.currentOpponent!.opponent.id);
+          receiverId: widget.appState.focusedPlayerRelation!.opponent.id);
       // got toready to start show only last
       widget.appState.route = Routes.readyToStartOnlyLastScreen;
       return;

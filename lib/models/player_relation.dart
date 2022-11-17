@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import '../constants/constants.dart';
 import 'game.dart';
 import 'player.dart';
-import 'statement.dart';
 
-class Opponent {
+class PlayerRelation {
   late int playerIndex;
   late String friendshipId;
   // `stats
@@ -22,7 +21,7 @@ class Opponent {
 
   /// Constructor that takes a Map of a friendship query and resolves which of
   /// player1 and player2 is the player and which is the opponent.
-  Opponent.fromFriendshipMap(Map<String, dynamic>? map, Player p) {
+  PlayerRelation.fromFriendshipMap(Map<String, dynamic>? map, Player p) {
     if (map?[DbFields.friendshipPlayer2] == null ||
         map?[DbFields.friendshipPlayer1] == null) {
       throw Exception('Invalid friendship map');
@@ -62,7 +61,7 @@ class Opponent {
     }
   }
   // called when friends are searched and no actual friendship exists yet.
-  Opponent.fromUserMap(Map<String, dynamic>? map) {
+  PlayerRelation.fromUserMap(Map<String, dynamic>? map) {
     opponent = Player.fromMap(map);
     wonGamesOther = 0;
     wonGamesPlayer = 0;
@@ -113,48 +112,52 @@ class Opponent {
     return ret;
   }
 
+  // to be removed
   int getXp() {
     return opponent.getXp();
   }
 
+  // to be removed
   int getLevel() {
     return opponent.getLevel();
   }
 }
 
-class Opponents {
-  List<Opponent> opponents = [];
+class PlayerRelationCollection {
+  List<PlayerRelation> playerRelations = [];
 
-  Opponents.fromFriendshipMap(Map<String, dynamic>? map, Player p) {
+  PlayerRelationCollection.fromFriendshipMap(
+      Map<String, dynamic>? map, Player p) {
     if (map?["edges"] == null) {
       return;
     }
-    for (Map<String, dynamic>? opponent in map?["edges"]) {
+    for (Map<String, dynamic>? playerRelation in map?["edges"]) {
       try {
-        opponents.add(Opponent.fromFriendshipMap(opponent?["node"], p));
+        playerRelations
+            .add(PlayerRelation.fromFriendshipMap(playerRelation?["node"], p));
       } catch (e) {
-        debugPrint(
-            "Invalid friendship with ID:" + opponent?["node"]["objectId"]);
+        debugPrint("Invalid friendship with ID:" +
+            playerRelation?["node"]["objectId"]);
       }
     }
   }
 
-  Opponents.fromUserMap(Map<String, dynamic>? map) {
+  PlayerRelationCollection.fromUserMap(Map<String, dynamic>? map) {
     if (map?["edges"] == null) {
       return;
     }
     for (Map<String, dynamic>? opponent in map?["edges"]) {
-      opponents.add(Opponent.fromUserMap(opponent?["node"]));
+      playerRelations.add(PlayerRelation.fromUserMap(opponent?["node"]));
     }
   }
-  Opponents.empty() {
-    opponents = [];
+  PlayerRelationCollection.empty() {
+    playerRelations = [];
   }
 
   List<String> getNames() {
     List<String> ret = [];
-    for (Opponent opp in opponents) {
-      ret.add(opp.opponent.name);
+    for (PlayerRelation pr in playerRelations) {
+      ret.add(pr.opponent.name);
     }
     return ret;
   }

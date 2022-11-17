@@ -56,7 +56,7 @@ class Player {
                     .map((x) => x["value"])
                     .toList()
                     .cast<String>()
-                : null,
+                : [],
         safedStatementsIds = map?[DbFields.userData] == null
             // safe statement id used in the tutorial
             ? [GameRules.testStatementId]
@@ -65,7 +65,7 @@ class Player {
                     .map((x) => x["value"])
                     .toList()
                     .cast<String>()
-                : null,
+                : [],
         numFriends = map?[DbFields.userData] == null
             ? 0
             : map?[DbFields.userData]?[DbFields.userNumFriends];

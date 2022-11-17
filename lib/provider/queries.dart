@@ -1,4 +1,4 @@
-import 'package:quellenreiter_app/models/opponent.dart';
+import 'package:quellenreiter_app/models/player_relation.dart';
 import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 
@@ -532,20 +532,20 @@ query GetOpenFriendRequests{
   }
 
   /// Returns the graphQL query to send a friend requests.
-  static String sendFriendRequest(String playerId, String opponentId) {
+  static String sendFriendRequest(String _playerId, String _playerRelationId) {
     String ret = '''
 mutation sendFriendRequest {
   createFriendship(
     input: {
       fields:{
         ${DbFields.friendshipPlayer1}:{
-          link:"$playerId"
+          link:"$_playerId"
         }
-        ${DbFields.friendshipPlayer1Id}: "$playerId"
+        ${DbFields.friendshipPlayer1Id}: "$_playerId"
         ${DbFields.friendshipPlayer2}:{
-          link: "$opponentId"
+          link: "$_playerRelationId"
         }
-        ${DbFields.friendshipPlayer2Id}: "$opponentId"
+        ${DbFields.friendshipPlayer2Id}: "$_playerRelationId"
         ${DbFields.friendshipApproved1}: true
         ${DbFields.friendshipApproved2}: false
       }
@@ -824,11 +824,12 @@ mutation removeGame(\$game:DeleteOpenGameInput!){
     String deleteOpenGames = "";
     String deleteFriendships = "";
     if (appState.friendships != null) {
-      for (Opponent opp in appState.friendships!.opponents) {
+      for (PlayerRelation playerRelation
+          in appState.friendships!.playerRelations) {
         deleteFriendships += '''
-${opp.opponent.name}Friendship: deleteFriendship(
+${playerRelation.opponent.name}Friendship: deleteFriendship(
   input: {
-    id: "${opp.friendshipId}"
+    id: "${playerRelation.friendshipId}"
   }
 ){
   friendship{
@@ -836,11 +837,11 @@ ${opp.opponent.name}Friendship: deleteFriendship(
   }
 }
 ''';
-        if (opp.openGame != null) {
+        if (playerRelation.openGame != null) {
           deleteOpenGames += '''
-${opp.opponent.name}Game: deleteOpenGame(
+${playerRelation.opponent.name}Game: deleteOpenGame(
   input: {
-    id: "${opp.openGame!.id}"
+    id: "${playerRelation.openGame!.id}"
   }
 ){
   openGame{

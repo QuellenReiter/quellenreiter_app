@@ -1,8 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:quellenreiter_app/models/fact.dart';
-
-import '../models/statement.dart';
 
 /// Contains colors that are needed repeatedly throughout the app.
 class DesignColors {
@@ -107,8 +103,6 @@ class DbFields {
   static const String friendshipApproved2 = "approvedPlayer2";
 
   static const String openGameStatements = "statements";
-
-  static const String opponentName = "name";
 
   static const String gameStatementIds = "statementIds";
   static const String gameWithTimer = "withTimer";
@@ -279,26 +273,4 @@ class GameRules {
   }
 
   static String testStatementId = "uNBPKPaeRt";
-
-//   Statement(
-//       "statementText",
-//       "statementAuthor",
-//       "test",
-//       CorrectnessCategory.correct,
-//       2022,
-//       3,
-//       12,
-//       Facts()
-//         ..facts = [
-//           Fact("Diese App macht spaß und bringt dir bei, besser mit Falschnachrichten umzugehen.", "Simon und Jannik", 2022, 3, 12, "deutsch", "https://quellenreiter.app",
-//               "Quellenreiter:in App", "objectId", "factArchivedLink")
-//         ],
-//       "statementLanguage",
-//       "statementLink",
-//       "statementMedia",
-//       "statementMediatype",
-//       "https://raw.githubusercontent.com/QuellenReiter/quellenreiter.website/master/assets/logo-pink.png",
-//       "samplePictureCopyright",
-//       false,
-//       "objectId");
 }
