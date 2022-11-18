@@ -122,9 +122,9 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// The current [Player]. Should be set, if user is logged in.
-  Player? _player;
-  Player? get player => _player;
+  /// The current [LocalPlayer]. Should be set, if user is logged in.
+  LocalPlayer? _player;
+  LocalPlayer? get player => _player;
 
   /// Sets the [_player] to the given value.
   ///
@@ -511,7 +511,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     return;
   }
 
-  Future<void> _updateUserCallback(Player? p) async {
+  Future<void> _updateUserCallback(LocalPlayer? p) async {
     if (p == null) {
       // login again and reset the user.
       await db.checkToken(_checkTokenCallback);
@@ -724,6 +724,6 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
     print("deviceToken: ${player!.deviceToken}");
     // push new token to db
-    await db.updateUser(player!, (Player? p) {});
+    await db.updateUser(player!, (LocalPlayer? p) {});
   }
 }

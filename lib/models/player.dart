@@ -1,6 +1,10 @@
+import 'package:flutter/material.dart';
+import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/models/statement.dart';
+import 'package:quellenreiter_app/widgets/opponent_card.dart';
 import '../constants/constants.dart';
 
+/// Holds information about a [Player].
 class Player {
   late String id;
   late String? dataId;
@@ -13,6 +17,7 @@ class Player {
   late int trueFakeAnswers;
   late int falseCorrectAnswers;
   late int falseFakeAnswers;
+  // This should be moved into localPlayer class. not needed here.
   late List<String>? safedStatementsIds;
   late List<String>? playedStatements;
   String? deviceToken;
@@ -57,6 +62,7 @@ class Player {
                     .toList()
                     .cast<String>()
                 : [],
+        //should only be done in [LocalPlayer]
         safedStatementsIds = map?[DbFields.userData] == null
             // safe statement id used in the tutorial
             ? [GameRules.testStatementId]
@@ -81,6 +87,7 @@ class Player {
         DbFields.userTrueFakeAnswers: trueFakeAnswers,
         DbFields.userFalseFakeAnswers: falseFakeAnswers,
         DbFields.userPlayedStatements: playedStatements,
+        //should only be done in [LocalPlayer]
         DbFields.userSafedStatements: safedStatementsIds,
         DbFields.userGamesWon: numGamesWon,
         DbFields.userGamesTied: numGamesTied,
@@ -116,6 +123,7 @@ class Player {
             DbFields.userTrueFakeAnswers: trueFakeAnswers,
             DbFields.userFalseFakeAnswers: falseFakeAnswers,
             DbFields.userPlayedStatements: playedStatements,
+            //should only be done in [LocalPlayer]
             DbFields.userSafedStatements: safedStatementsIds,
             DbFields.userGamesWon: numGamesWon,
             DbFields.userGamesTied: numGamesTied,
@@ -141,6 +149,7 @@ class Player {
         .map((x) => x["value"])
         .toList()
         .cast<String>();
+    //should only be done in [LocalPlayer]
     safedStatementsIds = map[DbFields.userSafedStatements] != null
         ? map[DbFields.userSafedStatements]
             .map((x) => x["value"])
@@ -206,5 +215,17 @@ class Player {
   bool statsCanBeCalculated() {
     return numPlayedGames > 0 &&
         (trueCorrectAnswers > 0 && trueFakeAnswers > 0);
+  }
+}
+
+/// Stores the specifics of a Signed In User by extending [Player] and adding
+/// some specific functionality.
+/// This class acts similar to a Singleton.
+class LocalPlayer extends Player {
+  LocalPlayer.fromMap(Map<String, dynamic>? map) : super.fromMap(map);
+
+  /// Returns a card displaying the user's [name] and [emoji] and [getLevel].
+  Widget getPlayerCard(QuellenreiterAppState appState) {
+    return OpponentCard(onTapped: (p) {}, appState: appState, player: this);
   }
 }
