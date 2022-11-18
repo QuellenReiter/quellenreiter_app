@@ -4,13 +4,13 @@ import 'package:quellenreiter_app/models/statement.dart';
 
 import 'player_relation.dart';
 
-class GamePlayer {
+class _GamePlayer {
   late String? id;
   late List<bool> answers;
 
-  GamePlayer(this.id, this.answers);
+  _GamePlayer(this.id, this.answers);
 
-  GamePlayer.fromDbMap(Map<String, dynamic> openGame, bool isFirstPlayer) {
+  _GamePlayer.fromDbMap(Map<String, dynamic> openGame, bool isFirstPlayer) {
     id = openGame[
         isFirstPlayer ? DbFields.gamePlayer1Id : DbFields.gamePlayer2Id];
     answers = openGame[isFirstPlayer
@@ -39,8 +39,8 @@ class Game {
   bool withTimer = false;
   late int playerIndex;
   late bool pointsAccessed;
-  late GamePlayer player;
-  late GamePlayer opponent;
+  late _GamePlayer player;
+  late _GamePlayer opponent;
 
   Game.fromDbMap(Map<String, dynamic> openGame, int playerIdx) {
     playerIndex = playerIdx;
@@ -49,9 +49,9 @@ class Game {
     //object Id
     id = openGame["objectId"];
     // player [GamePlayer] object
-    player = GamePlayer.fromDbMap(openGame, isFirstPlayer);
+    player = _GamePlayer.fromDbMap(openGame, isFirstPlayer);
     // opponent [GamePlayer] object
-    opponent = GamePlayer.fromDbMap(openGame, !isFirstPlayer);
+    opponent = _GamePlayer.fromDbMap(openGame, !isFirstPlayer);
 
     statementIds = openGame[DbFields.gameStatementIds]
         .map((x) => x["value"])
@@ -88,8 +88,8 @@ class Game {
     statements = null;
     playerIndex = 0;
     pointsAccessed = false;
-    player = GamePlayer(p.id, []);
-    opponent = GamePlayer(e.opponent.id, []);
+    player = _GamePlayer(p.id, []);
+    opponent = _GamePlayer(e.opponent.id, []);
   }
 
   /// Returns true if the player is the next one to play.
@@ -113,8 +113,8 @@ class Game {
   }
 
   Map<String, dynamic> toMap() {
-    GamePlayer player1Db = playerIndex == 0 ? player : opponent;
-    GamePlayer player2Db = playerIndex == 1 ? player : opponent;
+    _GamePlayer player1Db = playerIndex == 0 ? player : opponent;
+    _GamePlayer player2Db = playerIndex == 1 ? player : opponent;
 
     Map<String, dynamic> ret = {
       "id": id,
