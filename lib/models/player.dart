@@ -208,3 +208,7 @@ class Player {
         (trueCorrectAnswers > 0 && trueFakeAnswers > 0);
   }
 }
+
+class LocalPlayer extends Player {
+  LocalPlayer.fromMap(Map<String, dynamic>? map) : super.fromMap(map);
+}
