@@ -10,7 +10,7 @@ import '../models/player.dart';
 import '../models/statement.dart';
 import 'custom_bottom_sheet.dart';
 
-/// Brief information display of a single [Statement].
+/// Brief information display of a single [Player].
 class OpponentCard extends StatelessWidget {
   const OpponentCard(
       {Key? key,
