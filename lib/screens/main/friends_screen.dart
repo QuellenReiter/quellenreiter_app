@@ -100,11 +100,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                     child: Text("$i.",
                         style: Theme.of(context).textTheme.headline2)),
                 Flexible(
-                  child: OpponentCard(
-                    appState: widget.appState,
-                    player: widget.appState.player!,
-                    onTapped: (opponent) => {},
-                  ),
+                  child: widget.appState.player!.getPlayerCard(widget.appState),
                 ),
               ],
             ),

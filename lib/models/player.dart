@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/models/statement.dart';
+import 'package:quellenreiter_app/widgets/opponent_card.dart';
 import '../constants/constants.dart';
 
 class Player {
@@ -213,4 +216,9 @@ class Player {
 /// some specific functionality.
 class LocalPlayer extends Player {
   LocalPlayer.fromMap(Map<String, dynamic>? map) : super.fromMap(map);
+
+  /// Returns a card displaying the user's [name] and [emoji] and [getLevel].
+  Widget getPlayerCard(QuellenreiterAppState appState) {
+    return OpponentCard(onTapped: (p) {}, appState: appState, player: this);
+  }
 }
