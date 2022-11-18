@@ -209,6 +209,8 @@ class Player {
   }
 }
 
+/// Stores the specifics of a Signed In User by extending [Player] and adding
+/// some specific functionality.
 class LocalPlayer extends Player {
   LocalPlayer.fromMap(Map<String, dynamic>? map) : super.fromMap(map);
 }
