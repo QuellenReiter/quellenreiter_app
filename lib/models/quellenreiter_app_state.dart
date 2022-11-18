@@ -71,54 +71,12 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// TODO: Move to [PlayerRelationsCollection]
-  /// Friendships of the [Player].
-  PlayerRelationCollection? _friendships;
-  PlayerRelationCollection? get friendships => _friendships;
+  /// All known relations of the [Player].
+  PlayerRelationCollection _playerRelations = PlayerRelationCollection.empty();
+  PlayerRelationCollection get playerRelations => _playerRelations;
 
-  /// Sets the [_friendships] to the given value.
-  ///
-  /// @param value [PlayerRelationCollection] of the [Player].
-  set friendships(value) {
-    _friendships = value;
-    notifyListeners();
-  }
-
-  /// Friend requests of the current [Player].
-  PlayerRelationCollection? _opponentRequests;
-  PlayerRelationCollection? get opponentRequests => _opponentRequests;
-
-  /// Sets the [_opponentRequests] to the given value.
-  ///
-  /// @param value The new [PlayerRelationCollection]. that requested to be friends with the current [Player].
-  set opponentRequests(value) {
-    _opponentRequests = value;
-    notifyListeners();
-  }
-
-  /// TODO: Move to [PlayerRelationsCollection]
-  /// Pending friend requests sent by the current [Player].
-  PlayerRelationCollection? _pendingRequests;
-  PlayerRelationCollection? get pendingRequests => _pendingRequests;
-
-  /// Sets the [_pendingRequests] to the given value.
-  ///
-  /// @param value The  [PlayerRelationCollection]. that were invited by the current [Player].
-  set pendingRequests(value) {
-    _pendingRequests = value;
-    notifyListeners();
-  }
-
-  /// TODO: Move to [PlayerRelationsCollection]
-  /// opponents that have an open game where its the [Player] turn.
-  PlayerRelationCollection? _playableOpponents;
-
-  /// Sets the [_playableOpponents] to the given value.
-  ///
-  /// @param value The [PlayerRelationCollection] that have an open game where its the [Player] turn.
-  PlayerRelationCollection? get playableOpponents => _playableOpponents;
-  set playableOpponents(value) {
-    _playableOpponents = value;
+  set playerRelations(value) {
+    _playerRelations = value;
     notifyListeners();
   }
 
@@ -334,8 +292,18 @@ class QuellenreiterAppState extends ChangeNotifier {
   Future<void> getPlayerRelations() async {
     PlayerRelationCollection? _playerRelations = await db.getFriends(player!);
 
-    await _determinePlayerRelationState(_playerRelations);
-    return;
+    if (_playerRelations != null) {
+      playerRelations = _playerRelations;
+      notifyListeners();
+      _restoreFocusedPlayerRelation();
+    }
+
+    // update number of friends
+    int nFriends = playerRelations.friends.length;
+    if (player!.numFriends != nFriends) {
+      player!.numFriends = nFriends;
+      await db.updateUserData(player!, (Player? p) {});
+    }
   }
 
   void sendFriendRequest(PlayerRelation _playerRelation) {
@@ -354,65 +322,6 @@ class QuellenreiterAppState extends ChangeNotifier {
     await db.getUserData(player!);
   }
 
-  /// TODO: remove and move to [PlayerRelationCollection]
-  /// Callback for the [getPlayerRelations] method.
-  /// If successfull, the [PlayerRelationCollection] are safed.
-  /// They are split up into [player.friends], [opponentRequests],
-  /// [pendingRequests] and [playableOpponents].
-  /// Also the [focusedPlayerRelation] is restored and updated.
-  ///
-  /// @param [_playerRelations] The [PlayerRelationCollection] returned from the server.
-  Future<bool> _determinePlayerRelationState(
-      PlayerRelationCollection? _playerRelations) async {
-    // if no friends were returned
-    if (_playerRelations == null) {
-      // if no friends are currently downloaded
-      friendships ??= PlayerRelationCollection.empty();
-
-      // else, just keep the downloaded friends.
-      return false;
-    }
-    // set friends
-    var tempFriends = PlayerRelationCollection.empty()
-      ..playerRelations = _playerRelations.playerRelations
-          .where((playerRelation) =>
-              playerRelation.acceptedByOther && playerRelation.acceptedByPlayer)
-          .toList();
-    // set received requests
-    var tempRequests = PlayerRelationCollection.empty()
-      ..playerRelations = _playerRelations.playerRelations
-          .where((playerRelation) =>
-              playerRelation.acceptedByOther &&
-              !playerRelation.acceptedByPlayer)
-          .toList();
-    // set pending requests
-    var tempPending = PlayerRelationCollection.empty()
-      ..playerRelations = _playerRelations.playerRelations
-          .where((playerRelation) =>
-              !playerRelation.acceptedByOther &&
-              playerRelation.acceptedByPlayer)
-          .toList();
-
-    var tempPlayableOpponents = PlayerRelationCollection.empty()
-      ..playerRelations = _playerRelations.playerRelations
-          .where((playerRelation) => (playerRelation.openGame != null &&
-              playerRelation.openGame!.isPlayersTurn()))
-          .toList();
-
-    friendships = tempFriends;
-    // set new number of friends
-    if (player!.numFriends != tempFriends.playerRelations.length) {
-      player!.numFriends = tempFriends.playerRelations.length;
-      await db.updateUserData(player!, (Player? p) {});
-    }
-    player?.numFriends = tempFriends.playerRelations.length;
-    opponentRequests = tempRequests;
-    pendingRequests = tempPending;
-    playableOpponents = tempPlayableOpponents;
-    _restoreFocusedPlayerRelation();
-    return true;
-  }
-
   /// Restore the [focusedPlayerRelation] in the [player]'s friends.
   ///
   /// Used after [PlayerRelation]s are downloaded from the server.
@@ -422,10 +331,8 @@ class QuellenreiterAppState extends ChangeNotifier {
     // redo current opponent
     if (focusedPlayerRelation != null) {
       try {
-        var _tempFocusedPlayerRelation = friendships!.playerRelations
-            .firstWhere((playerRelation) =>
-                playerRelation.opponent.id ==
-                focusedPlayerRelation!.opponent.id);
+        var _tempFocusedPlayerRelation = playerRelations.friends.firstWhere(
+            (pr) => pr.opponent.id == focusedPlayerRelation!.opponent.id);
         // Only update [focusedPlayerRelation] if they have played 3 quests so that the
         // game is either finished or it is the player's turn now.
         // This prevents constant updating while the player is browsing the quests.
@@ -479,7 +386,7 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void searchFriends() {
     if (friendsQuery != null) {
-      if (friendships == null) {
+      if (playerRelations.friends.isEmpty) {
         db.searchFriends(friendsQuery!, [player!.name], _searchFriendsCallback);
       }
       db.searchFriends(friendsQuery!, getNames(), _searchFriendsCallback);
@@ -487,11 +394,9 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   void _searchFriendsCallback(PlayerRelationCollection? opp) {
+    route = Routes.addFriends;
     if (opp != null) {
-      route = Routes.addFriends;
       friendsSearchResult = opp;
-    } else {
-      route = Routes.addFriends;
     }
   }
 
@@ -530,22 +435,16 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
   }
 
-  void _getStatementsCallback(Statements? statements) {
-    if (statements == null) {
-    } else {
-      safedStatements = statements;
-    }
-  }
-
   void startNewGame(PlayerRelation _playerRelation, bool withTimer) async {
     Routes tempRoute = route;
     route = Routes.loading;
-    // update player and opponent here, to be updtodate with played statements
+    // update player and opponent here, to be up to date with played statements
     await getPlayerRelations();
-    //update [_playerRelation]
-    _playerRelation = friendships!.playerRelations.firstWhere(
-        (playerRelation) =>
-            playerRelation.opponent.id == _playerRelation.opponent.id);
+
+    // get potentially updated instance of same [_playerRelation]
+    _playerRelation = playerRelations.friends.firstWhere((playerRelation) =>
+        playerRelation.opponent.id == _playerRelation.opponent.id);
+
     // if an open game exists, check if its new or delete it
     if (_playerRelation.openGame != null &&
         (!_playerRelation.openGame!.gameFinished() ||
@@ -558,10 +457,12 @@ class QuellenreiterAppState extends ChangeNotifier {
       // delete the old game, it is finished
       await db.deleteGame(_playerRelation.openGame!);
     }
+
     // delete old game
     _playerRelation.openGame = Game.empty(withTimer, _playerRelation, player!);
     _playerRelation.openGame!.statementIds =
         await db.getPlayableStatements(_playerRelation, player!);
+
     if (_playerRelation.openGame!.statementIds == null) {
       // reset game because not started
       _playerRelation.openGame = null;
@@ -572,7 +473,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
     db.sendPushGameStartet(this, receiverId: _playerRelation.opponent.id);
     await getPlayerRelations();
-    // print(e.openGame!.statementIds.toString());
+
     // if successfully fetched statements
     route = tempRoute;
     msg =
@@ -691,11 +592,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   List<String> getNames() {
-    var ret = friendships!.getNames();
-    ret.add(player!.name);
-    ret.addAll(opponentRequests!.getNames());
-    ret.addAll(pendingRequests!.getNames());
-    return ret;
+    return playerRelations!.getNames()..add(player!.name);
   }
 
   void startLiveQueryForFriends() {

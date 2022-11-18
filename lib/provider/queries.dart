@@ -823,9 +823,9 @@ mutation removeGame(\$game:DeleteOpenGameInput!){
   static String deleteUser(QuellenreiterAppState appState) {
     String deleteOpenGames = "";
     String deleteFriendships = "";
-    if (appState.friendships != null) {
-      for (PlayerRelation playerRelation
-          in appState.friendships!.playerRelations) {
+    List<PlayerRelation> friends = appState.playerRelations.friends;
+    if (friends.isNotEmpty) {
+      for (PlayerRelation playerRelation in friends) {
         deleteFriendships += '''
 ${playerRelation.opponent.name}Friendship: deleteFriendship(
   input: {

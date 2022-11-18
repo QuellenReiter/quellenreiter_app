@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:quellenreiter_app/models/player_relation.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/screens/main/friends_screen.dart';
 import 'package:quellenreiter_app/screens/main/settings_screen.dart';
@@ -137,6 +138,33 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         );
         title = "Start";
     }
+
+    List<PlayerRelation> openRequests =
+        widget.appState.playerRelations.incoming;
+
+    Positioned numberOfRequests = Positioned(
+      right: 0,
+      child: Container(
+        padding: const EdgeInsets.all(1),
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(6),
+        ),
+        constraints: const BoxConstraints(
+          minWidth: 12,
+          minHeight: 12,
+        ),
+        child: Text(
+          '${openRequests.length}',
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 8,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -149,61 +177,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               icon: Stack(
                 children: [
                   const Icon(Icons.home_outlined),
-                  if (widget.appState.opponentRequests != null &&
-                      widget.appState.opponentRequests!.playerRelations
-                          .isNotEmpty)
-                    Positioned(
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.all(1),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        constraints: const BoxConstraints(
-                          minWidth: 12,
-                          minHeight: 12,
-                        ),
-                        child: Text(
-                          '${widget.appState.opponentRequests?.playerRelations.length}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 8,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    )
+                  if (openRequests.isNotEmpty) numberOfRequests
                 ],
               ),
               activeIcon: Stack(
                 children: [
                   const Icon(Icons.home_filled),
-                  if (widget.appState.opponentRequests != null &&
-                      widget.appState.opponentRequests!.playerRelations
-                          .isNotEmpty)
-                    Positioned(
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.all(1),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        constraints: const BoxConstraints(
-                          minWidth: 12,
-                          minHeight: 12,
-                        ),
-                        child: Text(
-                          '${widget.appState.opponentRequests?.playerRelations.length}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 8,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    )
+                  if (openRequests.isNotEmpty) numberOfRequests
                 ],
               ),
               label: 'Start',

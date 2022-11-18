@@ -44,14 +44,9 @@ class _StartScreenState extends State<StartScreen> {
   Widget build(BuildContext context) {
     // create finished games
     List<Widget> finishedGames = [];
-    // if any open game is finished and points are not accessed yet.
-    if (widget.appState.friendships == null) {
-      widget.appState.getPlayerRelations();
-      return const Center(child: CircularProgressIndicator());
-    }
 
     List<PlayerRelation> playerRelations =
-        widget.appState.friendships!.playerRelations;
+        widget.appState.playerRelations.friends;
     List<bool> isFinished = playerRelations
         .map((e) => // TODO write a member function for this
             e.openGame != null &&
@@ -97,8 +92,9 @@ class _StartScreenState extends State<StartScreen> {
     // create "Its your turn" widgets
     List<Widget> playersTurn = [];
     // if any open game is finished and points are not accessed yet.
-    if (widget.appState.playableOpponents != null &&
-        widget.appState.playableOpponents!.playerRelations.isNotEmpty) {
+    List<PlayerRelation> playableOpponents =
+        widget.appState.playerRelations.playable;
+    if (playableOpponents.isNotEmpty) {
       // add the heading
       playersTurn.add(
         Padding(
@@ -119,8 +115,7 @@ class _StartScreenState extends State<StartScreen> {
           ),
         ),
       );
-      for (PlayerRelation pr
-          in widget.appState.playableOpponents!.playerRelations) {
+      for (PlayerRelation pr in playableOpponents) {
         playersTurn.add(OpponentCard(
           appState: widget.appState,
           playerRelation: pr,
@@ -130,12 +125,13 @@ class _StartScreenState extends State<StartScreen> {
     }
 
     // create "friendrequest" widgets
-    List<Widget> friendRequests = [];
+    List<Widget> friendRequestWidgets = [];
+    List<PlayerRelation> openFriendRequests =
+        widget.appState.playerRelations.incoming;
     // if any open game is finished and points are not accessed yet.
-    if (widget.appState.opponentRequests != null &&
-        widget.appState.opponentRequests!.playerRelations.isNotEmpty) {
+    if (openFriendRequests.isNotEmpty) {
       // add the heading
-      friendRequests.add(
+      friendRequestWidgets.add(
         Padding(
           padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
           child: Row(
@@ -154,9 +150,8 @@ class _StartScreenState extends State<StartScreen> {
           ),
         ),
       );
-      for (PlayerRelation pr
-          in widget.appState.opponentRequests!.playerRelations) {
-        friendRequests.add(OpponentCard(
+      for (PlayerRelation pr in openFriendRequests) {
+        friendRequestWidgets.add(OpponentCard(
           appState: widget.appState,
           playerRelation: pr,
           onTapped: (opponent) => {},
@@ -165,14 +160,13 @@ class _StartScreenState extends State<StartScreen> {
     }
 
     // create "Start new game" widgets
-    List<Widget> startNewGame = [];
+    List<Widget> startableGameWidgets = [];
     // if no open game or open game is finished and points accessed.
-    if (widget.appState.friendships!.playerRelations.any((element) =>
-        (element.openGame == null ||
-            (element.openGame!.gameFinished() &&
-                element.openGame!.pointsAccessed)))) {
+    if (widget.appState.playerRelations.friends.any((pr) =>
+        (pr.openGame == null ||
+            (pr.openGame!.gameFinished() && pr.openGame!.pointsAccessed)))) {
       // add the heading
-      startNewGame.add(
+      startableGameWidgets.add(
         Padding(
           padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
           child: Row(
@@ -191,10 +185,10 @@ class _StartScreenState extends State<StartScreen> {
           ),
         ),
       );
-      for (PlayerRelation pr in widget.appState.friendships!.playerRelations) {
+      for (PlayerRelation pr in widget.appState.playerRelations.friends) {
         if (pr.openGame == null ||
             (pr.openGame!.gameFinished() && pr.openGame!.pointsAccessed)) {
-          startNewGame.add(OpponentCard(
+          startableGameWidgets.add(OpponentCard(
             appState: widget.appState,
             playerRelation: pr,
             onTapped: (opponent) => {},
@@ -359,9 +353,8 @@ class _StartScreenState extends State<StartScreen> {
                   ),
                 ),
                 ...finishedGames,
-                ...friendRequests,
-                if (widget.appState.friendships == null ||
-                    widget.appState.friendships!.playerRelations.isEmpty)
+                ...friendRequestWidgets,
+                if (widget.appState.playerRelations.friends.isEmpty)
                   Center(
                       child: Padding(
                     padding: const EdgeInsets.only(
@@ -387,7 +380,7 @@ class _StartScreenState extends State<StartScreen> {
                   ))
                 else
                   ...playersTurn,
-                ...startNewGame
+                ...startableGameWidgets
               ],
             ),
           ),
