@@ -4,6 +4,38 @@ import '../constants/constants.dart';
 import 'game.dart';
 import 'player.dart';
 
+enum RelationState {
+  mutual(acceptedByPlayer: true, acceptedByOther: true),
+  sent(acceptedByPlayer: true, acceptedByOther: false),
+  received(acceptedByPlayer: false, acceptedByOther: true),
+  random(acceptedByPlayer: false, acceptedByOther: false);
+
+  final bool acceptedByPlayer;
+  final bool acceptedByOther;
+
+  const RelationState(
+      {required this.acceptedByPlayer, required this.acceptedByOther});
+
+  factory RelationState.fromDbMap(Map<String, dynamic> map, bool isFirst) {
+    bool player = isFirst
+        ? map[DbFields.friendshipApproved1]
+        : map[DbFields.friendshipApproved2];
+    bool other = isFirst
+        ? map[DbFields.friendshipApproved2]
+        : map[DbFields.friendshipApproved1];
+    if (player) {
+      if (other) {
+        return RelationState.mutual;
+      }
+      return RelationState.sent;
+    }
+    if (other) {
+      return RelationState.received;
+    }
+    return RelationState.random;
+  }
+}
+
 class PlayerRelation {
   late int playerIndex;
   late String friendshipId;
