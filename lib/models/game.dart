@@ -158,6 +158,13 @@ class Game {
     }
     return xp;
   }
+
+  String getScoreAsText() {
+    bool hideOpponentScore = player.amountAnswered < opponent.amountAnswered;
+    return player.getPoints().toString() +
+        " : " +
+        (hideOpponentScore ? "?" : opponent.getPoints().toString());
+  }
 }
 
 class Games {

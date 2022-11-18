@@ -409,9 +409,8 @@ class DatabaseUtils {
       await updateUserCallback(null);
       return;
     } else {
-      await updateUserCallback(player
-        ..updateDataWithMap(
-            mutationResult.data?["updateUserData"]["userData"]));
+      await updateUserCallback(player.updateDataWithMap(
+          mutationResult.data?["updateUserData"]["userData"]));
       return;
     }
   }
