@@ -63,7 +63,8 @@ class DatabaseUtils {
     safeStorage.write(
         key: "token",
         value: loginResult.data?["logIn"]["viewer"]["sessionToken"]);
-    loginCallback(Player.fromMap(loginResult.data?["logIn"]["viewer"]["user"]));
+    loginCallback(
+        LocalPlayer.fromMap(loginResult.data?["logIn"]["viewer"]["user"]));
     // Safe the User
   }
 
@@ -115,7 +116,8 @@ class DatabaseUtils {
         value: signUpResult.data?["signUp"]["viewer"]["sessionToken"]);
 
     // parse player.
-    var player = Player.fromMap(signUpResult.data?["signUp"]["viewer"]["user"]);
+    var player =
+        LocalPlayer.fromMap(signUpResult.data?["signUp"]["viewer"]["user"]);
     player.emoji = emoji;
 
     // upload emoji
@@ -174,7 +176,8 @@ class DatabaseUtils {
         // Safe the new token.
         // await safeStorage.write(
         //     key: "token", value: queryResult.data?["viewer"]["sessionToken"]);
-        checkTokenCallback(Player.fromMap(queryResult.data?["viewer"]["user"]));
+        checkTokenCallback(
+            LocalPlayer.fromMap(queryResult.data?["viewer"]["user"]));
         return;
       }
     }
@@ -213,7 +216,7 @@ class DatabaseUtils {
 
         return p;
       }
-      return Player.fromMap(queryResult.data!["user"]);
+      return LocalPlayer.fromMap(queryResult.data!["user"]);
     }
     return p;
   }
@@ -327,9 +330,10 @@ class DatabaseUtils {
     return Statement.fromMap(queryResult.data?["statement"]);
   }
 
-  /// Update a [Player] in the Database by [String]. Only for username and
-  /// device token!
-  Future<void> updateUser(Player player, Function updateUserCallback) async {
+  /// Update a [LocalPlayer] in the Database by [String]. Only for username and
+  /// device token! Thus only used for the logged in user.
+  Future<void> updateUser(
+      LocalPlayer player, Function updateUserCallback) async {
     // TODO fetch player before updating so nothing is overwritten
     // check username for bad words
     bool isDirty = await containsBadWord(player.name);
@@ -370,7 +374,7 @@ class DatabaseUtils {
       return;
     } else {
       await updateUserCallback(
-          Player.fromMap(mutationResult.data?["updateUser"]["user"]));
+          LocalPlayer.fromMap(mutationResult.data?["updateUser"]["user"]));
       return;
     }
   }
