@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:quellenreiter_app/models/opponent.dart';
+import 'package:quellenreiter_app/models/player_relation.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 
 import '../constants/constants.dart';
@@ -8,13 +8,13 @@ import '../constants/constants.dart';
 /// This widget displays an interface to start a new game and select the mode.
 ///
 /// [appState] is the current state of the app.
-/// [opponent] is the opponent to play against.
+/// [playerRelation] is the opponent to play against.
 class StartGameContainer extends StatelessWidget {
   const StartGameContainer(
-      {Key? key, required this.appState, required this.opponent})
+      {Key? key, required this.appState, required this.playerRelation})
       : super(key: key);
   final QuellenreiterAppState appState;
-  final Opponent opponent;
+  final PlayerRelation playerRelation;
   @override
   Widget build(BuildContext context) {
     return AnimationLimiter(
@@ -41,7 +41,7 @@ class StartGameContainer extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton.icon(
-                  onPressed: () => appState.startNewGame(opponent, true),
+                  onPressed: () => appState.startNewGame(playerRelation, true),
                   icon: const Icon(Icons.alarm),
                   label: Text(
                     "Mit Timer",
@@ -49,7 +49,7 @@ class StartGameContainer extends StatelessWidget {
                   ),
                 ),
                 ElevatedButton.icon(
-                  onPressed: () => appState.startNewGame(opponent, false),
+                  onPressed: () => appState.startNewGame(playerRelation, false),
                   icon: const Icon(Icons.alarm_off),
                   label: Text(
                     "ohne Timer",

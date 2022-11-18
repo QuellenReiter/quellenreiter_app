@@ -1,4 +1,3 @@
-import 'package:quellenreiter_app/models/opponent.dart';
 import 'package:quellenreiter_app/models/statement.dart';
 import '../constants/constants.dart';
 
@@ -7,7 +6,6 @@ class Player {
   late String? dataId;
   late String name;
   late String emoji;
-  String? email;
   late int numPlayedGames;
   late int numGamesWon;
   late int numGamesTied;
@@ -15,7 +13,6 @@ class Player {
   late int trueFakeAnswers;
   late int falseCorrectAnswers;
   late int falseFakeAnswers;
-  late Opponents? friends;
   late List<String>? safedStatementsIds;
   late List<String>? playedStatements;
   String? deviceToken;
@@ -59,7 +56,7 @@ class Player {
                     .map((x) => x["value"])
                     .toList()
                     .cast<String>()
-                : null,
+                : [],
         safedStatementsIds = map?[DbFields.userData] == null
             // safe statement id used in the tutorial
             ? [GameRules.testStatementId]
@@ -68,8 +65,7 @@ class Player {
                     .map((x) => x["value"])
                     .toList()
                     .cast<String>()
-                : null,
-        friends = null,
+                : [],
         numFriends = map?[DbFields.userData] == null
             ? 0
             : map?[DbFields.userData]?[DbFields.userNumFriends];
@@ -145,10 +141,12 @@ class Player {
         .map((x) => x["value"])
         .toList()
         .cast<String>();
-    safedStatementsIds = map[DbFields.userSafedStatements]
-        .map((x) => x["value"])
-        .toList()
-        .cast<String>();
+    safedStatementsIds = map[DbFields.userSafedStatements] != null
+        ? map[DbFields.userSafedStatements]
+            .map((x) => x["value"])
+            .toList()
+            .cast<String>()
+        : [];
     numFriends = map[DbFields.userNumFriends];
   }
 

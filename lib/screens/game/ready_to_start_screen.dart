@@ -35,7 +35,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Game currentGame = widget.appState.currentOpponent!.openGame!;
+    Game currentGame = widget.appState.focusedPlayerRelation!.openGame!;
     commonLength = min(
         currentGame.player.amountAnswered, currentGame.opponent.amountAnswered);
 
@@ -139,7 +139,7 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
             ),
             children: [
               RefreshIndicator(
-                onRefresh: widget.appState.getFriends,
+                onRefresh: widget.appState.getPlayerRelations,
                 child: ListView(
                   primary: false,
                   physics: const AlwaysScrollableScrollPhysics(
@@ -282,7 +282,8 @@ class _ReadyToStartScreenState extends State<ReadyToStartScreen> {
                       scrollable: false,
                       child: StartGameContainer(
                           appState: widget.appState,
-                          opponent: widget.appState.currentOpponent!),
+                          playerRelation:
+                              widget.appState.focusedPlayerRelation!),
                     ),
                   ),
                 )

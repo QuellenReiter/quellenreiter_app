@@ -2,11 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../provider/database_utils.dart';
-import 'opponent.dart';
+import 'player_relation.dart';
 import 'game.dart';
 import 'player.dart';
 import 'statement.dart';
@@ -52,7 +51,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   String? _error;
   String? get msg => _error;
 
-  /// Sets the _error to the given value.
+  /// Sets the [_error] to the given value.
   ///
   /// @param value The new error message.
   set msg(value) {
@@ -64,7 +63,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   Game? _game;
   Game? get game => _game;
 
-  /// Sets the _game to the given value.
+  /// Sets the [_game] to the given value.
   ///
   /// @param value The new [Game].
   set game(value) {
@@ -72,37 +71,52 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Friend requests of the current [Player].
-  Opponents? _opponentRequests;
-  Opponents? get opponentRequests => _opponentRequests;
+  /// TODO: Move to [PlayerRelationsCollection]
+  /// Friendships of the [Player].
+  PlayerRelationCollection? _friendships;
+  PlayerRelationCollection? get friendships => _friendships;
 
-  /// Sets the _opponentRequests to the given value.
+  /// Sets the [_friendships] to the given value.
   ///
-  /// @param value The new [Opponents]. that requested to be friends with the current [Player].
+  /// @param value [PlayerRelationCollection] of the [Player].
+  set friendships(value) {
+    _friendships = value;
+    notifyListeners();
+  }
+
+  /// Friend requests of the current [Player].
+  PlayerRelationCollection? _opponentRequests;
+  PlayerRelationCollection? get opponentRequests => _opponentRequests;
+
+  /// Sets the [_opponentRequests] to the given value.
+  ///
+  /// @param value The new [PlayerRelationCollection]. that requested to be friends with the current [Player].
   set opponentRequests(value) {
     _opponentRequests = value;
     notifyListeners();
   }
 
+  /// TODO: Move to [PlayerRelationsCollection]
   /// Pending friend requests sent by the current [Player].
-  Opponents? _pendingRequests;
-  Opponents? get pendingRequests => _pendingRequests;
+  PlayerRelationCollection? _pendingRequests;
+  PlayerRelationCollection? get pendingRequests => _pendingRequests;
 
-  /// Sets the _pendingRequests to the given value.
+  /// Sets the [_pendingRequests] to the given value.
   ///
-  /// @param value The  [Opponents]. that were invited by the current [Player].
+  /// @param value The  [PlayerRelationCollection]. that were invited by the current [Player].
   set pendingRequests(value) {
     _pendingRequests = value;
     notifyListeners();
   }
 
+  /// TODO: Move to [PlayerRelationsCollection]
   /// opponents that have an open game where its the [Player] turn.
-  Opponents? _playableOpponents;
+  PlayerRelationCollection? _playableOpponents;
 
-  /// Sets the _playableOpponents to the given value.
+  /// Sets the [_playableOpponents] to the given value.
   ///
-  /// @param value The [Opponents] that have an open game where its the [Player] turn.
-  Opponents? get playableOpponents => _playableOpponents;
+  /// @param value The [PlayerRelationCollection] that have an open game where its the [Player] turn.
+  PlayerRelationCollection? get playableOpponents => _playableOpponents;
   set playableOpponents(value) {
     _playableOpponents = value;
     notifyListeners();
@@ -112,7 +126,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   Player? _player;
   Player? get player => _player;
 
-  /// Sets the _player to the given value.
+  /// Sets the [_player] to the given value.
   ///
   /// @param value The new [Player].
   set player(value) {
@@ -124,7 +138,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   Games? _openGames;
   Games? get openGames => _openGames;
 
-  /// Sets the _openGames to the given value.
+  /// Sets the [_openGames] to the given value.
   ///
   /// @param value The new [Games] that are open currently.
   set openGames(value) {
@@ -132,15 +146,15 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// The [Opponent] of the current game. Set when user selects game.
-  Opponent? _currentOpponent;
-  Opponent? get currentOpponent => _currentOpponent;
+  /// The [PlayerRelation] of the current game. Set when user selects game.
+  PlayerRelation? _focusedPlayerRelation;
+  PlayerRelation? get focusedPlayerRelation => _focusedPlayerRelation;
 
-  /// Sets the _currentOpponent to the given value.
+  /// Sets the [_focusedPlayerRelation] to the given value.
   ///
-  /// @param value The new [Opponent] whose game is currently being viewed by the user.
-  set currentOpponent(value) {
-    _currentOpponent = value;
+  /// @param value The new [PlayerRelation] whose game is currently being viewed by the user.
+  set focusedPlayerRelation(value) {
+    _focusedPlayerRelation = value;
     notifyListeners();
   }
 
@@ -182,15 +196,15 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// The [Opponents] (Friends) search result, if [Player] is searching.
-  Opponents? _friendsSearchResult;
-  Opponents? get friendsSearchResult => _friendsSearchResult;
+  /// The [PlayerRelationCollection] (Friends) search result, if [Player] is searching.
+  PlayerRelationCollection? _friendsSearchResult;
+  PlayerRelationCollection? get friendsSearchResult => _friendsSearchResult;
   set friendsSearchResult(value) {
     _friendsSearchResult = value;
     notifyListeners();
   }
 
-  /// Resets the _friendsSearchResult and the _friendsSearchQuery.
+  /// Resets the [_friendsSearchResult] and the [_friendsSearchQuery].
   void resetSearchResults() {
     _friendsQuery = null;
     _friendsSearchResult = null;
@@ -233,7 +247,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     // if is logged and wasn't logged in before.
     if (!_isLoggedIn && value) {
       route = Routes.home;
-      getFriends();
+      getPlayerRelations();
       getArchivedStatements();
       // start live query for friends.
       startLiveQueryForFriends();
@@ -317,17 +331,16 @@ class QuellenreiterAppState extends ChangeNotifier {
     isLoggedIn = false;
   }
 
-  Future<void> getFriends() async {
-    print("get friends called");
-    Opponents? opponents = await db.getFriends(player!);
+  Future<void> getPlayerRelations() async {
+    PlayerRelationCollection? _playerRelations = await db.getFriends(player!);
 
-    await _determineOpponentState(opponents);
+    await _determinePlayerRelationState(_playerRelations);
     return;
   }
 
-  void sendFriendRequest(Opponent e) {
+  void sendFriendRequest(PlayerRelation _playerRelation) {
     route = Routes.loading;
-    db.sendFriendRequest(this, e.userId, _sendFriendRequest);
+    db.sendFriendRequest(this, _playerRelation.opponent.id, _sendFriendRequest);
   }
 
   void _sendFriendRequest(bool success) {
@@ -341,82 +354,88 @@ class QuellenreiterAppState extends ChangeNotifier {
     await db.getUserData(player!);
   }
 
-  /// Callback for the getFriends method.
-  /// If successfull, the [Opponents] are safed.
+  /// TODO: remove and move to [PlayerRelationCollection]
+  /// Callback for the [getPlayerRelations] method.
+  /// If successfull, the [PlayerRelationCollection] are safed.
   /// They are split up into [player.friends], [opponentRequests],
   /// [pendingRequests] and [playableOpponents].
-  /// Also the [currentOpponent] is restored and updated.
+  /// Also the [focusedPlayerRelation] is restored and updated.
   ///
-  /// @param opponents The [Opponents] returned from the server.
-  Future<bool> _determineOpponentState(Opponents? opponents) async {
+  /// @param [_playerRelations] The [PlayerRelationCollection] returned from the server.
+  Future<bool> _determinePlayerRelationState(
+      PlayerRelationCollection? _playerRelations) async {
     // if no friends were returned
-    if (opponents == null) {
+    if (_playerRelations == null) {
       // if no friends are currently downloaded
-      if (player!.friends == null) {
-        player?.friends = Opponents.empty();
-      }
+      friendships ??= PlayerRelationCollection.empty();
+
       // else, just keep the downloaded friends.
       return false;
     }
     // set friends
-    var tempFriends = Opponents.empty()
-      ..opponents = opponents.opponents
-          .where((opponent) =>
-              opponent.acceptedByOther && opponent.acceptedByPlayer)
+    var tempFriends = PlayerRelationCollection.empty()
+      ..playerRelations = _playerRelations.playerRelations
+          .where((playerRelation) =>
+              playerRelation.acceptedByOther && playerRelation.acceptedByPlayer)
           .toList();
     // set received requests
-    var tempRequests = Opponents.empty()
-      ..opponents = opponents.opponents
-          .where((opponent) =>
-              opponent.acceptedByOther && !opponent.acceptedByPlayer)
+    var tempRequests = PlayerRelationCollection.empty()
+      ..playerRelations = _playerRelations.playerRelations
+          .where((playerRelation) =>
+              playerRelation.acceptedByOther &&
+              !playerRelation.acceptedByPlayer)
           .toList();
     // set pending requests
-    var tempPending = Opponents.empty()
-      ..opponents = opponents.opponents
-          .where((opponent) =>
-              !opponent.acceptedByOther && opponent.acceptedByPlayer)
+    var tempPending = PlayerRelationCollection.empty()
+      ..playerRelations = _playerRelations.playerRelations
+          .where((playerRelation) =>
+              !playerRelation.acceptedByOther &&
+              playerRelation.acceptedByPlayer)
           .toList();
 
-    var tempPlayableOpponents = Opponents.empty()
-      ..opponents = opponents.opponents
-          .where((opponent) =>
-              (opponent.openGame != null && opponent.openGame!.isPlayersTurn()))
+    var tempPlayableOpponents = PlayerRelationCollection.empty()
+      ..playerRelations = _playerRelations.playerRelations
+          .where((playerRelation) => (playerRelation.openGame != null &&
+              playerRelation.openGame!.isPlayersTurn()))
           .toList();
 
-    player?.friends = tempFriends;
+    friendships = tempFriends;
     // set new number of friends
-    if (player!.numFriends != tempFriends.opponents.length) {
-      player!.numFriends = tempFriends.opponents.length;
-      await db.updateUserData(player, (Player? p) {});
+    if (player!.numFriends != tempFriends.playerRelations.length) {
+      player!.numFriends = tempFriends.playerRelations.length;
+      await db.updateUserData(player!, (Player? p) {});
     }
-    player?.numFriends = tempFriends.opponents.length;
+    player?.numFriends = tempFriends.playerRelations.length;
     opponentRequests = tempRequests;
     pendingRequests = tempPending;
     playableOpponents = tempPlayableOpponents;
-    _restoreCurrentOpponent();
+    _restoreFocusedPlayerRelation();
     return true;
   }
 
-  /// Restore the [currentOpponent] in the [player]'s friends.
+  /// Restore the [focusedPlayerRelation] in the [player]'s friends.
   ///
-  /// Used after [Opponent]s are downloaded from the server.
-  /// Needed to restore the [currentOpponent] after a reload.
+  /// Used after [PlayerRelation]s are downloaded from the server.
+  /// Needed to restore the [focusedPlayerRelation] after a reload.
   /// If User is looking at Game Results or something alike.
-  void _restoreCurrentOpponent() {
+  void _restoreFocusedPlayerRelation() {
     // redo current opponent
-    if (currentOpponent != null) {
+    if (focusedPlayerRelation != null) {
       try {
-        var tempCurrentOpponent = player!.friends!.opponents.firstWhere(
-            (opponent) => opponent.userId == currentOpponent!.userId);
-        // Only update current opponent if they have played 3 quests so that the
+        var _tempFocusedPlayerRelation = friendships!.playerRelations
+            .firstWhere((playerRelation) =>
+                playerRelation.opponent.id ==
+                focusedPlayerRelation!.opponent.id);
+        // Only update [focusedPlayerRelation] if they have played 3 quests so that the
         // game is either finished or it is the player's turn now.
         // This prevents constant updating while the player is browsing the quests.
-        if (tempCurrentOpponent.openGame != null &&
-            tempCurrentOpponent.openGame!.opponent.amountAnswered % 3 == 0) {
-          currentOpponent = tempCurrentOpponent;
+        if (_tempFocusedPlayerRelation.openGame != null &&
+            _tempFocusedPlayerRelation.openGame!.opponent.amountAnswered % 3 ==
+                0) {
+          focusedPlayerRelation = _tempFocusedPlayerRelation;
         }
       } catch (e) {
-        currentOpponent = null;
+        focusedPlayerRelation = null;
       }
     }
   }
@@ -444,7 +463,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     player = null;
   }
 
-  void acceptRequest(Opponent opp) {
+  void acceptRequest(PlayerRelation opp) {
     route = Routes.loading;
     db.acceptFriendRequest(player!, opp, _acceptRequestCallback);
   }
@@ -453,21 +472,21 @@ class QuellenreiterAppState extends ChangeNotifier {
     if (!success) {
       route = Routes.home;
     } else {
-      await getFriends();
+      await getPlayerRelations();
       route = Routes.home;
     }
   }
 
   void searchFriends() {
     if (friendsQuery != null) {
-      if (player!.friends == null) {
+      if (friendships == null) {
         db.searchFriends(friendsQuery!, [player!.name], _searchFriendsCallback);
       }
       db.searchFriends(friendsQuery!, getNames(), _searchFriendsCallback);
     }
   }
 
-  void _searchFriendsCallback(Opponents? opp) {
+  void _searchFriendsCallback(PlayerRelationCollection? opp) {
     if (opp != null) {
       route = Routes.addFriends;
       friendsSearchResult = opp;
@@ -518,48 +537,52 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
   }
 
-  void startNewGame(Opponent opp, bool withTimer) async {
+  void startNewGame(PlayerRelation _playerRelation, bool withTimer) async {
     Routes tempRoute = route;
     route = Routes.loading;
     // update player and opponent here, to be updtodate with played statements
-    await getFriends();
-    //update opponent e
-    opp = player!.friends!.opponents
-        .firstWhere((opponent) => opponent.userId == opp.userId);
+    await getPlayerRelations();
+    //update [_playerRelation]
+    _playerRelation = friendships!.playerRelations.firstWhere(
+        (playerRelation) =>
+            playerRelation.opponent.id == _playerRelation.opponent.id);
     // if an open game exists, check if its new or delete it
-    if (opp.openGame != null &&
-        (!opp.openGame!.gameFinished() || !opp.openGame!.pointsAccessed)) {
+    if (_playerRelation.openGame != null &&
+        (!_playerRelation.openGame!.gameFinished() ||
+            !_playerRelation.openGame!.pointsAccessed)) {
       // the existing  game is not finished and the points are not accessed
       msg =
           "Ein offenes spiel existiert bereits. Beende es bevor du ein neues startest.";
       return;
-    } else if (opp.openGame != null) {
+    } else if (_playerRelation.openGame != null) {
       // delete the old game, it is finished
-      await db.deleteGame(opp.openGame!);
+      await db.deleteGame(_playerRelation.openGame!);
     }
     // delete old game
-    opp.openGame = Game.empty(withTimer, opp, player!);
-    opp.openGame!.statementIds = await db.getPlayableStatements(opp, player!);
-    if (opp.openGame!.statementIds == null) {
+    _playerRelation.openGame = Game.empty(withTimer, _playerRelation, player!);
+    _playerRelation.openGame!.statementIds =
+        await db.getPlayableStatements(_playerRelation, player!);
+    if (_playerRelation.openGame!.statementIds == null) {
       // reset game because not started
-      opp.openGame = null;
+      _playerRelation.openGame = null;
       route = tempRoute;
       db.error ??
-          "Spielstarten fehlgeschlagen. ${opp.emoji} ${opp.name} wurde nicht herausgefordert. Versuche es erneut.";
+          "Spielstarten fehlgeschlagen. ${_playerRelation.opponent.emoji} ${_playerRelation.opponent.name} wurde nicht herausgefordert. Versuche es erneut.";
       return;
     }
-    db.sendPushGameStartet(this, receiverId: opp.userId);
-    await getFriends();
+    db.sendPushGameStartet(this, receiverId: _playerRelation.opponent.id);
+    await getPlayerRelations();
     // print(e.openGame!.statementIds.toString());
     // if successfully fetched statements
     route = tempRoute;
-    msg = "${opp.emoji} ${opp.name} wurde herausgefordert";
+    msg =
+        "${_playerRelation.opponent.emoji} ${_playerRelation.opponent.name} wurde herausgefordert";
 
     return;
   }
 
   void getCurrentStatements() async {
-    Game currentGame = currentOpponent!.openGame!;
+    Game currentGame = focusedPlayerRelation!.openGame!;
     if (db.error != null) {
       return;
     }
@@ -568,7 +591,7 @@ class QuellenreiterAppState extends ChangeNotifier {
     return;
   }
 
-  /// Starts an open game with the current opponent.
+  /// Starts the open [Game] with the [focusedPlayerRelation].
   /// Only if it is the [Player]s turn.
   void playGame() async {
     HapticFeedback.mediumImpact();
@@ -578,7 +601,7 @@ class QuellenreiterAppState extends ChangeNotifier {
       route = Routes.loading;
     }
 
-    Game? currentGame = currentOpponent!.openGame;
+    Game? currentGame = focusedPlayerRelation!.openGame;
 
     if (currentGame != null && currentGame.isPlayersTurn()) {
       // download statements
@@ -608,11 +631,11 @@ class QuellenreiterAppState extends ChangeNotifier {
               content: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.error,
                     color: Colors.white,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   Text(
@@ -646,7 +669,7 @@ class QuellenreiterAppState extends ChangeNotifier {
               content: Row(
                 children: [
                   Icon(icon),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   Text(
@@ -668,7 +691,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   List<String> getNames() {
-    var ret = player!.friends!.getNames();
+    var ret = friendships!.getNames();
     ret.add(player!.name);
     ret.addAll(opponentRequests!.getNames());
     ret.addAll(pendingRequests!.getNames());

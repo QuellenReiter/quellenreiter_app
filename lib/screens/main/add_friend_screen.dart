@@ -139,7 +139,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                         ),
                       ),
                       if (widget.appState.friendsSearchResult != null &&
-                          widget.appState.friendsSearchResult!.opponents
+                          widget.appState.friendsSearchResult!.playerRelations
                               .isNotEmpty)
                         ScrollConfiguration(
                           behavior: ScrollConfiguration.of(context)
@@ -149,13 +149,15 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                             physics: const BouncingScrollPhysics(),
                             keyboardDismissBehavior:
                                 ScrollViewKeyboardDismissBehavior.onDrag,
-                            itemCount: widget
-                                .appState.friendsSearchResult!.opponents.length,
+                            itemCount: widget.appState.friendsSearchResult!
+                                .playerRelations.length,
                             itemBuilder: (BuildContext context, int index) {
                               return OpponentCard(
                                 appState: widget.appState,
-                                opponent: widget.appState.friendsSearchResult!
-                                    .opponents[index],
+                                playerRelation: widget
+                                    .appState
+                                    .friendsSearchResult!
+                                    .playerRelations[index],
                                 onTapped: widget.appState.sendFriendRequest,
                               );
                             },

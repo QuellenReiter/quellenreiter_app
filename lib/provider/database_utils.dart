@@ -4,7 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart' as parse;
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:quellenreiter_app/models/opponent.dart';
+import 'package:quellenreiter_app/models/player_relation.dart';
 import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/player.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
@@ -219,7 +219,7 @@ class DatabaseUtils {
   }
 
   /// Get all friend requests.
-  Future<Opponents?> getFriends(Player player) async {
+  Future<PlayerRelationCollection?> getFriends(Player player) async {
     // The session token.
     String? token = await safeStorage.read(key: "token");
     // If token is not null, check if it is valid.
@@ -250,7 +250,7 @@ class DatabaseUtils {
 
         return null;
       } else {
-        return Opponents.fromFriendshipMap(
+        return PlayerRelationCollection.fromFriendshipMap(
             queryResult.data?["friendships"], player);
       }
     }
@@ -261,7 +261,7 @@ class DatabaseUtils {
 
   /// Accept a friend request
   Future<void> acceptFriendRequest(
-      Player p, Opponent opp, Function acceptFriendCallback) async {
+      Player p, PlayerRelation opp, Function acceptFriendCallback) async {
     // The session token.
     String? token = await safeStorage.read(key: "token");
     // If token is not null, check if it is valid.
@@ -379,7 +379,7 @@ class DatabaseUtils {
   ///
   /// Can be anything except username and auth stuff.
   Future<void> updateUserData(
-      dynamic player, Function updateUserCallback) async {
+      Player player, Function updateUserCallback) async {
     // TODO: fetch player before updating so nothing is overwritten
     // The session token.
     String? token = await safeStorage.read(key: "token");
@@ -458,7 +458,7 @@ class DatabaseUtils {
 
   /// Update a [Friendship] in the Database by [String].
 
-  Future<bool> updateFriendship(Opponent opponent) async {
+  Future<bool> updateFriendship(PlayerRelation _playerRelation) async {
     // The session token.
     String? token = await safeStorage.read(key: "token");
     final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
@@ -475,7 +475,7 @@ class DatabaseUtils {
       MutationOptions(
         document: gql(Queries.updateFriendship()),
         variables: {
-          "friendship": opponent.toFriendshipMap(),
+          "friendship": _playerRelation.toFriendshipMap(),
         },
       ),
     );
@@ -510,7 +510,7 @@ class DatabaseUtils {
       MutationOptions(
         document: gql(Queries.updateGame()),
         variables: {
-          "openGame": appState.currentOpponent!.openGame!.toMap(),
+          "openGame": appState.focusedPlayerRelation!.openGame!.toMap(),
         },
       ),
     );
@@ -522,11 +522,11 @@ class DatabaseUtils {
       return false;
     }
     // if game is finished, update the player and the game.
-    if (appState.currentOpponent!.openGame!.gameFinished()) {
+    if (appState.focusedPlayerRelation!.openGame!.gameFinished()) {
       // update friendship
-      await updateFriendship(appState.currentOpponent!);
+      await updateFriendship(appState.focusedPlayerRelation!);
       // update player
-      await updateUserData(appState.player, (Player? p) {
+      await updateUserData(appState.player!, (Player? p) {
         if (p != null) {
           appState.player = p;
         } else {
@@ -539,7 +539,7 @@ class DatabaseUtils {
 
   /// Upload a [Game] into the Database by [String].
   ///
-  Future<Game?> uploadGame(Opponent opponent) async {
+  Future<Game?> uploadGame(PlayerRelation _playerRelation) async {
     // The session token.
     String? token = await safeStorage.read(key: "token");
     final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
@@ -552,7 +552,7 @@ class DatabaseUtils {
       cache: GraphQLCache(),
       link: httpLink,
     );
-    var temp = opponent.openGame!.toMap();
+    var temp = _playerRelation.openGame!.toMap();
     temp.remove("id");
 
     // ERROR HERE !!!!
@@ -572,7 +572,7 @@ class DatabaseUtils {
 
     Map<String, dynamic> openGame =
         mutationResult.data?["createOpenGame"][DbFields.friendshipOpenGame];
-    return Game.fromDbMap(openGame, opponent.playerIndex);
+    return Game.fromDbMap(openGame, _playerRelation.playerIndex);
   }
 
   /// Fetch all safed/liked [Statements] from a [Player].
@@ -613,7 +613,7 @@ class DatabaseUtils {
   }
 
   Future<void> sendFriendRequest(QuellenreiterAppState appState,
-      String opponentId, Function sendFriendRequestCallback) async {
+      String playerRelationId, Function sendFriendRequestCallback) async {
     // The session token.
     String? token = await safeStorage.read(key: "token");
     // If token is not null, check if it is valid.
@@ -634,8 +634,8 @@ class DatabaseUtils {
       // Update the friendship to be accepted by both players.
       var mutationResult = await client.mutate(
         MutationOptions(
-          document:
-              gql(Queries.sendFriendRequest(appState.player!.id, opponentId)),
+          document: gql(
+              Queries.sendFriendRequest(appState.player!.id, playerRelationId)),
         ),
       );
 
@@ -647,7 +647,7 @@ class DatabaseUtils {
         return;
       } else {
         sendFriendRequestCallback(true);
-        sendPushFriendInvitation(appState, receiverId: opponentId);
+        sendPushFriendInvitation(appState, receiverId: playerRelationId);
         return;
       }
     }
@@ -656,7 +656,7 @@ class DatabaseUtils {
     return;
   }
 
-  /// Search all Users to get new [Opponents].
+  /// Search all Users to get new [PlayerRelationCollection].
   Future<void> searchFriends(String friendsQuery, List<String> friendNames,
       Function searchFriendsCallback) async {
     // The session token.
@@ -691,7 +691,7 @@ class DatabaseUtils {
         return;
       } else {
         searchFriendsCallback(
-            Opponents.fromUserMap(queryResult.data?["users"]));
+            PlayerRelationCollection.fromUserMap(queryResult.data?["users"]));
         return;
       }
     }
@@ -701,7 +701,8 @@ class DatabaseUtils {
   }
 
   /// Function to find and load nine statements that have not been played by neither user.
-  Future<List<String>?> getPlayableStatements(Opponent opp, Player p) async {
+  Future<List<String>?> getPlayableStatements(
+      PlayerRelation _playerRelation, Player p) async {
     // setup statement db connection
     final HttpLink httpLinkStatementDB =
         HttpLink(statementDatabaseUrl, defaultHeaders: {
@@ -734,7 +735,7 @@ class DatabaseUtils {
     );
     // combine played statements
     List<String> playedStatemntsCombined = [
-      ...opp.playedStatementIds,
+      ..._playerRelation.opponent.playedStatements!,
       ...p.playedStatements!
     ];
     // get 50 possible ids
@@ -769,20 +770,20 @@ class DatabaseUtils {
     // random shufflung
     ids.shuffle();
     // add to played statements of p and e
-    opp.playedStatementIds.addAll(ids.take(9));
+    _playerRelation.opponent.playedStatements!.addAll(ids.take(9));
     p.playedStatements!.addAll(ids.take(9));
     //upload game game
-    opp.openGame!.statementIds = ids.take(9).toList();
-    opp.openGame = await uploadGame(opp);
-    if (opp.openGame == null) {
+    _playerRelation.openGame!.statementIds = ids.take(9).toList();
+    _playerRelation.openGame = await uploadGame(_playerRelation);
+    if (_playerRelation.openGame == null) {
       return null;
     }
     //update p and e in database
     await updateUserData(p, (Player? player) {});
 
-    await updateUserData(opp, (Opponent? player) {});
+    await updateUserData(_playerRelation.opponent, (Player? player) {});
     // update friendship
-    await updateFriendship(opp);
+    await updateFriendship(_playerRelation);
     // updateUser(player, updateUserCallback)
     return ids.take(9).toList();
   }
@@ -852,7 +853,7 @@ class DatabaseUtils {
     // Remeove the User and all open games and friendships.
     var mutationResult = await clientUserDB.mutate(
       MutationOptions(
-        document: gql(Queries.deleteUser(appState.player!)),
+        document: gql(Queries.deleteUser(appState)),
         variables: {
           "user": {
             "id": appState.player!.id,
@@ -926,7 +927,7 @@ class DatabaseUtils {
       if (appState.gameStarted) {
         return;
       }
-      appState.getFriends();
+      appState.getPlayerRelations();
     });
     //called if friendship is updated
     subscriptionFriends.on(parse.LiveQueryEvent.update,
@@ -935,7 +936,7 @@ class DatabaseUtils {
       if (appState.gameStarted) {
         return;
       }
-      appState.getFriends();
+      appState.getPlayerRelations();
     });
 
     // find games that changed
@@ -965,7 +966,7 @@ class DatabaseUtils {
       if (appState.gameStarted) {
         return;
       }
-      appState.getFriends();
+      appState.getPlayerRelations();
     });
     //called if game is updated
     subscriptionGame.on(parse.LiveQueryEvent.update,
@@ -975,7 +976,7 @@ class DatabaseUtils {
       if (appState.gameStarted) {
         return;
       }
-      appState.getFriends();
+      appState.getPlayerRelations();
     });
   }
 

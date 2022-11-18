@@ -33,7 +33,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
       widget.appState.showError(context);
     });
 
-    Game currentGame = widget.appState.currentOpponent!.openGame!;
+    Game currentGame = widget.appState.focusedPlayerRelation!.openGame!;
     _result = currentGame.getGameResult();
 
     _tempPlayerXp.value = currentGame.getPlayerXp();
@@ -532,12 +532,12 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
         return;
       }
 
-      Game currentGame = widget.appState.currentOpponent!.openGame!;
+      Game currentGame = widget.appState.focusedPlayerRelation!.openGame!;
       Player currentPlayer = widget.appState.player!;
 
       if (_result == GameResult.playerWon) {
         // player has won, update player
-        widget.appState.currentOpponent!.wonGamesPlayer += 1;
+        widget.appState.focusedPlayerRelation!.wonGamesPlayer += 1;
         currentPlayer.numGamesWon += 1;
       } else if (_result == GameResult.tied) {
         // Game endet in a tie, update player
@@ -555,7 +555,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
 
       // increase played games of friendship if playerIndex = 0
       if (currentGame.playerIndex == 0) {
-        widget.appState.currentOpponent!.numGamesPlayed += 1;
+        widget.appState.focusedPlayerRelation!.numGamesPlayed += 1;
       }
       // if the last player accessed the points
       if (currentGame.requestingPlayerIndex != currentGame.playerIndex) {
@@ -579,7 +579,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
               child: Center(child: CircularProgressIndicator()));
         });
 
-    await widget.appState.getFriends();
+    await widget.appState.getPlayerRelations();
 
     // update player
 

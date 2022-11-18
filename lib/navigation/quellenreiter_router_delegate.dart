@@ -151,8 +151,8 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
 
       case Routes.gameReadyToStart:
         // if no opponent, go to home
-        if (appState.currentOpponent == null ||
-            appState.currentOpponent!.openGame == null) {
+        if (appState.focusedPlayerRelation == null ||
+            appState.focusedPlayerRelation!.openGame == null) {
           return [
             home,
           ];
@@ -170,8 +170,8 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         ];
       case Routes.readyToStartOnlyLastScreen:
         // if no opponent, go to home
-        if (appState.currentOpponent == null ||
-            appState.currentOpponent!.openGame == null) {
+        if (appState.focusedPlayerRelation == null ||
+            appState.focusedPlayerRelation!.openGame == null) {
           return [
             home,
           ];
@@ -189,11 +189,11 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         ];
       case Routes.quest:
         // error
-        if (appState.currentOpponent == null) {
+        if (appState.focusedPlayerRelation == null) {
           return [home];
         }
         //  if it is the players turn
-        else if (appState.currentOpponent!.openGame!.isPlayersTurn()) {
+        else if (appState.focusedPlayerRelation!.openGame!.isPlayersTurn()) {
           return [
             MaterialPage(
               key: const ValueKey('QuestScreen'),

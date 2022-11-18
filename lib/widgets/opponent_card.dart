@@ -1,7 +1,7 @@
 import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:quellenreiter_app/models/opponent.dart';
+import 'package:quellenreiter_app/models/player_relation.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/start_game_container.dart';
 
@@ -14,33 +14,47 @@ import 'custom_bottom_sheet.dart';
 class OpponentCard extends StatelessWidget {
   const OpponentCard(
       {Key? key,
-      required this.opponent,
       required this.onTapped,
-      required this.appState})
+      required this.appState,
+      this.playerRelation,
+      this.player})
       : super(key: key);
 
-  /// The [Opponent] to be displayed.
-  final dynamic opponent;
+  /// The [PlayerRelation] to be displayed.
+  final PlayerRelation? playerRelation;
   final QuellenreiterAppState appState;
 
+  /// The [Player] to be displayed.
+  final Player? player;
+
   /// Stores if user tapped on this [OpponentCard] and notifies the navigation.
-  final ValueChanged<Opponent> onTapped;
+  final ValueChanged<PlayerRelation> onTapped;
   @override
   Widget build(BuildContext context) {
     dynamic onClickFunk;
     String label = "";
 
-    if (opponent.runtimeType == Player ||
-        (opponent.runtimeType == Opponent) &&
-            (opponent.acceptedByOther == false &&
-                opponent.acceptedByPlayer == true)) {
+    if (playerRelation == null && player == null) {
+      return const SizedBox.shrink();
+    }
+    // if we got a player or if this is a requested friendship.
+    if (player != null ||
+        (playerRelation != null &&
+            (playerRelation!.acceptedByOther == false &&
+                playerRelation!.acceptedByPlayer == true))) {
+      var _emoji =
+          player != null ? player!.emoji : playerRelation!.opponent.emoji;
+      var _name = player != null ? player!.name : playerRelation!.opponent.name;
+      var _level = player != null
+          ? player!.getLevel()
+          : playerRelation!.opponent.getLevel();
       return Padding(
         padding:
             const EdgeInsets.only(top: 10, bottom: 10, left: 30, right: 10),
         child: Material(
           borderRadius: const BorderRadius.all(Radius.circular(15)),
           elevation: 5,
-          color: opponent.runtimeType == Opponent
+          color: playerRelation != null
               ? DesignColors.lightPink
               : DesignColors.lightBlue,
 
@@ -69,7 +83,7 @@ class OpponentCard extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  opponent.name,
+                                  _name,
                                   style: Theme.of(context).textTheme.headline4,
                                 ),
                                 const Padding(
@@ -82,7 +96,7 @@ class OpponentCard extends StatelessWidget {
                                 ),
                                 Countup(
                                   begin: 0,
-                                  end: opponent.getLevel().toDouble(),
+                                  end: _level.toDouble(),
                                   duration: const Duration(milliseconds: 500),
                                   style: Theme.of(context)
                                       .textTheme
@@ -103,7 +117,7 @@ class OpponentCard extends StatelessWidget {
                           ? 1.06
                           : 1.1,
                   child: Text(
-                    opponent.emoji,
+                    _emoji,
                     style: Theme.of(context)
                         .textTheme
                         .headline1!
@@ -116,75 +130,81 @@ class OpponentCard extends StatelessWidget {
         ),
       );
     }
-    if (opponent.openGame == null) {
-      if (opponent.acceptedByPlayer && opponent.acceptedByOther) {
+
+    if (playerRelation!.openGame == null) {
+      if (playerRelation!.acceptedByPlayer && playerRelation!.acceptedByOther) {
         label = "Spiel starten";
         onClickFunk = () => CustomBottomSheet.showCustomBottomSheet(
               context: context,
               scrollable: false,
-              child: StartGameContainer(appState: appState, opponent: opponent),
+              child: StartGameContainer(
+                  appState: appState, playerRelation: playerRelation!),
             );
-      } else if (!opponent.acceptedByOther && !opponent.acceptedByPlayer) {
-        onClickFunk = () => onTapped(opponent);
+      } else if (!playerRelation!.acceptedByOther &&
+          !playerRelation!.acceptedByPlayer) {
+        onClickFunk = () => onTapped(playerRelation!);
         label = "Anfrage senden";
-      } else if (opponent.acceptedByOther && !opponent.acceptedByPlayer) {
+      } else if (playerRelation!.acceptedByOther &&
+          !playerRelation!.acceptedByPlayer) {
         onClickFunk = () {
           HapticFeedback.mediumImpact();
 
-          appState.acceptRequest(opponent);
+          appState.acceptRequest(playerRelation!);
         };
         label = "Anfrage annehmen";
       }
     }
     // possible to start game and to view old results.
-    else if (opponent.openGame!.pointsAccessed) {
+    else if (playerRelation!.openGame!.pointsAccessed) {
       label = "Ergebnisse ansehen oder neues Spiel";
       onClickFunk = () {
         HapticFeedback.mediumImpact();
-        appState.currentOpponent = opponent;
+        appState.focusedPlayerRelation = playerRelation;
         appState.route = Routes.gameReadyToStart;
       };
     }
     // show results and continue playing button
-    else if (opponent.openGame!.isPlayersTurn() &&
-        opponent.openGame!.player.answers.isNotEmpty) {
+    else if (playerRelation!.openGame!.isPlayersTurn() &&
+        playerRelation!.openGame!.player.answers.isNotEmpty) {
       onClickFunk = () {
         HapticFeedback.mediumImpact();
 
-        appState.currentOpponent = opponent;
+        appState.focusedPlayerRelation = playerRelation;
         appState.route = Routes.gameReadyToStart;
       };
       label = "Du bist dran";
     }
     // game starts immediately, because there are no results yet
-    else if (opponent.openGame!.isPlayersTurn() &&
-        opponent.openGame!.player.answers.isEmpty) {
+    else if (playerRelation!.openGame!.isPlayersTurn() &&
+        playerRelation!.openGame!.player.answers.isEmpty) {
       onClickFunk = () {
         HapticFeedback.mediumImpact();
 
-        appState.currentOpponent = opponent;
+        appState.focusedPlayerRelation = playerRelation;
         appState.playGame();
       };
       label = "Du bist dran";
     }
     // player can access points, other player has already accessed them
-    else if (opponent.openGame!.gameFinished() &&
-        opponent.openGame!.requestingPlayerIndex != opponent.openGame!.playerIndex) {
+    else if (playerRelation!.openGame!.gameFinished() &&
+        playerRelation!.openGame!.requestingPlayerIndex !=
+            playerRelation!.openGame!.playerIndex) {
       onClickFunk = () {
         HapticFeedback.mediumImpact();
 
-        appState.currentOpponent = opponent;
+        appState.focusedPlayerRelation = playerRelation;
         appState.route = Routes.gameFinishedScreen;
       };
       label = "Punkte abholen";
     }
     // player has already accessed points and can view results
-    else if (opponent.openGame!.gameFinished() &&
-        opponent.openGame!.requestingPlayerIndex == opponent.openGame!.playerIndex) {
+    else if (playerRelation!.openGame!.gameFinished() &&
+        playerRelation!.openGame!.requestingPlayerIndex ==
+            playerRelation!.openGame!.playerIndex) {
       onClickFunk = () {
         HapticFeedback.mediumImpact();
 
-        appState.currentOpponent = opponent;
+        appState.focusedPlayerRelation = playerRelation;
         appState.route = Routes.gameReadyToStart;
       };
       label = "Ergebnisse ansehen";
@@ -194,10 +214,10 @@ class OpponentCard extends StatelessWidget {
       onClickFunk = () {
         HapticFeedback.mediumImpact();
 
-        appState.currentOpponent = opponent;
+        appState.focusedPlayerRelation = playerRelation;
         appState.route = Routes.gameReadyToStart;
       };
-      label = "${opponent.name} spielt...";
+      label = "${playerRelation!.opponent.name} spielt...";
     }
 
     return Padding(
@@ -244,7 +264,7 @@ class OpponentCard extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    opponent.name,
+                                    playerRelation!.opponent.name,
                                     style:
                                         Theme.of(context).textTheme.headline4,
                                   ),
@@ -258,7 +278,9 @@ class OpponentCard extends StatelessWidget {
                                   ),
                                   Countup(
                                     begin: 0,
-                                    end: opponent.getLevel().toDouble(),
+                                    end: playerRelation!.opponent
+                                        .getLevel()
+                                        .toDouble(),
                                     duration: const Duration(milliseconds: 500),
                                     style: Theme.of(context)
                                         .textTheme
@@ -302,7 +324,7 @@ class OpponentCard extends StatelessWidget {
                     const Icon(Icons.monetization_on_rounded,
                         color: DesignColors.pink),
                     Text(
-                      "+${opponent.openGame!.getPlayerXp()}",
+                      "+${playerRelation!.openGame!.getPlayerXp()}",
                       style: Theme.of(context)
                           .textTheme
                           .headline5!
@@ -372,7 +394,7 @@ class OpponentCard extends StatelessWidget {
                   ? 1.06
                   : 1.1,
               child: Text(
-                opponent.emoji,
+                playerRelation!.opponent.emoji,
                 style: Theme.of(context)
                     .textTheme
                     .headline1!

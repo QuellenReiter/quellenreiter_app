@@ -1,5 +1,6 @@
-import 'package:quellenreiter_app/models/opponent.dart';
+import 'package:quellenreiter_app/models/player_relation.dart';
 import 'package:quellenreiter_app/models/game.dart';
+import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 
 import '../constants/constants.dart';
 import '../models/fact.dart';
@@ -509,6 +510,17 @@ query GetOpenFriendRequests{
           ${DbFields.userFalseCorrectAnswers}
           ${DbFields.userTrueFakeAnswers}
           ${DbFields.userFalseFakeAnswers}
+          ${DbFields.userNumFriends}
+          ${DbFields.userPlayedStatements}{
+            ... on Element{
+              value
+            }
+          }
+          ${DbFields.userSafedStatements}{
+            ... on Element{
+              value
+            }
+          }
         }
       }
     }
@@ -520,20 +532,20 @@ query GetOpenFriendRequests{
   }
 
   /// Returns the graphQL query to send a friend requests.
-  static String sendFriendRequest(String playerId, String opponentId) {
+  static String sendFriendRequest(String _playerId, String _playerRelationId) {
     String ret = '''
 mutation sendFriendRequest {
   createFriendship(
     input: {
       fields:{
         ${DbFields.friendshipPlayer1}:{
-          link:"$playerId"
+          link:"$_playerId"
         }
-        ${DbFields.friendshipPlayer1Id}: "$playerId"
+        ${DbFields.friendshipPlayer1Id}: "$_playerId"
         ${DbFields.friendshipPlayer2}:{
-          link: "$opponentId"
+          link: "$_playerRelationId"
         }
-        ${DbFields.friendshipPlayer2Id}: "$opponentId"
+        ${DbFields.friendshipPlayer2Id}: "$_playerRelationId"
         ${DbFields.friendshipApproved1}: true
         ${DbFields.friendshipApproved2}: false
       }
@@ -808,15 +820,16 @@ mutation removeGame(\$game:DeleteOpenGameInput!){
     return ret;
   }
 
-  static String deleteUser(Player player) {
+  static String deleteUser(QuellenreiterAppState appState) {
     String deleteOpenGames = "";
     String deleteFriendships = "";
-    if (player.friends != null) {
-      for (Opponent opp in player.friends!.opponents) {
+    if (appState.friendships != null) {
+      for (PlayerRelation playerRelation
+          in appState.friendships!.playerRelations) {
         deleteFriendships += '''
-${opp.name}Friendship: deleteFriendship(
+${playerRelation.opponent.name}Friendship: deleteFriendship(
   input: {
-    id: "${opp.friendshipId}"
+    id: "${playerRelation.friendshipId}"
   }
 ){
   friendship{
@@ -824,11 +837,11 @@ ${opp.name}Friendship: deleteFriendship(
   }
 }
 ''';
-        if (opp.openGame != null) {
+        if (playerRelation.openGame != null) {
           deleteOpenGames += '''
-${opp.name}Game: deleteOpenGame(
+${playerRelation.opponent.name}Game: deleteOpenGame(
   input: {
-    id: "${opp.openGame!.id}"
+    id: "${playerRelation.openGame!.id}"
   }
 ){
   openGame{
@@ -846,7 +859,7 @@ mutation removeUser(\$user:DeleteUserInput!){
   $deleteFriendships
   deleteUserData(
     input:{
-      id: "${player.dataId}"
+      id: "${appState.player!.dataId}"
     }
   ){
     userData{

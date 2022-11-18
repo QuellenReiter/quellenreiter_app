@@ -2,7 +2,7 @@ import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/player.dart';
 import 'package:quellenreiter_app/models/statement.dart';
 
-import 'opponent.dart';
+import 'player_relation.dart';
 
 class GamePlayer {
   late String? id;
@@ -48,9 +48,9 @@ class Game {
     bool isFirstPlayer = playerIndex == 0;
     //object Id
     id = openGame["objectId"];
-    // player game object
+    // player [GamePlayer] object
     player = GamePlayer.fromDbMap(openGame, isFirstPlayer);
-    // opponent game object
+    // opponent [GamePlayer] object
     opponent = GamePlayer.fromDbMap(openGame, !isFirstPlayer);
 
     statementIds = openGame[DbFields.gameStatementIds]
@@ -74,7 +74,7 @@ class Game {
       this.statements,
       this.pointsAccessed);
 
-  Game.empty(bool timer, Opponent e, Player p) {
+  Game.empty(bool timer, PlayerRelation e, Player p) {
     // where to get statement ids? download all possible and pickRandom on device.
     // not downloading all but only 50 could be the bin approach wanted.
     // sort by object ID should be date and category independent.
@@ -89,7 +89,7 @@ class Game {
     playerIndex = 0;
     pointsAccessed = false;
     player = GamePlayer(p.id, []);
-    opponent = GamePlayer(e.userId, []);
+    opponent = GamePlayer(e.opponent.id, []);
   }
 
   /// Returns true if the player is the next one to play.
