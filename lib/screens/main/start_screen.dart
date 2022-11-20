@@ -45,9 +45,8 @@ class _StartScreenState extends State<StartScreen> {
     // create finished games
     List<Widget> finishedGames = [];
 
-    List<PlayerRelation> playerRelations =
-        widget.appState.playerRelations.friends;
-    List<bool> isFinished = playerRelations
+    List<PlayerRelation> friends = widget.appState.playerRelations.friends;
+    List<bool> isFinished = friends
         .map((e) => // TODO write a member function for this
             e.openGame != null &&
             e.openGame!.gameFinished() &&
@@ -76,14 +75,14 @@ class _StartScreenState extends State<StartScreen> {
           ),
         ),
       );
-      for (var i = 0; i < playerRelations.length; i++) {
+      for (var i = 0; i < friends.length; i++) {
         if (!isFinished[i]) {
           continue;
         }
 
         finishedGames.add(OpponentCard(
           appState: widget.appState,
-          playerRelation: playerRelations[i],
+          playerRelation: friends[i],
           onTapped: (_) => {},
         ));
       }
@@ -126,10 +125,10 @@ class _StartScreenState extends State<StartScreen> {
 
     // create "friendrequest" widgets
     List<Widget> friendRequestWidgets = [];
-    List<PlayerRelation> openFriendRequests =
-        widget.appState.playerRelations.incoming;
+    List<PlayerRelation> receivedFriendRequests =
+        widget.appState.playerRelations.received;
     // if any open game is finished and points are not accessed yet.
-    if (openFriendRequests.isNotEmpty) {
+    if (receivedFriendRequests.isNotEmpty) {
       // add the heading
       friendRequestWidgets.add(
         Padding(
@@ -150,7 +149,7 @@ class _StartScreenState extends State<StartScreen> {
           ),
         ),
       );
-      for (PlayerRelation pr in openFriendRequests) {
+      for (PlayerRelation pr in receivedFriendRequests) {
         friendRequestWidgets.add(OpponentCard(
           appState: widget.appState,
           playerRelation: pr,

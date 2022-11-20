@@ -5,7 +5,7 @@ import 'game.dart';
 import 'player.dart';
 
 enum RelationState {
-  mutual(acceptedByPlayer: true, acceptedByOther: true),
+  friend(acceptedByPlayer: true, acceptedByOther: true),
   sent(acceptedByPlayer: true, acceptedByOther: false),
   received(acceptedByPlayer: false, acceptedByOther: true),
   random(acceptedByPlayer: false, acceptedByOther: false);
@@ -25,7 +25,7 @@ enum RelationState {
         : map[DbFields.friendshipApproved1];
     if (player) {
       if (other) {
-        return RelationState.mutual;
+        return RelationState.friend;
       }
       return RelationState.sent;
     }
@@ -198,14 +198,14 @@ class PlayerRelationCollection {
   }
 
   List<PlayerRelation> get friends {
-    return filterRelationState(RelationState.mutual);
+    return filterRelationState(RelationState.friend);
   }
 
-  List<PlayerRelation> get outgoing {
+  List<PlayerRelation> get sent {
     return filterRelationState(RelationState.sent);
   }
 
-  List<PlayerRelation> get incoming {
+  List<PlayerRelation> get received {
     return filterRelationState(RelationState.received);
   }
 

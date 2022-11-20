@@ -25,13 +25,13 @@ class _FriendsScreenState extends State<FriendsScreen> {
     // if requests exist
 
     // list of sent and pending requests
-    List<Widget> pendingWidgets = [];
+    List<Widget> sentRequestsWidgets = [];
 
-    List<PlayerRelation> pendingRelations =
-        widget.appState.playerRelations.outgoing;
+    List<PlayerRelation> sentFriendRequests =
+        widget.appState.playerRelations.sent;
 
-    if (pendingRelations.isNotEmpty) {
-      pendingWidgets.add(
+    if (sentFriendRequests.isNotEmpty) {
+      sentRequestsWidgets.add(
         const Divider(
           indent: 15,
           endIndent: 15,
@@ -39,7 +39,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
         ),
       );
       // add the heading
-      pendingWidgets.add(
+      sentRequestsWidgets.add(
         Padding(
           padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
           child: Row(
@@ -58,8 +58,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
           ),
         ),
       );
-      for (PlayerRelation opp in pendingRelations) {
-        pendingWidgets.add(OpponentCard(
+      for (PlayerRelation opp in sentFriendRequests) {
+        sentRequestsWidgets.add(OpponentCard(
           appState: widget.appState,
           playerRelation: opp,
           onTapped: (opponent) {},
@@ -210,7 +210,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                         const SizedBox(
                           height: 50,
                         ),
-                        ...pendingWidgets
+                        ...sentRequestsWidgets
                       ],
                     )
                   else
@@ -228,7 +228,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                           ),
                           children: [
                             ...opponentCards,
-                            ...pendingWidgets,
+                            ...sentRequestsWidgets,
                           ],
                         ),
                       ),

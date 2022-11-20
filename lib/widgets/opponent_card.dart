@@ -131,7 +131,7 @@ class OpponentCard extends StatelessWidget {
     }
 
     if (playerRelation!.openGame == null) {
-      if (playerRelation!.relationState == RelationState.mutual) {
+      if (playerRelation!.relationState == RelationState.friend) {
         label = "Spiel starten";
         onClickFunk = () => CustomBottomSheet.showCustomBottomSheet(
               context: context,

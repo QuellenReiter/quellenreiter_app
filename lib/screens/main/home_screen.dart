@@ -140,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     }
 
     List<PlayerRelation> openRequests =
-        widget.appState.playerRelations.incoming;
+        widget.appState.playerRelations.received;
 
     Positioned numberOfRequests = Positioned(
       right: 0,
