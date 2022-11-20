@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:quellenreiter_app/consonents.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/custom_bottom_sheet.dart';
@@ -185,7 +184,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                   if (emojiController.text.isNotEmpty)
                                     ElevatedButton(
                                       onPressed: nextPage,
-                                      child: const Icon(Icons.arrow_forward_ios),
+                                      child:
+                                          const Icon(Icons.arrow_forward_ios),
                                     ),
                                   const SizedBox(height: 50),
                                   SizedBox(
@@ -404,8 +404,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                             TextButton(
                                               onPressed: () async {
                                                 HapticFeedback.mediumImpact();
-                                                if (!await launch(
-                                                    datenschutzUrl)) {
+                                                if (!await launchUrl(
+                                                    PublicURLs.privacyPolicy)) {
                                                   throw 'could not launch';
                                                 }
                                               },

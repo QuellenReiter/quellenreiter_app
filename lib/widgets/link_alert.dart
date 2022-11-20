@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/widgets/custom_bottom_sheet.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../constants/constants.dart';
 
@@ -61,7 +61,7 @@ class LinkAlert extends StatelessWidget {
                             MaterialStateProperty.all<Color>(DesignColors.pink),
                       ),
                       onPressed: () async {
-                        if (!await launch(link)) {
+                        if (!await launchUrlString(link)) {
                           throw 'could not launch';
                         }
                         Navigator.of(context).pop(context);
@@ -76,7 +76,7 @@ class LinkAlert extends StatelessWidget {
               )
           : () async {
               HapticFeedback.mediumImpact();
-              if (!await launch(link)) {
+              if (!await launchUrlString(link)) {
                 throw 'could not launch';
               }
             },

@@ -200,7 +200,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                   child: FloatingActionButton.extended(
                     onPressed: () => {
                       Share.share(
-                          'Quiz-Duell nur mit "Fake News":\nhttps://quellenreiter.app',
+                          'Quiz-Duell nur mit "Fake News":\n ${PublicURLs.quellenreiterWebsite}',
                           subject: "Teile die app mit deinen Freund:innen"),
                     },
                     icon: const Icon(Icons.share),

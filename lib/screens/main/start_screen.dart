@@ -332,7 +332,7 @@ class _StartScreenState extends State<StartScreen> {
                             onPressed: () {
                               HapticFeedback.mediumImpact();
                               Share.share(
-                                  'Quiz-Duell nur mit "Fake News":\nhttps://quellenreiter.app',
+                                  'Quiz-Duell nur mit "Fake News":\n${PublicURLs.quellenreiterWebsite}',
                                   subject:
                                       "Teile die app mit deinen Freund:innen");
                             },

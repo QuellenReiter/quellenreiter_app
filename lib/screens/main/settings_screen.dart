@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:quellenreiter_app/consonents.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/utilities/utilities.dart';
 import 'package:quellenreiter_app/widgets/custom_bottom_sheet.dart';
@@ -453,8 +452,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         TextButton(
                                           onPressed: () async {
                                             HapticFeedback.mediumImpact();
-                                            if (!await launch(
-                                                "https://quellenreiter.app")) {
+                                            if (!await launchUrl(PublicURLs
+                                                .quellenreiterWebsite)) {
                                               throw 'could not launch';
                                             }
                                           },
@@ -471,8 +470,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         TextButton(
                                           onPressed: () async {
                                             HapticFeedback.mediumImpact();
-                                            if (!await launch(
-                                                "https://forms.gle/qwf8jg3fWt3tVsQi8")) {
+                                            if (!await launchUrl(
+                                                PublicURLs.supportUrl)) {
                                               throw 'could not launch';
                                             }
                                           },
@@ -489,8 +488,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         TextButton(
                                           onPressed: () async {
                                             HapticFeedback.mediumImpact();
-                                            if (!await launch(
-                                                "https://quellenreiter.app/Impressum/")) {
+                                            if (!await launchUrl(
+                                                PublicURLs.impressum)) {
                                               throw 'could not launch';
                                             }
                                           },
@@ -507,7 +506,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         TextButton(
                                           onPressed: () async {
                                             HapticFeedback.mediumImpact();
-                                            if (!await launch(datenschutzUrl)) {
+                                            if (!await launchUrl(
+                                                PublicURLs.privacyPolicy)) {
                                               throw 'could not launch';
                                             }
                                           },
