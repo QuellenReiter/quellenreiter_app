@@ -25,10 +25,13 @@ class _FriendsScreenState extends State<FriendsScreen> {
     // if requests exist
 
     // list of sent and pending requests
-    List<Widget> pendingRequests = [];
-    if (widget.appState.pendingRequests != null &&
-        widget.appState.pendingRequests!.playerRelations.isNotEmpty) {
-      pendingRequests.add(
+    List<Widget> sentRequestsWidgets = [];
+
+    List<PlayerRelation> sentFriendRequests =
+        widget.appState.playerRelations.sent;
+
+    if (sentFriendRequests.isNotEmpty) {
+      sentRequestsWidgets.add(
         const Divider(
           indent: 15,
           endIndent: 15,
@@ -36,7 +39,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
         ),
       );
       // add the heading
-      pendingRequests.add(
+      sentRequestsWidgets.add(
         Padding(
           padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
           child: Row(
@@ -55,18 +58,18 @@ class _FriendsScreenState extends State<FriendsScreen> {
           ),
         ),
       );
-      for (PlayerRelation opp
-          in widget.appState.pendingRequests!.playerRelations) {
-        pendingRequests.add(OpponentCard(
+      for (PlayerRelation opp in sentFriendRequests) {
+        sentRequestsWidgets.add(OpponentCard(
           appState: widget.appState,
           playerRelation: opp,
           onTapped: (opponent) {},
         ));
       }
     }
+
+    List<PlayerRelation> friends = widget.appState.playerRelations.friends;
     // add all current friends
-    if (widget.appState.friendships != null &&
-        widget.appState.friendships!.playerRelations.isNotEmpty) {
+    if (friends.isNotEmpty) {
       opponentCards.addAll([
         Padding(
           padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
@@ -88,7 +91,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
       ]);
       int i = 1;
       bool playerAdded = false;
-      for (PlayerRelation opp in widget.appState.friendships!.playerRelations
+      for (PlayerRelation opp in friends
         ..sort((a, b) => b.getXp().compareTo(a.getXp()))) {
         if (!playerAdded && widget.appState.player!.getXp() > opp.getXp()) {
           opponentCards.add(
@@ -168,10 +171,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 physics: const AlwaysScrollableScrollPhysics(
                     parent: BouncingScrollPhysics()),
                 children: [
-                  if (widget.appState.friendships == null)
-                    const Center(child: CircularProgressIndicator())
                   // display button if user has no friends yet.
-                  else if (widget.appState.friendships!.playerRelations.isEmpty)
+                  if (friends.isEmpty)
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -209,10 +210,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                         const SizedBox(
                           height: 50,
                         ),
-                        if (widget.appState.pendingRequests != null &&
-                            widget.appState.pendingRequests!.playerRelations
-                                .isNotEmpty)
-                          ...pendingRequests
+                        ...sentRequestsWidgets
                       ],
                     )
                   else
@@ -230,7 +228,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                           ),
                           children: [
                             ...opponentCards,
-                            ...pendingRequests,
+                            ...sentRequestsWidgets,
                           ],
                         ),
                       ),

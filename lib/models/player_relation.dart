@@ -4,17 +4,51 @@ import '../constants/constants.dart';
 import 'game.dart';
 import 'player.dart';
 
+enum RelationState {
+  friend(acceptedByPlayer: true, acceptedByOther: true),
+  sent(acceptedByPlayer: true, acceptedByOther: false),
+  received(acceptedByPlayer: false, acceptedByOther: true),
+  random(acceptedByPlayer: false, acceptedByOther: false);
+
+  final bool acceptedByPlayer;
+  final bool acceptedByOther;
+
+  const RelationState(
+      {required this.acceptedByPlayer, required this.acceptedByOther});
+
+  factory RelationState.fromDbMap(Map<String, dynamic> map, bool isFirst) {
+    bool player = isFirst
+        ? map[DbFields.friendshipApproved1]
+        : map[DbFields.friendshipApproved2];
+    bool other = isFirst
+        ? map[DbFields.friendshipApproved2]
+        : map[DbFields.friendshipApproved1];
+    if (player) {
+      if (other) {
+        return RelationState.friend;
+      }
+      return RelationState.sent;
+    }
+    if (other) {
+      return RelationState.received;
+    }
+    return RelationState.random;
+  }
+}
+
 class PlayerRelation {
   late int playerIndex;
   late String friendshipId;
-  // `stats
+
+  // stats
   late int numGamesPlayed;
   late int wonGamesPlayer;
   late int wonGamesOther;
+
   // State of friendship
-  late bool acceptedByOther;
-  late bool acceptedByPlayer;
+  late RelationState relationState;
   late Game? openGame;
+
   // members
   late Player opponent;
   late Player player;
@@ -32,16 +66,11 @@ class PlayerRelation {
 
     player = p;
     playerIndex = _playerIsFirstInDB ? 0 : 1;
+    relationState = RelationState.fromDbMap(map, _playerIsFirstInDB);
 
     opponent = Player.fromMap(_playerIsFirstInDB
         ? map[DbFields.friendshipPlayer2]
         : map[DbFields.friendshipPlayer1]);
-    acceptedByOther = _playerIsFirstInDB
-        ? map[DbFields.friendshipApproved2]
-        : map[DbFields.friendshipApproved1];
-    acceptedByPlayer = _playerIsFirstInDB
-        ? map[DbFields.friendshipApproved1]
-        : map[DbFields.friendshipApproved2];
     wonGamesOther = _playerIsFirstInDB
         ? map[DbFields.friendshipWonGamesPlayer2]
         : map[DbFields.friendshipWonGamesPlayer1];
@@ -60,13 +89,13 @@ class PlayerRelation {
       openGame = null;
     }
   }
+
   // called when friends are searched and no actual friendship exists yet.
   PlayerRelation.fromUserMap(Map<String, dynamic>? map) {
     opponent = Player.fromMap(map);
     wonGamesOther = 0;
     wonGamesPlayer = 0;
-    acceptedByOther = false;
-    acceptedByPlayer = false;
+    relationState = RelationState.random;
     numGamesPlayed = 0;
     friendshipId = "";
     openGame = null;
@@ -82,8 +111,8 @@ class PlayerRelation {
         "fields": {
           DbFields.friendshipPlayer1Id: openGame!.player.id,
           DbFields.friendshipPlayer2Id: opponent.id,
-          DbFields.friendshipApproved1: acceptedByPlayer,
-          DbFields.friendshipApproved2: acceptedByOther,
+          DbFields.friendshipApproved1: relationState.acceptedByPlayer,
+          DbFields.friendshipApproved2: relationState.acceptedByOther,
           DbFields.friendshipWonGamesPlayer1: wonGamesPlayer,
           DbFields.friendshipWonGamesPlayer2: wonGamesOther,
           DbFields.friendshipNumGamesPlayed: numGamesPlayed,
@@ -98,8 +127,8 @@ class PlayerRelation {
         "fields": {
           DbFields.friendshipPlayer1Id: opponent.id,
           DbFields.friendshipPlayer2Id: openGame!.player.id,
-          DbFields.friendshipApproved2: acceptedByPlayer,
-          DbFields.friendshipApproved1: acceptedByOther,
+          DbFields.friendshipApproved2: relationState.acceptedByPlayer,
+          DbFields.friendshipApproved1: relationState.acceptedByOther,
           DbFields.friendshipWonGamesPlayer2: wonGamesPlayer,
           DbFields.friendshipWonGamesPlayer1: wonGamesOther,
           DbFields.friendshipNumGamesPlayed: numGamesPlayed,
@@ -160,5 +189,29 @@ class PlayerRelationCollection {
       ret.add(pr.opponent.name);
     }
     return ret;
+  }
+
+  List<PlayerRelation> filterRelationState(RelationState state) {
+    List<PlayerRelation> filteredList =
+        playerRelations.where((pr) => pr.relationState == state).toList();
+    return filteredList;
+  }
+
+  List<PlayerRelation> get friends {
+    return filterRelationState(RelationState.friend);
+  }
+
+  List<PlayerRelation> get sent {
+    return filterRelationState(RelationState.sent);
+  }
+
+  List<PlayerRelation> get received {
+    return filterRelationState(RelationState.received);
+  }
+
+  List<PlayerRelation> get playable {
+    return playerRelations
+        .where((pr) => (pr.openGame != null && pr.openGame!.isPlayersTurn()))
+        .toList();
   }
 }

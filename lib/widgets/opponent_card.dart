@@ -40,8 +40,7 @@ class OpponentCard extends StatelessWidget {
     // if we got a player or if this is a requested friendship.
     if (player != null ||
         (playerRelation != null &&
-            (playerRelation!.acceptedByOther == false &&
-                playerRelation!.acceptedByPlayer == true))) {
+            (playerRelation!.relationState == RelationState.sent))) {
       var _emoji =
           player != null ? player!.emoji : playerRelation!.opponent.emoji;
       var _name = player != null ? player!.name : playerRelation!.opponent.name;
@@ -132,7 +131,7 @@ class OpponentCard extends StatelessWidget {
     }
 
     if (playerRelation!.openGame == null) {
-      if (playerRelation!.acceptedByPlayer && playerRelation!.acceptedByOther) {
+      if (playerRelation!.relationState == RelationState.friend) {
         label = "Spiel starten";
         onClickFunk = () => CustomBottomSheet.showCustomBottomSheet(
               context: context,
@@ -140,12 +139,10 @@ class OpponentCard extends StatelessWidget {
               child: StartGameContainer(
                   appState: appState, playerRelation: playerRelation!),
             );
-      } else if (!playerRelation!.acceptedByOther &&
-          !playerRelation!.acceptedByPlayer) {
+      } else if (playerRelation!.relationState == RelationState.random) {
         onClickFunk = () => onTapped(playerRelation!);
         label = "Anfrage senden";
-      } else if (playerRelation!.acceptedByOther &&
-          !playerRelation!.acceptedByPlayer) {
+      } else if (playerRelation!.relationState == RelationState.received) {
         onClickFunk = () {
           HapticFeedback.mediumImpact();
 
