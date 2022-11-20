@@ -14,11 +14,11 @@ import 'package:quellenreiter_app/widgets/results_app_bar.dart';
 import '../../widgets/statement_card.dart';
 
 class ReadyToStartScreen extends StatefulWidget {
-  ReadyToStartScreen(
+  const ReadyToStartScreen(
       {Key? key, required this.appState, this.showOnlyLast = true})
       : super(key: key);
   final QuellenreiterAppState appState;
-  bool showOnlyLast;
+  final bool showOnlyLast;
   @override
   State<ReadyToStartScreen> createState() => _ReadyToStartScreenState();
 }

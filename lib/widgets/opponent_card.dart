@@ -7,7 +7,6 @@ import 'package:quellenreiter_app/widgets/start_game_container.dart';
 
 import '../constants/constants.dart';
 import '../models/player.dart';
-import '../models/statement.dart';
 import 'custom_bottom_sheet.dart';
 
 /// Brief information display of a single [Player].
@@ -62,8 +61,8 @@ class OpponentCard extends StatelessWidget {
             clipBehavior: Clip.none,
             children: [
               Container(
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(15)),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
                 ),
                 padding: const EdgeInsets.only(
                     top: 10, bottom: 10, left: 50, right: 20),

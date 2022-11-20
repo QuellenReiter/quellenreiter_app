@@ -19,10 +19,9 @@ class GameFinishedScreen extends StatefulWidget {
 }
 
 class _GameFinishedScreenState extends State<GameFinishedScreen> {
-  ValueNotifier<int> _tempPlayerXp = ValueNotifier(0);
+  final ValueNotifier<int> _tempPlayerXp = ValueNotifier(0);
   int _countupStartValue = 0;
   late final int _newLevel;
-  bool _updatesDone = false;
   late GameResult _result;
   bool _pointButtonTapped = false;
 
@@ -85,13 +84,13 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                             // Set background color and rounded bottom corners.
                             decoration: BoxDecoration(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(15)),
+                                  const BorderRadius.all(Radius.circular(15)),
                               color: DesignColors.backgroundBlue,
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withOpacity(0.2),
                                   blurRadius: 4,
-                                  offset: Offset(0, 4),
+                                  offset: const Offset(0, 4),
                                 ),
                               ],
                             ),
@@ -103,7 +102,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                   padding: const EdgeInsets.only(right: 10),
                                   child: Text(
                                     widget.appState.player!.emoji,
-                                    style: TextStyle(fontSize: 50),
+                                    style: const TextStyle(fontSize: 50),
                                   ),
                                 ),
                                 Expanded(
@@ -134,7 +133,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                                   .toDouble(),
                                               animateAxis: true,
                                               axisTrackStyle:
-                                                  LinearAxisTrackStyle(
+                                                  const LinearAxisTrackStyle(
                                                 thickness: 20,
                                                 edgeStyle:
                                                     LinearEdgeStyle.bothCurve,
@@ -248,7 +247,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                           ),
                                         ),
                                         children: [
-                                          Icon(
+                                          const Icon(
                                             Icons.workspace_premium_rounded,
                                             size: 40,
                                             color: DesignColors.yellow,
@@ -351,7 +350,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                                           _countupStartValue <
                                       widget.appState.player!
                                           .getNextLevelXp()) {
-                                    return SizedBox.shrink();
+                                    return const SizedBox.shrink();
                                   } else {
                                     HapticFeedback.heavyImpact();
                                     return PlayAnimation(
@@ -576,7 +575,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
         pageBuilder: (context, anim1, anim2) {
           return Container(
               color: Colors.white,
-              child: Center(child: CircularProgressIndicator()));
+              child: const Center(child: CircularProgressIndicator()));
         });
 
     await widget.appState.getPlayerRelations();

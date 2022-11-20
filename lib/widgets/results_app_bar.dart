@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
-import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 import '../constants/constants.dart';
 
@@ -44,13 +43,13 @@ class _ResultsAppBarState extends State<ResultsAppBar> {
           height: AppBar().preferredSize.height * 1.5,
           // Set background color and rounded bottom corners.
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
+            borderRadius: const BorderRadius.vertical(bottom: Radius.circular(15)),
             color: DesignColors.backgroundBlue,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.2),
                 blurRadius: 4,
-                offset: Offset(0, 4),
+                offset: const Offset(0, 4),
               ),
             ],
           ),

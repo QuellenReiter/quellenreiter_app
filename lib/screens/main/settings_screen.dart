@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -51,7 +49,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           child: ListView(
             shrinkWrap: true,
             clipBehavior: Clip.none,
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             // mainAxisSize: MainAxisSize.max,
             // crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -210,7 +208,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             );
                           },
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         Row(
@@ -228,7 +226,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   style: Theme.of(context).textTheme.headline5,
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 10,
                               ),
                               Expanded(
@@ -252,7 +250,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                                 .textTheme
                                                 .subtitle2,
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             height: 30,
                                           ),
                                           Row(
@@ -318,7 +316,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                               ),
                             ]),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
 
@@ -329,7 +327,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             alignment: WrapAlignment.start,
                             crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.notifications_active,
                                 color: DesignColors.backgroundBlue,
                               ),
@@ -384,7 +382,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
               if (MediaQuery.of(context).size.height > 1000)
-                SizedBox(
+                const SizedBox(
                   height: 200,
                 ),
               SizedBox(
@@ -409,7 +407,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           0.145) /
                                       2),
                               RotationTransition(
-                                turns: AlwaysStoppedAnimation(-8 / 360),
+                                turns: const AlwaysStoppedAnimation(-8 / 360),
                                 child: Center(
                                   child: Text(
                                     "Made in Berlin with ❤️ and ☕ and Steuergeld.",

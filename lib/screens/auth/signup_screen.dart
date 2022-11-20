@@ -5,7 +5,6 @@ import 'package:quellenreiter_app/consonents.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/custom_bottom_sheet.dart';
-import 'package:url_launcher/link.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../utilities/utilities.dart';
 import '../../widgets/main_app_bar.dart';
@@ -186,7 +185,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   if (emojiController.text.isNotEmpty)
                                     ElevatedButton(
                                       onPressed: nextPage,
-                                      child: Icon(Icons.arrow_forward_ios),
+                                      child: const Icon(Icons.arrow_forward_ios),
                                     ),
                                   const SizedBox(height: 50),
                                   SizedBox(
@@ -295,7 +294,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                               filled: true,
                                               fillColor: Colors.transparent,
                                               contentPadding:
-                                                  EdgeInsets.all(10),
+                                                  const EdgeInsets.all(10),
                                             ),
                                             keyboardType: TextInputType.name,
                                           ),
@@ -374,7 +373,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                               filled: true,
                                               fillColor: Colors.transparent,
                                               contentPadding:
-                                                  EdgeInsets.all(10),
+                                                  const EdgeInsets.all(10),
                                             ),
                                           );
                                         },
@@ -611,7 +610,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                                                                       Navigator.of(context).pop();
                                                                                       widget.appState.trySignUp(usernameController.text, passwordController.text, emojiController.text);
                                                                                     },
-                                                                                    child: Text("Ja, weiter"),
+                                                                                    child: const Text("Ja, weiter"),
                                                                                   ),
                                                                                   ElevatedButton(
                                                                                     onPressed: () {
@@ -619,7 +618,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                                                                       registerClicked.value = false;
                                                                                       Navigator.of(context).pop();
                                                                                     },
-                                                                                    child: Text("Nein, zurück"),
+                                                                                    child: const Text("Nein, zurück"),
                                                                                   ),
                                                                                 ],
                                                                               ),
@@ -636,7 +635,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                                                         EdgeInsets
                                                                             .all(5),
                                                                     child:
-                                                                        const CircularProgressIndicator(),
+                                                                        CircularProgressIndicator(),
                                                                   )
                                                                 : Text(
                                                                     "Registrieren",
@@ -696,7 +695,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ],
                   )),
             ),
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
           ],

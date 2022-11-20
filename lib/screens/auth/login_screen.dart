@@ -224,7 +224,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               (9 / 16)
                                           ? 100
                                           : null,
-                                  image: AssetImage("assets/branding_low.png"),
+                                  image: const AssetImage("assets/branding_low.png"),
                                 ),
                               ),
                               TextButton(
