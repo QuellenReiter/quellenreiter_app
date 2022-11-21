@@ -84,14 +84,8 @@ class _ResultsAppBarState extends State<ResultsAppBar> {
                     ),
                   ),
                   Text(
-                    widget.appState.focusedPlayerRelation!.openGame!.player
-                            .getPoints()
-                            .toString() +
-                        " : " +
-                        widget
-                            .appState.focusedPlayerRelation!.openGame!.opponent
-                            .getPoints()
-                            .toString(),
+                    widget.appState.focusedPlayerRelation!.openGame!
+                        .getScoreAsText(),
                     style: Theme.of(context).textTheme.headline1,
                   ),
                   Flexible(
