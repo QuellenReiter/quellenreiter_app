@@ -116,6 +116,7 @@ class DbFields {
   static const String gamePlayer2Id = "player2Id";
 }
 
+/// Provide all possible Screens a user can navigate to.
 enum Routes {
   home,
   settings,
@@ -132,6 +133,7 @@ enum Routes {
   readyToStartOnlyLastScreen
 }
 
+/// Contains all possible categories a [Statement] can have.
 class CorrectnessCategory {
   static String correct = "richtig";
   static String unverified = "unbelegt";
@@ -213,6 +215,30 @@ class CorrectnessCategoryExplanation {
   }
 }
 
+/// Provide public [Uri]s for links within the app.
+class PublicURLs {
+  static const String _domain = "quellenreiter.app";
+  static const String _scheme = "https";
+
+  static final Uri privacyPolicy = Uri(
+      scheme: _scheme,
+      host: "www.iubenda.com",
+      path: "privacy-policy/34563732");
+
+  static final Uri supportUrl =
+      Uri(scheme: _scheme, host: "forms.gle", path: "qwf8jg3fWt3tVsQi8");
+  static final Uri quellenreiterWebsite = Uri(
+    scheme: _scheme,
+    host: _domain,
+  );
+  static final Uri impressum = Uri(
+    scheme: _scheme,
+    host: _domain,
+    path: "Impressum",
+  );
+}
+
+/// Provide Rules for playing a [Game].
 class GameRules {
   /// The number of statements that are shown in a round.
   static const int statementsPerRound = 3;

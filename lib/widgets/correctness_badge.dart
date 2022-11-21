@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/widgets/custom_bottom_sheet.dart';
 import '../constants/constants.dart';
 
@@ -9,16 +8,6 @@ class CorrectnessBadge extends StatelessWidget {
   final String correctnessValue;
   @override
   Widget build(BuildContext context) {
-    Widget makeSheetDismissable({required Widget child}) {
-      return GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          Navigator.of(context).pop();
-        },
-        child: GestureDetector(onTap: () {}, child: child),
-      );
-    }
-
     bool answerCorrect = CorrectnessCategory.isFact(correctnessValue);
 
     return Padding(

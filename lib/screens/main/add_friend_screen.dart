@@ -5,9 +5,7 @@ import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/opponent_card.dart';
 import 'package:quellenreiter_app/widgets/stats_app_bar.dart';
-import 'package:quellenreiter_app/widgets/title_app_bar.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../utilities/utilities.dart';
 
@@ -202,7 +200,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                   child: FloatingActionButton.extended(
                     onPressed: () => {
                       Share.share(
-                          'Quiz-Duell nur mit "Fake News":\nhttps://quellenreiter.app',
+                          'Quiz-Duell nur mit "Fake News":\n ${PublicURLs.quellenreiterWebsite}',
                           subject: "Teile die app mit deinen Freund:innen"),
                     },
                     icon: const Icon(Icons.share),

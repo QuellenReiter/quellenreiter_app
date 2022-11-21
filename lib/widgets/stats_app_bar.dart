@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../constants/constants.dart';
 
@@ -45,13 +44,13 @@ class _StatsAppBarState extends State<StatsAppBar> {
           height: AppBar().preferredSize.height * 1.5,
           // Set background color and rounded bottom corners.
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
+            borderRadius: const BorderRadius.vertical(bottom: Radius.circular(15)),
             color: DesignColors.backgroundBlue,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.2),
                 blurRadius: 4,
-                offset: Offset(0, 4),
+                offset: const Offset(0, 4),
               ),
             ],
           ),
@@ -60,8 +59,8 @@ class _StatsAppBarState extends State<StatsAppBar> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               if (widget.appState.route == Routes.addFriends)
-                Padding(
-                  padding: const EdgeInsets.only(left: 10),
+                const Padding(
+                  padding: EdgeInsets.only(left: 10),
                   child: BackButton(
                     color: Colors.white,
                   ),
@@ -71,7 +70,7 @@ class _StatsAppBarState extends State<StatsAppBar> {
                   padding: const EdgeInsets.only(right: 10),
                   child: Text(
                     widget.appState.player!.emoji,
-                    style: TextStyle(fontSize: 50),
+                    style: const TextStyle(fontSize: 50),
                   ),
                 ),
               Expanded(
@@ -90,7 +89,7 @@ class _StatsAppBarState extends State<StatsAppBar> {
                         maximum:
                             widget.appState.player!.getNextLevelXp().toDouble(),
                         animateAxis: true,
-                        axisTrackStyle: LinearAxisTrackStyle(
+                        axisTrackStyle: const LinearAxisTrackStyle(
                           thickness: 20,
                           edgeStyle: LinearEdgeStyle.bothCurve,
                         ),
@@ -142,7 +141,7 @@ class _StatsAppBarState extends State<StatsAppBar> {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.workspace_premium_rounded,
                     size: 40,
                     color: DesignColors.yellow,

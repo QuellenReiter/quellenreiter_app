@@ -17,7 +17,7 @@ class QuellenreiterRouteInformationParser
       // check if logged in somehow.
       return QuellenreiterRoutePath(Routes.login);
     }
-    print(uri.pathSegments.length);
+    debugPrint(uri.pathSegments.length.toString());
     // Handle '/user/:id'
     if (uri.pathSegments.length == 2) {
       if (uri.pathSegments[0] != 'addFriends') {

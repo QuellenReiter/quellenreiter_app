@@ -10,22 +10,36 @@ import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import '../constants/constants.dart';
 import '../models/statement.dart';
 
-class Turorial extends StatelessWidget {
-  Turorial({Key? key, required this.appState}) : super(key: key);
+class Tutorial extends StatefulWidget {
+  const Tutorial({Key? key, required this.appState}) : super(key: key);
   final QuellenreiterAppState appState;
-  late TutorialCoachMark tutorialCoachMark;
-  GlobalKey keyFaktFakeButton = GlobalKey();
-  GlobalKey keyStatementText = GlobalKey();
-  GlobalKey keyStatementInfo = GlobalKey();
-  final keyStatementCard = GlobalKey<StatementCardState>();
-  GlobalKey keyStatementSaveAndShare = GlobalKey();
-  // global key to call functions of the tutorial
 
+  @override
+  State<Tutorial> createState() => _TutorialState();
+}
+
+class _TutorialState extends State<Tutorial> {
+  late TutorialCoachMark tutorialCoachMark;
+
+  GlobalKey keyFaktFakeButton = GlobalKey();
+
+  GlobalKey keyStatementText = GlobalKey();
+
+  GlobalKey keyStatementInfo = GlobalKey();
+
+  GlobalKey<StatementCardState> keyStatementCard =
+      GlobalKey<StatementCardState>();
+
+  GlobalKey keyStatementSaveAndShare = GlobalKey();
+
+  // global key to call functions of the tutorial
   bool showStatametCardCalled = false;
+
   Statement? testStatement;
 
   /// valuelistenable for loading
   ValueNotifier<bool> isLoading = ValueNotifier(false);
+
   @override
   Widget build(BuildContext context) {
     // start downloading the testStatement
@@ -51,7 +65,7 @@ class Turorial extends StatelessWidget {
                 children: [
                   Column(
                     children: [
-                      Center(
+                      const Center(
                         child: Image(
                           height: 200,
                           image: AssetImage('assets/logo-pink.png'),
@@ -115,7 +129,6 @@ class Turorial extends StatelessWidget {
       await Future.delayed(const Duration(milliseconds: 10));
     }
 
-    print("showTestQuest");
     showGeneralDialog(
       context: context,
       pageBuilder: ((context, animation, secondaryAnimation) {
@@ -315,8 +328,8 @@ class Turorial extends StatelessWidget {
                                   Expanded(
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        primary: DesignColors.red,
-                                        minimumSize: Size(100, 70),
+                                        backgroundColor: DesignColors.red,
+                                        minimumSize: const Size(100, 70),
                                       ),
                                       onPressed: () =>
                                           registerAnswer(false, context),
@@ -332,8 +345,8 @@ class Turorial extends StatelessWidget {
                                   Expanded(
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        primary: DesignColors.green,
-                                        minimumSize: Size(100, 70),
+                                        backgroundColor: DesignColors.green,
+                                        minimumSize: const Size(100, 70),
                                       ),
                                       onPressed: () =>
                                           registerAnswer(true, context),
@@ -375,43 +388,41 @@ class Turorial extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             align: ContentAlign.top,
             builder: (context, controller) {
-              return Container(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: "Schau dir die",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: Colors.white),
-                          ),
-                          TextSpan(
-                            text: " Aussage ",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: DesignColors.yellow),
-                          ),
-                          TextSpan(
-                            text: "an",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: Colors.white),
-                          ),
-                        ],
-                      ),
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Schau dir die",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: Colors.white),
+                        ),
+                        TextSpan(
+                          text: " Aussage ",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: DesignColors.yellow),
+                        ),
+                        TextSpan(
+                          text: "an",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: Colors.white),
+                        ),
+                      ],
                     ),
-                    actionButton("weiter",
-                        (context) => tutorialCoachMark.next(), context,
-                        animate: true)
-                  ],
-                ),
+                  ),
+                  actionButton(
+                      "weiter", (context) => tutorialCoachMark.next(), context,
+                      animate: true)
+                ],
               );
             },
           ),
@@ -429,43 +440,41 @@ class Turorial extends StatelessWidget {
           TargetContent(
             align: ContentAlign.top,
             builder: (context, controller) {
-              return Container(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: "Hier findest du noch",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: Colors.white),
-                          ),
-                          TextSpan(
-                            text: " mehr Infos ",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: DesignColors.yellow),
-                          ),
-                          TextSpan(
-                            text: "dazu",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: Colors.white),
-                          ),
-                        ],
-                      ),
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Hier findest du noch",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: Colors.white),
+                        ),
+                        TextSpan(
+                          text: " mehr Infos ",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: DesignColors.yellow),
+                        ),
+                        TextSpan(
+                          text: "dazu",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: Colors.white),
+                        ),
+                      ],
                     ),
-                    actionButton("weiter",
-                        (context) => tutorialCoachMark.next(), context,
-                        animate: true)
-                  ],
-                ),
+                  ),
+                  actionButton(
+                      "weiter", (context) => tutorialCoachMark.next(), context,
+                      animate: true)
+                ],
               );
             },
           ),
@@ -483,54 +492,52 @@ class Turorial extends StatelessWidget {
           TargetContent(
             align: ContentAlign.top,
             builder: (context, controller) {
-              return Container(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: "Ist die Aussage ein",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: Colors.white),
-                          ),
-                          TextSpan(
-                            text: " Fakt ",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: DesignColors.yellow),
-                          ),
-                          TextSpan(
-                            text: "oder ein",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: Colors.white),
-                          ),
-                          TextSpan(
-                            text: " fake ",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: DesignColors.yellow),
-                          ),
-                          TextSpan(
-                            text: "?",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: Colors.white),
-                          ),
-                        ],
-                      ),
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Ist die Aussage ein",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: Colors.white),
+                        ),
+                        TextSpan(
+                          text: " Fakt ",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: DesignColors.yellow),
+                        ),
+                        TextSpan(
+                          text: "oder ein",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: Colors.white),
+                        ),
+                        TextSpan(
+                          text: " fake ",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: DesignColors.yellow),
+                        ),
+                        TextSpan(
+                          text: "?",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: Colors.white),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               );
             },
           ),
@@ -538,24 +545,19 @@ class Turorial extends StatelessWidget {
       ),
     ];
 
-    await Future.delayed(Duration(milliseconds: 1000));
+    await Future.delayed(const Duration(milliseconds: 1000));
     tutorialCoachMark = TutorialCoachMark(
       targets: targets,
       colorShadow: DesignColors.pink,
       textSkip: "überspringen",
       paddingFocus: 10,
       opacityShadow: 0.9,
-      onFinish: () {
-        print("finish");
-      },
+      onFinish: () {},
       onClickTarget: null,
       onClickTargetWithTapPosition: (target, tapDetails) async {
-        print("target: $target");
-        print(
-            "clicked at position local: ${tapDetails.localPosition} - global: ${tapDetails.globalPosition}");
         if (target.keyTarget == keyFaktFakeButton) {
           // wait for animation length
-          await Future.delayed(Duration(milliseconds: 500));
+          await Future.delayed(const Duration(milliseconds: 500));
           // if tap is on left half of the screen -> FAKE else FAKT
           if (tapDetails.localPosition.dx <
               MediaQuery.of(context).size.width / 2) {
@@ -567,11 +569,11 @@ class Turorial extends StatelessWidget {
       },
       onClickOverlay: null,
       onSkip: () {
-        appState.prefs.setBool("tutorialPlayed", true);
-        if (appState.player != null) {
-          appState.route = Routes.home;
+        widget.appState.prefs.setBool("tutorialPlayed", true);
+        if (widget.appState.player != null) {
+          widget.appState.route = Routes.home;
         } else {
-          appState.route = Routes.signUp;
+          widget.appState.route = Routes.signUp;
         }
       },
     )..show(context: context);
@@ -619,7 +621,7 @@ class Turorial extends StatelessWidget {
                               child: Container(
                                 padding: const EdgeInsets.all(30),
                                 alignment: Alignment.center,
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
                                   color: DesignColors.lightBlue,
                                 ),
@@ -690,11 +692,11 @@ class Turorial extends StatelessWidget {
           return Scaffold(
             floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
             floatingActionButton: actionButton("weiter zur App", (context) {
-              appState.prefs.setBool("tutorialPlayed", true);
-              if (appState.player != null) {
-                appState.route = Routes.home;
+              widget.appState.prefs.setBool("tutorialPlayed", true);
+              if (widget.appState.player != null) {
+                widget.appState.route = Routes.home;
               } else {
-                appState.route = Routes.signUp;
+                widget.appState.route = Routes.signUp;
               }
             }, context, color: DesignColors.pink),
             body: Dialog(
@@ -766,45 +768,43 @@ class Turorial extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             align: ContentAlign.top,
             builder: (context, controller) {
-              return Container(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: "Nach jeder Runde werden dir die",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: Colors.white),
-                          ),
-                          TextSpan(
-                            text: " Faktenchecks  ",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: DesignColors.yellow),
-                          ),
-                          TextSpan(
-                            text: "angezeigt",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(color: Colors.white),
-                          ),
-                        ],
-                      ),
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Nach jeder Runde werden dir die",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: Colors.white),
+                        ),
+                        TextSpan(
+                          text: " Faktenchecks  ",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: DesignColors.yellow),
+                        ),
+                        TextSpan(
+                          text: "angezeigt",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: Colors.white),
+                        ),
+                      ],
                     ),
-                    Text("Klicke auf die Karte, um sie anzusehen",
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline4!
-                            .copyWith(color: Colors.white)),
-                  ],
-                ),
+                  ),
+                  Text("Klicke auf die Karte, um sie anzusehen",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline4!
+                          .copyWith(color: Colors.white)),
+                ],
               );
             },
           ),
@@ -812,44 +812,35 @@ class Turorial extends StatelessWidget {
       ),
     ];
 
-    await Future.delayed(Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 500));
     tutorialCoachMark = TutorialCoachMark(
       targets: targets,
       colorShadow: DesignColors.pink,
       textSkip: "überspringen",
       paddingFocus: 10,
       opacityShadow: 0.9,
-      onFinish: () {
-        print("finish");
-      },
+      onFinish: () {},
       onClickTarget: (target) async {
-        print('onClickTarget: $target');
         // wait for animation length
         await Future.delayed(const Duration(milliseconds: 500));
         keyStatementCard.currentState!.showStatementDetail(
             testStatement!, keyStatementCard.currentState!.context);
       },
-      onClickTargetWithTapPosition: (target, tapDetails) {
-        print("target: $target");
-        print(
-            "clicked at position local: ${tapDetails.localPosition} - global: ${tapDetails.globalPosition}");
-      },
-      onClickOverlay: (target) {
-        print('onClickOverlay: $target');
-      },
+      onClickTargetWithTapPosition: (target, tapDetails) {},
       onSkip: () {
-        appState.prefs.setBool("tutorialPlayed", true);
-        if (appState.player != null) {
-          appState.route = Routes.home;
+        widget.appState.prefs.setBool("tutorialPlayed", true);
+        if (widget.appState.player != null) {
+          widget.appState.route = Routes.home;
         } else {
-          appState.route = Routes.signUp;
+          widget.appState.route = Routes.signUp;
         }
       },
     )..show(context: context);
   }
 
   void getTestStatement() async {
-    testStatement = await appState.db.getStatement(GameRules.testStatementId);
+    testStatement =
+        await widget.appState.db.getStatement(GameRules.testStatementId);
   }
 }
 

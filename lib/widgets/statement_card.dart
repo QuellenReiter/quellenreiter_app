@@ -1,9 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
-import 'package:quellenreiter_app/screens/tutorial.dart';
 import 'package:quellenreiter_app/widgets/custom_bottom_sheet.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -412,7 +409,7 @@ class StatementCardState extends State<StatementCard> {
                                   quarterTurns: 1,
                                   child: Container(
                                     padding: const EdgeInsets.all(2),
-                                    color: Color.fromARGB(138, 0, 0, 0),
+                                    color: const Color.fromARGB(138, 0, 0, 0),
                                     child: SelectableText(
                                       statement.samplePictureCopyright.trim(),
                                       style: Theme.of(context)
@@ -572,7 +569,6 @@ class StatementCardState extends State<StatementCard> {
     );
     // show tutorial, if key is not null.
     if (widget.keyStatementSaveAndShare != null) {
-      late TutorialCoachMark tutorialCoachMark;
       var targets = [
         TargetFocus(
           identify: "keyStatementSaveAndShare",
@@ -587,53 +583,51 @@ class StatementCardState extends State<StatementCard> {
               padding: const EdgeInsets.all(20),
               align: ContentAlign.bottom,
               builder: (context, controller) {
-                return Container(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: "Hier kannst du die Faktenchecks",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline2!
-                                  .copyWith(color: Colors.white),
-                            ),
-                            TextSpan(
-                              text: " Speichern ",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline2!
-                                  .copyWith(color: DesignColors.yellow),
-                            ),
-                          ],
-                        ),
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Hier kannst du die Faktenchecks",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: Colors.white),
+                          ),
+                          TextSpan(
+                            text: " Speichern ",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(color: DesignColors.yellow),
+                          ),
+                        ],
                       ),
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: "Gespeicherte Faktenchecks landen im ",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline4!
-                                  .copyWith(color: Colors.white),
-                            ),
-                            TextSpan(
-                              text: " Archiv ",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline4!
-                                  .copyWith(color: Colors.white),
-                            ),
-                          ],
-                        ),
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Gespeicherte Faktenchecks landen im ",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline4!
+                                .copyWith(color: Colors.white),
+                          ),
+                          TextSpan(
+                            text: " Archiv ",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline4!
+                                .copyWith(color: Colors.white),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 );
               },
             ),
@@ -641,16 +635,15 @@ class StatementCardState extends State<StatementCard> {
         ),
       ];
 
-      await Future.delayed(Duration(seconds: 1));
-      tutorialCoachMark = TutorialCoachMark(
+      await Future.delayed(const Duration(seconds: 1));
+      // create and show the tutorial overlay.
+      TutorialCoachMark(
         targets: targets,
         colorShadow: DesignColors.pink,
         textSkip: "überspringen",
         paddingFocus: 10,
         opacityShadow: 0.9,
-        onFinish: () {
-          print("finish");
-        },
+        onFinish: () {},
         onClickTarget: null,
         onClickTargetWithTapPosition: (target, tapDetails) async {
           archiveIsLoading.value = true;
@@ -669,7 +662,7 @@ class StatementCardState extends State<StatementCard> {
         },
         onClickOverlay: null,
         onSkip: null,
-      )..show(context: context);
+      ).show(context: context);
     }
   }
 
@@ -698,7 +691,7 @@ class StatementCardState extends State<StatementCard> {
               quarterTurns: 1,
               child: Container(
                 padding: const EdgeInsets.all(2),
-                color: Color.fromARGB(138, 0, 0, 0),
+                color: const Color.fromARGB(138, 0, 0, 0),
                 child: SelectableText(
                   widget.statement.samplePictureCopyright.trim(),
                   style: Theme.of(context)

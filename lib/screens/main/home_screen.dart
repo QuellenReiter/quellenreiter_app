@@ -56,8 +56,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  AppLifecycleState _notification = AppLifecycleState.resumed;
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
@@ -70,9 +68,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       case AppLifecycleState.detached:
         break;
     }
-    setState(() {
-      _notification = state;
-    });
+    setState(() {});
   }
 
   void onTap(int indexTapped) {

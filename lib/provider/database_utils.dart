@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart' as parse;
@@ -52,12 +53,10 @@ class DatabaseUtils {
     );
     // If login result has any exceptions.
     if (loginResult.hasException) {
-      // print(loginResult.exception.toString());
       _handleException(loginResult.exception!);
       loginCallback(null);
       return;
     }
-    // print(loginResult.data.toString());
 
     // Safe the new token.
     safeStorage.write(
@@ -102,7 +101,6 @@ class DatabaseUtils {
         document: gql(Queries.signUp(username, password, emoji)),
       ),
     );
-    // print(signUpResult.toString());
     // If login result has any exceptions.
     if (signUpResult.hasException) {
       _handleException(signUpResult.exception!);
@@ -167,7 +165,6 @@ class DatabaseUtils {
         document: gql(Queries.getCurrentUser()),
       ));
 
-      // print(queryResult.toString());
       if (queryResult.hasException) {
         _handleException(queryResult.exception!);
         checkTokenCallback(null);
@@ -247,7 +244,6 @@ class DatabaseUtils {
         ),
       );
 
-      // print(queryResult.toString());
       if (queryResult.hasException) {
         _handleException(queryResult.exception!);
 
@@ -257,7 +253,6 @@ class DatabaseUtils {
             queryResult.data?["friendships"], player);
       }
     }
-    // print("token is null in getFriends()");
     // no token, return false
     return null;
   }
@@ -289,7 +284,6 @@ class DatabaseUtils {
         ),
       );
 
-      // print(mutationResult.toString());
       if (mutationResult.hasException) {
         _handleException(mutationResult.exception!);
 
@@ -366,7 +360,6 @@ class DatabaseUtils {
         },
       ),
     );
-    // print(mutationResult);
     if (mutationResult.hasException) {
       _handleException(mutationResult.exception!);
 
@@ -406,7 +399,6 @@ class DatabaseUtils {
       ),
     );
 
-    // print(mutationResult);
     if (mutationResult.hasException) {
       _handleException(mutationResult.exception!);
 
@@ -447,7 +439,6 @@ class DatabaseUtils {
       ),
     );
 
-    // print(mutationResult);
     if (mutationResult.hasException) {
       _handleException(mutationResult.exception!);
 
@@ -484,7 +475,6 @@ class DatabaseUtils {
       ),
     );
 
-    // print(mutationResult);
     if (mutationResult.hasException) {
       _handleException(mutationResult.exception!);
 
@@ -519,7 +509,6 @@ class DatabaseUtils {
       ),
     );
 
-    // print(mutationResult);
     if (mutationResult.hasException) {
       _handleException(mutationResult.exception!);
 
@@ -602,7 +591,6 @@ class DatabaseUtils {
         },
       ),
     );
-    // print(queryResult);
     if (queryResult.hasException) {
       _handleException(queryResult.exception!);
 
@@ -643,7 +631,6 @@ class DatabaseUtils {
         ),
       );
 
-      // print(mutationResult.toString());
       if (mutationResult.hasException) {
         _handleException(mutationResult.exception!);
 
@@ -687,7 +674,6 @@ class DatabaseUtils {
         ),
       );
 
-      // print(queryResult.toString());
       if (queryResult.hasException) {
         _handleException(queryResult.exception!);
 
@@ -725,18 +711,6 @@ class DatabaseUtils {
     if (token == null) {
       return null;
     }
-    // Link to the database.
-    final HttpLink httpLinkUserDB = HttpLink(userDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': userDatabaseApplicationID,
-      'X-Parse-Client-Key': userDatabaseClientKey,
-      'X-Parse-Session-Token': token,
-    });
-
-    // The client that provides the connection.
-    GraphQLClient clientUserDB = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLinkUserDB,
-    );
     // combine played statements
     List<String> playedStatemntsCombined = [
       ..._playerRelation.opponent.playedStatements!,
@@ -927,7 +901,6 @@ class DatabaseUtils {
     // called if new friendship is created
     subscriptionFriends.on(parse.LiveQueryEvent.create,
         (parse.ParseObject object) {
-      print('[CREATE]LiveQuery event called:\n ${object.toJson()}');
       if (appState.gameStarted) {
         return;
       }
@@ -936,7 +909,6 @@ class DatabaseUtils {
     //called if friendship is updated
     subscriptionFriends.on(parse.LiveQueryEvent.update,
         (parse.ParseObject object) {
-      print('[UPDATE]LiveQuery event called:\n ${object.toJson()}');
       if (appState.gameStarted) {
         return;
       }
@@ -965,7 +937,6 @@ class DatabaseUtils {
     // called if new game is created
     subscriptionGame.on(parse.LiveQueryEvent.create,
         (parse.ParseObject object) {
-      print('[CREATE GAME]LiveQuery event called:\n ${object.toJson()}');
       // check if its players turn
       if (appState.gameStarted) {
         return;
@@ -975,7 +946,6 @@ class DatabaseUtils {
     //called if game is updated
     subscriptionGame.on(parse.LiveQueryEvent.update,
         (parse.ParseObject object) {
-      print('[UPDATE GAME]LiveQuery event called:\n ${object.toJson()}');
       // parse game and find if its players turn
       if (appState.gameStarted) {
         return;
@@ -1002,12 +972,8 @@ class DatabaseUtils {
     };
     final ParseResponse parseResponse =
         await function.executeObjectFunction<ParseObject>(parameters: params);
-    if (parseResponse.success && parseResponse.result != null) {
-      if (parseResponse.result['result'] is ParseObject) {
-        //Transforms the return into a ParseObject
-        final ParseObject parseObject = parseResponse.result['result'];
-        print(parseObject.objectId);
-      }
+    if (!parseResponse.success) {
+      debugPrint("Push Failed");
     }
   }
 
@@ -1055,12 +1021,8 @@ class DatabaseUtils {
     };
     final ParseResponse parseResponse =
         await function.executeObjectFunction<ParseObject>(parameters: params);
-    if (parseResponse.success && parseResponse.result != null) {
-      if (parseResponse.result['result'] is ParseObject) {
-        //Transforms the return into a ParseObject
-        final ParseObject parseObject = parseResponse.result['result'];
-        print(parseObject.objectId);
-      }
+    if (!parseResponse.success) {
+      debugPrint("Push Failed");
     }
   }
 
@@ -1081,12 +1043,8 @@ class DatabaseUtils {
     };
     final ParseResponse parseResponse =
         await function.executeObjectFunction<ParseObject>(parameters: params);
-    if (parseResponse.success && parseResponse.result != null) {
-      if (parseResponse.result['result'] is ParseObject) {
-        //Transforms the return into a ParseObject
-        final ParseObject parseObject = parseResponse.result['result'];
-        print(parseObject.objectId);
-      }
+    if (!parseResponse.success) {
+      debugPrint("Push Failed");
     }
   }
 
@@ -1108,12 +1066,8 @@ class DatabaseUtils {
     };
     final ParseResponse parseResponse =
         await function.executeObjectFunction<ParseObject>(parameters: params);
-    if (parseResponse.success && parseResponse.result != null) {
-      if (parseResponse.result['result'] is ParseObject) {
-        //Transforms the return into a ParseObject
-        final ParseObject parseObject = parseResponse.result['result'];
-        print(parseObject.objectId);
-      }
+    if (!parseResponse.success) {
+      debugPrint("Push Failed");
     }
   }
 
@@ -1131,15 +1085,11 @@ class DatabaseUtils {
           "Account already exists for this username.") {
         error = "Der Username ist bereits vergeben";
       }
-      print(e.graphqlErrors.toString());
     } else if (e.linkException is NetworkException) {
-      print(e.toString());
       error = "Du bist offline...";
     } else if (e.linkException is ServerException) {
-      print(e.toString());
       error = "Du bist offline...";
     } else {
-      print(e.toString());
       error = "unbekannter Fehler. Versuche es erneut";
     }
   }
@@ -1169,7 +1119,6 @@ class DatabaseUtils {
         error = "Username enthält ungültige Wörter";
         return true;
       } else {
-        print(username + " contains no bad words");
         return false;
       }
     } else {

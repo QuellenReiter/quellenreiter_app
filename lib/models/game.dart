@@ -133,7 +133,6 @@ class Game {
     // removes null values, important if opponentId and playerId are null.
     ret["fields"].removeWhere((key, value) => value == null);
 
-    // print(ret);
     return ret;
   }
 

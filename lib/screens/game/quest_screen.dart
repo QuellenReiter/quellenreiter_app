@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -11,9 +10,9 @@ import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class QuestScreen extends StatefulWidget {
-  QuestScreen({Key? key, required this.appState}) : super(key: key);
+  const QuestScreen({Key? key, required this.appState}) : super(key: key);
   final QuellenreiterAppState appState;
-  bool answerRegistered = false;
+
   @override
   State<QuestScreen> createState() => _QuestScreenState();
 }
@@ -21,7 +20,7 @@ class QuestScreen extends StatefulWidget {
 class _QuestScreenState extends State<QuestScreen>
     with SingleTickerProviderStateMixin {
   int animationLength = 40000;
-
+  bool answerRegistered = false;
   @override
   Widget build(BuildContext context) {
     // Show error is there is one !
@@ -238,8 +237,8 @@ class _QuestScreenState extends State<QuestScreen>
                               Expanded(
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    primary: DesignColors.red,
-                                    minimumSize: Size(100, 70),
+                                    backgroundColor: DesignColors.red,
+                                    minimumSize: const Size(100, 70),
                                   ),
                                   onPressed: () =>
                                       registerAnswer(statementIndex, false),
@@ -255,8 +254,8 @@ class _QuestScreenState extends State<QuestScreen>
                               Expanded(
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    primary: DesignColors.green,
-                                    minimumSize: Size(100, 70),
+                                    backgroundColor: DesignColors.green,
+                                    minimumSize: const Size(100, 70),
                                   ),
                                   onPressed: () =>
                                       registerAnswer(statementIndex, true),
@@ -292,7 +291,7 @@ class _QuestScreenState extends State<QuestScreen>
                                 value: animationLength.toDouble(),
                                 color: DesignColors.pink,
                                 onAnimationCompleted: () {
-                                  if (!widget.answerRegistered) {
+                                  if (answerRegistered) {
                                     registerAnswer(statementIndex, false,
                                         timeOver: true);
                                   }
@@ -314,7 +313,7 @@ class _QuestScreenState extends State<QuestScreen>
 
   void registerAnswer(int statementIndex, bool answer,
       {bool timeOver = false}) async {
-    widget.answerRegistered = true;
+    answerRegistered = true;
 
     Game currentGame = widget.appState.focusedPlayerRelation!.openGame!;
 
@@ -369,7 +368,7 @@ class _QuestScreenState extends State<QuestScreen>
                       child: Container(
                         padding: const EdgeInsets.all(30),
                         alignment: Alignment.center,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           color: DesignColors.lightBlue,
                         ),

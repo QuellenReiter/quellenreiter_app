@@ -128,9 +128,6 @@ class QuellenreiterAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// True if user wants notifications.
-  bool _notificationsAllowed = true;
-
   /// Gets if user wants notifications.
   /// if user has not set the value yet, the default value is true.
   /// The new value is pushed to the database.
@@ -139,7 +136,6 @@ class QuellenreiterAppState extends ChangeNotifier {
     if (value == null) {
       value = true;
       prefs.setBool('notificationsAllowed', value);
-      _notificationsAllowed = value;
       updateDeviceTokenForPushNotifications();
     }
     return value;
@@ -149,7 +145,6 @@ class QuellenreiterAppState extends ChangeNotifier {
   /// The new value is pushed to the database.
   set notificationsAllowed(value) {
     prefs.setBool('notificationsAllowed', value);
-    _notificationsAllowed = value;
     updateDeviceTokenForPushNotifications();
     notifyListeners();
   }
@@ -351,7 +346,6 @@ class QuellenreiterAppState extends ChangeNotifier {
     route = Routes.loading;
     //remove devie from the users push list.
     prefs.setBool('notificationsAllowed', false);
-    _notificationsAllowed = false;
     await updateDeviceTokenForPushNotifications();
     // remove device decision so that for next user, default is allowed again.
     await prefs.remove("notificationsAllowed");
@@ -592,7 +586,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   List<String> getNames() {
-    return playerRelations!.getNames()..add(player!.name);
+    return playerRelations.getNames()..add(player!.name);
   }
 
   void startLiveQueryForFriends() {
@@ -610,16 +604,16 @@ class QuellenreiterAppState extends ChangeNotifier {
       try {
         final String? token = await platform.invokeMethod('getDeviceToken');
         if (token == null) {
-          print("token is null, are you on an iOS simulator?");
+          debugPrint("token is null, are you on an iOS simulator?");
           return;
         }
-        print("token: $token");
+        debugPrint("token: $token");
         player!.deviceToken = token;
       } on PlatformException catch (e) {
-        print("error: ${e.message}");
+        debugPrint("error: ${e.message}");
       }
     }
-    print("deviceToken: ${player!.deviceToken}");
+    debugPrint("deviceToken: ${player!.deviceToken}");
     // push new token to db
     await db.updateUser(player!, (LocalPlayer? p) {});
   }

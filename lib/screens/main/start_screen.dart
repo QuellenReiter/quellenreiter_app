@@ -304,7 +304,7 @@ class _StartScreenState extends State<StartScreen> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -315,7 +315,7 @@ class _StartScreenState extends State<StartScreen> {
                               HapticFeedback.mediumImpact();
                               widget.appState.route = Routes.addFriends;
                             },
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.person_search_rounded,
                             ),
                             label: Text(
@@ -324,7 +324,7 @@ class _StartScreenState extends State<StartScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 10,
                         ),
                         Expanded(
@@ -332,11 +332,11 @@ class _StartScreenState extends State<StartScreen> {
                             onPressed: () {
                               HapticFeedback.mediumImpact();
                               Share.share(
-                                  'Quiz-Duell nur mit "Fake News":\nhttps://quellenreiter.app',
+                                  'Quiz-Duell nur mit "Fake News":\n${PublicURLs.quellenreiterWebsite}',
                                   subject:
                                       "Teile die app mit deinen Freund:innen");
                             },
-                            icon: Icon(Icons.share_outlined),
+                            icon: const Icon(Icons.share_outlined),
                             label: Text(
                               "einladen",
                               style: Theme.of(context).textTheme.headline1,
@@ -397,7 +397,7 @@ class _StartScreenState extends State<StartScreen> {
           minimum: 0,
           maximum: max,
           animateAxis: true,
-          axisTrackStyle: LinearAxisTrackStyle(
+          axisTrackStyle: const LinearAxisTrackStyle(
             thickness: 35,
             edgeStyle: LinearEdgeStyle.bothCurve,
           ),
@@ -447,7 +447,7 @@ class _StartScreenState extends State<StartScreen> {
         color: DesignColors.lightGrey,
       ),
       child: Text(
-        "${val}x\n${label}",
+        "${val}x\n$label",
         style: Theme.of(context).textTheme.headline4!.copyWith(color: color),
         textAlign: TextAlign.center,
       ),

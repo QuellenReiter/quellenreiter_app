@@ -4,7 +4,6 @@ import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/navigation/quellenreiter_routes.dart';
 import 'package:quellenreiter_app/screens/auth/signup_screen.dart';
 import 'package:quellenreiter_app/screens/game/game_finished_screen.dart';
-import 'package:quellenreiter_app/screens/game/game_results_screen.dart';
 import 'package:quellenreiter_app/screens/game/quest_screen.dart';
 import 'package:quellenreiter_app/screens/game/ready_to_start_screen.dart';
 import 'package:quellenreiter_app/screens/loading_screen.dart';
@@ -26,8 +25,6 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
   QuellenreiterRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>() {
     appState = QuellenreiterAppState();
     appState.addListener(notifyListeners);
-    // print(appState.route);
-    // print('appState.addListener(notifyListeners) called');
   }
   @override
   QuellenreiterRoutePath get currentConfiguration {
@@ -40,12 +37,11 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
 
   @override
   Widget build(BuildContext context) {
-    // print(appState.route.toString());
     return Navigator(
       pages: buildPages(),
       // Define what happens on Navigator.pop() or back button.
       onPopPage: (route, result) {
-        print('onPopPage called');
+        debugPrint('onPopPage called');
         if (!route.didPop(result)) {
           return false;
         }
@@ -108,7 +104,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
           return [
             MaterialPage(
               key: const ValueKey('TutorialPage'),
-              child: Turorial(
+              child: Tutorial(
                 appState: appState,
               ),
             ),
@@ -226,7 +222,7 @@ class QuellenreiterRouterDelegate extends RouterDelegate<QuellenreiterRoutePath>
         return [
           MaterialPage(
             key: const ValueKey('TutorialPage'),
-            child: Turorial(
+            child: Tutorial(
               appState: appState,
             ),
           ),

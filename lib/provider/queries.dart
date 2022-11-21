@@ -1,5 +1,4 @@
 import 'package:quellenreiter_app/models/player_relation.dart';
-import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 
 import '../constants/constants.dart';
@@ -383,7 +382,6 @@ mutation updateFriendship(\$friendship: UpdateFriendshipInput!){
   }
 }
 ''';
-    // print(ret);
     return ret;
   }
 
@@ -707,7 +705,6 @@ mutation uploadGame(\$openGame: CreateOpenGameInput!){
   }
 }
 ''';
-    // print(ret);
     return ret;
   }
 
@@ -756,7 +753,6 @@ query getStatement(\$ids: StatementWhereInput!){
   }
 }
 ''';
-    // print(ret);
     return ret;
   }
 
@@ -801,7 +797,6 @@ query getStatement{
   }
 }
 ''';
-    // print(ret);
     return ret;
   }
 
@@ -875,7 +870,6 @@ mutation removeUser(\$user:DeleteUserInput!){
   }
 }
 ''';
-    print(ret);
     return ret;
   }
 
