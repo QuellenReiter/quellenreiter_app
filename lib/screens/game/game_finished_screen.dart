@@ -73,426 +73,14 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                     ),
                   ),
                   children: [
-                    ValueListenableBuilder<int>(
-                        valueListenable: _tempPlayerXp,
-                        builder: (BuildContext context, val, child) {
-                          return Container(
-                            margin: const EdgeInsets.all(10),
-                            clipBehavior: Clip.none,
-                            padding: const EdgeInsets.all(10),
-                            height: AppBar().preferredSize.height * 1.5,
-                            // Set background color and rounded bottom corners.
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(15)),
-                              color: DesignColors.backgroundBlue,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 10),
-                                  child: Text(
-                                    widget.appState.player!.emoji,
-                                    style: const TextStyle(fontSize: 50),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        widget.appState.player!.name,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline1,
-                                      ),
-                                      Stack(
-                                          alignment: Alignment.center,
-                                          children: [
-                                            SfLinearGauge(
-                                              minimum: GameRules
-                                                      .xpForCurrentLevel(widget
-                                                              .appState.player!
-                                                              .getXp() +
-                                                          _countupStartValue)
-                                                  .toDouble(),
-                                              maximum: GameRules.xpForNextLevel(
-                                                      widget.appState.player!
-                                                              .getXp() +
-                                                          _countupStartValue)
-                                                  .toDouble(),
-                                              animateAxis: true,
-                                              axisTrackStyle:
-                                                  const LinearAxisTrackStyle(
-                                                thickness: 20,
-                                                edgeStyle:
-                                                    LinearEdgeStyle.bothCurve,
-                                              ),
-                                              animateRange: true,
-                                              animationDuration:
-                                                  _countupStartValue > 0
-                                                      ? 1000
-                                                      : 400,
-                                              showTicks: false,
-                                              showLabels: false,
-                                              barPointers: [
-                                                LinearBarPointer(
-                                                  edgeStyle:
-                                                      LinearEdgeStyle.bothCurve,
-                                                  thickness: 20,
-                                                  value: widget.appState.player!
-                                                          .getXp()
-                                                          .toDouble() +
-                                                      _countupStartValue,
-                                                  color: DesignColors.pink,
-                                                )
-                                              ],
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 8),
-                                              child: AnimationLimiter(
-                                                child: Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.max,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children:
-                                                      AnimationConfiguration
-                                                          .toStaggeredList(
-                                                    duration: const Duration(
-                                                        milliseconds: 500),
-                                                    childAnimationBuilder:
-                                                        (widget) =>
-                                                            SlideAnimation(
-                                                      horizontalOffset: 50.0,
-                                                      curve: Curves.bounceOut,
-                                                      child: FadeInAnimation(
-                                                        child: widget,
-                                                      ),
-                                                    ),
-                                                    children: [
-                                                      Text(
-                                                        widget.appState.player!
-                                                            .getLevel()
-                                                            .toString(),
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .headline5,
-                                                      ),
-                                                      Text(
-                                                        (widget.appState.player!
-                                                                        .getXp() +
-                                                                    _countupStartValue)
-                                                                .toString() +
-                                                            "/" +
-                                                            widget.appState
-                                                                .player!
-                                                                .getNextLevelXp()
-                                                                .toString() +
-                                                            " XP",
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .headline5,
-                                                      ),
-                                                      Text(
-                                                        (widget.appState.player!
-                                                                    .getLevel() +
-                                                                1)
-                                                            .toString(),
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .headline5,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          ]),
-                                    ],
-                                  ),
-                                ),
-                                // if player did not reach new Level.
-                                if (widget.appState.player!.getXp().toDouble() +
-                                        _countupStartValue <
-                                    widget.appState.player!.getNextLevelXp())
-                                  AnimationLimiter(
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: AnimationConfiguration
-                                          .toStaggeredList(
-                                        duration:
-                                            const Duration(milliseconds: 500),
-                                        childAnimationBuilder: (widget) =>
-                                            SlideAnimation(
-                                          horizontalOffset: 50.0,
-                                          curve: Curves.bounceOut,
-                                          child: FadeInAnimation(
-                                            child: widget,
-                                          ),
-                                        ),
-                                        children: [
-                                          const Icon(
-                                            Icons.workspace_premium_rounded,
-                                            size: 40,
-                                            color: DesignColors.yellow,
-                                          ),
-                                          Text(
-                                            '${GameRules.currentLevel(widget.appState.player!.getXp())}',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline1!
-                                                .copyWith(
-                                                    color: DesignColors.yellow),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                // if player reached new Level.
-                                else
-                                  PlayAnimation(
-                                    duration: const Duration(milliseconds: 500),
-                                    tween: Tween<double>(
-                                      begin: 1,
-                                      end: 1.5,
-                                    ),
-                                    curve: Curves.elasticOut,
-                                    builder: (context, child, double value) =>
-                                        Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.workspace_premium_rounded,
-                                          size: 40 * value,
-                                          color: DesignColors.yellow,
-                                        ),
-                                        Text(
-                                          '${GameRules.currentLevel(widget.appState.player!.getXp() + _countupStartValue)}',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline1!
-                                              .copyWith(
-                                                  color: DesignColors.yellow,
-                                                  fontSize: 40 * value),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          );
-                        }),
-                    PlayAnimation(
-                      duration: const Duration(milliseconds: 1000),
-                      delay: const Duration(milliseconds: 500),
-                      tween: Tween<double>(
-                        begin: 0.0,
-                        end: 1,
-                      ),
-                      curve: Curves.bounceOut,
-                      builder: (context, child, double value) => Stack(
-                        clipBehavior: Clip.none,
-                        alignment: Alignment.topCenter,
-                        children: [
-                          Positioned(
-                            top: 70,
-                            child: Container(
-                              margin: EdgeInsets.all(500 - value * 500),
-                              padding: const EdgeInsets.all(30),
-                              alignment: Alignment.center,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: DesignColors.lightBlue,
-                              ),
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  finalText,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline1!
-                                      .copyWith(
-                                          color: DesignColors.pink,
-                                          fontSize: 60 * value),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Text(
-                            finalEmoji,
-                            style: TextStyle(fontSize: 100 * value),
-                          ),
-                          Positioned(
-                            top: 30,
-                            child: ValueListenableBuilder<int>(
-                                valueListenable: _tempPlayerXp,
-                                builder: (BuildContext context, val, child) {
-                                  if (widget.appState.player!
-                                              .getXp()
-                                              .toDouble() +
-                                          _countupStartValue <
-                                      widget.appState.player!
-                                          .getNextLevelXp()) {
-                                    return const SizedBox.shrink();
-                                  } else {
-                                    HapticFeedback.heavyImpact();
-                                    return PlayAnimation(
-                                      duration:
-                                          const Duration(milliseconds: 1000),
-                                      tween: Tween<double>(
-                                        begin: 2,
-                                        end: 1,
-                                      ),
-                                      curve: Curves.elasticOut,
-                                      builder: (context, child, double value) =>
-                                          Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            'LevelUp: ',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline1!
-                                                .copyWith(
-                                                    color: DesignColors.yellow,
-                                                    fontSize: 55 * value,
-                                                    shadows: [
-                                                  const Shadow(
-                                                    color: DesignColors.black,
-                                                    blurRadius: 15,
-                                                    offset: Offset(
-                                                      3,
-                                                      3,
-                                                    ),
-                                                  ),
-                                                ]),
-                                          ),
-                                          Icon(Icons.workspace_premium_rounded,
-                                              size: 50 * value,
-                                              color: DesignColors.yellow,
-                                              shadows: const [
-                                                Shadow(
-                                                  color: DesignColors.black,
-                                                  blurRadius: 10,
-                                                  offset: Offset(
-                                                    3,
-                                                    3,
-                                                  ),
-                                                ),
-                                              ]),
-                                          Text(
-                                            '$_newLevel',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline1!
-                                                .copyWith(
-                                              color: DesignColors.yellow,
-                                              fontSize: 50 * value,
-                                              shadows: [
-                                                const Shadow(
-                                                  color: DesignColors.black,
-                                                  blurRadius: 10,
-                                                  offset: Offset(
-                                                    3,
-                                                    3,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                }),
-                          )
-                        ],
-                      ),
-                    ),
+                    resultBarStack(),
+                    gameResultInfo(finalText, finalEmoji),
                     const SizedBox(height: 0),
-                    Column(
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("+ ",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline1!
-                                    .copyWith(color: DesignColors.yellow)),
-                            const Icon(
-                              Icons.monetization_on,
-                              color: DesignColors.yellow,
-                              size: 30,
-                            ),
-                            ValueListenableBuilder<int>(
-                              valueListenable: _tempPlayerXp,
-                              builder: (BuildContext context, val, child) {
-                                return Countup(
-                                  begin: _countupStartValue.toDouble(),
-                                  end: val.toDouble(),
-                                  duration: const Duration(seconds: 1),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline2!
-                                      .copyWith(color: DesignColors.yellow),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        if (!_pointButtonTapped)
-                          MirrorAnimation(
-                            duration: const Duration(milliseconds: 1000),
-                            tween: Tween<double>(
-                              begin: 1,
-                              end: 1.05,
-                            ),
-                            curve: Curves.elasticIn,
-                            builder: (context, child, double value) =>
-                                ElevatedButton(
-                              onPressed: onTapGetPoints,
-                              child: Text(
-                                "Punkte einsammeln",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline1!
-                                    .copyWith(fontSize: 35 * value),
-                              ),
-                            ),
-                          )
-                        else
-                          ElevatedButton(
-                            onPressed: null,
-                            child: Text(
-                              "Punkte eingesammelt",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline1!
-                                  .copyWith(fontSize: 35),
-                            ),
-                          ),
-                      ],
-                    ),
+                    Column(children: [
+                      earnablePointsRow(),
+                      const SizedBox(height: 20),
+                      earnPointsButton()
+                    ]),
                     const SizedBox(height: 20),
                   ],
                 ),
@@ -502,6 +90,380 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
         ),
       ),
     ]);
+  }
+
+  Row earnablePointsRow() {
+    return Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("+ ",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline1!
+                  .copyWith(color: DesignColors.yellow)),
+          const Icon(
+            Icons.monetization_on,
+            color: DesignColors.yellow,
+            size: 30,
+          ),
+          ValueListenableBuilder<int>(
+            valueListenable: _tempPlayerXp,
+            builder: (BuildContext context, val, child) {
+              return Countup(
+                begin: _countupStartValue.toDouble(),
+                end: val.toDouble(),
+                duration: const Duration(seconds: 1),
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2!
+                    .copyWith(color: DesignColors.yellow),
+              );
+            },
+          ),
+        ]);
+  }
+
+  dynamic earnPointsButton() {
+    if (!_pointButtonTapped) {
+      return MirrorAnimation(
+          duration: const Duration(milliseconds: 1000),
+          tween: Tween<double>(
+            begin: 1,
+            end: 1.05,
+          ),
+          curve: Curves.elasticIn,
+          builder: (context, child, double value) => ElevatedButton(
+                onPressed: onTapGetPoints,
+                child: Text(
+                  "Punkte einsammeln",
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline1!
+                      .copyWith(fontSize: 35 * value),
+                ),
+              ));
+    } else {
+      return ElevatedButton(
+          onPressed: null,
+          child: Text(
+            "Punkte eingesammelt",
+            style:
+                Theme.of(context).textTheme.headline1!.copyWith(fontSize: 35),
+          ));
+    }
+  }
+
+  PlayAnimation gameResultInfo(String finalText, String finalEmoji) {
+    return PlayAnimation(
+      duration: const Duration(milliseconds: 1000),
+      delay: const Duration(milliseconds: 500),
+      tween: Tween<double>(
+        begin: 0.0,
+        end: 1,
+      ),
+      curve: Curves.bounceOut,
+      builder: (context, child, double value) => Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.topCenter,
+        children: [
+          Positioned(
+            top: 70,
+            child: Container(
+              margin: EdgeInsets.all(500 - value * 500),
+              padding: const EdgeInsets.all(30),
+              alignment: Alignment.center,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: DesignColors.lightBlue,
+              ),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  finalText,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline1!
+                      .copyWith(color: DesignColors.pink, fontSize: 60 * value),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ),
+          Text(
+            finalEmoji,
+            style: TextStyle(fontSize: 100 * value),
+          ),
+          Positioned(
+            top: 30,
+            child: newLevelIndicator(),
+          )
+        ],
+      ),
+    );
+  }
+
+  ValueListenableBuilder<int> resultBarStack() {
+    return ValueListenableBuilder<int>(
+        valueListenable: _tempPlayerXp,
+        builder: (BuildContext context, val, child) {
+          return Container(
+            margin: const EdgeInsets.all(10),
+            clipBehavior: Clip.none,
+            padding: const EdgeInsets.all(10),
+            height: AppBar().preferredSize.height * 1.5,
+            // Set background color and rounded bottom corners.
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(15)),
+              color: DesignColors.backgroundBlue,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 4,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: Text(
+                    widget.appState.player!.emoji,
+                    style: const TextStyle(fontSize: 50),
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.appState.player!.name,
+                        style: Theme.of(context).textTheme.headline1,
+                      ),
+                      Stack(alignment: Alignment.center, children: [
+                        SfLinearGauge(
+                          minimum: GameRules.xpForCurrentLevel(
+                                  widget.appState.player!.getXp() +
+                                      _countupStartValue)
+                              .toDouble(),
+                          maximum: GameRules.xpForNextLevel(
+                                  widget.appState.player!.getXp() +
+                                      _countupStartValue)
+                              .toDouble(),
+                          animateAxis: true,
+                          axisTrackStyle: const LinearAxisTrackStyle(
+                            thickness: 20,
+                            edgeStyle: LinearEdgeStyle.bothCurve,
+                          ),
+                          animateRange: true,
+                          animationDuration:
+                              _countupStartValue > 0 ? 1000 : 400,
+                          showTicks: false,
+                          showLabels: false,
+                          barPointers: [
+                            LinearBarPointer(
+                              edgeStyle: LinearEdgeStyle.bothCurve,
+                              thickness: 20,
+                              value:
+                                  widget.appState.player!.getXp().toDouble() +
+                                      _countupStartValue,
+                              color: DesignColors.pink,
+                            )
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: AnimationLimiter(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: AnimationConfiguration.toStaggeredList(
+                                duration: const Duration(milliseconds: 500),
+                                childAnimationBuilder: (widget) =>
+                                    SlideAnimation(
+                                  horizontalOffset: 50.0,
+                                  curve: Curves.bounceOut,
+                                  child: FadeInAnimation(
+                                    child: widget,
+                                  ),
+                                ),
+                                children: [
+                                  Text(
+                                    widget.appState.player!
+                                        .getLevel()
+                                        .toString(),
+                                    style:
+                                        Theme.of(context).textTheme.headline5,
+                                  ),
+                                  Text(
+                                    (widget.appState.player!.getXp() +
+                                                _countupStartValue)
+                                            .toString() +
+                                        "/" +
+                                        widget.appState.player!
+                                            .getNextLevelXp()
+                                            .toString() +
+                                        " XP",
+                                    style:
+                                        Theme.of(context).textTheme.headline5,
+                                  ),
+                                  Text(
+                                    (widget.appState.player!.getLevel() + 1)
+                                        .toString(),
+                                    style:
+                                        Theme.of(context).textTheme.headline5,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                      ]),
+                    ],
+                  ),
+                ),
+                // if player did not reach new Level.
+                if (widget.appState.player!.getXp().toDouble() +
+                        _countupStartValue <
+                    widget.appState.player!.getNextLevelXp())
+                  AnimationLimiter(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: AnimationConfiguration.toStaggeredList(
+                        duration: const Duration(milliseconds: 500),
+                        childAnimationBuilder: (widget) => SlideAnimation(
+                          horizontalOffset: 50.0,
+                          curve: Curves.bounceOut,
+                          child: FadeInAnimation(
+                            child: widget,
+                          ),
+                        ),
+                        children: [
+                          const Icon(
+                            Icons.workspace_premium_rounded,
+                            size: 40,
+                            color: DesignColors.yellow,
+                          ),
+                          Text(
+                            '${GameRules.currentLevel(widget.appState.player!.getXp())}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline1!
+                                .copyWith(color: DesignColors.yellow),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                // if player reached new Level.
+                else
+                  PlayAnimation(
+                    duration: const Duration(milliseconds: 500),
+                    tween: Tween<double>(
+                      begin: 1,
+                      end: 1.5,
+                    ),
+                    curve: Curves.elasticOut,
+                    builder: (context, child, double value) => Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.workspace_premium_rounded,
+                          size: 40 * value,
+                          color: DesignColors.yellow,
+                        ),
+                        Text(
+                          '${GameRules.currentLevel(widget.appState.player!.getXp() + _countupStartValue)}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline1!
+                              .copyWith(
+                                  color: DesignColors.yellow,
+                                  fontSize: 40 * value),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          );
+        });
+  }
+
+  ValueListenableBuilder<int> newLevelIndicator() {
+    return ValueListenableBuilder<int>(
+        valueListenable: _tempPlayerXp,
+        builder: (BuildContext context, val, child) {
+          if (widget.appState.player!.getXp().toDouble() + _countupStartValue <
+              widget.appState.player!.getNextLevelXp()) {
+            return const SizedBox.shrink();
+          } else {
+            HapticFeedback.heavyImpact();
+            return PlayAnimation(
+              duration: const Duration(milliseconds: 1000),
+              tween: Tween<double>(
+                begin: 2,
+                end: 1,
+              ),
+              curve: Curves.elasticOut,
+              builder: (context, child, double value) => Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'LevelUp: ',
+                    style: Theme.of(context).textTheme.headline1!.copyWith(
+                        color: DesignColors.yellow,
+                        fontSize: 55 * value,
+                        shadows: [
+                          const Shadow(
+                            color: DesignColors.black,
+                            blurRadius: 15,
+                            offset: Offset(
+                              3,
+                              3,
+                            ),
+                          ),
+                        ]),
+                  ),
+                  Icon(Icons.workspace_premium_rounded,
+                      size: 50 * value,
+                      color: DesignColors.yellow,
+                      shadows: const [
+                        Shadow(
+                          color: DesignColors.black,
+                          blurRadius: 10,
+                          offset: Offset(
+                            3,
+                            3,
+                          ),
+                        ),
+                      ]),
+                  Text(
+                    '$_newLevel',
+                    style: Theme.of(context).textTheme.headline1!.copyWith(
+                      color: DesignColors.yellow,
+                      fontSize: 50 * value,
+                      shadows: [
+                        const Shadow(
+                          color: DesignColors.black,
+                          blurRadius: 10,
+                          offset: Offset(
+                            3,
+                            3,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+        });
   }
 
   // called on tap of getCoins.
