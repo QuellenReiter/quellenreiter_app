@@ -43,6 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
+        key: WidgetKeys.loginScreen,
         resizeToAvoidBottomInset: false,
         appBar: MainAppBar(),
         body: Column(
@@ -147,6 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               valueListenable: usernameController,
                               builder: (context, TextEditingValue value, __) {
                                 return ElevatedButton(
+                                  key: WidgetKeys.loginButton,
                                   onPressed: usernameController.text.length >=
                                               Utils.usernameMinLength &&
                                           passwordController.text.length > 7
@@ -174,6 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Hero(
                     tag: "authSwitch",
                     child: TextButton(
+                      key: WidgetKeys.loginToSignUp,
                       onPressed: () {
                         widget.appState.route = Routes.signUp;
                         HapticFeedback.mediumImpact();

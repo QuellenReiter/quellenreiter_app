@@ -215,6 +215,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               ElevatedButton.icon(
+                                key: WidgetKeys.logoutButton,
                                 onPressed: () {
                                   HapticFeedback.heavyImpact();
                                   widget.appState.logout();

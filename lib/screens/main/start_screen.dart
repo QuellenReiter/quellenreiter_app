@@ -199,6 +199,7 @@ class _StartScreenState extends State<StartScreen> {
     return RefreshIndicator(
       onRefresh: widget.appState.getPlayerRelations,
       child: SingleChildScrollView(
+        key: WidgetKeys.startScreen,
         clipBehavior: Clip.none,
         physics: const AlwaysScrollableScrollPhysics(
             parent: BouncingScrollPhysics()),

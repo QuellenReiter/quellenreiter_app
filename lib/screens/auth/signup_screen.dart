@@ -121,6 +121,7 @@ class _SignupScreenState extends State<SignupScreen> {
       onVerticalDragEnd: (_) => FocusScope.of(context).unfocus(),
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
+        key: WidgetKeys.signUpScreen,
         resizeToAvoidBottomInset: true,
         appBar: MainAppBar(),
         body: Column(
@@ -430,8 +431,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                                           DesignColors.black),
                                             ),
                                             Switch(
-                                              key: const Key(
-                                                  "termsAndConditionsSwitch"),
+                                              key: WidgetKeys
+                                                  .termsAndConditionsSwitch,
                                               value:
                                                   termsAndConditionsAcceptedValue,
                                               onChanged: (bool value) {

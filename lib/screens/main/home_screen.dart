@@ -195,7 +195,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               label: 'Gespeichert',
             ),
             const BottomNavigationBarItem(
-              icon: Icon(Icons.settings_outlined),
+              icon: Icon(
+                  key: WidgetKeys.inactiveSettingsIcon,
+                  Icons.settings_outlined),
               activeIcon: Icon(Icons.settings),
               label: 'Einstellungen',
             ),

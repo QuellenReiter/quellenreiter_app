@@ -53,6 +53,7 @@ class _MainAppBarState extends State<MainAppBar> {
       const SafeArea(
         child: Center(
           child: Image(
+            key: WidgetKeys.mainAppBarLogo,
             height: 500,
             image: AssetImage('assets/logo-pink.png'),
           ),
