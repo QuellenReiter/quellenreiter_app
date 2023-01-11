@@ -392,11 +392,11 @@ class DatabaseUtils {
     }
   }
 
-  /// Create a [Player]s userdata in the Database by [String].
+  /// Create a [LocalPlayer]s userdata in the Database by [String].
   ///
   /// Can be anything except username and auth stuff.
   Future<void> createUserData(
-      Player player, Function createUserDataCallback) async {
+      LocalPlayer player, Function createUserDataCallback) async {
     if (!await createUserDatabaseClient()) {
       createUserDataCallback(null);
       return;
@@ -417,7 +417,7 @@ class DatabaseUtils {
       createUserDataCallback(null);
     } else {
       createUserDataCallback(
-          Player.fromMap(mutationResult.data?["updateUser"]["user"]));
+          LocalPlayer.fromMap(mutationResult.data?["updateUser"]["user"]));
     }
   }
 
