@@ -21,6 +21,20 @@ class DatabaseUtils {
   /// Holds any error message related to DB activity
   String? error;
 
+  /// [GraphQLClient] client for the user database
+  /// requires a token.
+  GraphQLClient? userDatabaseClient;
+
+  /// [GraphQLClient] for the statement database.
+  /// Does not require a token.
+  GraphQLClient statementDatabaseClient = GraphQLClient(
+    cache: GraphQLCache(),
+    link: HttpLink(statementDatabaseUrl, defaultHeaders: {
+      'X-Parse-Application-Id': statementDatabaseApplicationID,
+      'X-Parse-Client-Key': statementDatabaseClientKey,
+    }),
+  );
+
   /// Object to access [FlutterSecureStorage].
   var safeStorage = const FlutterSecureStorage();
 
@@ -29,6 +43,30 @@ class DatabaseUtils {
 
   /// Live query livequery for friends
   parse.LiveQuery? newFriendsLiveQuery;
+
+  /// Creates [userDatabaseClient].
+  Future<bool> createUserDatabaseClient() async {
+    // The session token.
+    String? token = await safeStorage.read(key: "token");
+    // If token is not null, check if it is valid.
+    if (token != null) {
+      // Link to user database.
+      final HttpLink userDatabaseLink =
+          HttpLink(userDatabaseUrl, defaultHeaders: {
+        'X-Parse-Application-Id': userDatabaseApplicationID,
+        'X-Parse-Client-Key': userDatabaseClientKey,
+        'X-Parse-Session-Token': token,
+      });
+
+      // Provides data from server and facilitates requests.
+      userDatabaseClient = GraphQLClient(
+        cache: GraphQLCache(),
+        link: userDatabaseLink,
+      );
+      return true;
+    }
+    return false;
+  }
 
   /// Login a user.
   void login(String username, String password, Function loginCallback) async {
@@ -62,6 +100,7 @@ class DatabaseUtils {
     safeStorage.write(
         key: "token",
         value: loginResult.data?["logIn"]["viewer"]["sessionToken"]);
+
     loginCallback(
         LocalPlayer.fromMap(loginResult.data?["logIn"]["viewer"]["user"]));
     // Safe the User
@@ -137,6 +176,8 @@ class DatabaseUtils {
       newFriendsLiveQuery!.client.disconnect();
       newFriendsLiveQuery = null;
     }
+    // remove parse initialization
+    userDatabaseClient = null;
 
     logoutCallback();
   }
@@ -170,9 +211,6 @@ class DatabaseUtils {
         checkTokenCallback(null);
         return;
       } else {
-        // Safe the new token.
-        // await safeStorage.write(
-        //     key: "token", value: queryResult.data?["viewer"]["sessionToken"]);
         checkTokenCallback(
             LocalPlayer.fromMap(queryResult.data?["viewer"]["user"]));
         return;
@@ -183,137 +221,81 @@ class DatabaseUtils {
   }
 
   Future<Player> getUserData(Player p) async {
-    // The session token.
-    String? token = await safeStorage.read(key: "token");
-    // If token is not null, check if it is valid.
-    if (token != null) {
-      // Link to the database.
-      final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-        'X-Parse-Application-Id': userDatabaseApplicationID,
-        'X-Parse-Client-Key': userDatabaseClientKey,
-        'X-Parse-Session-Token': token,
-      });
-
-      // The client that provides the connection.
-      GraphQLClient client = GraphQLClient(
-        cache: GraphQLCache(),
-        link: httpLink,
-      );
-
-      // The query result.
-      var queryResult = await client.query(
-        QueryOptions(
-          document: gql(Queries.getUser()),
-          variables: {"user": p.id},
-        ),
-      );
-
-      if (queryResult.hasException) {
-        _handleException(queryResult.exception!);
-
-        return p;
-      }
-      return LocalPlayer.fromMap(queryResult.data!["user"]);
+    if (!await createUserDatabaseClient()) {
+      return p;
     }
-    return p;
+
+    // The query result.
+    var queryResult = await userDatabaseClient!.query(
+      QueryOptions(
+        document: gql(Queries.getUser()),
+        variables: {"user": p.id},
+      ),
+    );
+
+    if (queryResult.hasException) {
+      _handleException(queryResult.exception!);
+
+      return p;
+    }
+    return LocalPlayer.fromMap(queryResult.data!["user"]);
   }
 
   /// Get all friend requests.
   Future<PlayerRelationCollection?> getFriends(Player player) async {
-    // The session token.
-    String? token = await safeStorage.read(key: "token");
-    // If token is not null, check if it is valid.
-    if (token != null) {
-      // Link to the database.
-      final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-        'X-Parse-Application-Id': userDatabaseApplicationID,
-        'X-Parse-Client-Key': userDatabaseClientKey,
-        'X-Parse-Session-Token': token,
-      });
-
-      // The client that provides the connection.
-      GraphQLClient client = GraphQLClient(
-        cache: GraphQLCache(),
-        link: httpLink,
-      );
-
-      // The query result.
-      var queryResult = await client.query(
-        QueryOptions(
-          document: gql(Queries.getFriends(player)),
-        ),
-      );
-
-      if (queryResult.hasException) {
-        _handleException(queryResult.exception!);
-
-        return null;
-      } else {
-        return PlayerRelationCollection.fromFriendshipMap(
-            queryResult.data?["friendships"], player);
-      }
+    if (!await createUserDatabaseClient()) {
+      return null;
     }
-    // no token, return false
-    return null;
+
+    // The query result.
+    var queryResult = await userDatabaseClient!.query(
+      QueryOptions(
+        document: gql(Queries.getFriends(player)),
+      ),
+    );
+
+    if (queryResult.hasException) {
+      _handleException(queryResult.exception!);
+
+      return null;
+    } else {
+      return PlayerRelationCollection.fromFriendshipMap(
+          queryResult.data?["friendships"], player);
+    }
   }
 
   /// Accept a friend request
   Future<void> acceptFriendRequest(
       Player p, PlayerRelation opp, Function acceptFriendCallback) async {
-    // The session token.
-    String? token = await safeStorage.read(key: "token");
-    // If token is not null, check if it is valid.
-    if (token != null) {
-      // Link to the database.
-      final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-        'X-Parse-Application-Id': userDatabaseApplicationID,
-        'X-Parse-Client-Key': userDatabaseClientKey,
-        'X-Parse-Session-Token': token,
-      });
-
-      // The client that provides the connection.
-      GraphQLClient client = GraphQLClient(
-        cache: GraphQLCache(),
-        link: httpLink,
-      );
-
-      // Update the friendship to be accepted by both players.
-      var mutationResult = await client.mutate(
-        MutationOptions(
-          document: gql(Queries.updateFriendshipStatus(opp.friendshipId)),
-        ),
-      );
-
-      if (mutationResult.hasException) {
-        _handleException(mutationResult.exception!);
-
-        acceptFriendCallback(false);
-        return;
-      } else {
-        acceptFriendCallback(true);
-        // update num of friends in Database.
-        p.numFriends += 1;
-        updateUserData(p, (Player? p) {});
-        return;
-      }
+    if (!await createUserDatabaseClient()) {
+      acceptFriendCallback(false);
+      return;
     }
-    // no token, return false
-    acceptFriendCallback(false);
-    return;
+
+    // Update the friendship to be accepted by both players.
+    var mutationResult = await userDatabaseClient!.mutate(
+      MutationOptions(
+        document: gql(Queries.updateFriendshipStatus(opp.friendshipId)),
+      ),
+    );
+
+    if (mutationResult.hasException) {
+      _handleException(mutationResult.exception!);
+
+      acceptFriendCallback(false);
+      return;
+    } else {
+      acceptFriendCallback(true);
+      // update num of friends in Database.
+      p.numFriends += 1;
+      updateUserData(p, (Player? p) {});
+      return;
+    }
   }
 
   /// Get a single [Statement] from the Database by [Statement.objectId].
   Future<Statement?> getStatement(String statementID) async {
-    final HttpLink httpLink = HttpLink(statementDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': statementDatabaseApplicationID,
-      'X-Parse-Client-Key': statementDatabaseClientKey,
-    });
-    // create the data provider
-    GraphQLClient client = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
-    var queryResult = await client.query(
+    var queryResult = await statementDatabaseClient.query(
       QueryOptions(document: gql(Queries.getStatement(statementID))),
     );
     if (queryResult.hasException) {
@@ -336,23 +318,12 @@ class DatabaseUtils {
       return; //return if bad words are found
     }
 
-    // The session token.
-    String? token = await safeStorage.read(key: "token");
-    if (token == null) {
-      await updateUserCallback(false);
+    if (!await createUserDatabaseClient()) {
+      await updateUserCallback(null);
       return;
     }
-    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': userDatabaseApplicationID,
-      'X-Parse-Client-Key': userDatabaseClientKey,
-      'X-Parse-Session-Token': token,
-    });
-    // create the data provider
-    GraphQLClient client = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
-    var mutationResult = await client.mutate(
+
+    var mutationResult = await userDatabaseClient!.mutate(
       MutationOptions(
         document: gql(Queries.updateUser()),
         variables: {
@@ -379,18 +350,12 @@ class DatabaseUtils {
       Player player, Function updateUserCallback) async {
     // TODO: fetch player before updating so nothing is overwritten
     // The session token.
-    String? token = await safeStorage.read(key: "token");
-    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': userDatabaseApplicationID,
-      'X-Parse-Client-Key': userDatabaseClientKey,
-      'X-Parse-Session-Token': token!,
-    });
-    // create the data provider
-    GraphQLClient client = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
-    var mutationResult = await client.mutate(
+
+    if (!await createUserDatabaseClient()) {
+      await updateUserCallback(null);
+      return;
+    }
+    var mutationResult = await userDatabaseClient!.mutate(
       MutationOptions(
         document: gql(Queries.updateUserData()),
         variables: {
@@ -417,20 +382,12 @@ class DatabaseUtils {
   /// Can be anything except username and auth stuff.
   Future<void> createUserData(
       Player player, Function createUserDataCallback) async {
-    // The session token.
-    String? token = await safeStorage.read(key: "token");
-    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': userDatabaseApplicationID,
-      'X-Parse-Client-Key': userDatabaseClientKey,
-      'X-Parse-Session-Token': token!,
-    });
-    // create the data provider
-    GraphQLClient client = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
+    if (!await createUserDatabaseClient()) {
+      createUserDataCallback(null);
+      return;
+    }
 
-    var mutationResult = await client.mutate(
+    var mutationResult = await userDatabaseClient!.mutate(
       MutationOptions(
         document: gql(Queries.updateUser()),
         variables: {
@@ -454,19 +411,10 @@ class DatabaseUtils {
   /// Update a [Friendship] in the Database by [String].
 
   Future<bool> updateFriendship(PlayerRelation _playerRelation) async {
-    // The session token.
-    String? token = await safeStorage.read(key: "token");
-    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': userDatabaseApplicationID,
-      'X-Parse-Client-Key': userDatabaseClientKey,
-      'X-Parse-Session-Token': token!,
-    });
-    // create the data provider
-    GraphQLClient client = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
-    var mutationResult = await client.mutate(
+    if (!await createUserDatabaseClient()) {
+      return false;
+    }
+    var mutationResult = await userDatabaseClient!.mutate(
       MutationOptions(
         document: gql(Queries.updateFriendship()),
         variables: {
@@ -488,19 +436,10 @@ class DatabaseUtils {
   ///
   /// Can be a new name or emoji.
   Future<bool> updateGame(QuellenreiterAppState appState) async {
-    // The session token.
-    String? token = await safeStorage.read(key: "token");
-    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': userDatabaseApplicationID,
-      'X-Parse-Client-Key': userDatabaseClientKey,
-      'X-Parse-Session-Token': token!,
-    });
-    // create the data provider
-    GraphQLClient client = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
-    var mutationResult = await client.mutate(
+    if (!await createUserDatabaseClient()) {
+      return false;
+    }
+    var mutationResult = await userDatabaseClient!.mutate(
       MutationOptions(
         document: gql(Queries.updateGame()),
         variables: {
@@ -533,23 +472,15 @@ class DatabaseUtils {
   /// Upload a [Game] into the Database by [String].
   ///
   Future<Game?> uploadGame(PlayerRelation _playerRelation) async {
-    // The session token.
-    String? token = await safeStorage.read(key: "token");
-    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': userDatabaseApplicationID,
-      'X-Parse-Client-Key': userDatabaseClientKey,
-      'X-Parse-Session-Token': token!,
-    });
-    // create the data provider
-    GraphQLClient client = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
+    if (!await createUserDatabaseClient()) {
+      return null;
+    }
+
     var temp = _playerRelation.openGame!.toMap();
     temp.remove("id");
 
     // ERROR HERE !!!!
-    var mutationResult = await client.mutate(
+    var mutationResult = await userDatabaseClient!.mutate(
       MutationOptions(
         document: gql(Queries.uploadGame()),
         variables: {
@@ -570,16 +501,7 @@ class DatabaseUtils {
 
   /// Fetch all safed/liked [Statements] from a [Player].
   Future<Statements?> getStatements(List<String> ids) async {
-    final HttpLink httpLink = HttpLink(statementDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': statementDatabaseApplicationID,
-      'X-Parse-Client-Key': statementDatabaseClientKey,
-    });
-    // create the data provider
-    GraphQLClient client = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
-    var queryResult = await client.query(
+    var queryResult = await statementDatabaseClient.query(
       QueryOptions(
         document: gql(
           Queries.getStatements(),
@@ -606,118 +528,68 @@ class DatabaseUtils {
 
   Future<void> sendFriendRequest(QuellenreiterAppState appState,
       String playerRelationId, Function sendFriendRequestCallback) async {
-    // The session token.
-    String? token = await safeStorage.read(key: "token");
-    // If token is not null, check if it is valid.
-    if (token != null) {
-      // Link to the database.
-      final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-        'X-Parse-Application-Id': userDatabaseApplicationID,
-        'X-Parse-Client-Key': userDatabaseClientKey,
-        'X-Parse-Session-Token': token,
-      });
-
-      // The client that provides the connection.
-      GraphQLClient client = GraphQLClient(
-        cache: GraphQLCache(),
-        link: httpLink,
-      );
-
-      // Update the friendship to be accepted by both players.
-      var mutationResult = await client.mutate(
-        MutationOptions(
-          document: gql(
-              Queries.sendFriendRequest(appState.player!.id, playerRelationId)),
-        ),
-      );
-
-      if (mutationResult.hasException) {
-        _handleException(mutationResult.exception!);
-
-        sendFriendRequestCallback(false);
-        return;
-      } else {
-        sendFriendRequestCallback(true);
-        sendPushFriendInvitation(appState, receiverId: playerRelationId);
-        return;
-      }
+    if (!await createUserDatabaseClient()) {
+      sendFriendRequestCallback(false);
+      return;
     }
-    // no token, return false
-    sendFriendRequestCallback(false);
-    return;
+
+    // Update the friendship to be accepted by both players.
+    var mutationResult = await userDatabaseClient!.mutate(
+      MutationOptions(
+        document: gql(
+            Queries.sendFriendRequest(appState.player!.id, playerRelationId)),
+      ),
+    );
+
+    if (mutationResult.hasException) {
+      _handleException(mutationResult.exception!);
+
+      sendFriendRequestCallback(false);
+      return;
+    } else {
+      sendFriendRequestCallback(true);
+      sendPushFriendInvitation(appState, receiverId: playerRelationId);
+      return;
+    }
   }
 
   /// Search all Users to get new [PlayerRelationCollection].
   Future<void> searchFriends(String friendsQuery, List<String> friendNames,
       Function searchFriendsCallback) async {
-    // The session token.
-    String? token = await safeStorage.read(key: "token");
-    // If token is not null, check if it is valid.
-    if (token != null) {
-      // Link to the database.
-      final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-        'X-Parse-Application-Id': userDatabaseApplicationID,
-        'X-Parse-Client-Key': userDatabaseClientKey,
-        'X-Parse-Session-Token': token,
-      });
-
-      // The client that provides the connection.
-      GraphQLClient client = GraphQLClient(
-        cache: GraphQLCache(),
-        link: httpLink,
-      );
-
-      // The query result.
-      var queryResult = await client.query(
-        QueryOptions(
-          document: gql(Queries.searchFriends(friendsQuery, friendNames)),
-        ),
-      );
-
-      if (queryResult.hasException) {
-        _handleException(queryResult.exception!);
-
-        searchFriendsCallback(null);
-        return;
-      } else {
-        searchFriendsCallback(
-            PlayerRelationCollection.fromUserMap(queryResult.data?["users"]));
-        return;
-      }
+    if (!await createUserDatabaseClient()) {
+      searchFriendsCallback(false);
+      return;
     }
-    // no token, return false
-    searchFriendsCallback(null);
-    return;
+
+    // The query result.
+    var queryResult = await userDatabaseClient!.query(
+      QueryOptions(
+        document: gql(Queries.searchFriends(friendsQuery, friendNames)),
+      ),
+    );
+
+    if (queryResult.hasException) {
+      _handleException(queryResult.exception!);
+
+      searchFriendsCallback(null);
+      return;
+    } else {
+      searchFriendsCallback(
+          PlayerRelationCollection.fromUserMap(queryResult.data?["users"]));
+      return;
+    }
   }
 
   /// Function to find and load nine statements that have not been played by neither user.
   Future<List<String>?> getPlayableStatements(
       PlayerRelation _playerRelation, Player p) async {
-    // setup statement db connection
-    final HttpLink httpLinkStatementDB =
-        HttpLink(statementDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': statementDatabaseApplicationID,
-      'X-Parse-Client-Key': statementDatabaseClientKey,
-    });
-    // create the data provider
-    GraphQLClient clientStatementDB = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLinkStatementDB,
-    );
-    // setup gameDB connection
-    // The session token.
-    String? token = await safeStorage.read(key: "token");
-    // If token is not null, check if it is valid.
-    if (token == null) {
-      return null;
-    }
     // combine played statements
     List<String> playedStatemntsCombined = [
       ..._playerRelation.opponent.playedStatements!,
       ...p.playedStatements!
     ];
     // get 50 possible ids
-    var playableStatements = await clientStatementDB.query(
+    var playableStatements = await statementDatabaseClient.query(
       QueryOptions(
         document: gql(Queries.getStatements()),
         variables: {
@@ -768,26 +640,12 @@ class DatabaseUtils {
 
   /// Function to delete a game in the database.
   Future<void> deleteGame(Game game) async {
-    String? token = await safeStorage.read(key: "token");
-    // If token is not null, check if it is valid.
-    if (token == null) {
+    if (!await createUserDatabaseClient()) {
       return;
     }
-    // Link to the database.
-    final HttpLink httpLinkUserDB = HttpLink(userDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': userDatabaseApplicationID,
-      'X-Parse-Client-Key': userDatabaseClientKey,
-      'X-Parse-Session-Token': token,
-    });
-
-    // The client that provides the connection.
-    GraphQLClient clientUserDB = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLinkUserDB,
-    );
 
     // Remeove the game
-    var mutationResult = await clientUserDB.mutate(
+    var mutationResult = await userDatabaseClient!.mutate(
       MutationOptions(
         document: gql(Queries.removeGame()),
         variables: {
@@ -809,27 +667,13 @@ class DatabaseUtils {
       appState.route = Routes.login;
       return;
     }
-    String? token = await safeStorage.read(key: "token");
-    // If token is not null, check if it is valid.
-    if (token == null) {
-      appState.route = Routes.login;
 
+    if (!await createUserDatabaseClient()) {
+      appState.route = Routes.settings;
       return;
     }
-    // Link to the database.
-    final HttpLink httpLinkUserDB = HttpLink(userDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': userDatabaseApplicationID,
-      'X-Parse-Client-Key': userDatabaseClientKey,
-      'X-Parse-Session-Token': token,
-    });
-
-    // The client that provides the connection.
-    GraphQLClient clientUserDB = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLinkUserDB,
-    );
     // Remeove the User and all open games and friendships.
-    var mutationResult = await clientUserDB.mutate(
+    var mutationResult = await userDatabaseClient!.mutate(
       MutationOptions(
         document: gql(Queries.deleteUser(appState)),
         variables: {
@@ -875,7 +719,7 @@ class DatabaseUtils {
     // parse does not support graphql subscriptions ..
     await parse.Parse().initialize(userDatabaseApplicationID, userDatabaseUrl,
         clientKey: userDatabaseClientKey,
-        debug: true,
+        debug: useDevServer,
         liveQueryUrl: userLiveQueryUrl,
         sessionId: await safeStorage.read(key: "token"),
         autoSendSessionId: true);
@@ -959,7 +803,7 @@ class DatabaseUtils {
     await parse.Parse().initialize(userDatabaseApplicationID,
         userDatabaseUrl.replaceAll("graphql", "parse"),
         clientKey: userDatabaseClientKey,
-        debug: true,
+        debug: useDevServer,
         liveQueryUrl: userLiveQueryUrl,
         sessionId: await safeStorage.read(key: "token"),
         autoSendSessionId: true);
@@ -983,7 +827,7 @@ class DatabaseUtils {
       userDatabaseApplicationID,
       userDatabaseUrl.replaceAll("graphql", "parse"),
       clientKey: userDatabaseClientKey,
-      debug: true,
+      debug: useDevServer,
       liveQueryUrl: userLiveQueryUrl,
     );
     //Executes a cloud function that returns a ParseObject type
@@ -1008,7 +852,7 @@ class DatabaseUtils {
     await parse.Parse().initialize(userDatabaseApplicationID,
         userDatabaseUrl.replaceAll("graphql", "parse"),
         clientKey: userDatabaseClientKey,
-        debug: true,
+        debug: useDevServer,
         liveQueryUrl: userLiveQueryUrl,
         sessionId: await safeStorage.read(key: "token"),
         autoSendSessionId: true);
@@ -1031,7 +875,7 @@ class DatabaseUtils {
     await parse.Parse().initialize(userDatabaseApplicationID,
         userDatabaseUrl.replaceAll("graphql", "parse"),
         clientKey: userDatabaseClientKey,
-        debug: true,
+        debug: useDevServer,
         liveQueryUrl: userLiveQueryUrl,
         sessionId: await safeStorage.read(key: "token"),
         autoSendSessionId: true);
@@ -1053,7 +897,7 @@ class DatabaseUtils {
     await parse.Parse().initialize(userDatabaseApplicationID,
         userDatabaseUrl.replaceAll("graphql", "parse"),
         clientKey: userDatabaseClientKey,
-        debug: true,
+        debug: useDevServer,
         liveQueryUrl: userLiveQueryUrl,
         sessionId: await safeStorage.read(key: "token"),
         autoSendSessionId: true);
