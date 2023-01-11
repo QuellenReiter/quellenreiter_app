@@ -219,6 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   widget.appState.route = Routes.tutorial;
                                 },
                                 child: Image(
+                                  key: const Key("loginScreenLogo"),
                                   height:
                                       MediaQuery.of(context).size.aspectRatio >
                                               (9 / 16)
