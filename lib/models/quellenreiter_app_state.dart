@@ -607,13 +607,11 @@ class QuellenreiterAppState extends ChangeNotifier {
           debugPrint("token is null, are you on an iOS simulator?");
           return;
         }
-        debugPrint("token: $token");
         player!.deviceToken = token;
       } on PlatformException catch (e) {
         debugPrint("error: ${e.message}");
       }
     }
-    debugPrint("deviceToken: ${player!.deviceToken}");
     // push new token to db
     await db.updateUser(player!, (LocalPlayer? p) {});
   }
