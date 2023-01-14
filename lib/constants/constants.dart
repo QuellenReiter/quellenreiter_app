@@ -300,3 +300,23 @@ class GameRules {
 
   static String testStatementId = "uNBPKPaeRt";
 }
+
+/// Provide widget Keys for testing.
+/// These Keys are used to find widgets in the widget tree.
+class WidgetKeys {
+  // Screens
+  static const Key startScreen = Key("startScreen");
+  static const Key loginScreen = Key("loginScreen");
+  static const Key signUpScreen = Key("signUpScreen");
+
+  // Buttons
+  static const Key logoutButton = Key("logoutButton");
+  static const Key loginToSignUp = Key("loginToLogout");
+  static const Key loginButton = Key("loginButton");
+  static const Key signUpToLogin = Key("logoutToLogin");
+  static const Key inactiveSettingsIcon = Key("inactiveSettingsIcon");
+
+  // other widgets
+  static const Key mainAppBarLogo = Key("mainAppBarLogo");
+  static const Key termsAndConditionsSwitch = Key("termsAndConditionsSwitch");
+}

@@ -21,7 +21,7 @@ class _SignupScreenState extends State<SignupScreen> {
   late TextEditingController emojiController;
   late TextEditingController password2Controller;
   final PageController _pageController = PageController(viewportFraction: 1);
-  ValueNotifier<bool> agbAccepted = ValueNotifier<bool>(false);
+  ValueNotifier<bool> termsAndConditionsAccepted = ValueNotifier<bool>(false);
   ValueNotifier<bool> registerClicked = ValueNotifier<bool>(false);
 
   @override
@@ -121,6 +121,7 @@ class _SignupScreenState extends State<SignupScreen> {
       onVerticalDragEnd: (_) => FocusScope.of(context).unfocus(),
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
+        key: WidgetKeys.signUpScreen,
         resizeToAvoidBottomInset: true,
         appBar: MainAppBar(),
         body: Column(
@@ -382,8 +383,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                 const SizedBox(height: 10),
                                 // toggle to allow notifications
                                 ValueListenableBuilder(
-                                    valueListenable: agbAccepted,
-                                    builder: (context, bool agbAcceptedValue,
+                                    valueListenable: termsAndConditionsAccepted,
+                                    builder: (context,
+                                        bool termsAndConditionsAcceptedValue,
                                         child) {
                                       return Align(
                                         alignment: Alignment.centerLeft,
@@ -429,10 +431,14 @@ class _SignupScreenState extends State<SignupScreen> {
                                                           DesignColors.black),
                                             ),
                                             Switch(
-                                              value: agbAcceptedValue,
+                                              key: WidgetKeys
+                                                  .termsAndConditionsSwitch,
+                                              value:
+                                                  termsAndConditionsAcceptedValue,
                                               onChanged: (bool value) {
                                                 HapticFeedback.mediumImpact();
-                                                agbAccepted.value = value;
+                                                termsAndConditionsAccepted
+                                                    .value = value;
                                               },
                                             ),
                                           ],
@@ -489,8 +495,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                                                         true;
                                                                     HapticFeedback
                                                                         .mediumImpact();
-                                                                    // agbs accepted
-                                                                    if (!agbAccepted
+                                                                    // terms and Conditions accepted
+                                                                    if (!termsAndConditionsAccepted
                                                                         .value) {
                                                                       HapticFeedback
                                                                           .heavyImpact();
