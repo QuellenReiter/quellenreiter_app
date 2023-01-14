@@ -155,6 +155,7 @@ class DatabaseUtils {
     await safeStorage.write(
         key: "token",
         value: signUpResult.data?["signUp"]["viewer"]["sessionToken"]);
+
     // initialize parse
     await createUserDatabaseClient();
 
@@ -184,6 +185,7 @@ class DatabaseUtils {
       newFriendsLiveQuery!.client.disconnect();
       newFriendsLiveQuery = null;
     }
+
     // remove parse initialization
     userDatabaseClient = null;
 
@@ -688,12 +690,14 @@ class DatabaseUtils {
       appState.route = Routes.login;
       return;
     }
+
     if (userDatabaseClient == null) {
       if (!await createUserDatabaseClient()) {
         appState.route = Routes.settings;
         return;
       }
     }
+
     // Remeove the User and all open games and friendships.
     var mutationResult = await userDatabaseClient!.mutate(
       MutationOptions(
