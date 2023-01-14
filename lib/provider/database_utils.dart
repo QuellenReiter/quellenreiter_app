@@ -48,6 +48,7 @@ class DatabaseUtils {
   Future<bool> createUserDatabaseClient() async {
     // The session token.
     String? token = await safeStorage.read(key: "token");
+
     // If token is not null, check if it is valid.
     if (token != null) {
       // Link to user database.
@@ -89,6 +90,7 @@ class DatabaseUtils {
         document: gql(Queries.login(username, password)),
       ),
     );
+
     // If login result has any exceptions.
     if (loginResult.hasException) {
       _handleException(loginResult.exception!);
@@ -140,6 +142,7 @@ class DatabaseUtils {
         document: gql(Queries.signUp(username, password, emoji)),
       ),
     );
+
     // If login result has any exceptions.
     if (signUpResult.hasException) {
       _handleException(signUpResult.exception!);
@@ -147,6 +150,7 @@ class DatabaseUtils {
       signUpCallback(null);
       return;
     }
+
     // Safe the new token.
     await safeStorage.write(
         key: "token",
@@ -167,15 +171,18 @@ class DatabaseUtils {
   Future<void> logout(Function logoutCallback) async {
     const safeStorage = FlutterSecureStorage();
     await safeStorage.delete(key: "token");
+
     // stop live queries
     if (gameChangesLiveQuery != null) {
       gameChangesLiveQuery!.client.disconnect();
       gameChangesLiveQuery = null;
     }
+
     if (newFriendsLiveQuery != null) {
       newFriendsLiveQuery!.client.disconnect();
       newFriendsLiveQuery = null;
     }
+
     // remove parse initialization
     userDatabaseClient = null;
 
@@ -186,6 +193,7 @@ class DatabaseUtils {
   Future<void> checkToken(Function checkTokenCallback) async {
     // The session token.
     String? token = await safeStorage.read(key: "token");
+
     // If token is not null, check if it is valid.
     if (token != null) {
       // Link to the database.
@@ -216,6 +224,7 @@ class DatabaseUtils {
         return;
       }
     }
+
     // no token, return false
     checkTokenCallback(null);
   }
@@ -331,6 +340,7 @@ class DatabaseUtils {
         },
       ),
     );
+
     if (mutationResult.hasException) {
       _handleException(mutationResult.exception!);
 
@@ -355,6 +365,7 @@ class DatabaseUtils {
       await updateUserCallback(null);
       return;
     }
+
     var mutationResult = await userDatabaseClient!.mutate(
       MutationOptions(
         document: gql(Queries.updateUserData()),
@@ -368,12 +379,10 @@ class DatabaseUtils {
       _handleException(mutationResult.exception!);
 
       await updateUserCallback(null);
-      return;
     } else {
       await updateUserCallback(player
         ..updateDataWithMap(
             mutationResult.data?["updateUserData"]["userData"]));
-      return;
     }
   }
 
@@ -400,20 +409,18 @@ class DatabaseUtils {
       _handleException(mutationResult.exception!);
 
       createUserDataCallback(null);
-      return;
     } else {
       createUserDataCallback(
           Player.fromMap(mutationResult.data?["updateUser"]["user"]));
-      return;
     }
   }
 
   /// Update a [Friendship] in the Database by [String].
-
   Future<bool> updateFriendship(PlayerRelation _playerRelation) async {
     if (!await createUserDatabaseClient()) {
       return false;
     }
+
     var mutationResult = await userDatabaseClient!.mutate(
       MutationOptions(
         document: gql(Queries.updateFriendship()),
@@ -439,6 +446,7 @@ class DatabaseUtils {
     if (!await createUserDatabaseClient()) {
       return false;
     }
+
     var mutationResult = await userDatabaseClient!.mutate(
       MutationOptions(
         document: gql(Queries.updateGame()),
@@ -453,6 +461,7 @@ class DatabaseUtils {
 
       return false;
     }
+
     // if game is finished, update the player and the game.
     if (appState.focusedPlayerRelation!.openGame!.gameFinished()) {
       // update friendship
@@ -470,7 +479,6 @@ class DatabaseUtils {
   }
 
   /// Upload a [Game] into the Database by [String].
-  ///
   Future<Game?> uploadGame(PlayerRelation _playerRelation) async {
     if (!await createUserDatabaseClient()) {
       return null;
@@ -488,6 +496,7 @@ class DatabaseUtils {
         },
       ),
     );
+
     if (mutationResult.hasException) {
       _handleException(mutationResult.exception!);
 
@@ -513,6 +522,7 @@ class DatabaseUtils {
         },
       ),
     );
+
     if (queryResult.hasException) {
       _handleException(queryResult.exception!);
 
@@ -521,7 +531,7 @@ class DatabaseUtils {
     return Statements.fromMap(queryResult.data);
   }
 
-  /// Authenticate a [Player] to get its emoji etc.
+  /// Authenticate a [Player] to get their emoji etc.
   Future<Player?> authenticate() async {
     return null;
   }
@@ -545,11 +555,9 @@ class DatabaseUtils {
       _handleException(mutationResult.exception!);
 
       sendFriendRequestCallback(false);
-      return;
     } else {
       sendFriendRequestCallback(true);
       sendPushFriendInvitation(appState, receiverId: playerRelationId);
-      return;
     }
   }
 
@@ -572,15 +580,13 @@ class DatabaseUtils {
       _handleException(queryResult.exception!);
 
       searchFriendsCallback(null);
-      return;
     } else {
       searchFriendsCallback(
           PlayerRelationCollection.fromUserMap(queryResult.data?["users"]));
-      return;
     }
   }
 
-  /// Function to find and load nine statements that have not been played by neither user.
+  /// Function to find and load nine statements that have not been played by either user.
   Future<List<String>?> getPlayableStatements(
       PlayerRelation _playerRelation, Player p) async {
     // combine played statements
@@ -588,6 +594,7 @@ class DatabaseUtils {
       ..._playerRelation.opponent.playedStatements!,
       ...p.playedStatements!
     ];
+
     // get 50 possible ids
     var playableStatements = await statementDatabaseClient.query(
       QueryOptions(
@@ -599,41 +606,50 @@ class DatabaseUtils {
         },
       ),
     );
+
     // if exception in query, return null.
     if (playableStatements.hasException) {
       _handleException(playableStatements.exception!);
 
       return null;
     }
+
     // if not enough statements are accessible.
     if (playableStatements.data?["statements"]["edges"].length < 9) {
       error =
           "Es gibt nicht mehr genug Statements, die ihr beide noch nicht gespielt habt...";
       return null;
     }
+
     // choose 9 random statements
     //     playableStatements.data?["statements"]["edges"];
     List<String> ids = playableStatements.data?["statements"]["edges"]
         .map((el) => el!["node"]["objectId"].toString())
         .toList()
         .cast<String>();
-    // random shufflung
+
+    // random shuffling
     ids.shuffle();
+
     // add to played statements of p and e
     _playerRelation.opponent.playedStatements!.addAll(ids.take(9));
     p.playedStatements!.addAll(ids.take(9));
+
     //upload game game
     _playerRelation.openGame!.statementIds = ids.take(9).toList();
     _playerRelation.openGame = await uploadGame(_playerRelation);
     if (_playerRelation.openGame == null) {
       return null;
     }
+
     //update p and e in database
     await updateUserData(p, (Player? player) {});
 
     await updateUserData(_playerRelation.opponent, (Player? player) {});
+
     // update friendship
     await updateFriendship(_playerRelation);
+
     // updateUser(player, updateUserCallback)
     return ids.take(9).toList();
   }
@@ -655,6 +671,7 @@ class DatabaseUtils {
         },
       ),
     );
+
     if (mutationResult.hasException) {
       _handleException(mutationResult.exception!);
     }
@@ -668,10 +685,13 @@ class DatabaseUtils {
       return;
     }
 
-    if (!await createUserDatabaseClient()) {
-      appState.route = Routes.settings;
-      return;
+    if (userDatabaseClient == null) {
+      if (!await createUserDatabaseClient()) {
+        appState.route = Routes.settings;
+        return;
+      }
     }
+
     // Remeove the User and all open games and friendships.
     var mutationResult = await userDatabaseClient!.mutate(
       MutationOptions(
@@ -683,6 +703,7 @@ class DatabaseUtils {
         },
       ),
     );
+
     if (mutationResult.hasException) {
       _handleException(mutationResult.exception!);
       appState.route = Routes.settings;
@@ -691,11 +712,13 @@ class DatabaseUtils {
     }
 
     await safeStorage.delete(key: "token");
+
     // stop live queries
     if (gameChangesLiveQuery != null) {
       gameChangesLiveQuery!.client.disconnect();
       gameChangesLiveQuery = null;
     }
+
     if (newFriendsLiveQuery != null) {
       newFriendsLiveQuery!.client.disconnect();
       newFriendsLiveQuery = null;
@@ -703,7 +726,6 @@ class DatabaseUtils {
 
     appState.isLoggedIn = false;
     appState.route = Routes.login;
-    return;
   }
 
   void startLiveQueryForFriends(QuellenreiterAppState appState) async {
@@ -715,8 +737,9 @@ class DatabaseUtils {
       gameChangesLiveQuery!.client.disconnect();
       gameChangesLiveQuery = null;
     }
-    // PArse does not support live queries with relations.
-    // parse does not support graphql subscriptions ..
+
+    // Parse does not support live queries with relations.
+    // Parse does not support graphql subscriptions ..
     await parse.Parse().initialize(userDatabaseApplicationID, userDatabaseUrl,
         clientKey: userDatabaseClientKey,
         debug: useDevServer,
@@ -730,6 +753,7 @@ class DatabaseUtils {
     parse.QueryBuilder<parse.ParseObject> isPlayer1Query =
         parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Friendship'))
           ..whereEqualTo(DbFields.friendshipPlayer1Id, appState.player!.id);
+
     // is user player 2?
     parse.QueryBuilder<parse.ParseObject> isPlayer2Query =
         parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Friendship'))
@@ -740,8 +764,10 @@ class DatabaseUtils {
       parse.ParseObject("Friendship"),
       [isPlayer1Query, isPlayer2Query],
     );
+
     parse.Subscription subscriptionFriends =
         await newFriendsLiveQuery!.client.subscribe(mainQueryFriends);
+
     // called if new friendship is created
     subscriptionFriends.on(parse.LiveQueryEvent.create,
         (parse.ParseObject object) {
@@ -750,6 +776,7 @@ class DatabaseUtils {
       }
       appState.getPlayerRelations();
     });
+
     //called if friendship is updated
     subscriptionFriends.on(parse.LiveQueryEvent.update,
         (parse.ParseObject object) {
@@ -760,13 +787,13 @@ class DatabaseUtils {
     });
 
     // find games that changed
-
     gameChangesLiveQuery = parse.LiveQuery();
 
     // is user player 1?
     parse.QueryBuilder<parse.ParseObject> isPlayer1QueryGame =
         parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Friendship'))
           ..whereEqualTo(DbFields.gamePlayer1Id, appState.player!.id);
+
     // is user player 2?
     parse.QueryBuilder<parse.ParseObject> isPlayer2QueryGame =
         parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Friendship'))
@@ -776,8 +803,10 @@ class DatabaseUtils {
       parse.ParseObject("OpenGame"),
       [isPlayer1QueryGame, isPlayer2QueryGame],
     );
+
     parse.Subscription subscriptionGame =
         await gameChangesLiveQuery!.client.subscribe(gameQuery);
+
     // called if new game is created
     subscriptionGame.on(parse.LiveQueryEvent.create,
         (parse.ParseObject object) {
@@ -787,6 +816,7 @@ class DatabaseUtils {
       }
       appState.getPlayerRelations();
     });
+
     //called if game is updated
     subscriptionGame.on(parse.LiveQueryEvent.update,
         (parse.ParseObject object) {
@@ -807,15 +837,19 @@ class DatabaseUtils {
         liveQueryUrl: userLiveQueryUrl,
         sessionId: await safeStorage.read(key: "token"),
         autoSendSessionId: true);
+
     //Executes a cloud function that returns a ParseObject type
     final ParseCloudFunction function =
         ParseCloudFunction('sendPushFriendRequest');
+
     final Map<String, dynamic> params = <String, dynamic>{
       'senderName': appState.player!.name,
       'receiverId': receiverId,
     };
+
     final ParseResponse parseResponse =
         await function.executeObjectFunction<ParseObject>(parameters: params);
+
     if (!parseResponse.success) {
       debugPrint("Push Failed");
     }
@@ -830,11 +864,13 @@ class DatabaseUtils {
       debug: useDevServer,
       liveQueryUrl: userLiveQueryUrl,
     );
+
     //Executes a cloud function that returns a ParseObject type
     final ParseCloudFunction function = ParseCloudFunction('doesUsernameExist');
     final Map<String, dynamic> params = <String, dynamic>{
       'username': username,
     };
+
     final ParseResponse parseResponse =
         await function.execute(parameters: params);
 
@@ -843,6 +879,7 @@ class DatabaseUtils {
       //Transforms the return into a ParseObject
       return resultParsed;
     }
+
     error = "Error: ${parseResponse.error!.message}";
     return true;
   }
@@ -856,15 +893,19 @@ class DatabaseUtils {
         liveQueryUrl: userLiveQueryUrl,
         sessionId: await safeStorage.read(key: "token"),
         autoSendSessionId: true);
+
     //Executes a cloud function that returns a ParseObject type
     final ParseCloudFunction function =
         ParseCloudFunction('sendOtherPlayersTurn');
+
     final Map<String, dynamic> params = <String, dynamic>{
       'senderName': appState.player!.name,
       'receiverId': receiverId,
     };
+
     final ParseResponse parseResponse =
         await function.executeObjectFunction<ParseObject>(parameters: params);
+
     if (!parseResponse.success) {
       debugPrint("Push Failed");
     }
@@ -879,14 +920,17 @@ class DatabaseUtils {
         liveQueryUrl: userLiveQueryUrl,
         sessionId: await safeStorage.read(key: "token"),
         autoSendSessionId: true);
+
     //Executes a cloud function that returns a ParseObject type
     final ParseCloudFunction function = ParseCloudFunction('sendGameFinished');
     final Map<String, dynamic> params = <String, dynamic>{
       'senderName': appState.player!.name,
       'receiverId': receiverId,
     };
+
     final ParseResponse parseResponse =
         await function.executeObjectFunction<ParseObject>(parameters: params);
+
     if (!parseResponse.success) {
       debugPrint("Push Failed");
     }
@@ -901,15 +945,19 @@ class DatabaseUtils {
         liveQueryUrl: userLiveQueryUrl,
         sessionId: await safeStorage.read(key: "token"),
         autoSendSessionId: true);
+
     //Executes a cloud function that returns a ParseObject type
     final ParseCloudFunction function =
         ParseCloudFunction('sendPushGameStartet');
+
     final Map<String, dynamic> params = <String, dynamic>{
       'senderName': appState.player!.name,
       'receiverId': receiverId,
     };
+
     final ParseResponse parseResponse =
         await function.executeObjectFunction<ParseObject>(parameters: params);
+
     if (!parseResponse.success) {
       debugPrint("Push Failed");
     }
