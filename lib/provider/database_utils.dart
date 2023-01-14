@@ -156,9 +156,6 @@ class DatabaseUtils {
         key: "token",
         value: signUpResult.data?["signUp"]["viewer"]["sessionToken"]);
 
-    // initialize parse
-    await createUserDatabaseClient();
-
     // parse player.
     var player =
         LocalPlayer.fromMap(signUpResult.data?["signUp"]["viewer"]["user"]);
@@ -185,9 +182,6 @@ class DatabaseUtils {
       newFriendsLiveQuery!.client.disconnect();
       newFriendsLiveQuery = null;
     }
-
-    // remove parse initialization
-    userDatabaseClient = null;
 
     // remove parse initialization
     userDatabaseClient = null;
