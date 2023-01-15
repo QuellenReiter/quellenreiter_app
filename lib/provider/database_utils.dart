@@ -69,8 +69,7 @@ class DatabaseUtils {
     return false;
   }
 
-  /// Login a user.
-  void login(String username, String password, Function loginCallback) async {
+  GraphQLClient getLoginClient() {
     // Link to server.
     final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
       'X-Parse-Application-Id': userDatabaseApplicationID,
@@ -83,6 +82,14 @@ class DatabaseUtils {
       cache: GraphQLCache(),
       link: httpLink,
     );
+
+    return client;
+  }
+
+  /// Login a user.
+  void login(String username, String password, Function loginCallback) async {
+    // create a user database login client
+    GraphQLClient client = getLoginClient();
 
     // The result returned from the query.
     var loginResult = await client.mutate(
@@ -123,18 +130,8 @@ class DatabaseUtils {
       return; //return if bad words are found
     }
 
-    // Link to server.
-    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': userDatabaseApplicationID,
-      'X-Parse-Client-Key': userDatabaseClientKey,
-      //'X-Parse-REST-API-Key' : kParseRestApiKey,
-    });
-
-    // Provides data from server and facilitates requests.
-    GraphQLClient client = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
+    // create a user database login client
+    GraphQLClient client = getLoginClient();
 
     // The result returned from the query.
     var signUpResult = await client.mutate(
@@ -191,42 +188,21 @@ class DatabaseUtils {
 
   /// Checks if token is valid.
   Future<void> checkToken(Function checkTokenCallback) async {
-    // The session token.
-    String? token = await safeStorage.read(key: "token");
-
-    // If token is not null, check if it is valid.
-    if (token != null) {
-      // Link to the database.
-      final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-        'X-Parse-Application-Id': userDatabaseApplicationID,
-        'X-Parse-Client-Key': userDatabaseClientKey,
-        'X-Parse-Session-Token': token,
-      });
-
-      // The client that provides the connection.
-      GraphQLClient client = GraphQLClient(
-        cache: GraphQLCache(),
-        link: httpLink,
-      );
-
-      // The query result.
-      var queryResult = await client.query(QueryOptions(
-        document: gql(Queries.getCurrentUser()),
-      ));
-
-      if (queryResult.hasException) {
-        _handleException(queryResult.exception!);
-        checkTokenCallback(null);
-        return;
-      } else {
-        checkTokenCallback(
-            LocalPlayer.fromMap(queryResult.data?["viewer"]["user"]));
-        return;
-      }
-    }
+    // create a user db client first
+    bool success = await createUserDatabaseClient();
 
     // no token, return false
-    checkTokenCallback(null);
+    if (!success) {
+      checkTokenCallback(null);
+      return;
+    }
+    // The query result.
+    var queryResult = await userDatabaseClient!.query(QueryOptions(
+      document: gql(Queries.getCurrentUser()),
+    ));
+
+    checkTokenCallback(
+        LocalPlayer.fromMap(queryResult.data?["viewer"]["user"]));
   }
 
   Future<Player> getUserData(Player p) async {
