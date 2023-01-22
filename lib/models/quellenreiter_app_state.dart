@@ -285,10 +285,10 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   Future<void> getPlayerRelations() async {
-    PlayerRelationCollection? _playerRelations = await db.getFriends(player!);
+    PlayerRelationCollection? dbRelations = await db.getFriends(player!);
 
-    if (_playerRelations != null) {
-      playerRelations = _playerRelations;
+    if (dbRelations != null) {
+      playerRelations = dbRelations;
       notifyListeners();
       _restoreFocusedPlayerRelation();
     }
