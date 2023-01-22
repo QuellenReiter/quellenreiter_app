@@ -446,7 +446,7 @@ class QuellenreiterAppState extends ChangeNotifier {
             !_playerRelation.openGame!.pointsAccessed)) {
       // the existing  game is not finished and the points are not accessed
       msg =
-          "Ein offenes spiel existiert bereits. Beende es bevor du ein neues startest.";
+          "Ein offenes Spiel existiert bereits. Beende es bevor du ein neues startest.";
       return;
     } else if (_playerRelation.openGame != null) {
       // delete the old game, it is finished
@@ -473,8 +473,6 @@ class QuellenreiterAppState extends ChangeNotifier {
     route = tempRoute;
     msg =
         "${_playerRelation.opponent.emoji} ${_playerRelation.opponent.name} wurde herausgefordert";
-
-    return;
   }
 
   void getCurrentStatements() async {
@@ -484,7 +482,6 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
     currentGame.statements = await db.getStatements(currentGame.statementIds!);
     notifyListeners();
-    return;
   }
 
   /// Starts the open [Game] with the [focusedPlayerRelation].
