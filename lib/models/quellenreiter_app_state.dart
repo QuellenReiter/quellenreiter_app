@@ -303,14 +303,15 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void sendFriendRequest(PlayerRelation _playerRelation) {
     route = Routes.loading;
-    db.sendFriendRequest(this, _playerRelation.opponent.id, _sendFriendRequest);
+    db.sendFriendRequest(
+        this, _playerRelation.opponent.id, _sendFriendRequestCallback);
   }
 
-  void _sendFriendRequest(bool success) {
+  void _sendFriendRequestCallback(bool success) {
     if (success) {
       //  not needed because of live query in database_utils.dart
       route = Routes.friends;
-    } else {}
+    }
   }
 
   Future<void> getUserData() async {
