@@ -285,10 +285,10 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   Future<void> getPlayerRelations() async {
-    PlayerRelationCollection? _playerRelations = await db.getFriends(player!);
+    PlayerRelationCollection? dbRelations = await db.getFriends(player!);
 
-    if (_playerRelations != null) {
-      playerRelations = _playerRelations;
+    if (dbRelations != null) {
+      playerRelations = dbRelations;
       notifyListeners();
       _restoreFocusedPlayerRelation();
     }
@@ -303,14 +303,15 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void sendFriendRequest(PlayerRelation _playerRelation) {
     route = Routes.loading;
-    db.sendFriendRequest(this, _playerRelation.opponent.id, _sendFriendRequest);
+    db.sendFriendRequest(
+        this, _playerRelation.opponent.id, _sendFriendRequestCallback);
   }
 
-  void _sendFriendRequest(bool success) {
+  void _sendFriendRequestCallback(bool success) {
     if (success) {
       //  not needed because of live query in database_utils.dart
       route = Routes.friends;
-    } else {}
+    }
   }
 
   Future<void> getUserData() async {
@@ -445,7 +446,7 @@ class QuellenreiterAppState extends ChangeNotifier {
             !_playerRelation.openGame!.pointsAccessed)) {
       // the existing  game is not finished and the points are not accessed
       msg =
-          "Ein offenes spiel existiert bereits. Beende es bevor du ein neues startest.";
+          "Ein offenes Spiel existiert bereits. Beende es bevor du ein neues startest.";
       return;
     } else if (_playerRelation.openGame != null) {
       // delete the old game, it is finished
@@ -472,8 +473,6 @@ class QuellenreiterAppState extends ChangeNotifier {
     route = tempRoute;
     msg =
         "${_playerRelation.opponent.emoji} ${_playerRelation.opponent.name} wurde herausgefordert";
-
-    return;
   }
 
   void getCurrentStatements() async {
@@ -483,7 +482,6 @@ class QuellenreiterAppState extends ChangeNotifier {
     }
     currentGame.statements = await db.getStatements(currentGame.statementIds!);
     notifyListeners();
-    return;
   }
 
   /// Starts the open [Game] with the [focusedPlayerRelation].
