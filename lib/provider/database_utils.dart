@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+// We need to import the parse_server_sdk_flutter package to use liveQueries
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart' as parse;
-import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:parse_server_sdk/parse_server_sdk.dart';
 import 'package:quellenreiter_app/models/player_relation.dart';
 import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/player.dart';
@@ -29,188 +29,7 @@ class DatabaseUtils extends DatabaseConnection {
   /// Constor decides which implementation of [SafeStorageInterface] to use.
   /// Default is [SafeStoragePlugin].
   /// If called from unit tests, [SafeStorageTesting] is passed.
-  DatabaseUtils({this.safeStorage = const SafeStoragePlugin()});
-
-  /// Login a user.
-  void login(String username, String password, Function loginCallback) async {
-    // Link to server.
-    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': userDatabaseApplicationID,
-      'X-Parse-Client-Key': userDatabaseClientKey,
-      //'X-Parse-REST-API-Key' : kParseRestApiKey,
-    });
-
-    // Provides data from server and facilitates requests.
-    GraphQLClient client = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
-
-    // The result returned from the query.
-    var loginResult = await client.mutate(
-      MutationOptions(
-        document: gql(Queries.login(username, password)),
-      ),
-    );
-
-    // If login result has any exceptions.
-    if (loginResult.hasException) {
-      _handleException(loginResult.exception!);
-      loginCallback(null);
-      return;
-    }
-
-    // Safe the new token.
-    safeStorage.write(
-        key: "token",
-        value: loginResult.data?["logIn"]["viewer"]["sessionToken"]);
-
-    loginCallback(
-        LocalPlayer.fromMap(loginResult.data?["logIn"]["viewer"]["user"]));
-    // Safe the User
-  }
-
-  /// Signup a user.
-  ///
-  // Emoji can not be safed while not authenticated.
-  // 1. signup with username and password,
-  // 2. create userdata with emoji and so on!
-  // 3. turn on class protection on back4app.
-  void signUp(String username, String password, String emoji,
-      Function signUpCallback) async {
-    //check for bad words
-    bool isDirty = await containsBadWord(username);
-    if (isDirty) {
-      signUpCallback(null);
-      return; //return if bad words are found
-    }
-
-    // Link to server.
-    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': userDatabaseApplicationID,
-      'X-Parse-Client-Key': userDatabaseClientKey,
-      //'X-Parse-REST-API-Key' : kParseRestApiKey,
-    });
-
-    // Provides data from server and facilitates requests.
-    GraphQLClient client = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
-
-    // The result returned from the query.
-    var signUpResult = await client.mutate(
-      MutationOptions(
-        document: gql(Queries.signUp(username, password, emoji)),
-      ),
-    );
-
-    // If login result has any exceptions.
-    if (signUpResult.hasException) {
-      _handleException(signUpResult.exception!);
-
-      signUpCallback(null);
-      return;
-    }
-
-    // Safe the new token.
-    await safeStorage.write(
-        key: "token",
-        value: signUpResult.data?["signUp"]["viewer"]["sessionToken"]);
-
-    // parse player.
-    var player =
-        LocalPlayer.fromMap(signUpResult.data?["signUp"]["viewer"]["user"]);
-    player.emoji = emoji;
-
-    // upload emoji
-    await createUserData(player, (p) => {player = p});
-
-    signUpCallback(player);
-  }
-
-  /// Logsout a user by deleting the session token.
-  Future<void> logout(Function logoutCallback) async {
-    const safeStorage = FlutterSecureStorage();
-    await safeStorage.delete(key: "token");
-
-    // stop live queries
-    if (gameChangesLiveQuery != null) {
-      gameChangesLiveQuery!.client.disconnect();
-      gameChangesLiveQuery = null;
-    }
-
-    if (newFriendsLiveQuery != null) {
-      newFriendsLiveQuery!.client.disconnect();
-      newFriendsLiveQuery = null;
-    }
-
-    // remove parse initialization
-    userDatabaseClient = null;
-
-    logoutCallback();
-  }
-
-  /// Checks if token is valid.
-  Future<void> checkToken(Function checkTokenCallback) async {
-    // The session token.
-    String? token = await safeStorage.read(key: "token");
-
-    // If token is not null, check if it is valid.
-    if (token != null) {
-      // Link to the database.
-      final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-        'X-Parse-Application-Id': userDatabaseApplicationID,
-        'X-Parse-Client-Key': userDatabaseClientKey,
-        'X-Parse-Session-Token': token,
-      });
-
-      // The client that provides the connection.
-      GraphQLClient client = GraphQLClient(
-        cache: GraphQLCache(),
-        link: httpLink,
-      );
-
-      // The query result.
-      var queryResult = await client.query(QueryOptions(
-        document: gql(Queries.getCurrentUser()),
-      ));
-
-      if (queryResult.hasException) {
-        _handleException(queryResult.exception!);
-        checkTokenCallback(null);
-        return;
-      } else {
-        checkTokenCallback(
-            LocalPlayer.fromMap(queryResult.data?["viewer"]["user"]));
-        return;
-      }
-    }
-
-    // no token, return false
-    checkTokenCallback(null);
-  }
-
-  Future<Player> getUserData(Player p) async {
-    if (!await createUserDatabaseClient()) {
-      return p;
-    }
-
-    // The query result.
-    var queryResult = await userDatabaseClient!.query(
-      QueryOptions(
-        document: gql(Queries.getUser()),
-        variables: {"user": p.id},
-      ),
-    );
-
-    if (queryResult.hasException) {
-      _handleException(queryResult.exception!);
-
-      return p;
-    }
-    return LocalPlayer.fromMap(queryResult.data!["user"]);
-  }
+  DatabaseUtils({super.safeStorage = const SafeStoragePlugin()});
 
   /// Get all friend requests.
   Future<PlayerRelationCollection?> getFriends(Player player) async {
@@ -517,7 +336,7 @@ class DatabaseUtils extends DatabaseConnection {
       errorHandler.handleException(mutationResult.exception!);
     }
 
-      return;
+    return;
   }
 
   void startLiveQueryForFriends(QuellenreiterAppState appState) async {

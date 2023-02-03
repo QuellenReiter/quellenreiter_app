@@ -7,7 +7,7 @@ class ErrorBanner extends StatelessWidget {
   final QuellenreiterAppState appState;
   @override
   Widget build(BuildContext context) {
-    if (appState.db.error == null) {
+    if (appState.authProvider.errorHandler.error == null) {
       return const SizedBox.shrink();
     }
     return Container(
@@ -25,7 +25,7 @@ class ErrorBanner extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: Wrap(alignment: WrapAlignment.center, children: [
-              Text(appState.db.error!),
+              Text(appState.authProvider.errorHandler.error!),
             ]),
           ),
         ),

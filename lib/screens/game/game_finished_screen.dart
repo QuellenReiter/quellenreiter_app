@@ -480,19 +480,8 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
     await Future.delayed(const Duration(seconds: 2), () {});
     HapticFeedback.mediumImpact();
     // updating all stats, takes a while.
-    await widget.appState.db.checkToken((p) async {
-      // if player is not null
-      if (p != null) {
-        // update current player
-        widget.appState.player = p;
-        widget.appState.msg = null;
-      } else {
-        widget.appState.msg = "Spieler nicht up to date.";
-        // return to ready to start screen.
-        widget.appState.route = Routes.gameReadyToStart;
-        return;
-      }
-
+    // Here we fetch the player from the database again, to make sure we have the latest data.
+    await widget.appState.authProvider.checkToken((p) async {
       Game currentGame = widget.appState.focusedPlayerRelation!.openGame!;
       LocalPlayer currentPlayer = widget.appState.player!;
 

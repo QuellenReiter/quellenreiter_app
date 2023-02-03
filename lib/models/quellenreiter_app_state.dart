@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/provider/player_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../provider/auth_provider.dart';
 import '../provider/database_utils.dart';
 import 'player_relation.dart';
 import 'game.dart';
@@ -15,6 +16,9 @@ import 'statement.dart';
 class QuellenreiterAppState extends ChangeNotifier {
   ///  Object to be able to access the database.
   late DatabaseUtils db;
+
+  /// Provides Authentication functionality.
+  late AuthProvider authProvider;
 
   /// Provides Player functionality.
   late PlayerProvider playerProvider;
@@ -223,11 +227,12 @@ class QuellenreiterAppState extends ChangeNotifier {
   /// and it is checked, if the user is still signed in.
   QuellenreiterAppState() {
     db = DatabaseUtils();
+    authProvider = AuthProvider();
     playerProvider = PlayerProvider();
     route = Routes.loading;
     game = null;
     _friendsQuery = null;
-    db.checkToken(_checkTokenCallback);
+    authProvider.checkToken(_checkTokenCallback);
   }
 
   /// Callback for checking if user is logged in.
@@ -262,10 +267,14 @@ class QuellenreiterAppState extends ChangeNotifier {
   /// If not, the route is set to signup.
   ///
   /// @param p The [Player] returned from the server.
-  void _signUpCallback(Player? p) {
+  void _signUpCallback(Player? p) async {
     if (p == null) {
       route = Routes.signUp;
     } else {
+      // check if username is dirty
+      if (await db.containsBadWord(p.name)) {
+        return;
+      }
       player = p;
       isLoggedIn = true;
       updateDeviceTokenForPushNotifications();
@@ -275,17 +284,12 @@ class QuellenreiterAppState extends ChangeNotifier {
   ///
   void tryLogin(String username, String password) {
     route = Routes.loading;
-    db.login(username, password, _loginCallback);
+    authProvider.login(username, password, _loginCallback);
   }
 
   void trySignUp(String username, String password, String emoji) {
     route = Routes.loading;
-    db.signUp(username, password, emoji, _signUpCallback);
-  }
-
-  void _logoutCallback() {
-    player = null;
-    isLoggedIn = false;
+    authProvider.signUp(username, password, emoji, _signUpCallback);
   }
 
   Future<void> getPlayerRelations() async {
@@ -349,7 +353,14 @@ class QuellenreiterAppState extends ChangeNotifier {
     await updateDeviceTokenForPushNotifications();
     // remove device decision so that for next user, default is allowed again.
     await prefs.remove("notificationsAllowed");
-    await db.logout(_logoutCallback);
+    //stop all live queries
+    db.stopLiveQueries();
+    // logout
+    await authProvider.deleteToken(player);
+    // remove player data
+    player = null;
+
+    isLoggedIn = false;
   }
 
   void deleteAccount() async {
