@@ -501,6 +501,7 @@ class QuellenreiterAppState extends ChangeNotifier {
       // update game, if it returns true, update player
       await db.updateGame(this);
     }
+    return;
   }
 
   void getCurrentStatements() async {
