@@ -90,26 +90,26 @@ void main() {
       expect(testUserInstance1!.emoji, "👻");
     });
 
-    test("Test the updateName function", () async {
+    test("updateName function", () async {
       await playerProvider.updateName(testUserInstance1!, "TestName");
       expect(testUserInstance1, isNotNull);
       expect(testUserInstance1!.name, "TestName");
     });
 
-    test("Test the increment number of friends function", () async {
+    test("increment number of friends function", () async {
       await playerProvider.incrementNumFriends(testUserInstance1!, 1);
       expect(testUserInstance1!.numFriends, 1);
       await playerProvider.incrementNumFriends(testUserInstance1!, 2);
       expect(testUserInstance1!.numFriends, 3);
     });
 
-    test("Test the decrement number of friends function", () async {
+    test("decrement number of friends function", () async {
       await playerProvider.incrementNumFriends(testUserInstance1!, 2);
       expect(testUserInstance1!.numFriends, 2);
       await playerProvider.incrementNumFriends(testUserInstance1!, -1);
       expect(testUserInstance1!.numFriends, 1);
     });
-    test("Test add and removeAll playedStatements function", () async {
+    test("add and removeAll playedStatements function", () async {
       await playerProvider.addPlayedStatements(
           testUserInstance1!, UnitTestTools.testUserPlayedStatements,
           (Player? p) {
@@ -123,7 +123,7 @@ void main() {
       expect(testUserInstance1!.playedStatements.isEmpty, isTrue);
     });
 
-    test("Test add and remove savedStatements function", () async {
+    test("add and remove savedStatements function", () async {
       await playerProvider.addSafedStatement(
           testUserInstance1!, UnitTestTools.testUserSavedStatement);
       expect(
@@ -137,7 +137,7 @@ void main() {
       expect(testUserInstance1!.savedStatementsIds.isEmpty, isTrue);
     });
 
-    test("Test getUserData function", () async {
+    test("getUserData function", () async {
       bool success = await playerProvider.getUserData(testUserInstance1!);
       expect(testUserInstance1, isNotNull);
       expect(success, true);

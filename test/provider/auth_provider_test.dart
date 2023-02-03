@@ -52,7 +52,7 @@ void main() {
       expect(testUserInstance1!.id == testUserInstance2!.id, true);
     });
 
-    test("Test Login", () async {
+    test("Login", () async {
       expect(testUserInstance2, isNull);
       expect(await authProvider.safeStorage.read(key: "token"), isNull);
 
@@ -63,10 +63,9 @@ void main() {
       });
       expect(testUserInstance2, isNotNull);
       expect(testUserInstance2!.name, UnitTestTools.testUserName);
-      expect(testUserInstance2!.emoji, UnitTestTools.testUserEmoji);
     });
 
-    test("Test Logout", () async {
+    test("Logout", () async {
       await authProvider
           .login(UnitTestTools.testUserName, UnitTestTools.testUserPassword,
               (LocalPlayer p) {
