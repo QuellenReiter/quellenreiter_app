@@ -320,25 +320,3 @@ class WidgetKeys {
   static const Key mainAppBarLogo = Key("mainAppBarLogo");
   static const Key termsAndConditionsSwitch = Key("termsAndConditionsSwitch");
 }
-
-/// Enum holding all updateable player fields
-enum UpdateablePlayerField {
-  /// The player's name
-  name,
-
-  /// The player's emoji
-  emoji,
-
-  /// The player's password
-  playedStatements,
-
-  /// Safed Statements
-  safedStatements,
-
-  /// The player's number of friends
-
-  numberOfFriends,
-
-  /// The player's profile picture
-  profilePicture,
-}
