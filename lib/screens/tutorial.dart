@@ -846,14 +846,14 @@ class _TutorialState extends State<Tutorial> {
 
 Widget actionButton(String label, Function onClick, BuildContext context,
     {Color color = Colors.white, bool animate = false}) {
-  return MirrorAnimation(
+  return MirrorAnimationBuilder(
     duration: const Duration(milliseconds: 1000),
     tween: Tween<double>(
       begin: 1,
       end: animate ? 3 : 1,
     ),
     curve: Curves.elasticIn,
-    builder: (context, child, double value) => TextButton(
+    builder: (context, double value, _) => TextButton(
       onPressed: () {
         HapticFeedback.mediumImpact();
         onClick(context);

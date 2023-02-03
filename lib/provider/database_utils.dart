@@ -1,14 +1,16 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+// We need to import the parse_server_sdk_flutter package to use liveQueries
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart' as parse;
-import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:parse_server_sdk/parse_server_sdk.dart';
 import 'package:quellenreiter_app/models/player_relation.dart';
 import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/player.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
+import 'package:quellenreiter_app/provider/database_connection.dart';
+import 'package:quellenreiter_app/provider/safe_storage.dart';
 import '../consonents.dart';
 import '../constants/constants.dart';
 import '../models/statement.dart';
@@ -17,238 +19,17 @@ import 'package:http/http.dart' as http;
 
 /// This class facilitates the connection to the database and manages its
 /// responses.
-class DatabaseUtils {
-  /// Holds any error message related to DB activity
-  String? error;
-
-  /// [GraphQLClient] client for the user database
-  /// requires a token.
-  GraphQLClient? userDatabaseClient;
-
-  /// [GraphQLClient] for the statement database.
-  /// Does not require a token.
-  GraphQLClient statementDatabaseClient = GraphQLClient(
-    cache: GraphQLCache(),
-    link: HttpLink(statementDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': statementDatabaseApplicationID,
-      'X-Parse-Client-Key': statementDatabaseClientKey,
-    }),
-  );
-
-  /// Object to access [FlutterSecureStorage].
-  var safeStorage = const FlutterSecureStorage();
-
+class DatabaseUtils extends DatabaseConnection {
   /// Live query livequery for games
   parse.LiveQuery? gameChangesLiveQuery;
 
   /// Live query livequery for friends
   parse.LiveQuery? newFriendsLiveQuery;
 
-  /// Creates [userDatabaseClient].
-  Future<bool> createUserDatabaseClient() async {
-    // The session token.
-    String? token = await safeStorage.read(key: "token");
-
-    // If token is not null, check if it is valid.
-    if (token != null) {
-      // Link to user database.
-      final HttpLink userDatabaseLink =
-          HttpLink(userDatabaseUrl, defaultHeaders: {
-        'X-Parse-Application-Id': userDatabaseApplicationID,
-        'X-Parse-Client-Key': userDatabaseClientKey,
-        'X-Parse-Session-Token': token,
-      });
-
-      // Provides data from server and facilitates requests.
-      userDatabaseClient = GraphQLClient(
-        cache: GraphQLCache(),
-        link: userDatabaseLink,
-      );
-      return true;
-    }
-    return false;
-  }
-
-  /// Login a user.
-  void login(String username, String password, Function loginCallback) async {
-    // Link to server.
-    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': userDatabaseApplicationID,
-      'X-Parse-Client-Key': userDatabaseClientKey,
-      //'X-Parse-REST-API-Key' : kParseRestApiKey,
-    });
-
-    // Provides data from server and facilitates requests.
-    GraphQLClient client = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
-
-    // The result returned from the query.
-    var loginResult = await client.mutate(
-      MutationOptions(
-        document: gql(Queries.login(username, password)),
-      ),
-    );
-
-    // If login result has any exceptions.
-    if (loginResult.hasException) {
-      _handleException(loginResult.exception!);
-      loginCallback(null);
-      return;
-    }
-
-    // Safe the new token.
-    safeStorage.write(
-        key: "token",
-        value: loginResult.data?["logIn"]["viewer"]["sessionToken"]);
-
-    loginCallback(
-        LocalPlayer.fromMap(loginResult.data?["logIn"]["viewer"]["user"]));
-    // Safe the User
-  }
-
-  /// Signup a user.
-  ///
-  // Emoji can not be safed while not authenticated.
-  // 1. signup with username and password,
-  // 2. create userdata with emoji and so on!
-  // 3. turn on class protection on back4app.
-  void signUp(String username, String password, String emoji,
-      Function signUpCallback) async {
-    //check for bad words
-    bool isDirty = await containsBadWord(username);
-    if (isDirty) {
-      signUpCallback(null);
-      return; //return if bad words are found
-    }
-
-    // Link to server.
-    final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': userDatabaseApplicationID,
-      'X-Parse-Client-Key': userDatabaseClientKey,
-      //'X-Parse-REST-API-Key' : kParseRestApiKey,
-    });
-
-    // Provides data from server and facilitates requests.
-    GraphQLClient client = GraphQLClient(
-      cache: GraphQLCache(),
-      link: httpLink,
-    );
-
-    // The result returned from the query.
-    var signUpResult = await client.mutate(
-      MutationOptions(
-        document: gql(Queries.signUp(username, password, emoji)),
-      ),
-    );
-
-    // If login result has any exceptions.
-    if (signUpResult.hasException) {
-      _handleException(signUpResult.exception!);
-
-      signUpCallback(null);
-      return;
-    }
-
-    // Safe the new token.
-    await safeStorage.write(
-        key: "token",
-        value: signUpResult.data?["signUp"]["viewer"]["sessionToken"]);
-
-    // parse player.
-    var player =
-        LocalPlayer.fromMap(signUpResult.data?["signUp"]["viewer"]["user"]);
-    player.emoji = emoji;
-
-    // upload emoji
-    await createUserData(player, (p) => {player = p});
-
-    signUpCallback(player);
-  }
-
-  /// Logsout a user by deleting the session token.
-  Future<void> logout(Function logoutCallback) async {
-    const safeStorage = FlutterSecureStorage();
-    await safeStorage.delete(key: "token");
-
-    // stop live queries
-    if (gameChangesLiveQuery != null) {
-      gameChangesLiveQuery!.client.disconnect();
-      gameChangesLiveQuery = null;
-    }
-
-    if (newFriendsLiveQuery != null) {
-      newFriendsLiveQuery!.client.disconnect();
-      newFriendsLiveQuery = null;
-    }
-
-    // remove parse initialization
-    userDatabaseClient = null;
-
-    logoutCallback();
-  }
-
-  /// Checks if token is valid.
-  Future<void> checkToken(Function checkTokenCallback) async {
-    // The session token.
-    String? token = await safeStorage.read(key: "token");
-
-    // If token is not null, check if it is valid.
-    if (token != null) {
-      // Link to the database.
-      final HttpLink httpLink = HttpLink(userDatabaseUrl, defaultHeaders: {
-        'X-Parse-Application-Id': userDatabaseApplicationID,
-        'X-Parse-Client-Key': userDatabaseClientKey,
-        'X-Parse-Session-Token': token,
-      });
-
-      // The client that provides the connection.
-      GraphQLClient client = GraphQLClient(
-        cache: GraphQLCache(),
-        link: httpLink,
-      );
-
-      // The query result.
-      var queryResult = await client.query(QueryOptions(
-        document: gql(Queries.getCurrentUser()),
-      ));
-
-      if (queryResult.hasException) {
-        _handleException(queryResult.exception!);
-        checkTokenCallback(null);
-        return;
-      } else {
-        checkTokenCallback(
-            LocalPlayer.fromMap(queryResult.data?["viewer"]["user"]));
-        return;
-      }
-    }
-
-    // no token, return false
-    checkTokenCallback(null);
-  }
-
-  Future<Player> getUserData(Player p) async {
-    if (!await createUserDatabaseClient()) {
-      return p;
-    }
-
-    // The query result.
-    var queryResult = await userDatabaseClient!.query(
-      QueryOptions(
-        document: gql(Queries.getUser()),
-        variables: {"user": p.id},
-      ),
-    );
-
-    if (queryResult.hasException) {
-      _handleException(queryResult.exception!);
-
-      return p;
-    }
-    return LocalPlayer.fromMap(queryResult.data!["user"]);
-  }
+  /// Constor decides which implementation of [SafeStorageInterface] to use.
+  /// Default is [SafeStoragePlugin].
+  /// If called from unit tests, [SafeStorageTesting] is passed.
+  DatabaseUtils({super.safeStorage = const SafeStoragePlugin()});
 
   /// Get all friend requests.
   Future<PlayerRelationCollection?> getFriends(Player player) async {
@@ -264,7 +45,7 @@ class DatabaseUtils {
     );
 
     if (queryResult.hasException) {
-      _handleException(queryResult.exception!);
+      errorHandler.handleException(queryResult.exception!);
 
       return null;
     } else {
@@ -289,15 +70,12 @@ class DatabaseUtils {
     );
 
     if (mutationResult.hasException) {
-      _handleException(mutationResult.exception!);
+      errorHandler.handleException(mutationResult.exception!);
 
       acceptFriendCallback(false);
       return;
     } else {
       acceptFriendCallback(true);
-      // update num of friends in Database.
-      p.numFriends += 1;
-      updateUserData(p, (Player? p) {});
       return;
     }
   }
@@ -308,111 +86,11 @@ class DatabaseUtils {
       QueryOptions(document: gql(Queries.getStatement(statementID))),
     );
     if (queryResult.hasException) {
-      _handleException(queryResult.exception!);
+      errorHandler.handleException(queryResult.exception!);
 
       return null;
     }
     return Statement.fromMap(queryResult.data?["statement"]);
-  }
-
-  /// Update a [LocalPlayer] in the Database by [String]. Only for username and
-  /// device token! Thus only used for the logged in user.
-  Future<void> updateUser(
-      LocalPlayer player, Function updateUserCallback) async {
-    // TODO fetch player before updating so nothing is overwritten
-    // check username for bad words
-    bool isDirty = await containsBadWord(player.name);
-    if (isDirty) {
-      updateUserCallback(null);
-      return; //return if bad words are found
-    }
-
-    if (!await createUserDatabaseClient()) {
-      await updateUserCallback(null);
-      return;
-    }
-
-    var mutationResult = await userDatabaseClient!.mutate(
-      MutationOptions(
-        document: gql(Queries.updateUser()),
-        variables: {
-          "user": player.toUserMap(),
-        },
-      ),
-    );
-
-    if (mutationResult.hasException) {
-      _handleException(mutationResult.exception!);
-
-      await updateUserCallback(null);
-      return;
-    } else {
-      await updateUserCallback(
-          LocalPlayer.fromMap(mutationResult.data?["updateUser"]["user"]));
-      return;
-    }
-  }
-
-  /// Update a [Player]s userdata in the Database by [String].
-  ///
-  /// Can be anything except username and auth stuff.
-  Future<void> updateUserData(
-      Player player, Function updateUserCallback) async {
-    // TODO: fetch player before updating so nothing is overwritten
-    // The session token.
-
-    if (!await createUserDatabaseClient()) {
-      await updateUserCallback(null);
-      return;
-    }
-
-    var mutationResult = await userDatabaseClient!.mutate(
-      MutationOptions(
-        document: gql(Queries.updateUserData()),
-        variables: {
-          "user": player.toUserDataMap(),
-        },
-      ),
-    );
-
-    if (mutationResult.hasException) {
-      _handleException(mutationResult.exception!);
-
-      await updateUserCallback(null);
-    } else {
-      await updateUserCallback(player
-        ..updateDataWithMap(
-            mutationResult.data?["updateUserData"]["userData"]));
-    }
-  }
-
-  /// Create a [LocalPlayer]s userdata in the Database by [String].
-  ///
-  /// Can be anything except username and auth stuff.
-  Future<void> createUserData(
-      LocalPlayer player, Function createUserDataCallback) async {
-    if (!await createUserDatabaseClient()) {
-      createUserDataCallback(null);
-      return;
-    }
-
-    var mutationResult = await userDatabaseClient!.mutate(
-      MutationOptions(
-        document: gql(Queries.updateUser()),
-        variables: {
-          "user": player.toUserMapWithNewUserData(),
-        },
-      ),
-    );
-
-    if (mutationResult.hasException) {
-      _handleException(mutationResult.exception!);
-
-      createUserDataCallback(null);
-    } else {
-      createUserDataCallback(
-          LocalPlayer.fromMap(mutationResult.data?["updateUser"]["user"]));
-    }
   }
 
   /// Update a [Friendship] in the Database by [String].
@@ -431,7 +109,7 @@ class DatabaseUtils {
     );
 
     if (mutationResult.hasException) {
-      _handleException(mutationResult.exception!);
+      errorHandler.handleException(mutationResult.exception!);
 
       return false;
     } else {
@@ -457,7 +135,7 @@ class DatabaseUtils {
     );
 
     if (mutationResult.hasException) {
-      _handleException(mutationResult.exception!);
+      errorHandler.handleException(mutationResult.exception!);
 
       return false;
     }
@@ -466,14 +144,6 @@ class DatabaseUtils {
     if (appState.focusedPlayerRelation!.openGame!.gameFinished()) {
       // update friendship
       await updateFriendship(appState.focusedPlayerRelation!);
-      // update player
-      await updateUserData(appState.player!, (Player? p) {
-        if (p != null) {
-          appState.player = p;
-        } else {
-          appState.msg = "Player konnte nicht aktualisiert werden";
-        }
-      });
     }
     return true;
   }
@@ -498,7 +168,7 @@ class DatabaseUtils {
     );
 
     if (mutationResult.hasException) {
-      _handleException(mutationResult.exception!);
+      errorHandler.handleException(mutationResult.exception!);
 
       return null;
     }
@@ -524,7 +194,7 @@ class DatabaseUtils {
     );
 
     if (queryResult.hasException) {
-      _handleException(queryResult.exception!);
+      errorHandler.handleException(queryResult.exception!);
 
       return null;
     }
@@ -552,7 +222,7 @@ class DatabaseUtils {
     );
 
     if (mutationResult.hasException) {
-      _handleException(mutationResult.exception!);
+      errorHandler.handleException(mutationResult.exception!);
 
       sendFriendRequestCallback(false);
     } else {
@@ -577,7 +247,7 @@ class DatabaseUtils {
     );
 
     if (queryResult.hasException) {
-      _handleException(queryResult.exception!);
+      errorHandler.handleException(queryResult.exception!);
 
       searchFriendsCallback(null);
     } else {
@@ -609,14 +279,14 @@ class DatabaseUtils {
 
     // if exception in query, return null.
     if (playableStatements.hasException) {
-      _handleException(playableStatements.exception!);
+      errorHandler.handleException(playableStatements.exception!);
 
       return null;
     }
 
     // if not enough statements are accessible.
     if (playableStatements.data?["statements"]["edges"].length < 9) {
-      error =
+      errorHandler.error =
           "Es gibt nicht mehr genug Statements, die ihr beide noch nicht gespielt habt...";
       return null;
     }
@@ -631,22 +301,12 @@ class DatabaseUtils {
     // random shuffling
     ids.shuffle();
 
-    // add to played statements of p and e
-    _playerRelation.opponent.playedStatements!.addAll(ids.take(9));
-    p.playedStatements!.addAll(ids.take(9));
-
     //upload game game
     _playerRelation.openGame!.statementIds = ids.take(9).toList();
     _playerRelation.openGame = await uploadGame(_playerRelation);
     if (_playerRelation.openGame == null) {
       return null;
     }
-
-    //update p and e in database
-    await updateUserData(p, (Player? player) {});
-
-    await updateUserData(_playerRelation.opponent, (Player? player) {});
-
     // update friendship
     await updateFriendship(_playerRelation);
 
@@ -673,59 +333,10 @@ class DatabaseUtils {
     );
 
     if (mutationResult.hasException) {
-      _handleException(mutationResult.exception!);
+      errorHandler.handleException(mutationResult.exception!);
     }
 
     return;
-  }
-
-  Future<void> deleteAccount(QuellenreiterAppState appState) async {
-    if (appState.player == null) {
-      appState.route = Routes.login;
-      return;
-    }
-
-    if (userDatabaseClient == null) {
-      if (!await createUserDatabaseClient()) {
-        appState.route = Routes.settings;
-        return;
-      }
-    }
-
-    // Remeove the User and all open games and friendships.
-    var mutationResult = await userDatabaseClient!.mutate(
-      MutationOptions(
-        document: gql(Queries.deleteUser(appState)),
-        variables: {
-          "user": {
-            "id": appState.player!.id,
-          },
-        },
-      ),
-    );
-
-    if (mutationResult.hasException) {
-      _handleException(mutationResult.exception!);
-      appState.route = Routes.settings;
-
-      return;
-    }
-
-    await safeStorage.delete(key: "token");
-
-    // stop live queries
-    if (gameChangesLiveQuery != null) {
-      gameChangesLiveQuery!.client.disconnect();
-      gameChangesLiveQuery = null;
-    }
-
-    if (newFriendsLiveQuery != null) {
-      newFriendsLiveQuery!.client.disconnect();
-      newFriendsLiveQuery = null;
-    }
-
-    appState.isLoggedIn = false;
-    appState.route = Routes.login;
   }
 
   void startLiveQueryForFriends(QuellenreiterAppState appState) async {
@@ -880,7 +491,7 @@ class DatabaseUtils {
       return resultParsed;
     }
 
-    error = "Error: ${parseResponse.error!.message}";
+    errorHandler.error = "Error: ${parseResponse.error!.message}";
     return true;
   }
 
@@ -963,39 +574,16 @@ class DatabaseUtils {
     }
   }
 
-  /// Handle errors from GraphQL server.
-  /// Todo: Move this into own class.
-  void _handleException(OperationException e) {
-    // errors in the database are not shown to the user
-    if (e.graphqlErrors.isNotEmpty) {
-      // handle graphql errors
-      // set the error
-      if (e.graphqlErrors[0].message == "Invalid username/password.") {
-        error = "Falscher Username oder Passwort";
-      }
-      if (e.graphqlErrors[0].message ==
-          "Account already exists for this username.") {
-        error = "Der Username ist bereits vergeben";
-      }
-    } else if (e.linkException is NetworkException) {
-      error = "Du bist offline...";
-    } else if (e.linkException is ServerException) {
-      error = "Du bist offline...";
-    } else {
-      error = "unbekannter Fehler. Versuche es erneut";
-    }
-  }
-
   Future<bool> containsBadWord(String username) async {
     if (username.isEmpty) {
       // return true because is empty
-      error = "Username is empty";
+      errorHandler.error = "Username is empty";
       return true;
     }
 
     for (String s in customBadWords) {
       if (username.contains(s)) {
-        error = "Username enthält ungültige Wörter.";
+        errorHandler.error = "Username enthält ungültige Wörter.";
         return true;
       }
     }
@@ -1008,14 +596,27 @@ class DatabaseUtils {
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       if (jsonResponse['bad_words'].isNotEmpty) {
-        error = "Username enthält ungültige Wörter";
+        errorHandler.error = "Username enthält ungültige Wörter";
         return true;
       } else {
         return false;
       }
     } else {
-      error = "Server Error";
+      errorHandler.error = "Server Error";
       return true;
+    }
+  }
+
+  // stops all live queries and disconnects clients
+  void stopLiveQueries() {
+    // stop live queries
+    if (gameChangesLiveQuery != null) {
+      gameChangesLiveQuery!.client.disconnect();
+      gameChangesLiveQuery = null;
+    }
+    if (newFriendsLiveQuery != null) {
+      newFriendsLiveQuery!.client.disconnect();
+      newFriendsLiveQuery = null;
     }
   }
 }

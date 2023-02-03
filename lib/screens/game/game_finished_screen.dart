@@ -126,14 +126,14 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
 
   dynamic earnPointsButton() {
     if (!_pointButtonTapped) {
-      return MirrorAnimation(
+      return MirrorAnimationBuilder<double>(
           duration: const Duration(milliseconds: 1000),
           tween: Tween<double>(
             begin: 1,
             end: 1.05,
           ),
           curve: Curves.elasticIn,
-          builder: (context, child, double value) => ElevatedButton(
+          builder: (context, double value, _) => ElevatedButton(
                 onPressed: onTapGetPoints,
                 child: Text(
                   "Punkte einsammeln",
@@ -154,8 +154,8 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
     }
   }
 
-  PlayAnimation gameResultInfo(String finalText, String finalEmoji) {
-    return PlayAnimation<double>(
+  PlayAnimationBuilder gameResultInfo(String finalText, String finalEmoji) {
+    return PlayAnimationBuilder<double>(
       duration: const Duration(milliseconds: 1000),
       delay: const Duration(milliseconds: 500),
       tween: Tween<double>(
@@ -163,7 +163,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
         end: 1,
       ),
       curve: Curves.bounceOut,
-      builder: (context, child, double value) => Stack(
+      builder: (context, double value, _) => Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.topCenter,
         children: [
@@ -361,14 +361,14 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                   )
                 // if player reached new Level.
                 else
-                  PlayAnimation(
+                  PlayAnimationBuilder(
                     duration: const Duration(milliseconds: 500),
                     tween: Tween<double>(
                       begin: 1,
                       end: 1.5,
                     ),
                     curve: Curves.elasticOut,
-                    builder: (context, child, double value) => Row(
+                    builder: (context, double value, _) => Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
@@ -403,14 +403,14 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
             return const SizedBox.shrink();
           } else {
             HapticFeedback.heavyImpact();
-            return PlayAnimation(
+            return PlayAnimationBuilder(
               duration: const Duration(milliseconds: 1000),
               tween: Tween<double>(
                 begin: 2,
                 end: 1,
               ),
               curve: Curves.elasticOut,
-              builder: (context, child, double value) => Row(
+              builder: (context, double value, _) => Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
@@ -480,39 +480,25 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
     await Future.delayed(const Duration(seconds: 2), () {});
     HapticFeedback.mediumImpact();
     // updating all stats, takes a while.
-    await widget.appState.db.checkToken((p) async {
-      // if player is not null
-      if (p != null) {
-        // update current player
-        widget.appState.player = p;
-        widget.appState.msg = null;
-      } else {
-        widget.appState.msg = "Spieler nicht up to date.";
-        // return to ready to start screen.
-        widget.appState.route = Routes.gameReadyToStart;
-        return;
-      }
-
+    // Here we fetch the player from the database again, to make sure we have the latest data.
+    await widget.appState.authProvider.checkToken((p) async {
       Game currentGame = widget.appState.focusedPlayerRelation!.openGame!;
-      Player currentPlayer = widget.appState.player!;
+      LocalPlayer currentPlayer = widget.appState.player!;
 
+      await widget.appState.playerProvider
+          .updatePlayerGameStats(currentPlayer, currentGame);
+
+      // THE FOLLOWING CODE IS TO BE MOVED TO A GameProvider class
+      // Values we need to update
       if (_result == GameResult.playerWon) {
         // player has won, update player
         widget.appState.focusedPlayerRelation!.wonGamesPlayer += 1;
-        currentPlayer.numGamesWon += 1;
-      } else if (_result == GameResult.tied) {
-        // Game endet in a tie, update player
-        currentPlayer.numGamesTied += 1;
       }
 
       // if statements are not downloaded (especially if player
       // wants to get its points), download them.
       currentGame.statements ??=
           await widget.appState.db.getStatements(currentGame.statementIds!);
-
-      currentPlayer.updateAnswerStats(
-          currentGame.player.answers, currentGame.statements);
-      currentPlayer.numPlayedGames += 1;
 
       // increase played games of friendship if playerIndex = 0
       if (currentGame.playerIndex == 0) {
@@ -523,7 +509,9 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
         // both player have accessed their points
         currentGame.pointsAccessed = true;
       }
-      await widget.appState.db.updateGame(widget.appState);
+      // The next function also alters the player object.
+      // should be named "updateGameAndPlayer"
+      await widget.appState.updateGame();
 
       HapticFeedback.heavyImpact();
 

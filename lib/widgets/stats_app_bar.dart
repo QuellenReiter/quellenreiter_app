@@ -44,7 +44,8 @@ class _StatsAppBarState extends State<StatsAppBar> {
           height: AppBar().preferredSize.height * 1.5,
           // Set background color and rounded bottom corners.
           decoration: BoxDecoration(
-            borderRadius: const BorderRadius.vertical(bottom: Radius.circular(15)),
+            borderRadius:
+                const BorderRadius.vertical(bottom: Radius.circular(15)),
             color: DesignColors.backgroundBlue,
             boxShadow: [
               BoxShadow(

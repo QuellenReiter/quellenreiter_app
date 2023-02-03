@@ -6,8 +6,10 @@ import '../constants/constants.dart';
 
 /// Holds information about a [Player].
 class Player {
-  late String id;
-  late String? dataId;
+  late String _id;
+  get id => _id;
+  late String? _dataId;
+  get dataId => _dataId;
   late String name;
   late String emoji;
   late int numPlayedGames;
@@ -18,14 +20,16 @@ class Player {
   late int falseCorrectAnswers;
   late int falseFakeAnswers;
   // This should be moved into localPlayer class. not needed here.
-  late List<String>? safedStatementsIds;
-  late List<String>? playedStatements;
+  late List<String>? _safedStatementsIds;
+  get savedStatementsIds => _safedStatementsIds;
+  late List<String>? _playedStatements;
+  get playedStatements => _playedStatements;
   String? deviceToken;
   int numFriends = 0;
 
   Player.fromMap(Map<String, dynamic>? map)
       : name = map?[DbFields.userName],
-        dataId = map?[DbFields.userData] == null
+        _dataId = map?[DbFields.userData] == null
             ? null
             : map?[DbFields.userData]?["objectId"],
         emoji = map?[DbFields.userData] == null
@@ -52,8 +56,8 @@ class Player {
         numGamesTied = map?[DbFields.userData] == null
             ? 0
             : map?[DbFields.userData]?[DbFields.userGamesTied],
-        id = map?["objectId"],
-        playedStatements = map?[DbFields.userData] == null
+        _id = map?["objectId"],
+        _playedStatements = map?[DbFields.userData] == null
             // safe statement id used in the tutorial
             ? [GameRules.testStatementId]
             : map?[DbFields.userData]?[DbFields.userPlayedStatements] != null
@@ -63,7 +67,7 @@ class Player {
                     .cast<String>()
                 : [],
         //should only be done in [LocalPlayer]
-        safedStatementsIds = map?[DbFields.userData] == null
+        _safedStatementsIds = map?[DbFields.userData] == null
             // safe statement id used in the tutorial
             ? [GameRules.testStatementId]
             : map?[DbFields.userData]?[DbFields.userSafedStatements] != null
@@ -78,7 +82,7 @@ class Player {
 
   Map<String, dynamic> toUserDataMap() {
     var ret = {
-      "id": dataId,
+      "id": _dataId,
       "fields": {
         DbFields.userEmoji: emoji,
         DbFields.userPlayedGames: numPlayedGames,
@@ -86,9 +90,9 @@ class Player {
         DbFields.userFalseCorrectAnswers: falseCorrectAnswers,
         DbFields.userTrueFakeAnswers: trueFakeAnswers,
         DbFields.userFalseFakeAnswers: falseFakeAnswers,
-        DbFields.userPlayedStatements: playedStatements,
+        DbFields.userPlayedStatements: _playedStatements,
         //should only be done in [LocalPlayer]
-        DbFields.userSafedStatements: safedStatementsIds,
+        DbFields.userSafedStatements: _safedStatementsIds,
         DbFields.userGamesWon: numGamesWon,
         DbFields.userGamesTied: numGamesTied,
         DbFields.userNumFriends: numFriends,
@@ -99,7 +103,7 @@ class Player {
 
   Map<String, dynamic> toUserMap() {
     Map<String, dynamic> ret = {
-      "id": id,
+      "id": _id,
       "fields": {
         DbFields.userName: name,
         DbFields.userDeviceToken: deviceToken,
@@ -112,7 +116,7 @@ class Player {
 
   Map<String, dynamic> toUserMapWithNewUserData() {
     var ret = {
-      "id": id,
+      "id": _id,
       "fields": {
         DbFields.userData: {
           "createAndLink": {
@@ -122,9 +126,9 @@ class Player {
             DbFields.userFalseCorrectAnswers: falseCorrectAnswers,
             DbFields.userTrueFakeAnswers: trueFakeAnswers,
             DbFields.userFalseFakeAnswers: falseFakeAnswers,
-            DbFields.userPlayedStatements: playedStatements,
+            DbFields.userPlayedStatements: _playedStatements,
             //should only be done in [LocalPlayer]
-            DbFields.userSafedStatements: safedStatementsIds,
+            DbFields.userSafedStatements: _safedStatementsIds,
             DbFields.userGamesWon: numGamesWon,
             DbFields.userGamesTied: numGamesTied,
             DbFields.userNumFriends: 0,
@@ -136,7 +140,7 @@ class Player {
   }
 
   void updateDataWithMap(Map<String, dynamic> map) {
-    dataId = map["objectId"];
+    _dataId = map["objectId"];
     emoji = map[DbFields.userEmoji];
     numPlayedGames = map[DbFields.userPlayedGames];
     trueCorrectAnswers = map[DbFields.userTrueCorrectAnswers];
@@ -145,12 +149,12 @@ class Player {
     falseFakeAnswers = map[DbFields.userFalseFakeAnswers];
     numGamesWon = map[DbFields.userGamesWon];
     numGamesTied = map[DbFields.userGamesTied];
-    playedStatements = map[DbFields.userPlayedStatements]
+    _playedStatements = map[DbFields.userPlayedStatements]
         .map((x) => x["value"])
         .toList()
         .cast<String>();
     //should only be done in [LocalPlayer]
-    safedStatementsIds = map[DbFields.userSafedStatements] != null
+    _safedStatementsIds = map[DbFields.userSafedStatements] != null
         ? map[DbFields.userSafedStatements]
             .map((x) => x["value"])
             .toList()
@@ -215,6 +219,26 @@ class Player {
   bool statsCanBeCalculated() {
     return numPlayedGames > 0 &&
         (trueCorrectAnswers > 0 && trueFakeAnswers > 0);
+  }
+
+  /// Adds the [statementId] to the list of safed statements.
+  void addSafedStatement(String statementId) {
+    _safedStatementsIds!.add(statementId);
+  }
+
+  /// Removes the [statementId] from the list of safed statements.
+  void removeSafedStatement(String statementId) {
+    _safedStatementsIds!.remove(statementId);
+  }
+
+  /// Adds the [statementId]s to the list of played statements.
+  void addPlayedStatements(List<String> statementIds) {
+    _playedStatements!.addAll(statementIds);
+  }
+
+  /// Remove all played statements.
+  void removeAllPlayedStatements() {
+    _playedStatements!.clear();
   }
 }
 

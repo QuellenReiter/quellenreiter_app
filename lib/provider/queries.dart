@@ -1,6 +1,4 @@
 import 'package:quellenreiter_app/models/player_relation.dart';
-import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
-
 import '../constants/constants.dart';
 import '../models/fact.dart';
 import '../models/player.dart';
@@ -815,10 +813,11 @@ mutation removeGame(\$game:DeleteOpenGameInput!){
     return ret;
   }
 
-  static String deleteUser(QuellenreiterAppState appState) {
+  static String deleteUser(
+      LocalPlayer player, PlayerRelationCollection playerRelations) {
     String deleteOpenGames = "";
     String deleteFriendships = "";
-    List<PlayerRelation> friends = appState.playerRelations.friends;
+    List<PlayerRelation> friends = playerRelations.friends;
     if (friends.isNotEmpty) {
       for (PlayerRelation playerRelation in friends) {
         deleteFriendships += '''
@@ -854,7 +853,7 @@ mutation removeUser(\$user:DeleteUserInput!){
   $deleteFriendships
   deleteUserData(
     input:{
-      id: "${appState.player!.dataId}"
+      id: "${player.dataId}"
     }
   ){
     userData{
@@ -882,6 +881,7 @@ query getUser(\$user:ID!){
     ${DbFields.userData}{
       objectId
       ${DbFields.userGamesTied}
+      ${DbFields.userNumFriends}
       ${DbFields.userGamesWon}
       ${DbFields.userEmoji}
       ${DbFields.userPlayedGames}

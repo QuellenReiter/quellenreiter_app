@@ -61,7 +61,7 @@ void main() {
           playerMap[DbFields.userData][DbFields.userPlayedStatements][0]
               ["value"]);
       expect(
-          player.safedStatementsIds![0],
+          player.savedStatementsIds![0],
           playerMap[DbFields.userData][DbFields.userSafedStatements][0]
               ["value"]);
       expect(player.numFriends,
@@ -105,7 +105,7 @@ void main() {
           DbFields.userGamesWon: player.numGamesWon,
           DbFields.userGamesTied: player.numGamesTied,
           DbFields.userPlayedStatements: player.playedStatements,
-          DbFields.userSafedStatements: player.safedStatementsIds,
+          DbFields.userSafedStatements: player.savedStatementsIds,
           DbFields.userNumFriends: player.numFriends,
         }
       });

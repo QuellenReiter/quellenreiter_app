@@ -471,14 +471,14 @@ packages:
       name: package_info_plus_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.5"
+    version: "1.0.6"
   package_info_plus_windows:
     dependency: transitive
     description:
       name: package_info_plus_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.1.0"
   parse_server_sdk:
     dependency: transitive
     description:
@@ -702,7 +702,7 @@ packages:
       name: simple_animations
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.2.0"
+    version: "5.0.0+3"
   simple_timer:
     dependency: "direct main"
     description:
