@@ -9,6 +9,7 @@ import 'package:quellenreiter_app/models/player_relation.dart';
 import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/player.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
+import 'package:quellenreiter_app/provider/safe_storage.dart';
 import '../consonents.dart';
 import '../constants/constants.dart';
 import '../models/statement.dart';
@@ -35,8 +36,8 @@ class DatabaseUtils {
     }),
   );
 
-  /// Object to access [FlutterSecureStorage].
-  var safeStorage = const FlutterSecureStorage();
+  /// Object to access Secure Storage.
+  SafeStorageInterface safeStorage;
 
   /// Live query livequery for games
   parse.LiveQuery? gameChangesLiveQuery;
@@ -68,6 +69,11 @@ class DatabaseUtils {
     }
     return false;
   }
+
+  /// Constor decides which implementation of [SafeStorageInterface] to use.
+  /// Default is [SafeStoragePlugin].
+  /// If called from unit tests, [SafeStorageTesting] is passed.
+  DatabaseUtils({this.safeStorage = const SafeStoragePlugin()});
 
   /// Login a user.
   void login(String username, String password, Function loginCallback) async {
