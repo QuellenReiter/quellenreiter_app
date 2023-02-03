@@ -479,46 +479,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
     HapticFeedback.heavyImpact();
     await Future.delayed(const Duration(seconds: 2), () {});
     HapticFeedback.mediumImpact();
-    // updating all stats, takes a while.
-    // Here we fetch the player from the database again, to make sure we have the latest data.
-    await widget.appState.authProvider.checkToken((p) async {
-      Game currentGame = widget.appState.focusedPlayerRelation!.openGame!;
-      LocalPlayer currentPlayer = widget.appState.player!;
 
-      await widget.appState.playerProvider
-          .updatePlayerGameStats(currentPlayer, currentGame);
-
-      // THE FOLLOWING CODE IS TO BE MOVED TO A GameProvider class
-      // Values we need to update
-      if (_result == GameResult.playerWon) {
-        // player has won, update player
-        widget.appState.focusedPlayerRelation!.wonGamesPlayer += 1;
-      }
-
-      // if statements are not downloaded (especially if player
-      // wants to get its points), download them.
-      currentGame.statements ??=
-          await widget.appState.db.getStatements(currentGame.statementIds!);
-
-      // increase played games of friendship if playerIndex = 0
-      if (currentGame.playerIndex == 0) {
-        widget.appState.focusedPlayerRelation!.numGamesPlayed += 1;
-      }
-      // if the last player accessed the points
-      if (currentGame.requestingPlayerIndex != currentGame.playerIndex) {
-        // both player have accessed their points
-        currentGame.pointsAccessed = true;
-      }
-      // The next function also alters the player object.
-      // should be named "updateGameAndPlayer"
-      await widget.appState.updateGame();
-
-      HapticFeedback.heavyImpact();
-
-      widget.appState.route = Routes.gameReadyToStart;
-      return;
-    });
-    HapticFeedback.heavyImpact();
     showGeneralDialog(
         transitionDuration: const Duration(milliseconds: 50),
         context: context,
@@ -527,14 +488,44 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
               color: Colors.white,
               child: const Center(child: CircularProgressIndicator()));
         });
+    // updating all stats, takes a while.
+    // Here we fetch the player from the database again, to make sure we have the latest data.
+
+    Game currentGame = widget.appState.focusedPlayerRelation!.openGame!;
+    LocalPlayer currentPlayer = widget.appState.player!;
+
+    await widget.appState.playerProvider
+        .updatePlayerGameStats(currentPlayer, currentGame);
+
+    // THE FOLLOWING CODE IS TO BE MOVED TO A GameProvider class
+    // Values we need to update
+    if (_result == GameResult.playerWon) {
+      // player has won, update player
+      widget.appState.focusedPlayerRelation!.wonGamesPlayer += 1;
+    }
+
+    // if statements are not downloaded (especially if player
+    // wants to get its points), download them.
+    currentGame.statements ??=
+        await widget.appState.db.getStatements(currentGame.statementIds!);
+
+    // increase played games of friendship if playerIndex = 0
+    if (currentGame.playerIndex == 0) {
+      widget.appState.focusedPlayerRelation!.numGamesPlayed += 1;
+    }
+    // if the last player accessed the points
+    if (currentGame.requestingPlayerIndex != currentGame.playerIndex) {
+      // both player have accessed their points
+      currentGame.pointsAccessed = true;
+    }
+    // The next function also alters the player object.
+    // should be named "updateGameAndPlayer"
+    await widget.appState.updateGame();
+
+    HapticFeedback.heavyImpact();
 
     await widget.appState.getPlayerRelations();
 
-    // update player
-
-    // wait for 1 secons
-    // pop the dialog and go to next screen.
-    Navigator.of(context).pop();
     widget.appState.route = Routes.gameReadyToStart;
   }
 }
