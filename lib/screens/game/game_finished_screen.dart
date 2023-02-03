@@ -126,14 +126,14 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
 
   dynamic earnPointsButton() {
     if (!_pointButtonTapped) {
-      return MirrorAnimation(
+      return MirrorAnimationBuilder<double>(
           duration: const Duration(milliseconds: 1000),
           tween: Tween<double>(
             begin: 1,
             end: 1.05,
           ),
           curve: Curves.elasticIn,
-          builder: (context, child, double value) => ElevatedButton(
+          builder: (context, double value, _) => ElevatedButton(
                 onPressed: onTapGetPoints,
                 child: Text(
                   "Punkte einsammeln",
@@ -154,8 +154,8 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
     }
   }
 
-  PlayAnimation gameResultInfo(String finalText, String finalEmoji) {
-    return PlayAnimation<double>(
+  PlayAnimationBuilder gameResultInfo(String finalText, String finalEmoji) {
+    return PlayAnimationBuilder<double>(
       duration: const Duration(milliseconds: 1000),
       delay: const Duration(milliseconds: 500),
       tween: Tween<double>(
@@ -163,7 +163,7 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
         end: 1,
       ),
       curve: Curves.bounceOut,
-      builder: (context, child, double value) => Stack(
+      builder: (context, double value, _) => Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.topCenter,
         children: [
@@ -361,14 +361,14 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
                   )
                 // if player reached new Level.
                 else
-                  PlayAnimation(
+                  PlayAnimationBuilder(
                     duration: const Duration(milliseconds: 500),
                     tween: Tween<double>(
                       begin: 1,
                       end: 1.5,
                     ),
                     curve: Curves.elasticOut,
-                    builder: (context, child, double value) => Row(
+                    builder: (context, double value, _) => Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
@@ -403,14 +403,14 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
             return const SizedBox.shrink();
           } else {
             HapticFeedback.heavyImpact();
-            return PlayAnimation(
+            return PlayAnimationBuilder(
               duration: const Duration(milliseconds: 1000),
               tween: Tween<double>(
                 begin: 2,
                 end: 1,
               ),
               curve: Curves.elasticOut,
-              builder: (context, child, double value) => Row(
+              builder: (context, double value, _) => Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(

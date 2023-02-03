@@ -6,7 +6,7 @@ import 'package:quellenreiter_app/constants/constants.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
 import 'package:quellenreiter_app/widgets/custom_bottom_sheet.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:simple_animations/stateless_animation/play_animation.dart';
+import 'package:simple_animations/simple_animations.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 import '../../models/player_relation.dart';
@@ -241,14 +241,14 @@ class _StartScreenState extends State<StartScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(15),
-                  child: PlayAnimation(
+                  child: PlayAnimationBuilder<double>(
                     duration: const Duration(milliseconds: 500),
                     tween: Tween<double>(
                       begin: 0.0,
                       end: 1,
                     ),
                     curve: Curves.easeInOut,
-                    builder: (context, child, double value) =>
+                    builder: (context, double value, _) =>
                         Stack(alignment: Alignment.center, children: [
                       Container(
                         margin: EdgeInsets.all(20 - value * 20),
