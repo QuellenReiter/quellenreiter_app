@@ -235,7 +235,7 @@ class StatementCardState extends State<StatementCard> {
     // else we are in the app and need to update the database
     isArchived.value = widget.appState == null
         ? isArchived.value
-        : widget.appState!.player!.safedStatementsIds!
+        : widget.appState!.player!.savedStatementsIds!
             .contains(statement.objectId);
 
     List<Widget> factContainers = List.generate(
@@ -292,10 +292,10 @@ class StatementCardState extends State<StatementCard> {
 
                                 HapticFeedback.mediumImpact();
                                 if (widget.appState != null) {
-                                  widget.appState!.player!.safedStatementsIds!
-                                      .remove(statement.objectId!);
-
-                                  await widget.appState!.updateUserData();
+                                  await widget.appState!.playerProvider
+                                      .removeSafedStatement(
+                                          widget.appState!.player!,
+                                          statement.objectId!);
                                 } else {
                                   // wait for 1 second to simulate a loading time
                                   await Future.delayed(
@@ -313,9 +313,10 @@ class StatementCardState extends State<StatementCard> {
                                 archiveIsLoading.value = true;
                                 HapticFeedback.mediumImpact();
                                 if (widget.appState != null) {
-                                  widget.appState!.player!.safedStatementsIds!
-                                      .add(statement.objectId!);
-                                  await widget.appState!.updateUserData();
+                                  await widget.appState!.playerProvider
+                                      .addSafedStatement(
+                                          widget.appState!.player!,
+                                          statement.objectId!);
                                 } else {
                                   // wait for 1 second to simulate a loading time
                                   await Future.delayed(
@@ -649,9 +650,8 @@ class StatementCardState extends State<StatementCard> {
           archiveIsLoading.value = true;
           HapticFeedback.mediumImpact();
           if (widget.appState != null) {
-            widget.appState!.player!.safedStatementsIds!
-                .add(statement.objectId!);
-            await widget.appState!.updateUserData();
+            await widget.appState!.playerProvider.addSafedStatement(
+                widget.appState!.player!, statement.objectId!);
           } else {
             // wait for 1 second to simulate a loading time
             await Future.delayed(const Duration(seconds: 1));

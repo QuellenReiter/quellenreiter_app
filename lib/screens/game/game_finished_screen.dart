@@ -494,25 +494,22 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
       }
 
       Game currentGame = widget.appState.focusedPlayerRelation!.openGame!;
-      Player currentPlayer = widget.appState.player!;
+      LocalPlayer currentPlayer = widget.appState.player!;
 
+      await widget.appState.playerProvider
+          .updatePlayerGameStats(currentPlayer, currentGame);
+
+      // THE FOLLOWING CODE IS TO BE MOVED TO A GameProvider class
+      // Values we need to update
       if (_result == GameResult.playerWon) {
         // player has won, update player
         widget.appState.focusedPlayerRelation!.wonGamesPlayer += 1;
-        currentPlayer.numGamesWon += 1;
-      } else if (_result == GameResult.tied) {
-        // Game endet in a tie, update player
-        currentPlayer.numGamesTied += 1;
       }
 
       // if statements are not downloaded (especially if player
       // wants to get its points), download them.
       currentGame.statements ??=
           await widget.appState.db.getStatements(currentGame.statementIds!);
-
-      currentPlayer.updateAnswerStats(
-          currentGame.player.answers, currentGame.statements);
-      currentPlayer.numPlayedGames += 1;
 
       // increase played games of friendship if playerIndex = 0
       if (currentGame.playerIndex == 0) {
@@ -523,7 +520,9 @@ class _GameFinishedScreenState extends State<GameFinishedScreen> {
         // both player have accessed their points
         currentGame.pointsAccessed = true;
       }
-      await widget.appState.db.updateGame(widget.appState);
+      // The next function also alters the player object.
+      // should be named "updateGameAndPlayer"
+      await widget.appState.updateGame();
 
       HapticFeedback.heavyImpact();
 

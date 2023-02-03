@@ -57,7 +57,8 @@ class _SignupScreenState extends State<SignupScreen> {
       if (usernameExists) {
         // show error
         HapticFeedback.heavyImpact();
-        widget.appState.db.error = "Username schon vergeben";
+        widget.appState.authProvider.errorHandler.error =
+            "Username schon vergeben";
         HapticFeedback.heavyImpact();
         return;
       }

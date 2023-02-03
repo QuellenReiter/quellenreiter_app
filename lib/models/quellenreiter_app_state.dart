@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quellenreiter_app/constants/constants.dart';
+import 'package:quellenreiter_app/provider/player_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../provider/database_utils.dart';
 import 'player_relation.dart';
@@ -14,6 +15,9 @@ import 'statement.dart';
 class QuellenreiterAppState extends ChangeNotifier {
   ///  Object to be able to access the database.
   late DatabaseUtils db;
+
+  /// Provides Player functionality.
+  late PlayerProvider playerProvider;
 
   /// Object to access the shared preferences.
   late SharedPreferences prefs;
@@ -219,7 +223,7 @@ class QuellenreiterAppState extends ChangeNotifier {
   /// and it is checked, if the user is still signed in.
   QuellenreiterAppState() {
     db = DatabaseUtils();
-
+    playerProvider = PlayerProvider();
     route = Routes.loading;
     game = null;
     _friendsQuery = null;
@@ -296,8 +300,8 @@ class QuellenreiterAppState extends ChangeNotifier {
     // update number of friends
     int nFriends = playerRelations.friends.length;
     if (player!.numFriends != nFriends) {
-      player!.numFriends = nFriends;
-      await db.updateUserData(player!, (Player? p) {});
+      playerProvider.incrementNumFriends(
+          player!, nFriends - player!.numFriends);
     }
   }
 
@@ -311,10 +315,6 @@ class QuellenreiterAppState extends ChangeNotifier {
       //  not needed because of live query in database_utils.dart
       route = Routes.friends;
     } else {}
-  }
-
-  Future<void> getUserData() async {
-    await db.getUserData(player!);
   }
 
   /// Restore the [focusedPlayerRelation] in the [player]'s friends.
@@ -354,12 +354,26 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void deleteAccount() async {
     route = Routes.loading;
+    // if no player exists, go to login
+    if (player == null) {
+      route = Routes.login;
+      return;
+    }
     //remove devie from the users push list.
     notificationsAllowed = false;
     await updateDeviceTokenForPushNotifications();
     // remove device decision so that for next user, default is allowed again.
     await prefs.remove("notificationsAllowed");
-    await db.deleteAccount(this);
+    //stop all live queries
+    db.stopLiveQueries();
+    // delete account
+    bool success = await playerProvider.deleteAccount(player!, playerRelations);
+    if (success) {
+      isLoggedIn = false;
+      route = Routes.login;
+    } else {
+      route = Routes.settings;
+    }
 
     player = null;
   }
@@ -373,6 +387,8 @@ class QuellenreiterAppState extends ChangeNotifier {
     if (!success) {
       route = Routes.home;
     } else {
+      // update num of friends in Database.
+      await playerProvider.incrementNumFriends(player!, 1);
       await getPlayerRelations();
       route = Routes.home;
     }
@@ -398,32 +414,10 @@ class QuellenreiterAppState extends ChangeNotifier {
     route = r;
   }
 
-  /// For updating the username
-  Future<void> updateUser() async {
-    await db.updateUser(player!, _updateUserCallback);
-    return;
-  }
-
-  /// for updating any other user trait.
-  Future<void> updateUserData() async {
-    await db.updateUserData(player!, _updateUserCallback);
-    return;
-  }
-
-  Future<void> _updateUserCallback(LocalPlayer? p) async {
-    if (p == null) {
-      // login again and reset the user.
-      await db.checkToken(_checkTokenCallback);
-    } else if (safedStatements!.statements.length !=
-        player!.safedStatementsIds!.length) {
-      getArchivedStatements();
-    }
-  }
-
   void getArchivedStatements() async {
-    if (player!.safedStatementsIds != null) {
+    if (player!.savedStatementsIds != null) {
       // Change this dummy data
-      safedStatements = await db.getStatements(player!.safedStatementsIds!);
+      safedStatements = await db.getStatements(player!.savedStatementsIds!);
 
       if (safedStatements == null) {}
     }
@@ -434,6 +428,8 @@ class QuellenreiterAppState extends ChangeNotifier {
     route = Routes.loading;
     // update player and opponent here, to be up to date with played statements
     await getPlayerRelations();
+
+    await playerProvider.getUserData(player!);
 
     // get potentially updated instance of same [_playerRelation]
     _playerRelation = playerRelations.friends.firstWhere((playerRelation) =>
@@ -456,6 +452,19 @@ class QuellenreiterAppState extends ChangeNotifier {
     _playerRelation.openGame = Game.empty(withTimer, _playerRelation, player!);
     _playerRelation.openGame!.statementIds =
         await db.getPlayableStatements(_playerRelation, player!);
+    if (_playerRelation.openGame!.statementIds == null) {
+      route = tempRoute;
+      db.errorHandler.error =
+          "Spielstarten fehlgeschlagen. ${_playerRelation.opponent.emoji} ${_playerRelation.opponent.name} wurde nicht herausgefordert. Versuche es erneut.";
+      return;
+    }
+    // update both players
+    await playerProvider.addPlayedStatements(
+        player!, _playerRelation.openGame!.statementIds!, (Player? p) {});
+
+    // add played statements to opponent
+    await playerProvider.addPlayedStatements(_playerRelation.opponent,
+        _playerRelation.openGame!.statementIds!, (Player? p) {});
 
     if (_playerRelation.openGame!.statementIds == null) {
       // reset game because not started
@@ -474,6 +483,13 @@ class QuellenreiterAppState extends ChangeNotifier {
         "${_playerRelation.opponent.emoji} ${_playerRelation.opponent.name} wurde herausgefordert";
 
     return;
+  }
+
+  Future<void> updateGame() async {
+    if (focusedPlayerRelation!.openGame != null) {
+      // update game, if it returns true, update player
+      await db.updateGame(this);
+    }
   }
 
   void getCurrentStatements() async {
@@ -614,6 +630,6 @@ class QuellenreiterAppState extends ChangeNotifier {
       }
     }
     // push new token to db
-    await db.updateUser(player!, (LocalPlayer? p) {});
+    await playerProvider.updateUser(player!, (Player? p) {});
   }
 }

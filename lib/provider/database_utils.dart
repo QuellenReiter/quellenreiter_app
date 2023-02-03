@@ -257,9 +257,6 @@ class DatabaseUtils extends DatabaseConnection {
       return;
     } else {
       acceptFriendCallback(true);
-      // update num of friends in Database.
-      p.numFriends += 1;
-      updateUserData(p, (Player? p) {});
       return;
     }
   }
@@ -275,106 +272,6 @@ class DatabaseUtils extends DatabaseConnection {
       return null;
     }
     return Statement.fromMap(queryResult.data?["statement"]);
-  }
-
-  /// Update a [LocalPlayer] in the Database by [String]. Only for username and
-  /// device token! Thus only used for the logged in user.
-  Future<void> updateUser(
-      LocalPlayer player, Function updateUserCallback) async {
-    // TODO fetch player before updating so nothing is overwritten
-    // check username for bad words
-    bool isDirty = await containsBadWord(player.name);
-    if (isDirty) {
-      updateUserCallback(null);
-      return; //return if bad words are found
-    }
-
-    if (!await createUserDatabaseClient()) {
-      await updateUserCallback(null);
-      return;
-    }
-
-    var mutationResult = await userDatabaseClient!.mutate(
-      MutationOptions(
-        document: gql(Queries.updateUser()),
-        variables: {
-          "user": player.toUserMap(),
-        },
-      ),
-    );
-
-    if (mutationResult.hasException) {
-      _handleException(mutationResult.exception!);
-
-      await updateUserCallback(null);
-      return;
-    } else {
-      await updateUserCallback(
-          LocalPlayer.fromMap(mutationResult.data?["updateUser"]["user"]));
-      return;
-    }
-  }
-
-  /// Update a [Player]s userdata in the Database by [String].
-  ///
-  /// Can be anything except username and auth stuff.
-  Future<void> updateUserData(
-      Player player, Function updateUserCallback) async {
-    // TODO: fetch player before updating so nothing is overwritten
-    // The session token.
-
-    if (!await createUserDatabaseClient()) {
-      await updateUserCallback(null);
-      return;
-    }
-
-    var mutationResult = await userDatabaseClient!.mutate(
-      MutationOptions(
-        document: gql(Queries.updateUserData()),
-        variables: {
-          "user": player.toUserDataMap(),
-        },
-      ),
-    );
-
-    if (mutationResult.hasException) {
-      _handleException(mutationResult.exception!);
-
-      await updateUserCallback(null);
-    } else {
-      await updateUserCallback(player
-        ..updateDataWithMap(
-            mutationResult.data?["updateUserData"]["userData"]));
-    }
-  }
-
-  /// Create a [LocalPlayer]s userdata in the Database by [String].
-  ///
-  /// Can be anything except username and auth stuff.
-  Future<void> createUserData(
-      LocalPlayer player, Function createUserDataCallback) async {
-    if (!await createUserDatabaseClient()) {
-      createUserDataCallback(null);
-      return;
-    }
-
-    var mutationResult = await userDatabaseClient!.mutate(
-      MutationOptions(
-        document: gql(Queries.updateUser()),
-        variables: {
-          "user": player.toUserMapWithNewUserData(),
-        },
-      ),
-    );
-
-    if (mutationResult.hasException) {
-      _handleException(mutationResult.exception!);
-
-      createUserDataCallback(null);
-    } else {
-      createUserDataCallback(
-          LocalPlayer.fromMap(mutationResult.data?["updateUser"]["user"]));
-    }
   }
 
   /// Update a [Friendship] in the Database by [String].
@@ -428,14 +325,6 @@ class DatabaseUtils extends DatabaseConnection {
     if (appState.focusedPlayerRelation!.openGame!.gameFinished()) {
       // update friendship
       await updateFriendship(appState.focusedPlayerRelation!);
-      // update player
-      await updateUserData(appState.player!, (Player? p) {
-        if (p != null) {
-          appState.player = p;
-        } else {
-          appState.msg = "Player konnte nicht aktualisiert werden";
-        }
-      });
     }
     return true;
   }
@@ -593,22 +482,12 @@ class DatabaseUtils extends DatabaseConnection {
     // random shuffling
     ids.shuffle();
 
-    // add to played statements of p and e
-    _playerRelation.opponent.playedStatements!.addAll(ids.take(9));
-    p.playedStatements!.addAll(ids.take(9));
-
     //upload game game
     _playerRelation.openGame!.statementIds = ids.take(9).toList();
     _playerRelation.openGame = await uploadGame(_playerRelation);
     if (_playerRelation.openGame == null) {
       return null;
     }
-
-    //update p and e in database
-    await updateUserData(p, (Player? player) {});
-
-    await updateUserData(_playerRelation.opponent, (Player? player) {});
-
     // update friendship
     await updateFriendship(_playerRelation);
 
@@ -638,40 +517,7 @@ class DatabaseUtils extends DatabaseConnection {
       errorHandler.handleException(mutationResult.exception!);
     }
 
-    // Remeove the User and all open games and friendships.
-    var mutationResult = await userDatabaseClient!.mutate(
-      MutationOptions(
-        document: gql(Queries.deleteUser(appState)),
-        variables: {
-          "user": {
-            "id": appState.player!.id,
-          },
-        },
-      ),
-    );
-
-    if (mutationResult.hasException) {
-      _handleException(mutationResult.exception!);
-      appState.route = Routes.settings;
-
       return;
-    }
-
-    await safeStorage.delete(key: "token");
-
-    // stop live queries
-    if (gameChangesLiveQuery != null) {
-      gameChangesLiveQuery!.client.disconnect();
-      gameChangesLiveQuery = null;
-    }
-
-    if (newFriendsLiveQuery != null) {
-      newFriendsLiveQuery!.client.disconnect();
-      newFriendsLiveQuery = null;
-    }
-
-    appState.isLoggedIn = false;
-    appState.route = Routes.login;
   }
 
   void startLiveQueryForFriends(QuellenreiterAppState appState) async {
@@ -939,6 +785,19 @@ class DatabaseUtils extends DatabaseConnection {
     } else {
       errorHandler.error = "Server Error";
       return true;
+    }
+  }
+
+  // stops all live queries and disconnects clients
+  void stopLiveQueries() {
+    // stop live queries
+    if (gameChangesLiveQuery != null) {
+      gameChangesLiveQuery!.client.disconnect();
+      gameChangesLiveQuery = null;
+    }
+    if (newFriendsLiveQuery != null) {
+      newFriendsLiveQuery!.client.disconnect();
+      newFriendsLiveQuery = null;
     }
   }
 }

@@ -126,9 +126,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                             HapticFeedback.selectionClick();
                                             FocusManager.instance.primaryFocus
                                                 ?.unfocus();
-                                            widget.appState.player?.name =
-                                                usernameController.text;
-                                            await widget.appState.updateUser();
+                                            await widget.appState.playerProvider
+                                                .updateName(
+                                                    widget.appState.player!,
+                                                    usernameController.text);
                                             widget.appState.route =
                                                 Routes.settings;
                                           }
@@ -190,10 +191,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                               HapticFeedback.selectionClick();
                                               FocusManager.instance.primaryFocus
                                                   ?.unfocus();
-                                              widget.appState.player?.emoji =
-                                                  emojiController.text;
-                                              await widget.appState
-                                                  .updateUserData();
+                                              await widget
+                                                  .appState.playerProvider
+                                                  .updateEmoji(
+                                                      widget.appState.player!,
+                                                      emojiController.text);
                                               widget.appState.route =
                                                   Routes.settings;
                                             }

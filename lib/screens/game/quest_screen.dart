@@ -318,6 +318,8 @@ class _QuestScreenState extends State<QuestScreen>
     Game currentGame = widget.appState.focusedPlayerRelation!.openGame!;
 
     // PROBLEM: This is still not completely safe.
+    // But here only the game is altered, so it is not that bad.
+    // The player itsself is not altered.
     // some other player could update the players stats between the above call
     // and the below update and will then be lost.
     // add false as a placeHolder if not with timer.
@@ -425,7 +427,7 @@ class _QuestScreenState extends State<QuestScreen>
     await Future.delayed(const Duration(seconds: 2), () {});
 
     // push to DB
-    await widget.appState.db.updateGame(widget.appState);
+    await widget.appState.updateGame();
 
     // if game is finished
     if (currentGame.gameFinished()) {
