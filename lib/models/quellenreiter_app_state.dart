@@ -461,7 +461,7 @@ class QuellenreiterAppState extends ChangeNotifier {
       // reset game because not started
       _playerRelation.openGame = null;
       route = tempRoute;
-      db.error ??
+      db.errorHandler.error ??
           "Spielstarten fehlgeschlagen. ${_playerRelation.opponent.emoji} ${_playerRelation.opponent.name} wurde nicht herausgefordert. Versuche es erneut.";
       return;
     }
@@ -478,7 +478,7 @@ class QuellenreiterAppState extends ChangeNotifier {
 
   void getCurrentStatements() async {
     Game currentGame = focusedPlayerRelation!.openGame!;
-    if (db.error != null) {
+    if (db.errorHandler.error != null) {
       return;
     }
     currentGame.statements = await db.getStatements(currentGame.statementIds!);
@@ -515,7 +515,8 @@ class QuellenreiterAppState extends ChangeNotifier {
   }
 
   void showError(BuildContext context, {String? errorMsg}) {
-    if ((errorMsg != null || db.error != null) && !errorBannerActive) {
+    if ((errorMsg != null || db.errorHandler.error != null) &&
+        !errorBannerActive) {
       errorBannerActive = true;
       FocusScope.of(context).unfocus();
 
@@ -534,7 +535,7 @@ class QuellenreiterAppState extends ChangeNotifier {
                     width: 10,
                   ),
                   Text(
-                    errorMsg ?? db.error!,
+                    errorMsg ?? db.errorHandler.error!,
                     style: Theme.of(context).textTheme.headline4!.copyWith(
                           color: Colors.white,
                         ),
@@ -547,7 +548,7 @@ class QuellenreiterAppState extends ChangeNotifier {
           .closed
           .then((value) {
         errorBannerActive = false;
-        db.error = null;
+        db.errorHandler.error = null;
       });
     }
   }

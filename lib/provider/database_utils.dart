@@ -9,6 +9,7 @@ import 'package:quellenreiter_app/models/player_relation.dart';
 import 'package:quellenreiter_app/models/game.dart';
 import 'package:quellenreiter_app/models/player.dart';
 import 'package:quellenreiter_app/models/quellenreiter_app_state.dart';
+import 'package:quellenreiter_app/provider/database_connection.dart';
 import 'package:quellenreiter_app/provider/safe_storage.dart';
 import '../consonents.dart';
 import '../constants/constants.dart';
@@ -18,57 +19,12 @@ import 'package:http/http.dart' as http;
 
 /// This class facilitates the connection to the database and manages its
 /// responses.
-class DatabaseUtils {
-  /// Holds any error message related to DB activity
-  String? error;
-
-  /// [GraphQLClient] client for the user database
-  /// requires a token.
-  GraphQLClient? userDatabaseClient;
-
-  /// [GraphQLClient] for the statement database.
-  /// Does not require a token.
-  GraphQLClient statementDatabaseClient = GraphQLClient(
-    cache: GraphQLCache(),
-    link: HttpLink(statementDatabaseUrl, defaultHeaders: {
-      'X-Parse-Application-Id': statementDatabaseApplicationID,
-      'X-Parse-Client-Key': statementDatabaseClientKey,
-    }),
-  );
-
-  /// Object to access Secure Storage.
-  SafeStorageInterface safeStorage;
-
+class DatabaseUtils extends DatabaseConnection {
   /// Live query livequery for games
   parse.LiveQuery? gameChangesLiveQuery;
 
   /// Live query livequery for friends
   parse.LiveQuery? newFriendsLiveQuery;
-
-  /// Creates [userDatabaseClient].
-  Future<bool> createUserDatabaseClient() async {
-    // The session token.
-    String? token = await safeStorage.read(key: "token");
-
-    // If token is not null, check if it is valid.
-    if (token != null) {
-      // Link to user database.
-      final HttpLink userDatabaseLink =
-          HttpLink(userDatabaseUrl, defaultHeaders: {
-        'X-Parse-Application-Id': userDatabaseApplicationID,
-        'X-Parse-Client-Key': userDatabaseClientKey,
-        'X-Parse-Session-Token': token,
-      });
-
-      // Provides data from server and facilitates requests.
-      userDatabaseClient = GraphQLClient(
-        cache: GraphQLCache(),
-        link: userDatabaseLink,
-      );
-      return true;
-    }
-    return false;
-  }
 
   /// Constor decides which implementation of [SafeStorageInterface] to use.
   /// Default is [SafeStoragePlugin].
@@ -270,7 +226,7 @@ class DatabaseUtils {
     );
 
     if (queryResult.hasException) {
-      _handleException(queryResult.exception!);
+      errorHandler.handleException(queryResult.exception!);
 
       return null;
     } else {
@@ -295,7 +251,7 @@ class DatabaseUtils {
     );
 
     if (mutationResult.hasException) {
-      _handleException(mutationResult.exception!);
+      errorHandler.handleException(mutationResult.exception!);
 
       acceptFriendCallback(false);
       return;
@@ -314,7 +270,7 @@ class DatabaseUtils {
       QueryOptions(document: gql(Queries.getStatement(statementID))),
     );
     if (queryResult.hasException) {
-      _handleException(queryResult.exception!);
+      errorHandler.handleException(queryResult.exception!);
 
       return null;
     }
@@ -437,7 +393,7 @@ class DatabaseUtils {
     );
 
     if (mutationResult.hasException) {
-      _handleException(mutationResult.exception!);
+      errorHandler.handleException(mutationResult.exception!);
 
       return false;
     } else {
@@ -463,7 +419,7 @@ class DatabaseUtils {
     );
 
     if (mutationResult.hasException) {
-      _handleException(mutationResult.exception!);
+      errorHandler.handleException(mutationResult.exception!);
 
       return false;
     }
@@ -504,7 +460,7 @@ class DatabaseUtils {
     );
 
     if (mutationResult.hasException) {
-      _handleException(mutationResult.exception!);
+      errorHandler.handleException(mutationResult.exception!);
 
       return null;
     }
@@ -530,7 +486,7 @@ class DatabaseUtils {
     );
 
     if (queryResult.hasException) {
-      _handleException(queryResult.exception!);
+      errorHandler.handleException(queryResult.exception!);
 
       return null;
     }
@@ -558,7 +514,7 @@ class DatabaseUtils {
     );
 
     if (mutationResult.hasException) {
-      _handleException(mutationResult.exception!);
+      errorHandler.handleException(mutationResult.exception!);
 
       sendFriendRequestCallback(false);
     } else {
@@ -583,7 +539,7 @@ class DatabaseUtils {
     );
 
     if (queryResult.hasException) {
-      _handleException(queryResult.exception!);
+      errorHandler.handleException(queryResult.exception!);
 
       searchFriendsCallback(null);
     } else {
@@ -615,14 +571,14 @@ class DatabaseUtils {
 
     // if exception in query, return null.
     if (playableStatements.hasException) {
-      _handleException(playableStatements.exception!);
+      errorHandler.handleException(playableStatements.exception!);
 
       return null;
     }
 
     // if not enough statements are accessible.
     if (playableStatements.data?["statements"]["edges"].length < 9) {
-      error =
+      errorHandler.error =
           "Es gibt nicht mehr genug Statements, die ihr beide noch nicht gespielt habt...";
       return null;
     }
@@ -679,23 +635,7 @@ class DatabaseUtils {
     );
 
     if (mutationResult.hasException) {
-      _handleException(mutationResult.exception!);
-    }
-
-    return;
-  }
-
-  Future<void> deleteAccount(QuellenreiterAppState appState) async {
-    if (appState.player == null) {
-      appState.route = Routes.login;
-      return;
-    }
-
-    if (userDatabaseClient == null) {
-      if (!await createUserDatabaseClient()) {
-        appState.route = Routes.settings;
-        return;
-      }
+      errorHandler.handleException(mutationResult.exception!);
     }
 
     // Remeove the User and all open games and friendships.
@@ -886,7 +826,7 @@ class DatabaseUtils {
       return resultParsed;
     }
 
-    error = "Error: ${parseResponse.error!.message}";
+    errorHandler.error = "Error: ${parseResponse.error!.message}";
     return true;
   }
 
@@ -969,39 +909,16 @@ class DatabaseUtils {
     }
   }
 
-  /// Handle errors from GraphQL server.
-  /// Todo: Move this into own class.
-  void _handleException(OperationException e) {
-    // errors in the database are not shown to the user
-    if (e.graphqlErrors.isNotEmpty) {
-      // handle graphql errors
-      // set the error
-      if (e.graphqlErrors[0].message == "Invalid username/password.") {
-        error = "Falscher Username oder Passwort";
-      }
-      if (e.graphqlErrors[0].message ==
-          "Account already exists for this username.") {
-        error = "Der Username ist bereits vergeben";
-      }
-    } else if (e.linkException is NetworkException) {
-      error = "Du bist offline...";
-    } else if (e.linkException is ServerException) {
-      error = "Du bist offline...";
-    } else {
-      error = "unbekannter Fehler. Versuche es erneut";
-    }
-  }
-
   Future<bool> containsBadWord(String username) async {
     if (username.isEmpty) {
       // return true because is empty
-      error = "Username is empty";
+      errorHandler.error = "Username is empty";
       return true;
     }
 
     for (String s in customBadWords) {
       if (username.contains(s)) {
-        error = "Username enthält ungültige Wörter.";
+        errorHandler.error = "Username enthält ungültige Wörter.";
         return true;
       }
     }
@@ -1014,13 +931,13 @@ class DatabaseUtils {
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       if (jsonResponse['bad_words'].isNotEmpty) {
-        error = "Username enthält ungültige Wörter";
+        errorHandler.error = "Username enthält ungültige Wörter";
         return true;
       } else {
         return false;
       }
     } else {
-      error = "Server Error";
+      errorHandler.error = "Server Error";
       return true;
     }
   }
